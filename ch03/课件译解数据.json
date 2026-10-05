@@ -1,0 +1,604 @@
+[
+  {
+    "lecture": 3,
+    "page": 1,
+    "title": "具身智能导论",
+    "translated_title": "具身智能导论",
+    "translation": [
+      "第3讲：机器人学 II",
+      "王鹤教授",
+      "北京大学（1898年）",
+      "具身感知与交互实验室（EPIC）",
+      "2025年秋季"
+    ],
+    "translation_html": "<p>第3讲：机器人学 II</p><p>王鹤教授</p><p>北京大学（1898年）</p><p>具身感知与交互实验室（EPIC）</p><p>2025年秋季</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 2,
+    "title": "SO(3)",
+    "translated_title": "SO(3)",
+    "translation": [],
+    "translation_html": ""
+  },
+  {
+    "lecture": 3,
+    "page": 3,
+    "title": "旋转矩阵",
+    "translated_title": "旋转矩阵",
+    "translation": [],
+    "translation_html": ""
+  },
+  {
+    "lecture": 3,
+    "page": 4,
+    "title": "SO(3)：旋转的空间",
+    "translated_title": "SO(3)：旋转的空间",
+    "translation": [
+      "• SO(n) = {R ∈ ℝⁿˣⁿ : det(R) = 1，RRᵀ = I}",
+      "• SO(n)：“特殊正交群”。",
+      "• “群”：粗略地说，对矩阵乘法封闭。",
+      "• “正交”：RRᵀ = I。",
+      "• “特殊”：det(R) = 1。",
+      "• SO(2)：二维旋转，1个自由度。",
+      "• SO(3)：三维旋转，3个自由度。"
+    ],
+    "translation_html": "<ul><li>\\[\\mathrm{SO}(n) = \\{R \\in  \\mathbb{R}^{n\\times n} : \\operatorname{det}(R) = 1\\text{，}RR^{T} = I\\}\\]</li><li>\\(\\mathrm{SO}(n)\\)：“特殊正交群”。</li><li>“群”：粗略地说，对矩阵乘法封闭。</li><li>“正交”：\\(RR^{T} = I\\)。</li><li>“特殊”：\\(\\operatorname{det}(R) = 1\\)。</li><li>\\(\\mathrm{SO}(2)\\)：二维旋转，1个自由度。</li><li>\\(\\mathrm{SO}(3)\\)：三维旋转，3个自由度。</li></ul>"
+  },
+  {
+    "lecture": 3,
+    "page": 5,
+    "title": "用旋转矩阵表示旋转的问题",
+    "translated_title": "用旋转矩阵表示旋转的问题",
+    "translation": [
+      "1. 效率：旋转有3个自由度，但旋转矩阵需要9个数值。",
+      "2. 数值稳定性：保持正交性。"
+    ],
+    "translation_html": "<p>1. 效率：旋转有3个自由度，但旋转矩阵需要9个数值。</p><p>2. 数值稳定性：保持正交性。</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 6,
+    "title": "欧拉角非常直观",
+    "translated_title": "欧拉角非常直观",
+    "translation": [
+      "坐标轴：x、y、z。"
+    ],
+    "translation_html": "<p>坐标轴：x、y、z。</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 7,
+    "title": "欧拉角",
+    "translated_title": "欧拉角",
+    "translation": [
+      "横滚（Roll）；偏航（Yaw）；俯仰（Pitch）。",
+      "https://blog.csdn.net/sandalphon4869"
+    ],
+    "translation_html": "<p>横滚（Roll）；偏航（Yaw）；俯仰（Pitch）。</p><p>https://blog.csdn.net/sandalphon4869</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 8,
+    "title": "万向节锁",
+    "translated_title": "万向节锁",
+    "translation": [
+      "• 例如，当 β = π/2 时，",
+      "R = R_z(α)R_y(π/2)R_x(γ)",
+      "= [[0, 0, 1], [sin(α+γ), cos(α+γ), 0], [−cos(α+γ), sin(α+γ), 0]]。",
+      "因为改变 α 和 γ 会产生相同的效果，所以一个自由度消失了！"
+    ],
+    "translation_html": "<ul><li>例如，当 \\(\\beta  = \\frac{\\pi}{2}\\) 时，</li></ul><p>\\[R = R_z(\\alpha )R_y(\\frac{\\pi}{2})R_x(\\gamma )\\]</p><p>\\[= \\begin{bmatrix}0 &amp; 0 &amp; 1 \\\\ \\sin(\\alpha +\\gamma ) &amp; \\cos(\\alpha +\\gamma ) &amp; 0 \\\\ -\\cos(\\alpha +\\gamma ) &amp; \\sin(\\alpha +\\gamma ) &amp; 0\\end{bmatrix}\\]。</p><p>因为改变 \\(\\alpha\\) 和 \\(\\gamma\\) 会产生相同的效果，所以一个自由度消失了！</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 9,
+    "title": "旋转的轴角参数化",
+    "translated_title": "旋转的轴角参数化",
+    "translation": [],
+    "translation_html": ""
+  },
+  {
+    "lecture": 3,
+    "page": 10,
+    "title": "欧拉定理",
+    "translated_title": "欧拉定理",
+    "translation": [
+      "• 任意旋转都等价于绕一条固定轴 ω̂ ∈ ℝ³（‖ω̂‖ = 1）转过正角度 θ。",
+      "• ω̂：旋转轴的单位向量。",
+      "• θ：旋转角度。",
+      "• R ∈ SO(3) := Rot(ω̂, θ)。",
+      "图中：ω = θω̂。",
+      "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？"
+    ],
+    "translation_html": "<ul><li>任意旋转都等价于绕一条固定轴 \\(\\hat{\\omega } \\in  \\mathbb{R}^{3}\\)（\\(\\lVert \\hat{\\omega }\\rVert  = 1\\)）转过正角度 \\(\\theta\\)。</li><li>\\(\\hat{\\omega }\\)：旋转轴的单位向量。</li><li>\\(\\theta\\)：旋转角度。</li><li>\\[R \\in  \\mathrm{SO}(3) := \\operatorname{Rot}(\\hat{\\omega }, \\theta )\\]。</li></ul><p>图中：\\(\\omega  = \\theta \\hat{\\omega }\\)。</p><p>给定 \\(\\hat{\\omega }\\) 和 \\(\\theta\\text{，}R \\in  \\mathrm{SO}(3)\\) 是什么？</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 11,
+    "title": "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？",
+    "translated_title": "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？",
+    "translation": [
+      "• 由 Rot(ω̂, θ)x = exp(θ[ω̂]) x，对所有 x ∈ ℝ³，得 Rot(ω̂, θ) ≡ exp(θ[ω̂])。",
+      "• 这里采用如下矩阵指数定义：",
+      "exp(θ[ω̂]) = I + θ[ω̂] + (θ²/2!)[ω̂]² + (θ³/3!)[ω̂]³ + ⋯。",
+      "• 根据上一张幻灯片的式(1)，得到 Rodrigues 公式：",
+      "exp(θ[ω̂]) = I + [ω̂]sin θ + [ω̂]²(1 − cos θ)。"
+    ],
+    "translation_html": "<ul><li>由 \\(\\operatorname{Rot}(\\hat{\\omega }, \\theta )x = \\exp(\\theta [\\hat{\\omega }]) x\\)，对所有 \\(x \\in  \\mathbb{R}^{3}\\)，得 \\(\\operatorname{Rot}(\\hat{\\omega }, \\theta ) \\equiv  \\exp(\\theta [\\hat{\\omega }])\\)。</li><li>这里采用如下矩阵指数定义：</li></ul><p>\\[\\exp(\\theta [\\hat{\\omega }]) = I + \\theta [\\hat{\\omega }] + (\\frac{\\theta ^{2}}{2!})[\\hat{\\omega }]^{2} + (\\frac{\\theta ^{3}}{3!})[\\hat{\\omega }]^{3} + \\cdots\\]。</p><ul><li>根据上一张幻灯片的式(1)，得到 Rodrigues 公式：</li></ul><p>\\[\\exp(\\theta [\\hat{\\omega }]) = I + [\\hat{\\omega }]\\sin \\theta  + [\\hat{\\omega }]^{2}(1 - \\cos \\theta )\\]。</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 12,
+    "title": "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？",
+    "translated_title": "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？",
+    "translation": [
+      "• 第一个问题：存在唯一的参数化吗？",
+      "  • 不存在：",
+      "  1. (ω̂, θ) 与 (−ω̂, −θ) 给出相同的旋转。",
+      "  2. 当 R = I 时，θ = 0，ω̂ 可以任取。",
+      "  3. (ω̂, π) 与 (−ω̂, π) 给出相同的旋转（tr(R) = −1）。",
+      "• 如果限定 θ ∈ (0, π)，则存在唯一的参数化：",
+      "  • θ = arccos((tr(R) − 1)/2)，[ω̂] = (R − Rᵀ)/(2 sin θ)。"
+    ],
+    "translation_html": "<ul><li>第一个问题：存在唯一的参数化吗？<ul><li>不存在：</li></ul></li></ul><p style=\"margin-left:1.5em\">1. \\((\\hat{\\omega }, \\theta )\\) 与 \\((-\\hat{\\omega }, -\\theta )\\) 给出相同的旋转。</p><p style=\"margin-left:1.5em\">2. 当 \\(R = I\\) 时，\\(\\theta  = 0\\text{，}\\hat{\\omega }\\) 可以任取。</p><p style=\"margin-left:1.5em\">3. \\((\\hat{\\omega }, \\pi )\\) 与 \\((-\\hat{\\omega }, \\pi )\\) 给出相同的旋转（\\(\\operatorname{tr}(R) = -1\\)）。</p><ul><li>如果限定 \\(\\theta  \\in  (0, \\pi )\\)，则存在唯一的参数化：<ul><li>\\[\\theta  = \\arccos(\\frac{\\operatorname{tr}(R)-1}{2})\\text{，}[\\hat{\\omega }] = \\frac{R-R^{T}}{2\\sin \\theta }\\]。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 3,
+    "page": 13,
+    "title": "四元数",
+    "translated_title": "四元数",
+    "translation": [
+      "注意：本节中，向量 x⃗ ∈ ℝ³，四元数 q ∈ ℝ⁴。"
+    ],
+    "translation_html": "<p>注意：本节中，向量 \\(\\vec{x} \\in  \\mathbb{R}^{3}\\)，四元数 \\(q \\in  \\mathbb{R}^{4}\\)。</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 14,
+    "title": "四元数是一个“数”",
+    "translated_title": "四元数是一个“数”",
+    "translation": [
+      "• 回顾复数 a + bi。",
+      "• 四元数是复数更广义的推广：q = w + xi + yj + zk。",
+      "  • w 是实部，v⃗ = (x, y, z) 是虚部。",
+      "  • 虚数单位：i² = j² = k² = ijk = −1。",
+      "  • 反交换：ij = k = −ji，jk = i = −kj，ki = j = −ik。"
+    ],
+    "translation_html": "<ul><li>回顾复数 \\(a + bi\\)。</li><li>四元数是复数更广义的推广：\\(q = w + xi + yj + zk\\)。<ul><li>w 是实部，\\(\\vec{v} = (x, y, z)\\) 是虚部。</li><li>虚数单位：\\(i^{2} = j^{2} = k^{2} = ijk = -1\\)。</li><li>反交换：\\(ij = k = -ji\\text{，}jk = i = -kj\\text{，}ki = j = -ik\\)。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 3,
+    "page": 15,
+    "title": "一般四元数的性质",
+    "translated_title": "一般四元数的性质",
+    "translation": [
+      "• 向量形式：q = (w, v⃗)。",
+      "• 乘积：",
+      "  • 对 q₁ = (w₁, v⃗₁)、q₂ = (w₂, v⃗₂)，q₁q₂ = (w₁w₂ − v⃗₁ᵀv⃗₂，w₁v⃗₂ + w₂v⃗₁ + v⃗₁ × v⃗₂)。",
+      "  • 不可交换（注意 v⃗₁ × v⃗₂ ≠ v⃗₂ × v⃗₁）。",
+      "• 共轭：q* = (w, −v⃗)。",
+      "• 范数：‖q‖² = w² + v⃗ᵀv⃗ = qq* = q*q。",
+      "• 逆：q⁻¹ := q*/‖q‖²。"
+    ],
+    "translation_html": "<ul><li>向量形式：\\(q = (w, \\vec{v})\\)。</li><li>乘积：<ul><li>对 \\(q_{1} = (w_{1}, \\vec{v}_{1})\\)、\\(q_{2} = (w_{2}, \\vec{v}_{2})\\text{，}q_{1}q_{2} = (w_{1}w_{2} - \\vec{v}_{1}^{T}\\vec{v}_{2}\\text{，}w_{1}\\vec{v}_{2} + w_{2}\\vec{v}_{1} + \\vec{v}_{1} \\times  \\vec{v}_{2})\\)。</li><li>不可交换（注意 \\(\\vec{v}_{1} \\times  \\vec{v}_{2} \\ne  \\vec{v}_{2} \\times  \\vec{v}_{1}\\)）。</li></ul></li><li>共轭：\\(q^* = (w, -\\vec{v})\\)。</li><li>范数：\\(\\lVert q\\rVert ^{2} = w^{2} + \\vec{v}^{T}\\vec{v} = qq^* = q^*q\\)。</li><li>逆：\\(q^{-1} := \\frac{q^*}{\\lVert q\\rVert^{2}}\\)。</li></ul>"
+  },
+  {
+    "lecture": 3,
+    "page": 16,
+    "title": "用单位四元数表示旋转",
+    "translated_title": "用单位四元数表示旋转",
+    "translation": [
+      "• 单位四元数 ‖q‖ = 1 可以表示一个旋转。",
+      "  • 四个数加一个约束 → 3个自由度。",
+      "• 从几何上看，它是四维球的表面。"
+    ],
+    "translation_html": "<ul><li>单位四元数 \\(\\lVert q\\rVert  = 1\\) 可以表示一个旋转。<ul><li>四个数加一个约束 → 3个自由度。</li></ul></li><li>从几何上看，它是四维球的表面。</li></ul>"
+  },
+  {
+    "lecture": 3,
+    "page": 17,
+    "title": "构造旋转四元数",
+    "translated_title": "构造旋转四元数",
+    "translation": [
+      "• 指数坐标 → 四元数：q = [cos(θ/2), sin(θ/2)ω̂]。",
+      "• 四元数与轴角表示非常接近！",
+      "• 指数坐标 ← 四元数：θ = 2 arccos(w)，",
+      "ω̂ = v⃗/sin(θ/2)（θ ≠ 0）；ω̂ = 0（θ = 0）。"
+    ],
+    "translation_html": "<ul><li>指数坐标 → 四元数：\\(q = [\\cos(\\frac{\\theta}{2}), \\sin(\\frac{\\theta}{2})\\hat{\\omega }]\\)。</li><li>四元数与轴角表示非常接近！</li><li>指数坐标 ← 四元数：\\(\\theta  = 2 \\arccos(w)\\)，</li></ul><p>\\(\\hat{\\omega } = \\frac{\\vec{v}}{\\sin(\\frac{\\theta}{2})}\\)（\\(\\theta  \\ne  0\\)）；\\(\\hat{\\omega } = 0\\)（\\(\\theta  = 0\\)）。</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 18,
+    "title": "用单位四元数表示旋转",
+    "translated_title": "用单位四元数表示旋转",
+    "translation": [
+      "• 用四元数 q 旋转向量 x⃗：",
+      "  1. 将 x⃗ 扩充为 x = (0, x⃗)。",
+      "  2. x′ = qxq⁻¹。",
+      "• 用四元数复合旋转：",
+      "  • q₂(q₁xq₁*)q₂*：先用 q₁ 旋转，再用 q₂ 旋转。",
+      "  • 因为 q₂(q₁xq₁*)q₂* = (q₂q₁)x(q₁*q₂*)，复合旋转就像四元数相乘一样简单！"
+    ],
+    "translation_html": "<ul><li>用四元数 q 旋转向量 \\(\\vec{x}\\)：</li></ul><p style=\"margin-left:1.5em\">1. 将 \\(\\vec{x}\\) 扩充为 \\(x = (0, \\vec{x})\\)。</p><p style=\"margin-left:1.5em\">2. \\(x' = qxq^{-1}\\)。</p><ul><li>用四元数复合旋转：<ul><li>\\(q_{2}(q_{1}xq_{1}*)q_{2}*\\)：先用 \\(q_{1}\\) 旋转，再用 \\(q_{2}\\) 旋转。</li><li>因为 \\(q_{2}(q_{1}xq_{1}*)q_{2}* = (q_{2}q_{1})x(q_{1}*q_{2}*)\\)，复合旋转就像四元数相乘一样简单！</li></ul></li></ul>"
+  },
+  {
+    "lecture": 3,
+    "page": 19,
+    "title": "证明",
+    "translated_title": "证明",
+    "translation": [
+      "定理1：对于任意单位四元数 q = q₀ + q⃗ = cos(θ/2) + u sin(θ/2)（4），以及任意向量 v ∈ ℝ³，算子 L_q(v) = qvq* 作用于 v，等价于以 u 为旋转轴将该向量旋转 θ 角。",
+      "证明：给定向量 v ∈ ℝ³，将其分解为 v = a + n，其中 a 是沿向量 q⃗ 的分量，n 是垂直于 q⃗ 的分量。接着说明在算子 L_q 的作用下，a 保持不变，n 绕 q⃗ 旋转 θ 角。因为该算子是线性的，这就说明像 qvq* 确实可以解释为 v 绕 q⃗ 旋转 θ 角。",
+      "根据前面的推理，a 在 L_q 下保持不变。因此，关注 L_q 对正交分量 n 的作用。我们有：",
+      "L_q(n) = (q₀² − ‖q⃗‖²)n + 2(q⃗·n)q⃗ + 2q₀(q⃗ × n)",
+      "= (q₀² − ‖q⃗‖²)n + 2q₀(q⃗ × n)",
+      "= (q₀² − ‖q⃗‖²)n + 2q₀‖q⃗‖(u × n)。",
+      "上面最后一步引入了 u = q⃗/‖q⃗‖。记 n_⊥ = u × n，于是最后一个等式变为：",
+      "L_q(n) = (q₀² − ‖q⃗‖²)n + 2q₀‖q⃗‖n_⊥。（5）",
+      "注意 n_⊥ 和 n 长度相同：‖n_⊥‖ = ‖n × u‖ = ‖n‖·‖u‖ sin(π/2) = ‖n‖。",
+      "证明来源：斯坦福大学 CS348A（链接）。"
+    ],
+    "translation_html": "<p>定理1：对于任意单位四元数 \\(q = q_{0} + \\vec{q} = \\cos(\\frac{\\theta}{2}) + u \\sin(\\frac{\\theta}{2})\\)（4），以及任意向量 \\(v \\in  \\mathbb{R}^{3}\\)，算子 \\(L_q(v) = qvq^*\\) 作用于 v，等价于以 u 为旋转轴将该向量旋转 \\(\\theta\\) 角。</p><p>证明：给定向量 \\(v \\in  \\mathbb{R}^{3}\\)，将其分解为 \\(v = a + n\\)，其中 a 是沿向量 \\(\\vec{q}\\) 的分量，n 是垂直于 \\(\\vec{q}\\) 的分量。接着说明在算子 \\(L_q\\) 的作用下，a 保持不变，n 绕 \\(\\vec{q}\\) 旋转 \\(\\theta\\) 角。因为该算子是线性的，这就说明像 \\(qvq^*\\) 确实可以解释为 v 绕 \\(\\vec{q}\\) 旋转 \\(\\theta\\) 角。</p><p>根据前面的推理，a 在 \\(L_q\\) 下保持不变。因此，关注 \\(L_q\\) 对正交分量 n 的作用。我们有：</p><p>\\[L_q(n) = (q_{0}^{2} - \\lVert \\vec{q}\\rVert ^{2})n + 2(\\vec{q}\\cdot n)\\vec{q} + 2q_{0}(\\vec{q} \\times  n)\\]</p><p>\\[= (q_{0}^{2} - \\lVert \\vec{q}\\rVert ^{2})n + 2q_{0}(\\vec{q} \\times  n)\\]</p><p>\\[= (q_{0}^{2} - \\lVert \\vec{q}\\rVert ^{2})n + 2q_{0}\\lVert \\vec{q}\\rVert (u \\times  n)\\]。</p><p>上面最后一步引入了 \\(u = \\frac{\\vec{q}}{\\lVert \\vec{q}\\rVert}\\)。记 \\(n_{\\perp} = u \\times  n\\)，于是最后一个等式变为：</p><p>\\[L_q(n) = (q_{0}^{2} - \\lVert \\vec{q}\\rVert ^{2})n + 2q_{0}\\lVert \\vec{q}\\rVert n_{\\perp}\\]。（5）</p><p>注意 \\(n_{\\perp}\\) 和 n 长度相同：\\(\\lVert n_{\\perp}\\rVert  = \\lVert n \\times  u\\rVert  = \\lVert n\\rVert \\cdot \\lVert u\\rVert  \\sin(\\frac{\\pi}{2}) = \\lVert n\\rVert\\)。</p><p>证明来源：斯坦福大学 CS348A（链接）。</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 20,
+    "title": "证明（续）",
+    "translated_title": "证明（续）",
+    "translation": [
+      "最后，将式(5)改写为：",
+      "L_q(n) = (cos²(θ/2) − sin²(θ/2))n + (2 cos(θ/2) sin(θ/2))n_⊥",
+      "= cos θ n + sin θ n_⊥。",
+      "也就是说，得到的向量是 n 在由 n 与 n_⊥ 定义的平面内旋转 θ 角的结果。见下图。该向量显然与旋转轴正交。",
+      "将单位四元数形式(4)代入式(3)，得到向量 v 绕轴 u 旋转 θ 后的向量：",
+      "L_p(v) = (cos²(θ/2) − sin²(θ/2))v + 2(u sin(θ/2)·v)u sin(θ/2) + 2 cos(θ/2)(u sin(θ/2) × v)",
+      "= cos θ·v + (1 − cos θ)(u·v)u + sin θ·(u × v)。（6）",
+      "Rot(u, θ)v = v + (1 − cos θ)u × (u × v) + (sin θ)u × v。",
+      "因为 u × (u × v) = (u·v)u − (u·u)v = (u·v)u − v，",
+      "所以 Rot(u, θ)v = v cos θ + (1 − cos θ)(u·v)u + (sin θ)u × v = L_p(v)。"
+    ],
+    "translation_html": "<p>最后，将式(5)改写为：</p><p>\\[L_q(n) = (\\cos^{2}(\\frac{\\theta}{2}) - \\sin^{2}(\\frac{\\theta}{2}))n + (2 \\cos(\\frac{\\theta}{2}) \\sin(\\frac{\\theta}{2}))n_{\\perp}\\]</p><p>\\[= \\cos \\theta  n + \\sin \\theta  n_{\\perp}\\]。</p><p>也就是说，得到的向量是 n 在由 n 与 \\(n_{\\perp}\\) 定义的平面内旋转 \\(\\theta\\) 角的结果。见下图。该向量显然与旋转轴正交。</p><p>将单位四元数形式(4)代入式(3)，得到向量 v 绕轴 u 旋转 \\(\\theta\\) 后的向量：</p><p>\\[L_p(v) = (\\cos^{2}(\\frac{\\theta}{2}) - \\sin^{2}(\\frac{\\theta}{2}))v + 2(u \\sin(\\frac{\\theta}{2})\\cdot v)u \\sin(\\frac{\\theta}{2}) + 2 \\cos(\\frac{\\theta}{2})(u \\sin(\\frac{\\theta}{2}) \\times  v)\\]</p><p>\\[= \\cos \\theta \\cdot v + (1 - \\cos \\theta )(u\\cdot v)u + \\sin \\theta \\cdot (u \\times  v)\\]。（6）</p><p>\\[\\operatorname{Rot}(u, \\theta )v = v + (1 - \\cos \\theta )u \\times  (u \\times  v) + (\\sin \\theta )u \\times  v\\]。</p><p>因为 \\(u \\times  (u \\times  v) = (u\\cdot v)u - (u\\cdot u)v = (u\\cdot v)u - v\\)，</p><p>所以 \\(\\operatorname{Rot}(u, \\theta )v = v \\cos \\theta  + (1 - \\cos \\theta )(u\\cdot v)u + (\\sin \\theta )u \\times  v = L_p(v)\\)。</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 21,
+    "title": "用单位四元数表示旋转",
+    "translated_title": "用单位四元数表示旋转",
+    "translation": [
+      "• 用四元数 q 旋转向量 x⃗：",
+      "  1. 将 x⃗ 扩充为 x = (0, x⃗)。",
+      "  2. x′ = qxq⁻¹。",
+      "• 用四元数复合旋转：",
+      "  • q₂(q₁xq₁*)q₂*：先用 q₁ 旋转，再用 q₂ 旋转。",
+      "  • 因为 q₂(q₁xq₁*)q₂* = (q₂q₁)x(q₁*q₂*)，复合旋转就像四元数相乘一样简单！",
+      "• 每个旋转对应两个四元数（“双重覆盖”）。"
+    ],
+    "translation_html": "<ul><li>用四元数 q 旋转向量 \\(\\vec{x}\\)：</li></ul><p style=\"margin-left:1.5em\">1. 将 \\(\\vec{x}\\) 扩充为 \\(x = (0, \\vec{x})\\)。</p><p style=\"margin-left:1.5em\">2. \\(x' = qxq^{-1}\\)。</p><ul><li>用四元数复合旋转：<ul><li>\\(q_{2}(q_{1}xq_{1}*)q_{2}*\\)：先用 \\(q_{1}\\) 旋转，再用 \\(q_{2}\\) 旋转。</li><li>因为 \\(q_{2}(q_{1}xq_{1}*)q_{2}* = (q_{2}q_{1})x(q_{1}*q_{2}*)\\)，复合旋转就像四元数相乘一样简单！</li></ul></li><li>每个旋转对应两个四元数（“双重覆盖”）。</li></ul>"
+  },
+  {
+    "lecture": 3,
+    "page": 22,
+    "title": "四元数与旋转矩阵的比较",
+    "translated_title": "四元数与旋转矩阵的比较",
+    "translation": [
+      "存储：",
+      "• 一个四元数：4个浮点数 (x, y, z, w)。",
+      "• 一个旋转矩阵：9个数（3×3矩阵）。",
+      "乘法：",
+      "• 四元数：每次运算16次乘法和12次加法。",
+      "• 旋转矩阵：27次乘法和18次加法。",
+      "数值稳定性：",
+      "• 旋转矩阵在连续运算中可能积累数值误差（例如浮点精度限制），从而可能破坏正交性。",
+      "• 四元数经归一化后保持单位长度。"
+    ],
+    "translation_html": "<p>存储：</p><ul><li>一个四元数：4个浮点数 (x, y, z, w)。</li><li>一个旋转矩阵：9个数（3×3矩阵）。</li></ul><p>乘法：</p><ul><li>四元数：每次运算16次乘法和12次加法。</li><li>旋转矩阵：27次乘法和18次加法。</li></ul><p>数值稳定性：</p><ul><li>旋转矩阵在连续运算中可能积累数值误差（例如浮点精度限制），从而可能破坏正交性。</li><li>四元数经归一化后保持单位长度。</li></ul>"
+  },
+  {
+    "lecture": 3,
+    "page": 23,
+    "title": "关于四元数的更多内容",
+    "translated_title": "关于四元数的更多内容",
+    "translation": [
+      "• 四元数计算成本低：",
+      "  • 物理引擎和机器人中的内部表示。",
+      "• 注意分量顺序约定：(w, x, y, z) 或 (x, y, z, w)。",
+      "  • (w, x, y, z)：SAPIEN、transforms3d、Eigen、Blender、MuJoCo、V-Rep。",
+      "  • (x, y, z, w)：ROS、PhysX、PyBullet。"
+    ],
+    "translation_html": "<ul><li>四元数计算成本低：<ul><li>物理引擎和机器人中的内部表示。</li></ul></li><li>注意分量顺序约定：(w, x, y, z) 或 (x, y, z, w)。<ul><li>(w, x, y, z)：SAPIEN、transforms3d、Eigen、Blender、MuJoCo、V-Rep。</li><li>(x, y, z, w)：ROS、PhysX、PyBullet。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 3,
+    "page": 24,
+    "title": "四元数与轴角之间的转换",
+    "translated_title": "四元数与轴角之间的转换",
+    "translation": [
+      "• 轴角 → 四元数：q = [cos(θ/2), sin(θ/2)ω̂]。",
+      "• 四元数与轴角表示非常接近！",
+      "• 轴角 ← 四元数：θ = 2 arccos(w)，",
+      "ω̂ = v⃗/sin(θ/2)（θ ≠ 0）；ω̂ = 0（θ = 0）。"
+    ],
+    "translation_html": "<ul><li>轴角 → 四元数：\\(q = [\\cos(\\frac{\\theta}{2}), \\sin(\\frac{\\theta}{2})\\hat{\\omega }]\\)。</li><li>四元数与轴角表示非常接近！</li><li>轴角 ← 四元数：\\(\\theta  = 2 \\arccos(w)\\)，</li></ul><p>\\(\\hat{\\omega } = \\frac{\\vec{v}}{\\sin(\\frac{\\theta}{2})}\\)（\\(\\theta  \\ne  0\\)）；\\(\\hat{\\omega } = 0\\)（\\(\\theta  = 0\\)）。</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 25,
+    "title": "四元数与旋转矩阵之间的转换",
+    "translated_title": "四元数与旋转矩阵之间的转换",
+    "translation": [
+      "• 旋转矩阵 ← 四元数。",
+      "  • 由 x′ = qxq⁻¹，可以算出旋转矩阵：",
+      "  • R(q) = [[1−2y²−2z², 2xy−2zw, 2xz+2yw], [2xy+2zw, 1−2x²−2z², 2yz−2xw], [2xz−2yw, 2yz+2xw, 1−2x²−2y²]]。",
+      "• 四元数 ← 旋转矩阵。",
+      "  • 因为 tr(R) = 3 − 4(x²+y²+z²) = 4w² − 1（tr(R) 是 R 的迹）。",
+      "  • 可以计算四元数：w = √(tr(R)+1)/2，x = (R₃₂−R₂₃)/(4w)，y = (R₁₃−R₃₁)/(4w)，z = (R₂₁−R₁₂)/(4w)。"
+    ],
+    "translation_html": "<ul><li>旋转矩阵 ← 四元数。<ul><li>由 \\(x' = qxq^{-1}\\)，可以算出旋转矩阵：</li><li>\\[R(q) = \\begin{bmatrix}1-2y^{2}-2z^{2} &amp; 2xy-2zw &amp; 2xz+2yw \\\\ 2xy+2zw &amp; 1-2x^{2}-2z^{2} &amp; 2yz-2xw \\\\ 2xz-2yw &amp; 2yz+2xw &amp; 1-2x^{2}-2y^{2}\\end{bmatrix}\\]。</li></ul></li><li>四元数 ← 旋转矩阵。<ul><li>因为 \\(\\operatorname{tr}(R) = 3 - 4(x^{2}+y^{2}+z^{2}) = 4w^{2} - 1\\)（\\(\\operatorname{tr}(R)\\) 是 R 的迹）。</li><li>可以计算四元数：\\(w = \\frac{\\sqrt{\\operatorname{tr}(R)+1}}{2}\\text{，}x = \\frac{R_{32}-R_{23}}{4w}\\text{，}y = \\frac{R_{13}-R_{31}}{4w}\\text{，}z = \\frac{R_{21}-R_{12}}{4w}\\)。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 3,
+    "page": 26,
+    "title": "四元数之间的距离",
+    "translated_title": "四元数之间的距离",
+    "translation": [
+      "• 四元数 (q₁, q₂) 之间的距离？",
+      "  • S³ 中的距离，或者 (q₁, q₂) 之间的夹角：〈p, q〉 = arccos(p·q)。",
+      "• 相应旋转之间的距离：",
+      "  • dist(p, q) = 2 arccos(|p·q|)（请自行证明）= 2 min{〈p, q〉, 〈p, −q〉}。",
+      "• 旋转 (R₁, R₂) 之间的距离与 q(R₁)、q(R₂) 之间的球面距离成线性关系。"
+    ],
+    "translation_html": "<ul><li>四元数 \\((q_{1}, q_{2})\\) 之间的距离？<ul><li>\\[S^{3}\\) 中的距离，或者 \\((q_{1}, q_{2})\\) 之间的夹角：\\(\\langle p, q\\rangle  = \\arccos(p\\cdot q)\\]。</li></ul></li><li>相应旋转之间的距离：<ul><li>\\[\\operatorname{dist}(p, q) = 2 \\arccos(|p\\cdot q|)\\)（请自行证明）\\(= 2 \\min\\{\\langle p, q\\rangle , \\langle p, -q\\rangle \\}\\]。</li></ul></li><li>旋转 \\((R_{1}, R_{2})\\) 之间的距离与 \\(q(R_{1})\\)、\\(q(R_{2})\\) 之间的球面距离成线性关系。</li></ul>"
+  },
+  {
+    "lecture": 3,
+    "page": 27,
+    "title": "四元数之间的插值",
+    "translated_title": "四元数之间的插值",
+    "translation": [
+      "• 为什么不用线性插值？",
+      "  • 需要归一化。",
+      "  • 旋转速度不恒定。",
+      "((1−α)x + αy)/‖(1−α)x + αy‖。",
+      "幻灯片来源：康奈尔大学 CS4620，2015年秋季。"
+    ],
+    "translation_html": "<ul><li>为什么不用线性插值？<ul><li>需要归一化。</li><li>旋转速度不恒定。</li></ul></li></ul><p>\\[\\frac{(1-\\alpha )x+\\alpha y}{\\lVert(1-\\alpha )x+\\alpha y\\rVert}\\]。</p><p>幻灯片来源：康奈尔大学 CS4620，2015年秋季。</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 28,
+    "title": "球面线性插值",
+    "translated_title": "球面线性插值",
+    "translation": [
+      "对不同朝向进行直观的插值。",
+      "• 可用四元数很好地表示。",
+      "• 对动画和运动规划很有用。",
+      "• 给定两个四元数，在它们之间插值。",
+      "• 球面两点之间的最短路径。",
+      "  • 测地线，位于大圆上。",
+      "幻灯片来源：康奈尔大学 CS4620，2015年秋季。"
+    ],
+    "translation_html": "<p>对不同朝向进行直观的插值。</p><ul><li>可用四元数很好地表示。</li><li>对动画和运动规划很有用。</li><li>给定两个四元数，在它们之间插值。</li><li>球面两点之间的最短路径。<ul><li>测地线，位于大圆上。</li></ul></li></ul><p>幻灯片来源：康奈尔大学 CS4620，2015年秋季。</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 29,
+    "title": "球面线性插值（Slerp）",
+    "translated_title": "球面线性插值（Slerp）",
+    "translation": [
+      "α + β = ψ。",
+      "v(t) = w₀v₀ + w₁v₁。",
+      "sin α/w₁ = sin β/w₀ = sin(π−ψ)/1 = sin ψ。",
+      "w₀ = sin β/sin ψ；w₁ = sin α/sin ψ；ψ = cos⁻¹(v₀·v₁)。",
+      "图中标记：v₀、v₁、v(t)、w₀、w₁、α、β、π−ψ。",
+      "幻灯片来源：康奈尔大学 CS4620，2015年秋季。"
+    ],
+    "translation_html": "<p>\\[\\alpha  + \\beta  = \\psi\\]。</p><p>\\[v(t) = w_{0}v_{0} + w_{1}v_{1}\\]。</p><p>\\[\\frac{\\sin \\alpha }{w_{1}} = \\frac{\\sin \\beta }{w_{0}} = \\frac{\\sin(\\pi -\\psi )}{1} = \\sin \\psi\\]。</p><p>\\[w_{0} = \\frac{\\sin \\beta }{\\sin \\psi }\\text{；}w_{1} = \\frac{\\sin \\alpha }{\\sin \\psi }\\text{；}\\psi  = \\cos^{-1}(v_{0}\\cdot v_{1})\\]。</p><p>图中标记：\\(v_{0}\\)、\\(v_{1}\\)、v(t)、\\(w_{0}\\)、\\(w_{1}\\)、\\(\\alpha\\)、\\(\\beta\\)、\\(\\pi -\\psi\\)。</p><p>幻灯片来源：康奈尔大学 CS4620，2015年秋季。</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 30,
+    "title": "四元数插值",
+    "translated_title": "四元数插值",
+    "translation": [
+      "• 球面线性插值（SLERP）天然适用于任意维度。",
+      "• 沿单位四元数球面上的大圆弧运动。",
+      "  • 绕固定轴以恒定角速度旋转。",
+      "ψ = cos⁻¹(q₀·q₁)，q(t) = (q₀ sin((1−t)ψ) + q₁ sin(tψ))/sin ψ。",
+      "幻灯片来源：康奈尔大学 CS4620，2015年秋季。"
+    ],
+    "translation_html": "<ul><li>球面线性插值（SLERP）天然适用于任意维度。</li><li>沿单位四元数球面上的大圆弧运动。<ul><li>绕固定轴以恒定角速度旋转。</li></ul></li></ul><p>\\[\\psi  = \\cos^{-1}(q_{0}\\cdot q_{1})\\text{，}q(t) = \\frac{q_{0}\\sin((1-t)\\psi )+q_{1}\\sin(t\\psi )}{\\sin \\psi }\\]。</p><p>幻灯片来源：康奈尔大学 CS4620，2015年秋季。</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 31,
+    "title": "实际问题",
+    "translated_title": "实际问题",
+    "translation": [
+      "• 当 q₁ 与 q₂ 的夹角接近零时，使用小角近似。",
+      "  • 退化为线性插值。",
+      "• 当夹角接近180度时，不存在最短测地线，但可以选择一条。",
+      "• q 与 −q 表示同一个旋转。",
+      "  • 如果 q₁、q₂ 夹角 < π/2，则在两者之间做 Slerp；",
+      "  • 否则，在 q₁、q₂ 之间做 Slerp。",
+      "幻灯片来源：康奈尔大学 CS4620，2015年秋季。"
+    ],
+    "translation_html": "<ul><li>当 \\(q_{1}\\) 与 \\(q_{2}\\) 的夹角接近零时，使用小角近似。<ul><li>退化为线性插值。</li></ul></li><li>当夹角接近180度时，不存在最短测地线，但可以选择一条。</li><li>q 与 −q 表示同一个旋转。<ul><li>如果 \\(q_{1}\\)、\\(q_{2}\\) 夹角 \\(&lt; \\frac{\\pi}{2}\\)，则在两者之间做 Slerp；</li><li>否则，在 \\(q_{1}\\)、\\(q_{2}\\) 之间做 Slerp。</li></ul></li></ul><p>幻灯片来源：康奈尔大学 CS4620，2015年秋季。</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 32,
+    "title": "在 SO(3) 中均匀采样",
+    "translated_title": "在 SO(3) 中均匀采样",
+    "translation": [
+      "• 从 SO(3) 中均匀采样一个旋转，等价于从 S(3) 中均匀采样一个单位四元数。",
+      "  • 为什么？因为两个旋转之间的距离与相应两个四元数的球面距离成线性关系。",
+      "• 如何均匀采样 S(3)？",
+      "  • 最简单的方法是从 N(0, I₄ₓ₄) 中随机采样一个变量，然后将其归一化为单位长度。",
+      "    • 为什么？因为标准正态分布具有各向同性。",
+      "  • 如果需要，再将这个四元数转换为旋转。",
+      "解析解还可参考：https://niepp.github.io/2021/12/09/uniform-sampling-on-sphere.html 。"
+    ],
+    "translation_html": "<ul><li>从 \\(\\mathrm{SO}(3)\\) 中均匀采样一个旋转，等价于从 \\(S(3)\\) 中均匀采样一个单位四元数。<ul><li>为什么？因为两个旋转之间的距离与相应两个四元数的球面距离成线性关系。</li></ul></li><li>如何均匀采样 \\(S(3)\\)？<ul><li>最简单的方法是从 \\(N(0, I_{4\\times 4})\\) 中随机采样一个变量，然后将其归一化为单位长度。<ul><li>为什么？因为标准正态分布具有各向同性。</li></ul></li><li>如果需要，再将这个四元数转换为旋转。</li></ul></li></ul><p>解析解还可参考：https://niepp.github.io/2021/12/09/uniform-sampling-on-sphere.html 。</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 33,
+    "title": "资源",
+    "translated_title": "资源",
+    "translation": [
+      "• 在 Python 中，可以使用 transforms3d 库。",
+      "• 对于可微变换，可以尝试 Kornia，但使用时要注意它的数值性质。",
+      "• Ceres 是一个相当有用的 C++ 库。"
+    ],
+    "translation_html": "<ul><li>在 Python 中，可以使用 transforms3d 库。</li><li>对于可微变换，可以尝试 Kornia，但使用时要注意它的数值性质。</li><li>Ceres 是一个相当有用的 \\(C++\\) 库。</li></ul>"
+  },
+  {
+    "lecture": 3,
+    "page": 34,
+    "title": "为什么使用四元数？",
+    "translated_title": "为什么使用四元数？",
+    "translation": [
+      "• 在实践中非常有用，而且应用广泛。",
+      "  • 速度快，运算少，没有冗余（四维紧凑参数化，计算高效）。",
+      "  • 对增量变化具有数值稳定性。",
+      "  • 能很好地复合旋转。",
+      "• 最后再转换为矩阵。"
+    ],
+    "translation_html": "<ul><li>在实践中非常有用，而且应用广泛。<ul><li>速度快，运算少，没有冗余（四维紧凑参数化，计算高效）。</li><li>对增量变化具有数值稳定性。</li><li>能很好地复合旋转。</li></ul></li><li>最后再转换为矩阵。</li></ul>"
+  },
+  {
+    "lecture": 3,
+    "page": 35,
+    "title": "旋转表示总结",
+    "translated_title": "旋转表示总结",
+    "translation": [
+      "表头：求逆？复合？SO(3) 中任意局部移动能否由参数域中的局部移动实现？",
+      "旋转矩阵：✓；✓；不适用。",
+      "欧拉角：复杂；复杂；不能。",
+      "轴角：✓；复杂；？。",
+      "四元数：✓；✓；✓。",
+      "“？”表示没有奇异性，但存在个别例外。"
+    ],
+    "translation_html": "<div class=\"table-wrap\"><table><thead><tr><th>表示</th><th>求逆？</th><th>复合？</th><th>\\(\\mathrm{SO}(3)\\) 中任意局部移动能否由参数域中的局部移动实现？</th></tr></thead><tbody><tr><td>旋转矩阵</td><td>✓</td><td>✓</td><td>不适用</td></tr><tr><td>欧拉角</td><td>复杂</td><td>复杂</td><td>不能</td></tr><tr><td>轴角</td><td>✓</td><td>复杂</td><td>？</td></tr><tr><td>四元数</td><td>✓</td><td>✓</td><td>✓</td></tr></tbody></table></div><p>“？”表示没有奇异性，但存在个别例外。</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 36,
+    "title": "旋转表示总结",
+    "translated_title": "旋转表示总结",
+    "translation": [
+      "• 我们经常使用：",
+      "  • 旋转矩阵来定义概念。",
+      "  • 欧拉角来直观表示旋转。",
+      "  • 轴角表示来直观表示旋转并计算导数。",
+      "  • 四元数来编写运行速度快的代码。",
+      "若要进一步了解学习任务中的旋转表示，可参考 CVPR 2019 论文《旋转表示的连续性》（On the Continuity of Rotation Representations），以及本实验室近期的 TPAMI 论文《通过旋转拉普拉斯分布实现 SO(3) 上的稳健概率建模》（Towards Robust Probabilistic Modeling on SO(3) via Rotation Laplace Distribution）。"
+    ],
+    "translation_html": "<ul><li>我们经常使用：<ul><li>旋转矩阵来定义概念。</li><li>欧拉角来直观表示旋转。</li><li>轴角表示来直观表示旋转并计算导数。</li><li>四元数来编写运行速度快的代码。</li></ul></li></ul><p>若要进一步了解学习任务中的旋转表示，可参考 CVPR 2019 论文《旋转表示的连续性》（On the Continuity of Rotation Representations），以及本实验室近期的 TPAMI 论文《通过旋转拉普拉斯分布实现 \\(\\mathrm{SO}(3)\\) 上的稳健概率建模》（\\(Towards Robust Probabilistic Modeling on \\mathrm{SO}(3) via Rotation Laplace Distribution\\)）。</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 37,
+    "title": "旋转表示总结",
+    "translated_title": "旋转表示总结",
+    "translation": [
+      "• 我们经常使用：",
+      "  • 旋转矩阵来定义概念。",
+      "  • 欧拉角来直观表示旋转。",
+      "  • 轴角表示来直观表示旋转并计算导数。",
+      "  • 四元数来编写运行速度快的代码。"
+    ],
+    "translation_html": "<ul><li>我们经常使用：<ul><li>旋转矩阵来定义概念。</li><li>欧拉角来直观表示旋转。</li><li>轴角表示来直观表示旋转并计算导数。</li><li>四元数来编写运行速度快的代码。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 3,
+    "page": 38,
+    "title": "运动规划",
+    "translated_title": "运动规划",
+    "translation": [],
+    "translation_html": ""
+  },
+  {
+    "lecture": 3,
+    "page": 39,
+    "title": "配置空间",
+    "translated_title": "配置空间",
+    "translation": [
+      "• 配置空间（C 空间）是 ℝⁿ 的一个子集，包含系统的所有可能状态（强化学习中的状态空间）。",
+      "• C_free ⊆ C 包含所有有效状态。",
+      "• C_obs ⊆ C 表示障碍物。",
+      "• 例子：",
+      "  • 机器人的所有有效位姿。",
+      "  • 机器人的所有有效关节取值。",
+      "  • ……"
+    ],
+    "translation_html": "<ul><li>配置空间（C 空间）是 \\(\\mathbb{R}^{n}\\) 的一个子集，包含系统的所有可能状态（强化学习中的状态空间）。</li><li>\\(C_{\\mathrm{free}} \\subseteq  C\\) 包含所有有效状态。</li><li>\\(C_{\\mathrm{obs}} \\subseteq  C\\) 表示障碍物。</li><li>例子：<ul><li>机器人的所有有效位姿。</li><li>机器人的所有有效关节取值。</li><li>……</li></ul></li></ul>"
+  },
+  {
+    "lecture": 3,
+    "page": 40,
+    "title": "例子",
+    "translated_title": "例子",
+    "translation": [
+      "• Ratliff N、Zucker M、Bagnell J A 等：《CHOMP：高效运动规划的梯度优化技术》（CHOMP: Gradient optimization techniques for efficient motion planning），ICRA 2009。",
+      "• Schulman, John 等：《使用序列凸优化寻找局部最优的无碰撞轨迹》（Finding Locally Optimal, Collision-Free Trajectories with Sequential Convex Optimization），RSS 2013。"
+    ],
+    "translation_html": "<ul><li>Ratliff N、Zucker M、Bagnell J A 等：《CHOMP：高效运动规划的梯度优化技术》（CHOMP: Gradient optimization techniques for efficient motion planning），ICRA 2009。</li><li>Schulman, John 等：《使用序列凸优化寻找局部最优的无碰撞轨迹》（Finding Locally Optimal, Collision-Free Trajectories with Sequential Convex Optimization），RSS 2013。</li></ul>"
+  },
+  {
+    "lecture": 3,
+    "page": 41,
+    "title": "运动规划",
+    "translated_title": "运动规划",
+    "translation": [
+      "• 问题：",
+      "  • 给定配置空间 C_free。",
+      "  • 给定 C_free 中的起始状态 q_start 和目标状态 q_goal。",
+      "  • 计算从起始状态到目标状态的一系列动作。",
+      "• 挑战：",
+      "  • 需要避开障碍物。",
+      "  • 规划时域长。",
+      "  • 规划空间维度高。"
+    ],
+    "translation_html": "<ul><li>问题：<ul><li>给定配置空间 \\(C_{\\mathrm{free}}\\)。</li><li>给定 \\(C_{\\mathrm{free}}\\) 中的起始状态 \\(q_{\\mathrm{start}}\\) 和目标状态 \\(q_{\\mathrm{goal}}\\)。</li><li>计算从起始状态到目标状态的一系列动作。</li></ul></li><li>挑战：<ul><li>需要避开障碍物。</li><li>规划时域长。</li><li>规划空间维度高。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 3,
+    "page": 42,
+    "title": "运动规划",
+    "translated_title": "运动规划",
+    "translation": [
+      "图4.11：使用 C 空间的思想，基本运动规划问题在概念上非常简单。任务是在 C_free 中寻找从 q_I 到 q_G 的路径。整个区域表示 C = C_free ∪ C_obs。",
+      "图中标记：C_free 为自由配置空间；C_obs 为障碍配置空间；q_I 为起始配置；q_G 为目标配置。"
+    ],
+    "translation_html": "<p>图4.11：使用 C 空间的思想，基本运动规划问题在概念上非常简单。任务是在 \\(C_{\\mathrm{free}}\\) 中寻找从 \\(q_I\\) 到 \\(q_G\\) 的路径。整个区域表示 \\(C = C_{\\mathrm{free}} \\cup  C_{\\mathrm{obs}}\\)。</p><p>图中标记：\\(C_{\\mathrm{free}}\\) 为自由配置空间；\\(C_{\\mathrm{obs}}\\) 为障碍配置空间；\\(q_I\\) 为起始配置；\\(q_G\\) 为目标配置。</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 43,
+    "title": "机器人的碰撞建模",
+    "translated_title": "机器人的碰撞建模",
+    "translation": [
+      "• 各连杆的碰撞网格在 URDF 中定义。",
+      "• 利用正向运动学，根据 q 得到机器人的碰撞网格。",
+      "• 运行碰撞检测，判断 q 是否属于 C_free。",
+      "cuRobo 中的机器人表示。"
+    ],
+    "translation_html": "<ul><li>各连杆的碰撞网格在 URDF 中定义。</li><li>利用正向运动学，根据 q 得到机器人的碰撞网格。</li><li>运行碰撞检测，判断 q 是否属于 \\(C_{\\mathrm{free}}\\)。</li></ul><p>cuRobo 中的机器人表示。</p>"
+  },
+  {
+    "lecture": 3,
+    "page": 44,
+    "title": "机器人视觉与学习——从具身智能的视角出发",
+    "translated_title": "机器人视觉与学习——从具身智能的视角出发",
+    "translation": [
+      "下周：第4讲，机器人学 III。",
+      "北京大学（1898年）",
+      "具身感知与交互实验室（EPIC）",
+      "2025年秋季"
+    ],
+    "translation_html": "<p>下周：第4讲，机器人学 III。</p><p>北京大学（1898年）</p><p>具身感知与交互实验室（EPIC）</p><p>2025年秋季</p>"
+  }
+]

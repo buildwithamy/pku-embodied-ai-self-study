@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第 3 章 机器人学 II：四元数与运动规划入门</title>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script async="" src="../vendor/mathjax/tex-svg.js"></script>
+<style>
+:root {
+  --ink: #1c2430;
+  --ink-soft: #4a5568;
+  --accent: #2563eb;
+  --accent-soft: #eef4ff;
+  --bg: #faf9f6;
+  --card: #ffffff;
+  --line: #e5e2db;
+  --green-bg: #f0f9f1;
+  --green-bd: #7cc98c;
+  --yellow-bg: #fffbeb;
+  --yellow-bd: #e8c766;
+  --red-bg: #fdf1f1;
+  --red-bd: #e8a1a1;
+  --update-bg: #fffaeb;
+  --update-bd: #e8a23d;
+  --update-ink: #8a4b08;
+  --code-bg: #101826;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-size: 16.5px;
+  line-height: 1.85;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.hero {
+  background: linear-gradient(135deg, #0e2a4a 0%, #15406e 55%, #1c5a94 100%);
+  color: #fff;
+  padding: 72px 24px 56px;
+  text-align: center;
+}
+.hero .course-tag {
+  display: inline-block;
+  font-size: 13px;
+  letter-spacing: 2px;
+  border: 1px solid rgba(255,255,255,.4);
+  border-radius: 999px;
+  padding: 4px 16px;
+  margin-bottom: 22px;
+  opacity: .9;
+}
+.hero h1 {
+  margin: 0 auto 14px;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  max-width: 760px;
+  line-height: 1.5;
+}
+.hero .sub {
+  font-size: 15.5px;
+  opacity: .82;
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+.hero .meta {
+  margin-top: 26px;
+  font-size: 13px;
+  opacity: .7;
+}
+.hero .ver-note {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 12.5px;
+  border: 1px dashed rgba(255,210,120,.7);
+  color: #ffd27a;
+  border-radius: 999px;
+  padding: 3px 14px;
+}
+.badge-2026 {
+  display: inline-block;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 2px 9px;
+  letter-spacing: .5px;
+  vertical-align: 2px;
+  margin-right: 6px;
+  box-shadow: 0 1px 4px rgba(217,119,6,.35);
+}
+.update-box {
+  margin: 18px 0;
+  padding: 14px 20px 12px;
+  border: 2px solid var(--update-bd);
+  background: var(--update-bg);
+  border-radius: 10px;
+  font-size: 15.5px;
+  box-shadow: 0 2px 8px rgba(232,162,61,.12);
+}
+.update-box .bt { color: var(--update-ink); font-weight: 700; display: block; margin-bottom: 4px; }
+.update-box p { margin: 5px 0; }
+.update-box ul { margin: 4px 0 4px; }
+.update-box li { margin: 3px 0; }
+.up-text {
+  background: #fef3c7;
+  border-bottom: 2px solid #f59e0b;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+.goals {
+  max-width: 880px;
+  margin: -28px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 28px;
+  box-shadow: 0 6px 24px rgba(16, 42, 74, .08);
+  position: relative;
+}
+.goals h2 { margin: 0 0 10px; font-size: 17px; color: var(--accent); }
+.goals ul { margin: 0; padding-left: 20px; }
+.goals li { margin: 4px 0; font-size: 15px; color: var(--ink-soft); }
+.goals li b { color: var(--ink); }
+.about {
+  max-width: 880px;
+  margin: 36px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px 34px;
+  box-shadow: 0 4px 16px rgba(16, 42, 74, .06);
+}
+.about h2 {
+  margin: 0 0 14px;
+  font-size: 20px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.about h3 { margin: 20px 0 8px; font-size: 16.5px; color: var(--accent); }
+.about p, .about li { font-size: 15px; color: var(--ink-soft); }
+.about .src-badge {
+  display: inline-block;
+  background: #eef4ff;
+  border: 1px solid #b9d0f8;
+  color: #2456b8;
+  font-size: 13px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin: 2px 4px 2px 0;
+}
+.about .license-note {
+  margin: 18px 0 0;
+  padding: 14px 18px;
+  background: var(--red-bg);
+  border: 1px solid var(--red-bd);
+  border-radius: 10px;
+  font-size: 14.5px;
+  line-height: 1.8;
+}
+.about .license-note b { color: #b04848; }
+.layout {
+  display: flex;
+  max-width: 1240px;
+  margin: 40px auto 80px;
+  padding: 0 24px;
+  gap: 36px;
+  align-items: flex-start;
+}
+.toc {
+  position: sticky;
+  top: 24px;
+  width: 240px;
+  flex-shrink: 0;
+  font-size: 13.5px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+}
+.toc .toc-title { font-weight: 700; color: var(--ink-soft); margin-bottom: 8px; letter-spacing: 1px; }
+.toc a {
+  display: block;
+  color: var(--ink-soft);
+  padding: 4px 10px;
+  border-left: 2px solid var(--line);
+  margin: 1px 0;
+  line-height: 1.5;
+}
+.toc a:hover { color: var(--accent); border-left-color: var(--accent); text-decoration: none; background: var(--accent-soft); border-radius: 0 6px 6px 0; }
+main { flex: 1; min-width: 0; }
+section { margin-bottom: 56px; }
+h2.sec {
+  font-size: 25px;
+  margin: 0 0 6px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--ink);
+  letter-spacing: .5px;
+}
+h2.sec .no {
+  display: inline-block;
+  background: var(--ink);
+  color: #fff;
+  font-size: 15px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin-right: 10px;
+  vertical-align: 3px;
+}
+h3 { font-size: 19px; margin: 34px 0 10px; }
+h4 { font-size: 16.5px; margin: 26px 0 8px; }
+p { margin: 10px 0; }
+strong { color: #0f2c4c; }
+em.term {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--accent);
+  border-bottom: 1px dashed var(--accent);
+  cursor: help;
+}
+ul, ol { padding-left: 26px; }
+li { margin: 5px 0; }
+code {
+  background: #eef1f5;
+  border: 1px solid #e0e5ec;
+  border-radius: 5px;
+  padding: 1px 6px;
+  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: 14.5px;
+  color: #0d3d75;
+}
+blockquote {
+  margin: 16px 0;
+  padding: 12px 20px;
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  color: var(--ink-soft);
+  font-size: 15.5px;
+}
+blockquote p { margin: 4px 0; }
+figure { margin: 22px 0; text-align: center; }
+figure img {
+  max-width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 18px rgba(16, 42, 74, .10);
+  background: #fff;
+}
+figcaption {
+  font-size: 13.5px;
+  color: #7a8290;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+figcaption .src { opacity: .75; font-size: 12.5px; }
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+.gallery figure { margin: 0; }
+.gallery img { width: 100%; }
+.gallery figcaption { font-size: 12.5px; margin-top: 6px; }
+.box {
+  margin: 18px 0;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 15.5px;
+}
+.box .bt { font-weight: 700; display: block; margin-bottom: 4px; }
+.box.green { background: var(--green-bg); border: 1px solid var(--green-bd); }
+.box.green .bt { color: #2e7d43; }
+.box.yellow { background: var(--yellow-bg); border: 1px solid var(--yellow-bd); }
+.box.yellow .bt { color: #9a7414; }
+.box.red { background: var(--red-bg); border: 1px solid var(--red-bd); }
+.box.red .bt { color: #b04848; }
+.box.blue { background: var(--accent-soft); border: 1px solid #a9c3f5; }
+.box.blue .bt { color: #2456b8; }
+.box p { margin: 4px 0; }
+.box ul { margin: 4px 0 4px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 18px 0;
+  font-size: 15px;
+  background: var(--card);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+th {
+  background: #17335c;
+  color: #fff;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 14.5px;
+}
+td { padding: 9px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+tr:nth-child(even) td { background: #f7f6f2; }
+.page-index { font-size: 13.5px; }
+.page-index th { font-size: 13.5px; padding: 8px 10px; }
+.page-index td { padding: 6px 10px; line-height: 1.6; }
+.page-index td.pg { font-family: Consolas, monospace; font-weight: 700; white-space: nowrap; color: var(--accent); }
+pre {
+  background: var(--code-bg);
+  color: #e6edf6;
+  border-radius: 10px;
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-size: 13.8px;
+  line-height: 1.65;
+  margin: 16px 0;
+}
+pre code {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+pre .cm { color: #7d8aa0; }
+pre .kw { color: #7fb3ff; }
+pre .st { color: #a5d6a7; }
+pre .fn { color: #ffd479; }
+.term-table td:first-child { font-weight: 700; white-space: nowrap; }
+footer {
+  max-width: 880px;
+  margin: 0 auto 60px;
+  padding: 20px 28px;
+  border-top: 1px solid var(--line);
+  font-size: 12.8px;
+  color: #8a91a0;
+  line-height: 1.8;
+}
+@media (max-width: 960px) {
+  .toc { display: none; }
+  .hero h1 { font-size: 26px; }
+  .layout { padding: 0 16px; }
+  .gallery { grid-template-columns: 1fr; }
+}
+/* 2026-10-04: offline chapters and bounded content scrolling */
+.layout, main, section { min-width:0; }
+main { max-width:100%; }
+img, video { max-width:100%; height:auto; }
+p, li, td, th, a { overflow-wrap:anywhere; }
+.table-scroll { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; margin:18px 0; }
+.table-scroll table { margin:0; min-width:640px; }
+pre { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; }
+mjx-container[display="true"] { max-width:100%; overflow-x:auto; overflow-y:hidden; padding:6px 0; text-align:left !important; }
+mjx-container:not([display="true"]) { display:inline-block; max-width:100%; vertical-align:middle; overflow-x:auto; overflow-y:hidden; }
+.mobile-toc { display:none; }
+.chapter-nav { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; }
+@media(max-width:960px) {
+  .layout { flex-direction:column; gap:16px; }
+  main { width:100%; }
+  .mobile-toc { display:block; width:100%; margin:0; padding:12px 16px; background:var(--card); border:1px solid var(--line); border-radius:10px; }
+  .mobile-toc summary { cursor:pointer; font-weight:700; }
+  .mobile-toc a { display:block; padding:4px 0; }
+}
+</style>
+<link href="../shared.css" rel="stylesheet"/></head>
+<body><nav class="reader-nav"><a class="brand" href="../index.html">北京大学《具身智能导论》自学教程</a><a href="../学习与运行说明.html">学习指南</a><a href="课件中文译解.html">本章课件翻译</a><a href="../术语与符号.html">术语与符号</a><a href="../来源与许可.html">来源</a></nav><nav aria-label="章节导航" class="book-nav"><a href="../index.html">教程目录</a><a href="课件中文译解.html">原课件逐页中文翻译</a><a href="../sources/lecture03.pdf">完整原课件PDF</a></nav>
+<div class="hero">
+<span class="course-tag">具身智能自学教程 · 第 3 章</span>
+<h1>机器人学 II：四元数与运动规划入门</h1>
+<p class="sub">本章学习四元数的定义与运算，理解它如何表示旋转、怎样与矩阵和轴角互转，以及如何用于姿态插值。章末用配置空间引入运动规划。</p>
+<p class="meta">改编自北京大学《具身智能导论》(Introduction to Embodied AI) 2025 春季课程 · 授课：王鹤 老师</p>
+<div class="chapter-toolbar" id="chapter-resources"><a href="课件中文译解.html">英文原课件与逐页中文翻译 →</a><a href="../技术动态_20261004.html">本章相关技术进展 →</a><a href="../术语与符号.html">英文缩写与符号速查 →</a></div></div>
+<div class="goals">
+<h2>🎯 本章学习目标</h2>
+<ul>
+<li>理解<b>四元数</b>的来历：从复数推广到 $i^2=j^2=k^2=ijk=-1$ 的「四维数」</li>
+<li>掌握四元数运算：Hamilton乘积（向量形式）、共轭、模长、逆，以及「乘法不可交换」这个关键事实</li>
+<li>掌握<b>单位四元数表示旋转</b>：$q=[\cos\frac{\theta}{2}, \sin\frac{\theta}{2}\hat{\omega}]$ 与双重覆盖现象</li>
+<li>能推导 $x' = qxq^{-1}$ 与罗德里格斯公式的<b>等价性</b>，并完成四元数 ↔ 旋转矩阵互转</li>
+<li>理解 <b>Lerp → Nlerp → Slerp</b> 各自解决的问题，会用球面均匀采样生成随机旋转</li>
+<li>建立<b>运动规划</b>的第一印象：配置空间、自由空间与问题定义</li>
+<li>动手实践：把第 1 章作业 1 的四元数函数与本章公式一一对上，并新增两个自测练习</li>
+</ul>
+</div>
+<div class="about" id="about"><h2>来源与学习说明</h2><p>本章依据北京大学2025年春季《具身智能导论》（Introduction to Embodied AI）课程资料整理，授课教师为王鹤。核心知识来自第3讲原课件、对应课堂笔记和课程作业。讲解以概念、直观例子、公式和练习连接成自学路径。</p><p><a href="https://pku-epic.github.io/Intro2EAI_2025/">课程官网</a> · <a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU">原始资料仓库</a> · <a href="../sources/lecture03.pdf">本地原课件</a> · <a href="课件中文译解.html">逐页中文翻译</a></p><p>原图保留来源与页码，图下中文解释帮助阅读原图；教学例子与工程说明是为自学补充的学习材料，与原课件内容分别标明。现代研究背景见<a href="../技术动态_20261004.html">技术动态与延伸阅读</a>。</p><div class="license-note"><b>来源与许可</b><p>原资料版权归课程组、笔记作者及各项素材的权利人。源仓库的<a href="../LICENSE.source">GPL-3.0许可证副本</a>随教程保留；第三方图、论文和媒体按各自授权使用。本教程是个人自学改编材料。</p></div></div>
+<div class="layout">
+<nav class="toc">
+<div class="toc-title">本章目录</div>
+<a href="#about">关于本教程（来源 · 声明）</a>
+<a href="#s1">1. 为什么还需要一种新表示？</a>
+<a href="#s2">2. 四元数：复数的四维表亲</a>
+<a href="#s3">3. 四元数运算：Hamilton乘积（向量形式）</a>
+<a href="#s4">4. 单位四元数与旋转</a>
+<a href="#s5">5. 向量旋转：x′ = qxq⁻¹</a>
+<a href="#s6">6. 四元数与旋转矩阵互转</a>
+<a href="#s7">7. 四元数的距离</a>
+<a href="#s8">8. 四元数插值：从 Lerp 到 Slerp</a>
+<a href="#s9">9. 球面均匀采样</a>
+<a href="#s10">10. 表示对比与工程约定</a>
+<a href="#s11">11. 运动规划入门：配置空间</a>
+<a href="#s12">12. 本章小结</a>
+<a href="#s13">13. 动手实践</a>
+<a href="#apA">附录 A：术语表</a>
+<a href="#apB">附录 B：课件 44 页完整索引</a>
+<a href="#apC">附录 C：参考资源</a>
+</nav>
+<details class="mobile-toc"><summary>本章目录</summary><a href="#about">关于本教程（来源 · 声明）</a><a href="#s1">1. 为什么还需要一种新表示？</a><a href="#s2">2. 四元数：复数的四维表亲</a><a href="#s3">3. 四元数运算：Hamilton乘积（向量形式）</a><a href="#s4">4. 单位四元数与旋转</a><a href="#s5">5. 向量旋转：x′ = qxq⁻¹</a><a href="#s6">6. 四元数与旋转矩阵互转</a><a href="#s7">7. 四元数的距离</a><a href="#s8">8. 四元数插值：从 Lerp 到 Slerp</a><a href="#s9">9. 球面均匀采样</a><a href="#s10">10. 表示对比与工程约定</a><a href="#s11">11. 运动规划入门：配置空间</a><a href="#s12">12. 本章小结</a><a href="#s13">13. 动手实践</a><a href="#apA">附录 A：术语表</a><a href="#apB">附录 B：课件 44 页完整索引</a><a href="#apC">附录 C：参考资源</a></details>
+<main>
+<section id="s1">
+<h2 class="sec"><span class="no">1</span>为什么还需要一种新表示？</h2>
+<p>第2章学习了旋转矩阵、欧拉角和轴角。先回顾它们在存储、运算与边界条件上的特点，再理解四元数的用途（课件 p3-12）：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>表示</th><th>参数个数</th><th>主要问题</th></tr>
+<tr><td><b>旋转矩阵</b></td><td>9（冗余 6 个）</td><td>效率低：3 个自由度却要 9 个数；数值稳定性：需要一直保持正交性，误差会累积</td></tr>
+<tr><td><b>欧拉角</b></td><td>3</td><td>万向锁（第 2 章推导过）；组合与求逆都复杂</td></tr>
+<tr><td><b>轴角</b></td><td>3-4</td><td>组合复杂；边界情况（θ=0、θ=π）不唯一</td></tr>
+</table></div></div>
+<p>单位四元数提供紧凑且便于求逆、复合与插值的表示，局部没有欧拉角的万向锁。它仍有单位模长约束和$q/-q$双重覆盖，使用时要处理符号与接口约定。</p>
+</section>
+<section id="s2">
+<h2 class="sec"><span class="no">2</span>四元数：复数的四维表亲</h2><div class="box blue"><span class="bt">本章计算约定</span><p>本章使用Hamilton乘法、实部在前的$(w,x,y,z)$顺序、右手正向与列向量主动旋转。单位四元数$q$的旋转作用为$q(0,\mathbf v)q^*$。先执行$q_1$再执行$q_2$，组合是$q_2q_1$。所有角度用弧度。</p></div>
+<p>先回忆复数：$a + bi$，其中 $i^2 = -1$。1843年，哈密顿（Hamilton）提出四元数，将复数的思路推广到四维：<b>从二维复数推广到四维四元数</b>——</p>
+<blockquote>
+<p><b>四元数（Quaternion）</b>定义为：$q = w + xi + yj + zk$，其中虚数单位满足：<br/>
+    $$ i^2 = j^2 = k^2 = ijk = -1 $$
+    以及<b>反交换</b>性质：$ij = k = -ji,\quad jk = i = -kj,\quad ki = j = -ik$。</p>
+</blockquote>
+<p>三个虚数单位的关系可以用一个转盘记忆：$i \to j \to k \to i$ 顺时针乘是正的，逆时针乘是负的。</p>
+<div class="box green">
+<span class="bt">💡 直觉：为什么「反交换」会出现？</span>
+<p>四元数乘法中的叉积项使一般乘法不可交换，这与三维旋转组合通常依赖先后顺序相吻合。例如先绕X再绕Y，通常与先绕Y再绕X得到不同朝向。虚数单位$i$本身若用于$qvq^*$表示的是绕X轴半圈，复平面中的90°类比与这里的三维旋转角应分别理解。</p>
+</div>
+<p>常用<b>向量形式</b>书写：$q = (w, \mathbf{v})$，$\mathbf{v} = (x, y, z)$——实部 $w$ 加一个三维向量部分。</p>
+</section>
+<section id="s3">
+<h2 class="sec"><span class="no">3</span>四元数运算：Hamilton乘积（向量形式）</h2>
+<p>四元数核心运算是乘法，通常称Hamilton乘积。课件p15给出其点积与叉积形式：</p>
+<p style="text-align:center">$$ q_1 q_2 = (w_1 w_2 - \mathbf{v}_1^{\top} \mathbf{v}_2,\; w_1 \mathbf{v}_2 + w_2 \mathbf{v}_1 + \mathbf{v}_1 \times \mathbf{v}_2) $$</p>
+<p>按实部和虚部分开看：<b>实部 = 两个实部相乘减点积；虚部 = 两个实部互乘向量部分加叉积</b>。注意由于叉积的存在，$q_1 q_2 \neq q_2 q_1$——四元数乘法<b>不可交换</b>。</p>
+<p>其余运算与复数完全平行：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>运算</th><th>定义</th><th>说明</th></tr>
+<tr><td><b>共轭</b></td><td>$q^* = (w, -\mathbf{v})$</td><td>虚部取反，与复数一致</td></tr>
+<tr><td><b>模长</b></td><td>$\|q\|^2 = w^2 + \mathbf{v}^\top \mathbf{v} = qq^* = q^*q$</td><td>「长度」的平方</td></tr>
+<tr><td><b>逆</b></td><td>$q^{-1} = \dfrac{q^*}{\|q\|^2}$</td><td>模长公式的直接推论</td></tr>
+</table></div></div>
+<p>其中模长公式的写法 $qq^* = q^*q$ 说明了一个具体性质：虽然乘法不可交换，但 $q$ 和自己的共轭是可交换的。</p>
+</section>
+<section id="s4">
+<h2 class="sec"><span class="no">4</span>单位四元数与旋转</h2>
+<p>先认识两个特殊子类（笔记定义）：</p>
+<ul>
+<li><b>单位四元数</b>：$\|q\| = 1$。可表示三维旋转，且有 $q^{-1} = q^*$；</li>
+<li><b>纯四元数</b>：$w = 0$，即 $q = (0, \mathbf{v})$。可表示三维向量。</li>
+</ul>
+<h3>4.1 从轴角到四元数：用半角编码旋转</h3>
+<p>回忆第 2 章的欧拉定理：任意旋转 = 绕单位轴 $\hat{\omega}$ 转 $\theta$。把这个 $(\hat{\omega}, \theta)$ 打包进四元数（课件 p17）：</p>
+<p style="text-align:center">$$ q = \left[\cos\frac{\theta}{2},\ \sin\frac{\theta}{2}\,\hat{\omega}\right] $$</p>
+<p>旋转向量用轴与角描述同一个旋转；四元数则把半角的余弦存为实部、半角的正弦乘单位轴存为虚部。这给出与旋转向量不同的旋转编码。反向关系为：</p>
+<p style="text-align:center">$$ \theta = 2\arccos(w), \qquad \hat{\omega} = \frac{\mathbf{v}}{\sin(\theta/2)} \quad (|\sin(\theta/2)| &gt; 0) $$</p><p>直接用$2\arccos(w)$得到的角可落在$[0,2\pi]$。若需要最短旋转角$[0,\pi]$，先在$q$与$-q$中选择$w\ge0$的表示；转角为$\pi$时正反轴都可表示同一旋转。$d_{S^3}$表示球面距离，区别于常见的内积记号。</p><p>若 $q=(1,0,0,0)$ 或 $q=(-1,0,0,0)$，都表示恒等旋转：约定 $\theta=0$，轴可任选单位向量，例如 $(1,0,0)$。非零角时先归一化四元数，并将 $w$ 截到 $[-1,1]$ 以避免浮点误差。</p>
+<h3>4.2 双重覆盖：一个旋转，两个四元数</h3>
+<p>四元数与旋转不是一一对应，而是<b>二对一</b>——这就是「双重覆盖（double-covering）」：</p>
+<p style="text-align:center">$$-q=\left[-\cos\frac{\theta}{2},-\sin\frac{\theta}{2}\hat\omega\right]=\left[\cos\left(\pi-\frac{\theta}{2}\right),\sin\left(\pi-\frac{\theta}{2}\right)(-\hat\omega)\right]$$</p>
+<p>即：$q$ 与 $-q$ 表示同一个旋转（$-q$ 等价于「轴翻转 + 旋转 $2\pi - \theta$」）。</p>
+<figure>
+<img alt="笔记配图：双重覆盖——q 与 -q 表示同一旋转" loading="lazy" src="assets/double_coverage.png"/>
+<figcaption>双重覆盖的轴角直觉：绕轴u转theta与绕相反轴-u转2pi-theta等价。（来源：笔记03）</figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="columns" style=";--translation-columns:3"><div><p>\(\mathbf u,\mathbf v,\mathbf v',\theta\)。</p></div><div><p>\(-\mathbf u,\mathbf v,\mathbf v',2\pi-\theta\)。</p></div><div><p>\(\mathbf v,\mathbf v',\theta,2\pi-\theta\)。</p></div></div></div></div></figure>
+<div class="box green">
+<span class="bt">💡 直觉：为什么是「角度减半」？</span>
+<p>从单位四元数球面$S^3$到$SO(3)$的映射把每对对跖点$q,-q$对应到同一旋转。沿一条持续转动轨迹可保持四元数连续，但无法在全部旋转上选择唯一且处处连续的符号。</p>
+</div>
+<h3>4.3 旋转组合 = 四元数乘法</h3>
+<p>用于旋转组合的性质（课件 p18）：先转 $q_1$ 再转 $q_2$，等价于一个四元数 $q_2 q_1$：</p>
+<p style="text-align:center">$$ q_2 (q_1 x q_1^*) q_2^* = (q_2 q_1)\, x\, (q_1^* q_2^*) $$</p>
+<p>四元数乘法满足结合律，因此可将连续旋转合并为一个乘积。结果中的右侧旋转先执行；例如$R(q_2q_1)=R(q_2)R(q_1)$。朴素四元数复合所需算术次数比3×3矩阵复合少，具体效率取决于实现。</p>
+<p>单位四元数有4个分量与1个单位长度约束，因而具有3个自由度。几何上它们组成嵌在四维欧几里得空间中的三维单位球面$S^3$。</p>
+</section>
+<section id="s5">
+<h2 class="sec"><span class="no">5</span>向量旋转：x′ = qxq⁻¹</h2>
+<p>用四元数旋转三维向量 $\mathbf{v}$ 的步骤（课件 p18）：</p>
+<ol>
+<li>把向量包装成纯四元数：$v = [0, \mathbf{v}]$；</li>
+<li>计算纯四元数$v\prime=q(0,\mathbf v)q^*$，再取三维虚部得到$\mathbf v\prime$。此处$q$为单位四元数，因此$q^{-1}=q^*$。</li>
+</ol>
+<p>为什么成立？笔记给出了完整的展开。设单位四元数 $q = [w, \mathbf{r}]$（满足 $w^2 + \|\mathbf{r}\|^2 = 1$），展开 $qvq^*$：</p>
+<p style="text-align:center">$$
+  \begin{aligned}
+  qvq^* &amp;= [w, \mathbf{r}]\,[0, \mathbf{v}]\,[w, -\mathbf{r}] \\
+  &amp;= [-\mathbf{r}\cdot\mathbf{v},\ w\mathbf{v} + \mathbf{r}\times\mathbf{v}]\,[w, -\mathbf{r}] \\
+  &amp;= [0,\ (1-2\|\mathbf{r}\|^2)\mathbf{v} + 2(\mathbf{r}\cdot\mathbf{v})\mathbf{r} + 2w(\mathbf{r}\times\mathbf{v})]
+  \end{aligned}
+  $$</p>
+<p>（中间用到了叉乘展开式 $a\times (b\times c) = (a\cdot c)b - (a\cdot b)c$ 和单位约束。）</p>
+<p>现在代入 $w = \cos\frac{\theta}{2}$、$\mathbf{r} = \sin\frac{\theta}{2}\,\mathbf{u}$，利用半角公式：</p>
+<ul>
+<li>$1 - 2\|\mathbf{r}\|^2 = 1 - 2\sin^2\frac{\theta}{2} = \cos\theta$</li>
+<li>$2(\mathbf{r}\cdot\mathbf{v})\mathbf{r} = (1 - \cos\theta)(\mathbf{u}\cdot\mathbf{v})\mathbf{u}$</li>
+<li>$2w(\mathbf{r}\times\mathbf{v}) = \sin\theta\,(\mathbf{u}\times\mathbf{v})$</li>
+</ul>
+<p>代回得：</p>
+<p style="text-align:center">$$ \mathbf{v}' = \cos\theta\,\mathbf{v} + (1-\cos\theta)(\mathbf{u}\cdot\mathbf{v})\mathbf{u} + \sin\theta\,(\mathbf{u}\times\mathbf{v}) $$</p>
+<p>该展开与罗德里格斯公式完全等价。四元数尤其便于旋转复合与插值；实际旋转大量向量时，把它转换为矩阵也常有计算优势。原课件p19—20保留Stanford CS348A的证明来源。</p>
+</section>
+<section id="s6">
+<h2 class="sec"><span class="no">6</span>四元数与旋转矩阵互转</h2>
+<h3>6.1 四元数 → 旋转矩阵</h3>
+<p>对单位四元数 $q = [w, (x, y, z)]$，对应的旋转矩阵是（笔记 + 课件 p25）：</p>
+<p style="text-align:center">$$ R(q) = \begin{bmatrix} 1 - 2y^2 - 2z^2 &amp; 2xy - 2zw &amp; 2xz + 2yw \\ 2xy + 2zw &amp; 1 - 2x^2 - 2z^2 &amp; 2yz - 2xw \\ 2xz - 2yw &amp; 2yz + 2xw &amp; 1 - 2x^2 - 2y^2 \end{bmatrix} $$</p>
+<p>证明思路很直接：把三个基向量 $\mathbf{e}_1, \mathbf{e}_2, \mathbf{e}_3$ 分别代入 $qvq^*$，得到的三列就是 $R$。这也正是第 1 章作业 1 里 <code>quat_to_mat</code> 的实现方式。</p>
+<figure>
+<img alt="课程课件：四元数与旋转矩阵的转换" loading="lazy" src="assets/s_p25.jpg"/>
+<figcaption>四元数 ↔ 旋转矩阵的互转公式。<span class="src">（来源：Lecture 3 课件 p25）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">四元数与旋转矩阵之间的转换</div><div class="translation-body"><ul><li>旋转矩阵 ← 四元数。<ul><li>由 \(x' = qxq^{-1}\)，可以算出旋转矩阵：</li><li>\[R(q) = \begin{bmatrix}1-2y^{2}-2z^{2} &amp; 2xy-2zw &amp; 2xz+2yw \\ 2xy+2zw &amp; 1-2x^{2}-2z^{2} &amp; 2yz-2xw \\ 2xz-2yw &amp; 2yz+2xw &amp; 1-2x^{2}-2y^{2}\end{bmatrix}\]</li></ul></li><li>四元数 ← 旋转矩阵。<ul><li>因为 \(\operatorname{tr}(R) = 3 - 4(x^{2}+y^{2}+z^{2}) = 4w^{2} - 1\)（\(\operatorname{tr}(R)\) 是 R 的迹）。</li><li>可以计算四元数：\(w = \frac{\sqrt{\operatorname{tr}(R)+1}}{2}\text{，}x = \frac{R_{32}-R_{23}}{4w}\text{，}y = \frac{R_{13}-R_{31}}{4w}\text{，}z = \frac{R_{21}-R_{12}}{4w}\)。</li></ul></li></ul></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l03-p25">对照原课件第25页与完整中文翻译 →</a></figure>
+<h3>6.2 旋转矩阵 → 四元数</h3>
+<p>反向转换从迹入手：由上面的公式可得 $\mathrm{tr}(R) = 3 - 4(x^2+y^2+z^2) = 4w^2 - 1$，于是（$w \neq 0$ 时）：</p>
+<p style="text-align:center">$$ w = \frac{\sqrt{\mathrm{tr}(R)+1}}{2}, \qquad x = \frac{R_{32}-R_{23}}{4w}, \qquad y = \frac{R_{13}-R_{31}}{4w}, \qquad z = \frac{R_{21}-R_{12}}{4w} $$</p>
+<div class="box yellow">
+<span class="bt">⚠️ 数值提示</span>
+<p>接近半圈旋转时$w$接近0，不能直接除以$4w$。稳定实现根据对角项选择较大的四元数分量，再恢复其他分量并归一化。作业应包含绕X、Y、Z各转180°的测试。</p>
+</div>
+</section>
+<section id="s7">
+<h2 class="sec"><span class="no">7</span>四元数的距离</h2>
+<p>两个四元数「差多远」？把单位四元数看成 $S^3$ 球面上的点，距离就是球面角度（笔记 + 课件 p26）：</p>
+<p style="text-align:center">$$ \langle p, q \rangle = \arccos(p \cdot q) $$</p>
+<p>可从相对旋转理解：从 $p$ 到 $q$ 的相对旋转是 $\Delta q = q p^*$，其实部正好是两四元数（视为 4D 向量）的点积：$\mathrm{Re}(\Delta q) = p \cdot q = \cosd_{S^3}(p,q)$。</p>
+<p>而<b>旋转之间的距离</b>，考虑双重覆盖后取绝对值（$q$ 与 $-q$ 同一旋转）：</p>
+<p style="text-align:center">$$ \mathrm{dist}(p, q) = 2\arccos(|p \cdot q|) = 2\min\{d_{S^3}(p,q),\ d_{S^3}(p,-q)\} $$</p>
+<p>计算旋转差异时，先在$q$与$-q$中选较近代表，再将球面夹角乘2。实现前保证单位模长，并把绝对点积裁剪至$[0,1]$。这对应作业函数<code>quat_relative_angle</code>。</p>
+<figure>
+<img alt="笔记配图：单位圆与旋转的关系——四元数球面距离与旋转距离成线性关系" loading="lazy" src="assets/unit_circle_and_rotation_diagram.png"/>
+<figcaption>单位球面上的四元数：球面距离与旋转距离成线性关系。<span class="src">（来源：笔记 03）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><p>\(O,q_0,q_1,\theta\)。</p></div><div><p>\(\mathbf u_t,\mathbf v_0,\mathbf v_1,2\theta\)。</p></div></div></div></div></figure>
+</section>
+<section id="s8">
+<h2 class="sec"><span class="no">8</span>四元数插值：从 Lerp 到 Slerp</h2>
+<p>机器人动画、轨迹生成里最常见的问题：<b>给定两个姿态 $q_1, q_2$，求它们之间的平滑过渡</b>。下面逐步比较三种插值方法：</p>
+<h3>8.1 Lerp：朴素的线性插值</h3>
+<p style="text-align:center">$$ q(t) = (1-t)q_1 + tq_2 $$</p>
+<figure>
+<img alt="笔记配图：线性插值 Lerp" loading="lazy" src="assets/lerp.png"/>
+<figcaption>Lerp：在四维空间中沿两端点之间的弦进行线性插值。<span class="src">（来源：笔记 03）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>\(O,q_0,q_1,q_t\)。</p></div></div></figure>
+<p>先看模长：在不同端点之间的内部插值结果通常不再是单位四元数；两端点本身仍为单位。若端点互为反号，直线在中点经过零四元数，不能直接归一化。</p>
+<h3>8.2 Nlerp：补一个归一化</h3>
+<p style="text-align:center">$$ q(t) = \frac{(1-t)q_1 + tq_2}{\|(1-t)q_1 + tq_2\|} $$</p>
+<figure>
+<img alt="笔记配图：归一化线性插值 Nlerp" loading="lazy" src="assets/nlerp.png"/>
+<figcaption>Nlerp：Lerp 后除以模长，恢复单位四元数。<span class="src">（来源：笔记 03）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>\(O,q_0,q_1,q_t,q_t'\)。</p></div></div></figure>
+<p>再看速度：Lerp/Nlerp 切分的是<b>弦长</b>而非<b>弧长</b>——等时间间隔下，旋转的角速度不均匀（中间快、两头慢）：</p>
+<figure>
+<img alt="笔记配图：Nlerp 的问题——角速度不均匀" loading="lazy" src="assets/nlerp_question.png"/>
+<figcaption>Nlerp 的问题：弦上等分 ≠ 弧上等分，角速度不均匀。<span class="src">（来源：笔记 03）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>\(\mathbf v_1,t=1\)；\(t=0.75\)；\(t=0.50\)；\(t=0.25\)；\(\mathbf v_0,t=0\)；\(O\)。</p></div></div></figure>
+<h3>8.3 Slerp：沿球面大圆弧插值</h3>
+<p>把插值从「割线」移到「球面大圆弧」（测地线，geodesic）上（课件 p28-30）：</p>
+<p style="text-align:center">$$ q(t) = \frac{\sin((1-t)\theta)}{\sin\theta}\, q_1 + \frac{\sin(t\theta)}{\sin\theta}\, q_2, \qquad \theta = \arccos(q_1 \cdot q_2) $$</p>
+<figure>
+<img alt="笔记配图：球面线性插值 Slerp" loading="lazy" src="assets/slerp.png"/>
+<figcaption>Slerp：沿球面大圆弧等弧长插值，角速度恒定。<span class="src">（来源：笔记 03）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>\(\mathbf v_1,\mathbf v_t,\mathbf v_0,O\)；\((1-t)\theta\)；\(t\theta\)。</p></div></div></figure>
+<figure>
+<img alt="课程课件：球面线性插值示意图——球面上的最短路径" loading="lazy" src="assets/s_p28.jpg"/>
+<figcaption>Slerp 的几何意义：球面上两点间的最短路径（大圆弧 / 测地线）。<span class="src">（来源：Lecture 3 课件 p28，图源 Cornell CS4620）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">球面线性插值</div><div class="translation-body"><p>对不同朝向进行直观的插值。</p><ul><li>可用四元数很好地表示。</li><li>对动画和运动规划很有用。</li><li>给定两个四元数，在它们之间插值。</li><li>球面两点之间的最短路径。<ul><li>测地线，位于大圆上。</li></ul></li></ul><p>幻灯片来源：康奈尔大学 CS4620，2015年秋季。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l03-p28">对照原课件第28页与完整中文翻译 →</a></figure>
+<p>Slerp 的系数可以用正弦定理推导（笔记 + 课件）：把 $q_1, q_2$ 看作平面内夹角 $\psi$ 的两个单位向量，$\mathbf{v}(t) = w_0\mathbf{v}_0 + w_1\mathbf{v}_1$，由 $\frac{\sin\alpha}{w_1} = \frac{\sin\beta}{w_0} = \sin\psi$ 得到：</p>
+<p style="text-align:center">$$ w_0 = \frac{\sin\beta}{\sin\psi}, \qquad w_1 = \frac{\sin\alpha}{\sin\psi} $$</p>
+<figure>
+<img alt="笔记配图：用正弦定理推导 slerp 系数" loading="lazy" src="assets/vector_geometry_angle_diagram.png"/>
+<figcaption>用正弦定理推导 Slerp 系数。<span class="src">（来源：笔记 03）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>\(\mathbf v_1,\mathbf v(t),\mathbf v_0\)；\(w_1,w_0\)；\(\alpha,\beta,\pi-\psi\)。</p></div></div></figure>
+<h3>8.4 两个工程细节（课件 p31）</h3>
+<ul>
+<li><b>夹角趋近 0</b>：$\sin\theta \approx \theta$，Slerp 退化为线性插值（直接用 Lerp/Nlerp 即可，避免除 0）；</li>
+<li><b>最短弧与双重覆盖：</b>若$q_1\cdot q_2&lt;0$，先把$q_2$整体取反，再按球面夹角$\alpha=\arccos(q_1\cdot q_2)$插值。对跖的$q$与$-q$其实是同一物理旋转；三维相对转角180°对应球面夹角90°，此时物理最短路径可有两种。</li>
+</ul>
+</section>
+<section id="s9">
+<h2 class="sec"><span class="no">9</span>球面均匀采样</h2>
+<p>数据增强、随机初始化、位姿估计的采样都需要的操作：<b>随机生成一个旋转</b>，且要「均匀」——各个方向的概率应一致（课件 p32）。</p>
+<blockquote>
+<p>在$S^3$上均匀采样单位四元数，再经旋转映射得到$SO(3)$的均匀旋转分布。关键是球面均匀测度在四元数乘法下保持不变，并通过双重覆盖对应到旋转不变测度；距离关系帮助建立直觉，均匀性的依据则来自上述测度不变性。</p>
+</blockquote>
+<p>那么如何在 $S^3$ 上均匀采样？可以从正态分布采样：</p>
+<div class="box blue">
+<span class="bt">🔑 方法：标准正态分布 + 归一化</span>
+<p>从四维标准正态分布 $\mathcal{N}(0, I_{4\times4})$ 采样一个向量，归一化，就得到均匀分布的单位四元数。<br/>
+    理由：标准正态分布<b>各向同性</b>（所有方向等概率），归一化后落在球面上的概率自然均匀。</p>
+</div>
+<p>这也正是第 1 章作业 1 里 <code>uniform_random_quat</code> 的实现方式（随机 4 维正态向量，除以模长）。</p>
+<div class="box blue"><span class="bt">统计检查与数学依据</span><p>旋转轴样本均值接近零可作为初步检查。均匀性来自四维标准正态的各向同性及旋转映射的不变性。采样后的每个四元数还应满足单位模长。</p></div></section>
+<section id="s10">
+<h2 class="sec"><span class="no">10</span>表示对比与工程约定</h2>
+<p>四种旋转表示的对比（课件 p35-37）：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>表示</th><th>求逆</th><th>组合</th><th>局部连续性<br/>（SO(3) 上任何局部移动都能由定义域的局部移动实现？）</th></tr>
+<tr><td>旋转矩阵</td><td>✔</td><td>✔（矩阵连乘）</td><td>N/A（9 个数冗余 6 个约束）</td></tr>
+<tr><td>欧拉角</td><td>复杂</td><td>复杂</td><td>万向锁处局部映射退化</td></tr>
+<tr><td>轴角</td><td>✔</td><td>复杂</td><td>?（多数情况 ✔，边界如 0 度时不行）</td></tr>
+<tr><td><b>四元数</b></td><td>✔（共轭）</td><td>✔（乘法）</td><td>局部无万向锁；全局选择单一符号仍有边界</td></tr>
+</table></div></div>
+<p>工程上各自的分工（课件 p36，引用 CVPR'19《On the Continuity of Rotation Representations》）：<b>用旋转矩阵定义概念、用欧拉角可视化、用轴角可视化并算导数、用四元数写高效代码</b>。</p>
+<p>旋转矩阵的9个元素给出SO(3)在欧几里得空间中的连续编码，网络输出仍需映射到满足正交性与行列式条件的矩阵。欧拉角、轴角和选定符号的四元数在全局边界处可能跳变，训练时需要处理这些边界，并结合任务选择表示。</p>
+<div class="update-box">
+<span class="bt">进一步理解：编码与解码的连续性</span>
+<p>CVPR 2019 的旋转表示论文讨论了 6D 表示：取旋转矩阵前两列，解码时做 Gram-Schmidt 正交化。编码旋转与解码任意预测向量是不同方向；后者需排除零向量、共线等退化输入。6D/9D 可用于网络输出，四元数可用于存储与组合，具体选择取决于任务。</p>
+</div>
+<h3>工程约定：wxyz 还是 xyzw？</h3>
+<p>不同库或同一库的不同接口可能采用不同四元数分量顺序。下面列出本教程与SciPy的具体约定，使用时应查接口文档：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>顺序</th><th>本课约定／具体接口</th></tr>
+<tr><td><b>(w, x, y, z)</b> 实部在前</td><td>本教程与作业 1 的约定</td></tr>
+<tr><td><b>(x, y, z, w)</b> 实部在后</td><td><code>scipy.spatial.transform.Rotation.from_quat</code> 的默认顺序；设置 <code>scalar_first=True</code> 可改为实部在前</td></tr>
+</table></div></div>
+<p>四元数的效率数字（课件 p22）：存储 4 个数 vs 矩阵 9 个；乘法 16 次乘法 + 12 次加法 vs 矩阵 27 + 18；且旋转矩阵在连续乘法中会累积数值误差破坏正交性，四元数则只需偶尔归一化。</p>
+</section>
+<section id="s11">
+<h2 class="sec"><span class="no">11</span>运动规划入门：配置空间</h2><div class="box blue"><span class="bt">配置不是速度状态</span><p>配置$q$描述机器人几何形状与位置，例如各关节角；动力学状态还可能包括关节速度。相同配置可以静止，也可以快速通过。本章先研究几何无碰撞路径，后续控制再讨论时间、速度与跟踪。</p></div>
+<p>利用已经学过的位姿与关节配置，继续考虑：机器人怎么在障碍物之间规划路径？（课件 p38-43）</p>
+<h3>11.1 配置空间（C-space）</h3>
+<p><b>配置空间</b>：系统的所有可能状态组成的集合（对机械臂而言，就是所有可能的关节角度组合）。它被障碍物切成两块：</p>
+<ul>
+<li>$C$：配置空间（所有状态）；</li>
+<li>$C_{\text{free}}$：<b>自由空间</b>——有效（无碰撞）状态；</li>
+<li>$C_{\text{obs}}$：<b>障碍空间</b>——碰撞状态；满足 $C_{\text{free}} \cup C_{\text{obs}} = C$，$C_{\text{free}} \cap C_{\text{obs}} = \varnothing$。</li>
+</ul>
+<figure>
+<img alt="课程课件：配置空间示意图" loading="lazy" src="assets/s_p39.jpg"/>
+<figcaption>配置空间：机器人状态的空间被划分为自由空间与障碍空间。<span class="src">（来源：Lecture 3 课件 p39）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">配置空间</div><div class="translation-body"><ul><li>配置空间（C 空间）是 \(\mathbb{R}^{n}\) 的一个子集，包含系统的所有可能状态（强化学习中的状态空间）。</li><li>\(C_{\mathrm{free}} \subseteq  C\) 包含所有有效状态。</li><li>\(C_{\mathrm{obs}} \subseteq  C\) 表示障碍物。</li><li>例子：<ul><li>机器人的所有有效位姿。</li><li>机器人的所有有效关节取值。</li><li>……</li></ul></li></ul></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l03-p39">对照原课件第39页与完整中文翻译 →</a></figure>
+<figure>
+<img alt="笔记配图：配置空间中的路径搜索——从起始状态到目标状态" loading="lazy" src="assets/configuration_space_pathfinding.png"/>
+<figcaption>配置空间中的路径搜索：从 $q_{\text{start}}$ 到 $q_{\text{goal}}$，全程避开障碍区。<span class="src">（来源：笔记 03）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>\(C_{\mathrm{obs}}\)：障碍配置空间。</p><p>\(C_{\mathrm{free}}\)：自由配置空间。</p><p>\(q_I\)：起始配置；\(q_G\)：目标配置。</p></div></div></figure>
+<figure>
+<img alt="课程课件：配置空间的例子" loading="lazy" src="assets/s_p40.jpg"/>
+<figcaption>配置空间示例：同一个物理场景，从不同状态维度看去。<span class="src">（来源：Lecture 3 课件 p40）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">例子</div><div class="translation-body"><ul><li>Ratliff N、Zucker M、Bagnell J A 等：《CHOMP：高效运动规划的梯度优化技术》（CHOMP: Gradient optimization techniques for efficient motion planning），ICRA 2009。</li><li>Schulman, John 等：《使用序列凸优化寻找局部最优的无碰撞轨迹》（Finding Locally Optimal, Collision-Free Trajectories with Sequential Convex Optimization），RSS 2013。</li></ul></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l03-p40">对照原课件第40页与完整中文翻译 →</a></figure>
+<h3>11.2 问题定义与挑战</h3>
+<p><b>给定</b>：自由空间 $C_{\text{free}}$、起始状态 $q_{\text{start}}$、目标状态 $q_{\text{goal}}$。<b>目标</b>：计算一系列动作使机器人从起点安全到达终点。</p>
+<p>（注意：这里的 $q$ 表示配置空间中的点，<b>在本节用于记录关节配置</b>；阅读时按所在小节区分其含义。对机械臂来说，$q$ 就是关节角度组合 $(\theta_1, \dots, \theta_n)$。）</p>
+<p>三大挑战：</p>
+<ol>
+<li><b>避障</b>：路径必须始终在 $C_{\text{free}}$ 内；</li>
+<li><b>长规划范围：</b>要考虑较远目标或多步后果，路径和约束更复杂；课件的Long planning horizon描述需要考虑的规划跨度；算法计算时间是另一项指标。</li>
+<li><b>高维空间</b>：多关节机器人的配置空间维数很高（维度诅咒）。</li>
+</ol>
+<figure>
+<img alt="课程课件：运动规划示意图" loading="lazy" src="assets/s_p41.jpg"/>
+<figcaption>运动规划：在配置空间中找一条从起点到终点的无碰撞路径。<span class="src">（来源：Lecture 3 课件 p41）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">运动规划</div><div class="translation-body"><ul><li>问题：<ul><li>给定配置空间 \(C_{\mathrm{free}}\)。</li><li>给定 \(C_{\mathrm{free}}\) 中的起始状态 \(q_{\mathrm{start}}\) 和目标状态 \(q_{\mathrm{goal}}\)。</li><li>计算从起始状态到目标状态的一系列动作。</li></ul></li><li>挑战：<ul><li>需要避开障碍物。</li><li>规划时域长。</li><li>规划空间维度高。</li></ul></li></ul></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l03-p41">对照原课件第41页与完整中文翻译 →</a></figure>
+<p>课件p43给出基本流程：URDF描述每个连杆的碰撞几何；FK根据配置$q$把几何放到相应位置；碰撞查询判断该配置是否有效。具体引擎可能采用网格、球体等不同近似。几何配置空间主要描述位置与形状。把无碰撞路径用于实际运动，还需考虑速度、动力学和控制条件。</p>
+<figure>
+<img alt="课程课件：cuRobo 中的机器人碰撞建模流程" loading="lazy" src="assets/s_p43.jpg"/>
+<figcaption>cuRobo 中的碰撞建模：URDF 碰撞网格 + FK + 碰撞检测。<span class="src">（来源：Lecture 3 课件 p43）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">机器人的碰撞建模</div><div class="translation-body"><ul><li>各连杆的碰撞网格在 URDF 中定义。</li><li>利用正向运动学，根据 q 得到机器人的碰撞网格。</li><li>运行碰撞检测，判断 q 是否属于 \(C_{\mathrm{free}}\)。</li></ul><p>cuRobo 中的机器人表示。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l03-p43">对照原课件第43页与完整中文翻译 →</a></figure>
+</section>
+<section id="s12">
+<h2 class="sec"><span class="no">12</span>本章小结</h2>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>核心概念</th><th>一句话解释</th></tr>
+<tr><td><b>四元数定义</b></td><td>$q = w + xi + yj + zk$，$i^2=j^2=k^2=ijk=-1$，复数的四维推广</td></tr>
+<tr><td><b>Hamilton乘积（向量形式）</b></td><td>四元数乘法 = 实部相乘减点积 + 叉积，不可交换</td></tr>
+<tr><td><b>单位四元数 ↔ 旋转</b></td><td>$q=[\cos\frac{\theta}{2}, \sin\frac{\theta}{2}\hat{\omega}]$，双重覆盖（$q$ 与 $-q$ 同一旋转）</td></tr>
+<tr><td><b>向量旋转</b></td><td>$x' = qxq^{-1}$，展开后与罗德里格斯公式逐项等价</td></tr>
+<tr><td><b>Slerp</b></td><td>球面大圆弧插值，角速度恒定；注意点积为负时取 $-q$</td></tr>
+<tr><td><b>球面均匀采样</b></td><td>$\mathcal{N}(0,I_4)$ 采样后归一化（各向同性）</td></tr>
+<tr><td><b>配置空间</b></td><td>所有状态的集合，分为 $C_{\text{free}}$ 与 $C_{\text{obs}}$，是运动规划的舞台</td></tr>
+</table></div></div>
+<div class="box green">
+<span class="bt">💡 下一章预告</span>
+<p>第4章将学习配置空间中的PRM、RRT 等经典运动规划算法，以及机器人控制的基础——从开环到 PID。届时第 1 章作业 1 的 FK、本章的四元数与配置空间将全部派上用场。</p>
+</div>
+</section>
+<section id="s13">
+<h2 class="sec"><span class="no">13</span>动手实践</h2>
+<p>本章的动手实践对应第1章作业1：<b>作业 1 的 11 个四元数函数全部是本章内容</b>。读完推导后，可以再次检查每个函数的输入、公式和边界条件。建议回看一遍 <a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Homeworks/01-Robot-Kinematics/Handin/rotation.py" target="_blank">rotation.py</a>，逐函数对号入座：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>作业 1 函数</th><th>本章位置</th><th>关键公式</th></tr>
+<tr><td><code>quat_multiply</code></td><td>§3</td><td>Hamilton乘积（向量形式）</td></tr>
+<tr><td><code>quat_normalize</code> / <code>quat_conjugate</code></td><td>§3</td><td>模长 / 共轭</td></tr>
+<tr><td><code>quat_rotate</code></td><td>§5</td><td>$qvq^*$ 展开式</td></tr>
+<tr><td><code>quat_relative_angle</code></td><td>§7</td><td>$2\arccos(|p\cdot q|)$</td></tr>
+<tr><td><code>interpolate_quat</code></td><td>§8</td><td>Slerp + 负点积取反</td></tr>
+<tr><td><code>quat_to_mat</code> / <code>mat_to_quat</code></td><td>§6</td><td>标准公式 / trace 法</td></tr>
+<tr><td><code>quat_to_axis_angle</code> / <code>axis_angle_to_quat</code></td><td>§4.1</td><td>$\theta = 2\arccos(w)$</td></tr>
+<tr><td><code>uniform_random_quat</code></td><td>§9</td><td>正态采样归一化</td></tr>
+</table></div></div>
+<h3>练习 1：验证 Slerp 的角速度均匀性（15 分钟）</h3>
+<p>写一个小实验，比较 Nlerp 与 Slerp 在等时间间隔下的旋转角度变化：</p>
+<pre><code>import numpy as np
+
+def unit_quat(q):
+    q = np.array(q, dtype=float, copy=True)
+    if q.shape != (4,) or not np.all(np.isfinite(q)):
+        raise ValueError("四元数必须包含四个有限分量")
+    norm = np.linalg.norm(q)
+    if norm == 0:
+        raise ValueError("零四元数不能表示旋转")
+    return q / norm
+
+def slerp(q1, q2, t):
+    q1, q2 = unit_quat(q1), unit_quat(q2)
+    dot = float(q1 @ q2)
+    if dot &lt; 0:
+        q2, dot = -q2, -dot
+    dot = np.clip(dot, 0.0, 1.0)
+    if dot &gt; 1 - 1e-8:
+        return unit_quat((1-t)*q1 + t*q2)
+    theta = np.arccos(dot)
+    return unit_quat((np.sin((1-t)*theta)*q1 + np.sin(t*theta)*q2)
+                     / np.sin(theta))
+
+def nlerp(q1, q2, t):
+    q1, q2 = unit_quat(q1), unit_quat(q2)
+    if q1 @ q2 &lt; 0:
+        q2 = -q2
+    return unit_quat((1-t)*q1 + t*q2)
+
+# 两个相差 120° 的旋转（绕 z 轴）
+q1 = np.array([np.cos(0), 0, 0, np.sin(0)])
+q2 = np.array([np.cos(np.pi/3), 0, 0, np.sin(np.pi/3)])   # θ/2 = 60°
+
+ts = np.linspace(0, 1, 11)
+angles_slerp = [2*np.arccos(np.clip(np.abs(slerp(q1,q2,t) @ q1), -1, 1)) for t in ts]
+angles_nlerp = [2*np.arccos(np.clip(np.abs(nlerp(q1,q2,t) @ q1), -1, 1)) for t in ts]
+diff_s = np.diff(angles_slerp); diff_n = np.diff(angles_nlerp)
+print("Slerp 相邻间隔:", np.round(diff_s, 4))   # 均匀！
+print("Nlerp 相邻间隔:", np.round(diff_n, 4))   # 中间大两头小</code></pre>
+<h3>练习 2：验证双重覆盖与相对角度（10 分钟）</h3>
+<pre><code><span class="cm"># q 与 -q 表示同一旋转：相对角度应为 0</span>
+q = np.array([np.cos(np.pi/6), np.sin(np.pi/6), 0, 0])   <span class="cm"># 绕 x 转 60°</span>
+rel = 2*np.arccos(np.clip(np.abs(q @ (-q)), -1, 1))
+<span class="fn">print</span>(<span class="st">"q 与 -q 的旋转距离:"</span>, np.round(rel, 6), <span class="st">"（期望 0）"</span>)
+<span class="kw">assert</span> rel &lt; 1e-6
+
+<span class="cm"># 用 rotation.py 的 quat_to_mat 验证：R(q) == R(-q)</span>
+<span class="kw">def</span> <span class="fn">quat_to_mat</span>(q):
+    w, x, y, z = q
+    <span class="kw">return</span> np.array([
+        [1-2*y*y-2*z*z, 2*x*y-2*w*z, 2*w*y+2*x*z],
+        [2*x*y+2*w*z, 1-2*x*x-2*z*z, 2*y*z-2*w*x],
+        [2*x*z-2*w*y, 2*w*x+2*y*z, 1-2*x*x-2*y*y]])
+<span class="kw">assert</span> np.allclose(quat_to_mat(q), quat_to_mat(-q))
+<span class="fn">print</span>(<span class="st">"✓ R(q) 与 R(-q) 完全相同"</span>)</code></pre>
+<h3>练习 3：均匀采样体检（10 分钟）</h3>
+<p>用 §9 的方法采样 10000 个随机旋转，检验「旋转轴是否真的各向同性」：</p>
+<pre><code>samples = np.random.randn(10000, 4)
+samples /= np.linalg.norm(samples, axis=1, keepdims=True)
+axes = samples[:, 1:] / np.linalg.norm(samples[:, 1:], axis=1, keepdims=True)
+mean = axes.mean(axis=0)
+<span class="fn">print</span>(<span class="st">"旋转轴均值（期望 ≈ 0 向量）:"</span>, np.round(mean, 4))</code></pre>
+<div class="box green">
+<span class="bt">💡 自学路线建议</span>
+<p>三个练习共约 35 分钟。本章推导较多，可以分两次阅读：第一次 §1-§7（四元数本体），第二次 §8-§11（插值与规划）。遇到推导困难时，可阅读 Krasjet《Quaternion》对应章节，作为补充。</p>
+</div>
+<div class="box blue"><span class="bt">采样检查的适用范围</span><p>旋转轴均值接近零是初步检查；判断分布是否均匀，还需结合其他统计检查。例如，可以检查随机旋转把固定单位向量转到球面后是否各向同性，同时核对采样方法本身的数学依据。</p></div></section>
+<section id="apA">
+<h2 class="sec"><span class="no">附A</span>术语表</h2>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table class="term-table">
+<tr><th>术语</th><th>解释</th></tr>
+<tr><td>四元数（Quaternion）</td><td>$q = w + xi + yj + zk$，复数的四维推广，$i^2=j^2=k^2=ijk=-1$</td></tr>
+<tr><td>Hamilton乘积（向量形式）</td><td>四元数的标准乘法；向量形式由实部、点积和叉积构成，一般不可交换</td></tr>
+<tr><td>纯四元数</td><td>实部为 0 的四元数 $(0, \mathbf{v})$，表示三维向量</td></tr>
+<tr><td>单位四元数</td><td>模长为 1 的四元数，表示三维旋转，$q^{-1} = q^*$</td></tr>
+<tr><td>双重覆盖</td><td>一个旋转对应两个四元数（$q$ 与 $-q$），单位四元数在 $S^3$ 上</td></tr>
+<tr><td>Lerp / Nlerp / Slerp</td><td>线性插值 / 归一化线性插值 / 球面线性插值（沿大圆弧，角速度恒定）</td></tr>
+<tr><td>测地线（Geodesic）</td><td>曲面上两点间的最短路径，球面上即大圆弧</td></tr>
+<tr><td>配置空间（C-space）</td><td>系统所有可能状态的集合，被划分为 $C_{\text{free}}$ 与 $C_{\text{obs}}$</td></tr>
+<tr><td>自由空间 $C_{\text{free}}$</td><td>无碰撞的有效状态集合，运动规划要求路径全程位于其中</td></tr>
+<tr><td>6D 表示</td><td>取旋转矩阵前两列并正交化的连续表示（CVPR 2019），可用于学习模型的旋转输出</td></tr>
+</table></div></div>
+</section>
+<section id="apB">
+<h2 class="sec"><span class="no">附B</span>课件 44 页完整索引</h2>
+<p>原始 Lecture 3 课件共 44 页（<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture03_03_03.pdf" target="_blank">GitHub 原文件</a>）。下表逐页列出内容及在本教程中的位置：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table class="page-index">
+<tr><th>页码</th><th>页面内容</th><th>在教程中的位置</th></tr>
+<tr><td class="pg">p1</td><td>封面：Lecture 3 - Robotics II</td><td>封面区</td></tr>
+<tr><td class="pg">p2</td><td>主题页：SO(3)</td><td>§1 开头</td></tr>
+<tr><td class="pg">p3</td><td>主题页：旋转矩阵</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p4</td><td>SO(n) 定义回顾</td><td>§1（回顾，详见第 2 章 §7）</td></tr>
+<tr><td class="pg">p5</td><td>旋转矩阵的两个问题：效率、数值稳定性</td><td>§1</td></tr>
+<tr><td class="pg">p6</td><td>欧拉角非常直观（回顾）</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p7</td><td>欧拉角（回顾配图）</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p8</td><td>万向锁（回顾推导）</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p9</td><td>主题页：轴角参数化</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p10</td><td>欧拉定理（回顾）</td><td>§4.1（铺垫）</td></tr>
+<tr><td class="pg">p11</td><td>罗德里格斯公式（回顾）</td><td>§5（对照对象）</td></tr>
+<tr><td class="pg">p12</td><td>轴角的唯一性问题（回顾）</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p13</td><td>主题页：四元数（记法：$x\in\mathbb{R}^3$，$q\in\mathbb{R}^4$）</td><td>§2 开头</td></tr>
+<tr><td class="pg">p14</td><td>四元数是「数」：从复数推广、虚数单位、反交换</td><td>§2</td></tr>
+<tr><td class="pg">p15</td><td>一般四元数性质：向量形式、乘积、共轭、模长、逆</td><td>§3</td></tr>
+<tr><td class="pg">p16</td><td>单位四元数表示旋转：4 个数 + 1 约束 = 3 DoF，$S^3$ 球壳</td><td>§4</td></tr>
+<tr><td class="pg">p17</td><td>构造旋转四元数：与指数坐标/轴角互转</td><td>§4.1</td></tr>
+<tr><td class="pg">p18</td><td>单位四元数旋转向量：$x' = qxq^{-1}$，组合 = 乘法</td><td>§4.3 + §5</td></tr>
+<tr><td class="pg">p19</td><td>证明（Stanford CS348A 致谢）</td><td>§5（证明）</td></tr>
+<tr><td class="pg">p20</td><td>证明续：与罗德里格斯公式等价</td><td>§5（证明）</td></tr>
+<tr><td class="pg">p21</td><td>旋转向量/组合/双重覆盖（总结页）</td><td>§4.2-4.3</td></tr>
+<tr><td class="pg">p22</td><td>四元数 vs 旋转矩阵：存储、乘法次数、数值稳定性</td><td>§10</td></tr>
+<tr><td class="pg">p23</td><td>工程约定：wxyz vs xyzw 的采用者列表</td><td>§10</td></tr>
+<tr><td class="pg">p24</td><td>四元数 ↔ 轴角互转（总结页）</td><td>§4.1</td></tr>
+<tr><td class="pg">p25</td><td>四元数 ↔ 旋转矩阵互转</td><td>§6</td></tr>
+<tr><td class="pg">p26</td><td>四元数距离：球面角、旋转距离线性关系</td><td>§7</td></tr>
+<tr><td class="pg">p27</td><td>四元数插值（图源 Cornell CS4620）</td><td>§8 开头</td></tr>
+<tr><td class="pg">p28</td><td>Slerp：球面最短路径、测地线、大圆</td><td>§8.3</td></tr>
+<tr><td class="pg">p29</td><td>Slerp 公式（图源 Cornell CS4620）</td><td>§8.3</td></tr>
+<tr><td class="pg">p30</td><td>四元数插值性质：任意维度、大圆弧、恒定角速度</td><td>§8.3</td></tr>
+<tr><td class="pg">p31</td><td>实用问题：小角度退化、180° 时取 $-q$</td><td>§8.4</td></tr>
+<tr><td class="pg">p32</td><td>球面均匀采样：正态分布归一化</td><td>§9</td></tr>
+<tr><td class="pg">p33</td><td>资源：transforms3d、Kornia、ceres</td><td>附录 C</td></tr>
+<tr><td class="pg">p34</td><td>为什么用四元数（总结）</td><td>§1 + §10</td></tr>
+<tr><td class="pg">p35</td><td>旋转表示对比总表</td><td>§10</td></tr>
+<tr><td class="pg">p36</td><td>表示分工（CVPR'19 连续性论文引用）</td><td>§10 + 工程说明</td></tr>
+<tr><td class="pg">p37</td><td>表示分工（续）</td><td>§10</td></tr>
+<tr><td class="pg">p38</td><td>主题页：运动规划</td><td>§11 开头</td></tr>
+<tr><td class="pg">p39</td><td>配置空间</td><td>§11.1</td></tr>
+<tr><td class="pg">p40</td><td>配置空间例子</td><td>§11.1</td></tr>
+<tr><td class="pg">p41</td><td>运动规划（示意）</td><td>§11.2</td></tr>
+<tr><td class="pg">p42</td><td>运动规划（示意）</td><td>§11.2</td></tr>
+<tr><td class="pg">p43</td><td>碰撞建模：URDF 网格 + FK + 碰撞检测（cuRobo）</td><td>§11.2</td></tr>
+<tr><td class="pg">p44</td><td>结尾页：下集预告 Lecture 4 - Robotics III</td><td>页脚（下一章预告）</td></tr>
+</table></div></div>
+</section>
+<section id="apC">
+<h2 class="sec"><span class="no">附C</span>参考资源</h2>
+<ul>
+<li>课程官网：<a href="https://pku-epic.github.io/Intro2EAI_2025/" target="_blank">pku-epic.github.io/Intro2EAI_2025</a></li>
+<li>本教程素材来源仓库：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU" target="_blank">zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU</a></li>
+<li>本章课件：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture03_03_03.pdf" target="_blank"><code>Slides/Lecture03_03_03.pdf</code></a>（44 页）</li>
+<li>本章笔记原文：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Notes/03-Robotics-II.md" target="_blank"><code>Notes/03-Robotics-II.md</code></a></li>
+</ul>
+<h3>延伸阅读</h3>
+<ul>
+<li><a href="https://krasjet.github.io/quaternion/quaternion.pdf" target="_blank">Krasjet《Quaternion》</a>：四元数入门材料，本章多处推导的原始出处</li>
+<li>Zhou et al., <em>On the Continuity of Rotation Representations</em>, CVPR 2019：6D 表示的原始论文</li>
+<li>Stanford CS348A（四元数旋转证明的来源课件）</li>
+<li>Cornell CS4620 Fall 2015（Slerp 插值图的来源课件）</li>
+<li>工具库：transforms3d（Python 变换库）、Kornia（可微变换，注意数值性质）、ceres（C++ 优化库）</li>
+</ul>
+<p class="source">接口核对：<a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.transform.Rotation.from_quat.html">SciPy Rotation.from_quat官方文档</a>（默认xyzw，scalar_first控制顺序，输入自动归一化）。连续性依据：<a href="https://arxiv.org/abs/1812.07035">Zhou等，神经网络中旋转表示的连续性</a>。</p></section>
+</main>
+</div>
+<aside class="recent" id="current-research"><h3>2026年10月技术与政策动态 · 旋转约定是系统接口的一部分</h3><p>四元数分量顺序和旋转合成方向是模型与控制器对接时的基本约定。把动作接到控制器时，先对照接口的坐标、单位和排列约定。</p><p class="source-note">资料截至2026-10-04 · <a href="../技术动态_20261004.html#cumotion">一手来源、发布日期与适用范围</a></p></aside><footer>
+<nav aria-label="章节导航" class="chapter-nav"><a href="../ch02/index.html">← 第2章</a><a href="../index.html">教程目录</a><a href="../ch04/index.html">第4章 →</a></nav>
+<p>资料依据北京大学2025年春季《具身智能导论》课程。原课件、课堂笔记及引用图的作者和来源见篇首与图注；许可证原件随教程保留。正文、图片、公式与本地课件可离线阅读，Python练习需要相应依赖。</p></footer>
+<script defer="" src="../reader.js"></script></body>
+</html>

@@ -1,0 +1,93 @@
+[
+  {
+    "file": "01-EAI-Overview.md",
+    "sha256": "64412fee7f8c59a9d0e87871e6415941622afd83762c0a9d2871fd4b7dadcdc4",
+    "url": "https://raw.githubusercontent.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Notes/01-EAI-Overview.md",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "origin": "原始课程笔记"
+  },
+  {
+    "file": "02-Robotics-I.md",
+    "sha256": "2676c6ae3195ba0ccd58f709c1d86f8a8e58162f67909e326a0b17ee266db0ef",
+    "url": "https://raw.githubusercontent.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Notes/02-Robotics-I.md",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "origin": "原始课程笔记"
+  },
+  {
+    "file": "03-Robotics-II.md",
+    "sha256": "64837915c6f8044f25a72d600754d83417528aec924b4c379dabdb4658e57a8c",
+    "url": "https://raw.githubusercontent.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Notes/03-Robotics-II.md",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "origin": "原始课程笔记"
+  },
+  {
+    "file": "04-Robotics-III.md",
+    "sha256": "44787bec08d7abbf394630be88520ddb086e01abc4e7f4a39e705ef357aaf07d",
+    "url": "https://raw.githubusercontent.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Notes/04-Robotics-III.md",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "origin": "原始课程笔记"
+  },
+  {
+    "file": "05-Vision-and-Grasping-I.md",
+    "sha256": "7e4a58752a590ba512c986a3c716aee23ae7fdcd50da27d44cb7d0a864ba7dc3",
+    "url": "https://raw.githubusercontent.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Notes/05-Vision-and-Grasping-I.md",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "origin": "原始课程笔记"
+  },
+  {
+    "file": "06-Vision-and-Grasping-II.md",
+    "sha256": "d3f50f5a28c11436a94e9a8d93b42c12bb9cdc3f01d8047b7137f635c739351f",
+    "url": "https://raw.githubusercontent.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Notes/06-Vision-and-Grasping-II.md",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "origin": "原始课程笔记"
+  },
+  {
+    "file": "07-Vision-and-Grasping-III.md",
+    "sha256": "b837fd4aac08441eab371a5f80d72d2be645004e83986371a6cf3cef3cc71d05",
+    "url": "https://raw.githubusercontent.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Notes/07-Vision-and-Grasping-III.md",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "origin": "原始课程笔记"
+  },
+  {
+    "file": "08-Policy-I.md",
+    "sha256": "6a5e578866679d2c8e369cbc30bac231423557317c9a15e42d69448db354c60e",
+    "url": "https://raw.githubusercontent.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Notes/08-Policy-I.md",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "origin": "原始课程笔记"
+  },
+  {
+    "file": "09-Policy-II.md",
+    "sha256": "300a9f517c386112ef59068c10a8b4b86102efc80c67bc8e65bc167d7378e131",
+    "url": "https://raw.githubusercontent.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Notes/09-Policy-II.md",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "origin": "原始课程笔记"
+  },
+  {
+    "file": "Assignment2_Handin_README.md",
+    "sha256": "647b3dc9f7e35a01eeb1807609e1e8ea220c3441234417cc6360905b9ad40773",
+    "url": null,
+    "upstream_commit": null,
+    "origin": "原始作业说明副本；具体来源见文件内容"
+  },
+  {
+    "file": "Assignment3_Handin_README.md",
+    "sha256": "f21de4934872ca86e2e725a61a7042085f94b80d02f6d0d1039686fba74578a5",
+    "url": null,
+    "upstream_commit": null,
+    "origin": "原始作业说明副本；具体来源见文件内容"
+  },
+  {
+    "file": "Assignment4_DATASET.md",
+    "sha256": "0637c6c94b16faac5add4d392cd6e8277bf1291bee928d604d7790685fae6cc2",
+    "url": null,
+    "upstream_commit": null,
+    "origin": "原始作业说明副本；具体来源见文件内容"
+  },
+  {
+    "file": "Assignment4_Handin_README.md",
+    "sha256": "998448ced6289f848c9b0ef7e431b85a43482422034028072bd9e6e162e28f83",
+    "url": null,
+    "upstream_commit": null,
+    "origin": "原始作业说明副本；具体来源见文件内容"
+  }
+]

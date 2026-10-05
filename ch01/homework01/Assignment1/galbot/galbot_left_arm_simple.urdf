@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<robot name="galbot_one_charlie_left_arm">
+    <!-- LINKS -->
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <mesh filename="meshes/body/visual/galbot_charlie_wo_left_arm.obj"/>
+            </geometry>
+        </visual>
+    </link>
+    <link name="left_arm_base_link">
+    </link>
+    <link name="left_arm_link1">
+        <visual>
+            <geometry>
+                <mesh filename="meshes/arm/visual/left_arm_link1.obj"/>
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        </visual>
+
+    </link>
+    <link name="left_arm_link2">
+        <visual>
+            <geometry>
+                <mesh filename="meshes/arm/visual/left_arm_link2.obj"/>
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        </visual>
+
+    </link>
+    <link name="left_arm_link3">
+        <visual>
+            <geometry>
+                <mesh filename="meshes/arm/visual/left_arm_link3.obj"/>
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        </visual>
+
+    </link>
+    <link name="left_arm_link4">
+        <visual>
+            <geometry>
+                <mesh filename="meshes/arm/visual/left_arm_link4.obj"/>
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        </visual>
+
+    </link>
+    <link name="left_arm_link5">
+        <visual>
+            <geometry>
+                <mesh filename="meshes/arm/visual/left_arm_link5.obj"/>
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        </visual>
+
+    </link>
+    <link name="left_arm_link6">
+        <visual>
+            <geometry>
+                <mesh filename="meshes/arm/visual/left_arm_link6.obj"/>
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        </visual>
+
+    </link>
+    <link name="left_arm_link7">
+        <visual>
+            <geometry>
+                <mesh filename="meshes/arm/visual/left_arm_link7.obj"/>
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        </visual>
+        <visual>
+            <geometry>
+                <mesh filename="meshes/gripper/visual/gripper.obj"/>
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        </visual>
+
+    </link>
+    <link name="left_arm_end_effector_mount_link">
+    </link>
+    <link name="left_gripper_base_link">
+    </link>
+    <link name="left_gripper_tcp_link">
+    </link>
+    <!-- JOINTS -->
+    <joint name="left_arm_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="left_arm_base_link"/>
+        <origin xyz="0.008 0.206 1.116" rpy="1.570796326465246 0.05 3.1415926404065417"/>
+    </joint>
+    <joint name="left_arm_joint1" type="revolute">
+        <dynamics damping="0.0" friction="0.0"/>
+        <limit effort="60.0" velocity="1.5" lower="-3.05" upper="3.05"/>
+        <parent link="left_arm_base_link"/>
+        <child link="left_arm_link1"/>
+        <axis xyz="0. 0. 1."/>
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    </joint>
+    <joint name="left_arm_joint2" type="revolute">
+        <dynamics damping="0.0" friction="0.0"/>
+        <limit effort="60.0" velocity="1.5" lower="-1.7" upper="1.5707963267948966"/>
+        <parent link="left_arm_link1"/>
+        <child link="left_arm_link2"/>
+        <axis xyz="0. 0. 1."/>
+        <origin xyz="0.0 0.0 0.0" rpy="1.5707963267948966 0.0 3.141592653589793"/>
+    </joint>
+    <joint name="left_arm_joint3" type="revolute">
+        <dynamics damping="0.0" friction="0.0"/>
+        <limit effort="30.0" velocity="1.5" lower="-2.9" upper="2.9"/>
+        <parent link="left_arm_link2"/>
+        <child link="left_arm_link3"/>
+        <axis xyz="0. 0. 1."/>
+        <origin xyz="0.0 0.35 0.0" rpy="-1.5707963267948966 -1.5707963267948966 0.0"/>
+    </joint>
+    <joint name="left_arm_joint4" type="revolute">
+        <dynamics damping="0.0" friction="0.0"/>
+        <limit effort="30.0" velocity="1.5" lower="-2.1" upper="2.1"/>
+        <parent link="left_arm_link3"/>
+        <child link="left_arm_link4"/>
+        <axis xyz="0. 0. 1."/>
+        <origin xyz="0.0 0.0 0.0" rpy="1.5707963267948966 0.0 -3.141592653589793"/>
+    </joint>
+    <joint name="left_arm_joint5" type="revolute">
+        <dynamics damping="0.0" friction="0.0"/>
+        <limit effort="10.0" velocity="1.5" lower="-2.9" upper="2.9"/>
+        <parent link="left_arm_link4"/>
+        <child link="left_arm_link5"/>
+        <axis xyz="0. 0. 1."/>
+        <origin xyz="0.0 0.36 0.0" rpy="1.5707963267948968 1.2246467991473532e-16 -3.141592653589793"/>
+    </joint>
+    <joint name="left_arm_joint6" type="revolute">
+        <dynamics damping="0.0" friction="0.0"/>
+        <limit effort="10.0" velocity="1.5" lower="-0.785398163" upper="0.785398163"/>
+        <parent link="left_arm_link5"/>
+        <child link="left_arm_link6"/>
+        <axis xyz="0. 0. 1."/>
+        <origin xyz="0.0 0.0 0.0" rpy="1.5707963267948966 1.5707963267948966 0.0"/>
+    </joint>
+    <joint name="left_arm_joint7" type="revolute">
+        <dynamics damping="0.0" friction="0.0"/>
+        <limit effort="10.0" velocity="1.5" lower="-1.4" upper="1.4"/>
+        <parent link="left_arm_link6"/>
+        <child link="left_arm_link7"/>
+        <axis xyz="0. 0. 1."/>
+        <origin xyz="0.0 0.0 0.0" rpy="1.5707963267948966 0.0 0.0"/>
+    </joint>
+    <joint name="left_arm_end_effector_mount_joint" type="fixed">
+        <parent link="left_arm_link7"/>
+        <child link="left_arm_end_effector_mount_link"/>
+        <origin xyz="-0.083 0.0 0.0" rpy="-1.5707963267948966 0.0 3.141592653589793"/>
+    </joint>
+    <joint name="left_gripper_joint" type="fixed">
+        <parent link="left_arm_end_effector_mount_link"/>
+        <child link="left_gripper_base_link"/>
+        <origin xyz="0.0 0.0 0.0" rpy="-1.5707963267948968 1.2246467991473532e-16 -3.141592653589793"/>
+    </joint>
+    <joint name="left_gripper_tcp_joint" type="fixed">
+        <parent link="left_gripper_base_link"/>
+        <child link="left_gripper_tcp_link"/>
+        <origin xyz="-0.23074 0.0 0.0" rpy="-1.5707963267948968 1.2246467991473532e-16 -3.141592653589793"/>
+    </joint>
+</robot>

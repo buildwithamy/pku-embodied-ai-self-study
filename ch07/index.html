@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第 7 章 视觉与抓取 III：抓取检测与生成</title>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script async="" src="../vendor/mathjax/tex-svg.js"></script>
+<style>
+:root {
+  --ink: #1c2430;
+  --ink-soft: #4a5568;
+  --accent: #2563eb;
+  --accent-soft: #eef4ff;
+  --bg: #faf9f6;
+  --card: #ffffff;
+  --line: #e5e2db;
+  --green-bg: #f0f9f1;
+  --green-bd: #7cc98c;
+  --yellow-bg: #fffbeb;
+  --yellow-bd: #e8c766;
+  --red-bg: #fdf1f1;
+  --red-bd: #e8a1a1;
+  --update-bg: #fffaeb;
+  --update-bd: #e8a23d;
+  --update-ink: #8a4b08;
+  --code-bg: #101826;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-size: 16.5px;
+  line-height: 1.85;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.hero {
+  background: linear-gradient(135deg, #0e2a4a 0%, #15406e 55%, #1c5a94 100%);
+  color: #fff;
+  padding: 72px 24px 56px;
+  text-align: center;
+}
+.hero .course-tag {
+  display: inline-block;
+  font-size: 13px;
+  letter-spacing: 2px;
+  border: 1px solid rgba(255,255,255,.4);
+  border-radius: 999px;
+  padding: 4px 16px;
+  margin-bottom: 22px;
+  opacity: .9;
+}
+.hero h1 {
+  margin: 0 auto 14px;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  max-width: 760px;
+  line-height: 1.5;
+}
+.hero .sub {
+  font-size: 15.5px;
+  opacity: .82;
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+.hero .meta {
+  margin-top: 26px;
+  font-size: 13px;
+  opacity: .7;
+}
+.hero .ver-note {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 12.5px;
+  border: 1px dashed rgba(255,210,120,.7);
+  color: #ffd27a;
+  border-radius: 999px;
+  padding: 3px 14px;
+}
+.badge-2026 {
+  display: inline-block;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 2px 9px;
+  letter-spacing: .5px;
+  vertical-align: 2px;
+  margin-right: 6px;
+  box-shadow: 0 1px 4px rgba(217,119,6,.35);
+}
+.update-box {
+  margin: 18px 0;
+  padding: 14px 20px 12px;
+  border: 2px solid var(--update-bd);
+  background: var(--update-bg);
+  border-radius: 10px;
+  font-size: 15.5px;
+  box-shadow: 0 2px 8px rgba(232,162,61,.12);
+}
+.update-box .bt { color: var(--update-ink); font-weight: 700; display: block; margin-bottom: 4px; }
+.update-box p { margin: 5px 0; }
+.update-box ul { margin: 4px 0 4px; }
+.update-box li { margin: 3px 0; }
+.up-text {
+  background: #fef3c7;
+  border-bottom: 2px solid #f59e0b;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+.goals {
+  max-width: 880px;
+  margin: -28px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 28px;
+  box-shadow: 0 6px 24px rgba(16, 42, 74, .08);
+  position: relative;
+}
+.goals h2 { margin: 0 0 10px; font-size: 17px; color: var(--accent); }
+.goals ul { margin: 0; padding-left: 20px; }
+.goals li { margin: 4px 0; font-size: 15px; color: var(--ink-soft); }
+.goals li b { color: var(--ink); }
+.about {
+  max-width: 880px;
+  margin: 36px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px 34px;
+  box-shadow: 0 4px 16px rgba(16, 42, 74, .06);
+}
+.about h2 {
+  margin: 0 0 14px;
+  font-size: 20px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.about h3 { margin: 20px 0 8px; font-size: 16.5px; color: var(--accent); }
+.about p, .about li { font-size: 15px; color: var(--ink-soft); }
+.about .src-badge {
+  display: inline-block;
+  background: #eef4ff;
+  border: 1px solid #b9d0f8;
+  color: #2456b8;
+  font-size: 13px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin: 2px 4px 2px 0;
+}
+.about .license-note {
+  margin: 18px 0 0;
+  padding: 14px 18px;
+  background: var(--red-bg);
+  border: 1px solid var(--red-bd);
+  border-radius: 10px;
+  font-size: 14.5px;
+  line-height: 1.8;
+}
+.about .license-note b { color: #b04848; }
+.layout {
+  display: flex;
+  max-width: 1240px;
+  margin: 40px auto 80px;
+  padding: 0 24px;
+  gap: 36px;
+  align-items: flex-start;
+}
+.toc {
+  position: sticky;
+  top: 24px;
+  width: 240px;
+  flex-shrink: 0;
+  font-size: 13.5px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+}
+.toc .toc-title { font-weight: 700; color: var(--ink-soft); margin-bottom: 8px; letter-spacing: 1px; }
+.toc a {
+  display: block;
+  color: var(--ink-soft);
+  padding: 4px 10px;
+  border-left: 2px solid var(--line);
+  margin: 1px 0;
+  line-height: 1.5;
+}
+.toc a:hover { color: var(--accent); border-left-color: var(--accent); text-decoration: none; background: var(--accent-soft); border-radius: 0 6px 6px 0; }
+main { flex: 1; min-width: 0; }
+section { margin-bottom: 56px; }
+h2.sec {
+  font-size: 25px;
+  margin: 0 0 6px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--ink);
+  letter-spacing: .5px;
+}
+h2.sec .no {
+  display: inline-block;
+  background: var(--ink);
+  color: #fff;
+  font-size: 15px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin-right: 10px;
+  vertical-align: 3px;
+}
+h3 { font-size: 19px; margin: 34px 0 10px; }
+h4 { font-size: 16.5px; margin: 26px 0 8px; }
+p { margin: 10px 0; }
+strong { color: #0f2c4c; }
+em.term {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--accent);
+  border-bottom: 1px dashed var(--accent);
+  cursor: help;
+}
+ul, ol { padding-left: 26px; }
+li { margin: 5px 0; }
+code {
+  background: #eef1f5;
+  border: 1px solid #e0e5ec;
+  border-radius: 5px;
+  padding: 1px 6px;
+  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: 14.5px;
+  color: #0d3d75;
+}
+blockquote {
+  margin: 16px 0;
+  padding: 12px 20px;
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  color: var(--ink-soft);
+  font-size: 15.5px;
+}
+blockquote p { margin: 4px 0; }
+figure { margin: 22px 0; text-align: center; }
+figure img {
+  max-width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 18px rgba(16, 42, 74, .10);
+  background: #fff;
+}
+figcaption {
+  font-size: 13.5px;
+  color: #7a8290;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+figcaption .src { opacity: .75; font-size: 12.5px; }
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+.gallery figure { margin: 0; }
+.gallery img { width: 100%; }
+.gallery figcaption { font-size: 12.5px; margin-top: 6px; }
+.box {
+  margin: 18px 0;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 15.5px;
+}
+.box .bt { font-weight: 700; display: block; margin-bottom: 4px; }
+.box.green { background: var(--green-bg); border: 1px solid var(--green-bd); }
+.box.green .bt { color: #2e7d43; }
+.box.yellow { background: var(--yellow-bg); border: 1px solid var(--yellow-bd); }
+.box.yellow .bt { color: #9a7414; }
+.box.red { background: var(--red-bg); border: 1px solid var(--red-bd); }
+.box.red .bt { color: #b04848; }
+.box.blue { background: var(--accent-soft); border: 1px solid #a9c3f5; }
+.box.blue .bt { color: #2456b8; }
+.box p { margin: 4px 0; }
+.box ul { margin: 4px 0 4px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 18px 0;
+  font-size: 15px;
+  background: var(--card);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+th {
+  background: #17335c;
+  color: #fff;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 14.5px;
+}
+td { padding: 9px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+tr:nth-child(even) td { background: #f7f6f2; }
+.page-index { font-size: 13.5px; }
+.page-index th { font-size: 13.5px; padding: 8px 10px; }
+.page-index td { padding: 6px 10px; line-height: 1.6; }
+.page-index td.pg { font-family: Consolas, monospace; font-weight: 700; white-space: nowrap; color: var(--accent); }
+pre {
+  background: var(--code-bg);
+  color: #e6edf6;
+  border-radius: 10px;
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-size: 13.8px;
+  line-height: 1.65;
+  margin: 16px 0;
+}
+pre code {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+pre .cm { color: #7d8aa0; }
+pre .kw { color: #7fb3ff; }
+pre .st { color: #a5d6a7; }
+pre .fn { color: #ffd479; }
+.term-table td:first-child { font-weight: 700; white-space: nowrap; }
+footer {
+  max-width: 880px;
+  margin: 0 auto 60px;
+  padding: 20px 28px;
+  border-top: 1px solid var(--line);
+  font-size: 12.8px;
+  color: #8a91a0;
+  line-height: 1.8;
+}
+@media (max-width: 960px) {
+  .toc { display: none; }
+  .hero h1 { font-size: 26px; }
+  .layout { padding: 0 16px; }
+  .gallery { grid-template-columns: 1fr; }
+}
+/* 2026-10-04: offline chapters and bounded content scrolling */
+.layout, main, section { min-width:0; }
+main { max-width:100%; }
+img, video { max-width:100%; height:auto; }
+p, li, td, th, a { overflow-wrap:anywhere; }
+.table-scroll { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; margin:18px 0; }
+.table-scroll table { margin:0; min-width:640px; }
+pre { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; }
+mjx-container[display="true"] { max-width:100%; overflow-x:auto; overflow-y:hidden; padding:6px 0; text-align:left !important; }
+mjx-container:not([display="true"]) { display:inline-block; max-width:100%; vertical-align:middle; overflow-x:auto; overflow-y:hidden; }
+.mobile-toc { display:none; }
+.chapter-nav { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; }
+@media(max-width:960px) {
+  .layout { flex-direction:column; gap:16px; }
+  main { width:100%; }
+  .mobile-toc { display:block; width:100%; margin:0; padding:12px 16px; background:var(--card); border:1px solid var(--line); border-radius:10px; }
+  .mobile-toc summary { cursor:pointer; font-weight:700; }
+  .mobile-toc a { display:block; padding:4px 0; }
+}
+</style>
+<link href="../shared.css" rel="stylesheet"/>
+</head>
+<body><nav class="reader-nav"><a class="brand" href="../index.html">北京大学《具身智能导论》自学教程</a><a href="../学习与运行说明.html">学习指南</a><a href="课件中文译解.html">本章课件翻译</a><a href="../术语与符号.html">术语与符号</a><a href="../来源与许可.html">来源</a></nav>
+<!-- ============ 封面 ============ -->
+<div class="hero">
+<span class="course-tag">具身智能自学教程 · 第 7 章</span>
+<h1>视觉与抓取 III：抓取检测与生成</h1>
+<p class="sub">抓取检测直接从场景中寻找可行的抓取位姿。本章介绍 VGN 的体素路线、GraspNet 的点云路线，再看生成模型如何表示灵巧手的多种抓法。</p>
+<p class="meta">改编自北京大学《具身智能导论》(Introduction to Embodied AI) 2025 春季课程 · 授课：王鹤 老师</p>
+<span class="ver-note">配套原文、中文翻译与自测 · 支持离线阅读</span>
+<div class="chapter-toolbar" id="chapter-resources"><a href="课件中文译解.html">英文原课件与逐页中文翻译 →</a><a href="../技术动态_20261004.html">本章相关技术进展 →</a><a href="../术语与符号.html">英文缩写与符号速查 →</a></div></div>
+<!-- ============ 学习目标 ============ -->
+<div class="goals">
+<h2>🎯 本章学习目标</h2>
+<ul>
+<li>深入理解 <b>摩擦锥</b>的物理推导与<b>力闭合的数学判据</b>（抓取矩阵 F 的两个充要条件）</li>
+<li>理解 <b>GraspNet-1B</b> 十亿级抓取标注的生成流程，以及 μ 值在「标签数量 vs 质量」间的权衡</li>
+<li>掌握 <b>抓取检测</b>的问题形式化：输入模态（体素/点云/图像）与评估指标</li>
+<li>理解 <b>VGN</b>（TSDF 体素 + 3D CNN）与 <b>GraspNet / GS-Net</b>（点云 + graspness + Cylinder Grouping）两大范式</li>
+<li>理解抓取 Sim2Real 的特殊性：为什么抓取任务的 Gap 甚至可以是<b>负的</b></li>
+<li>了解<b>条件生成模型</b>（扩散模型）如何解决灵巧手抓取的多峰分布问题</li>
+<li>动手实践：实现二维平移摩擦锥检查 + 局部平面性候选点评分（均为教学简化）</li>
+</ul>
+</div>
+<!-- ============ 关于本教程 ============ -->
+<div class="about" id="about">
+<h2>📖 关于本教程</h2>
+<h3>内容来源</h3>
+<p>本教程的核心知识体系来自 <b>北京大学 2025 年春季学期《具身智能导论》</b>（Introduction to Embodied AI）课程，由 <b>王鹤</b> 老师（北京大学前沿计算研究中心助理教授，课程授课教师）主讲。</p>
+<p>
+<span class="src-badge">📝 课堂笔记 × 9 章</span>
+<span class="src-badge">🎞 授课课件 × 13 讲</span>
+<span class="src-badge">💻 课程作业 × 4 次</span>
+</p>
+<p>以上资料由课程同学整理并开源在 GitHub 仓库 <a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU" target="_blank">zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU</a>（<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/LICENSE" target="_blank">GPL-3.0 许可证</a>），课程官网为 <a href="https://pku-epic.github.io/Intro2EAI_2025/" target="_blank">pku-epic.github.io/Intro2EAI_2025</a>。</p>
+<h3>如何使用本章</h3>
+<ul>
+<li><b>三源整合：</b>把每一讲的「课堂笔记 + 授课课件 + 配套作业」融合进同一章，笔记提供知识骨架，课件图提供直观理解，作业提供动手实践；</li>
+<li><b>初学者化改写：</b>原笔记是写给北大学生的浓缩讲义，本教程把结论式表述扩写为「概念 → 直觉 → 应用」的解释型讲述，补充术语表与学习目标；</li>
+<li><b>图文并茂：</b>正文配图附中文翻译与来源页码；完整课件可按页对照阅读；</li>
+<li><b>补充说明：</b>橙色框提供适用条件与工程接口说明；具体模型、数据和评分以对应一手资料为准；</li>
+<li><b>作业适配自学：</b>保留原版作业的难度与考点，补充环境搭建、解题提示与自测标准，并提供参考答案链接（先自己做，再对照）。</li>
+</ul>
+<h3>教程目的</h3>
+<p>让没有北大课堂环境的自学者，也能按课程原有的知识体系，系统地学完具身智能入门：从机器人学基础，到视觉与抓取，再到策略学习——最终具备读懂前沿论文、跑通基础实验的能力。</p>
+<div class="license-note">
+<b>📜 版权与使用声明</b><br/>
+    原课程资料（笔记、课件、作业）均为开源免费资源，版权归原作者（王鹤老师及课程组、笔记整理者）所有；本教程的改编内容（中文讲解、学习辅助、编排结构）同样免费公开。<br/>
+    来源仓库采用 GPL-3.0，原课件中的论文图、照片与其他第三方材料仍保留相应署名和权利说明。分发或复用时应遵守所涉及材料的许可与权利条件。
+  </div>
+</div>
+<!-- ============ 正文 ============ -->
+<div class="layout">
+<nav class="toc">
+<div class="toc-title">本章目录</div>
+<a href="#about">关于本教程（来源 · 声明）</a>
+<a href="#s1">1. 抓取稳定性的数学：摩擦锥与力闭合</a>
+<a href="#s2">2. GraspNet-1B：十亿标注从哪来</a>
+<a href="#s3">3. 抓取检测：问题形式化</a>
+<a href="#s4">4. VGN：体素路线</a>
+<a href="#s5">5. GraspNet / GS-Net：点云路线</a>
+<a href="#s6">6. 条件生成模型：灵巧手抓取</a>
+<a href="#s7">7. 前沿：透明物体与深度难题</a>
+<a href="#s8">8. 本章小结</a>
+<a href="#s9">9. 动手实践</a>
+<a href="#apA">附录 A：术语表</a>
+<a href="#apB">附录 B：课件 69 页完整索引</a>
+<a href="#apC">附录 C：参考资源</a>
+</nav>
+<details class="mobile-toc"><summary>本章目录</summary><a href="#about">关于本教程（来源 · 声明）</a><a href="#s1">1. 抓取稳定性的数学：摩擦锥与力闭合</a><a href="#s2">2. GraspNet-1B：十亿标注从哪来</a><a href="#s3">3. 抓取检测：问题形式化</a><a href="#s4">4. VGN：体素路线</a><a href="#s5">5. GraspNet / GS-Net：点云路线</a><a href="#s6">6. 条件生成模型：灵巧手抓取</a><a href="#s7">7. 前沿：透明物体与深度难题</a><a href="#s8">8. 本章小结</a><a href="#s9">9. 动手实践</a><a href="#apA">附录 A：术语表</a><a href="#apB">附录 B：课件 69 页完整索引</a><a href="#apC">附录 C：参考资源</a></details>
+<main><div class="box blue"><span class="bt">原课件对照阅读</span><p><a href="课件中文译解.html">打开本章课件逐页中文翻译</a>：保留原页码、原文与来源，可在学完一节后对照相应页面。</p></div>
+<!-- ============ 1 ============ -->
+<section id="s1">
+<h2 class="sec"><span class="no">1</span>抓取稳定性的数学：摩擦锥与力闭合</h2><div class="box blue"><span class="bt">先建立符号约定</span><p>$f_n$ 是压向物体的法向力，$f_t$ 是切向力，$\mu\ge0$ 是静摩擦系数；单向接触只能推不能拉。库仑约束为 $f_n\ge0$、$\|f_t\|\le\mu f_n$。例如 $\mu=0.5$、法向力 10 N 时，切向力幅值上限为 5 N。这是接触点的静摩擦检查。评估完整抓取时，还要检查夹爪最大力和刚体转矩平衡。</p><p>力矩相对参考点计算：$\tau=r\times f$。同样大小的力，接触位置不同会产生不同转矩；抓取必须同时检查力与力矩。</p></div>
+<p>第 6 章介绍了 Force Closure（力闭合）与 Form Closure（形闭合）的直觉。这一章把「抓得稳」变成<b>可计算的判据</b>——因为它要用来给<b>十亿条抓取数据打标签</b>。先从物理出发：</p>
+<h3>1.1 摩擦锥：静摩擦允许的接触力</h3>
+<p>滑块放在水平面上，静摩擦系数 $\mu$。施加与法线成 $\theta$ 角的力 $F$：切向分量 $F_\parallel = F\sin\theta$ 必须不超过最大静摩擦 $\mu F_\perp = \mu F\cos\theta$，即：</p>
+<p style="text-align:center">$$ \tan\theta \le \mu \quad \Longleftrightarrow \quad \theta \le \alpha := \arctan\mu $$</p>
+<figure>
+<img alt="笔记配图：摩擦锥——法向力与切向力的几何关系" loading="lazy" src="assets/friction_cone.png"/>
+<figcaption>摩擦锥：只要力方向与法线夹角 ≤ 摩擦角 $\alpha = \arctan\mu$，在理想库仑静摩擦模型中满足不滑动的方向条件；实际还受接触保持与载荷上限约束。<span class="src">（来源：笔记 07）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>N；F；θ；μ。</p></div></div></figure>
+<p>三维中，所有满足条件的力方向构成一个<b>圆锥</b>——轴线为接触点法线、半顶角 $\alpha$。<b>压向接触面、位于摩擦锥内的接触力满足静摩擦约束</b>；边界是临界状态，接触失效、材料变形和动力学扰动仍须另行检查。</p>
+<figure>
+<img alt="笔记配图：摩擦锥示意图" loading="lazy" src="assets/graph1.png"/>
+<figcaption>摩擦锥几何：法向力 N、摩擦系数 μ、锥半顶角 θ。<span class="src">（来源：笔记 07）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>N；F；θ；μ。</p></div></div></figure>
+<h3>1.2 力旋量与抓取矩阵</h3>
+<p>作用在刚体上的力既产生<b>平移</b>（力）也产生<b>旋转</b>（力矩）。把两者打包成<b>力旋量（Wrench）</b>：3D 中为 6 维向量 $\mathcal{F} = [f_x, f_y, f_z, \tau_x, \tau_y, \tau_z]^\top$；2D 平面中为 3 维 $[f_x, f_y, \tau_z]^\top$。</p>
+<figure>
+<img alt="笔记配图：力旋量的构成" loading="lazy" src="assets/graph2.png"/>
+<figcaption>力旋量：力（3 维）+ 力矩（3 维）拼成的 6 维向量。<span class="src">（来源：笔记 07）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>[τₓ，τᵧ，τ_z]ᵀ；[fₓ，fᵧ，f_z]ᵀ。</p></div></div></figure>
+<p>把每个摩擦锥用 $m$ 条边界射线（课程示例取 $m=6$）近似为多面体锥，每条射线的力映射为力旋量。所有接触的射线拼成<b>抓取矩阵 $F \in \mathbb{R}^{n \times j}$</b>；平面刚体 $n=3$，空间刚体 $n=6$，接触数为 C，若每个接触采用 m 条射线则 $j=mC$。下文 k 表示射线组合的系数向量，射线数量则用 j 表示。</p>
+<h3>1.3 力闭合的充要条件</h3>
+<div class="box blue">
+<span class="bt">🔑 力闭合 ⟺ 两个条件同时成立</span>
+<p>① $\mathrm{rank}(F) = n$：列向量线性张成整个 $n$ 维力旋量空间，说明可用方向覆盖了全部维度；接着还要检查条件②中的严格正系数；<br/>
+    ② 存在 $k \in \mathbb{R}^j$，$k_i \ge \epsilon &gt; 0$，使 $Fk = 0$：存在<b>严格正系数</b>的零合力组合——等价于<b>原点严格位于这些列向量的凸包内部（在满维条件下）</b>。</p>
+</div>
+<p>两个条件的物理含义：① 排除维度不足；①与②联合保证非负接触系数足以覆盖所有力旋量方向；② 的严格正性（$k_i\ge\epsilon&gt;0$）与满秩联合保证原点在列向量凸包的满维内部，而它们生成的凸锥等于整个力旋量空间。若原点仅在凸包边界，则存在某些方向的扰动无法由这些非负射线组合平衡。严格正系数给出离散锥的几何判据。要评估鲁棒余量，还需结合摩擦系数、接触位置和有限夹持力。</p>
+<figure>
+<img alt="笔记配图：力闭合的几何条件" loading="lazy" src="assets/force_closure.png"/>
+<figcaption>力闭合的几何：零向量在生成射线力旋量凸包的满维内部；对应凸锥覆盖整个空间。力矩同时取决于接触位置与力方向。<span class="src">（来源：笔记 07）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>[τₓ，τᵧ，τ_z]ᵀ；[fₓ，fᵧ，f_z]ᵀ。</p></div></div></figure>
+<div class="box yellow">
+<span class="bt">从力闭合到载荷检查</span>
+<p>推导假设接触点能施加<b>任意大的力</b>。真实电机的力和力矩有限，因此满足力闭合后，还要检查抵抗外力所需的夹持力是否在电机能力范围内。力闭合检查能否抵抗任意方向的力旋量；给定任务则可以只检查实际载荷。例如，物体可以平稳放在托盘上，即使托盘接触不满足力闭合。任务成功还需载荷、执行器能力、碰撞与运动条件共同满足。</p>
+</div>
+<p>力闭合的两大应用（笔记）：① <b>合成大规模抓取标注</b>——对采样抓取位姿做力闭合筛选；② <b>仿真近似</b>——设置六个方向的重力（$x,y,z,-x,-y,-z$）看物体掉不掉出来。这能检验所选方向的稳定性；任意外部力旋量下的力闭合仍需完整判据来验证。</p>
+</section>
+<!-- ============ 2 ============ -->
+<section id="s2">
+<h2 class="sec"><span class="no">2</span>GraspNet-1B：十亿标注从哪来</h2><p><b>数据口径：</b>1Billion 指大量采样抓取的几何标注规模；真实场景观测、物体模型、候选抓取标签和实际执行演示是不同统计单位。一个真实图像可以对应许多抓取标签。</p>
+<p>训练抓取检测模型需要海量「（场景，有效抓取）」配对。<b>GraspNet-1Billion</b>（Fang et al., CVPR 2020）结合物体模型、场景观测与抓取标注。下面概括这类流水线，需区分真实相机采集与另行扩展的合成渲染：</p>
+<figure>
+<img alt="课程课件：GraspNet-1B 的抓取标注流水线" loading="lazy" src="assets/s_p11.jpg"/>
+<figcaption>GraspNet-1B 标注流水线：采样抓取点 → 采样视角/平面旋转/深度 → 评估投影到场景。<span class="src">（来源：Lecture 7 课件 p11）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">GraspNet-1Billion：抓取标注如何生成？</div><div class="translation-body"><h3>抓取位姿标注管线</h3><ul><li>首先从点云采样抓取点。</li><li>随后采样并评估抓取视角、平面内旋转和夹爪深入距离。最后利用每个物体的6D位姿，将抓取投影到场景中。</li><li>还进行碰撞检测，以避免抓取与背景或其他物体碰撞。</li></ul><p>抓取点采样 → 抓取生成与标注 → 抓取投影 / 碰撞检测。</p><p>抓取视角采样｜平面内旋转采样｜夹爪深入距离采样。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l07-p11">对照原课件第11页与完整中文翻译 →</a></figure>
+<ol>
+<li><b>获取物体模型</b>：3D 扫描一批真实物体；</li>
+<li><b>抓取位姿采样</b>：表面均匀采点（FPS），夹爪中心对准采样点，朝向基于表面法线 + 随机旋转；</li>
+<li><b>力闭合筛选</b>：给定 $\mu$（如 0.8），用 §1 的数学判据筛掉不稳定的抓取；</li>
+<li><b>场景生成与位姿标注</b>：物体随机摆桌面，标注每个物体的精确 6D 位姿（RGB-D + 模型匹配；纯仿真是另一种数据构造路线）；</li>
+<li><b>标签变换与碰撞检测</b>：物体系抓取标签变换到场景系，剔除与场景碰撞的；</li>
+<li><b>多视角观测</b>：GraspNet 使用真实相机 RGB-D 数据（官方基线区分 RealSense 与 Kinect）；虚拟相机渲染属于合成数据扩展，不等同于原数据集的采集。</li>
+</ol>
+<h3>μ 的权衡：标签数量 vs 质量</h3>
+<p>较低摩擦系数下仍满足力闭合的标签，在该接触模型中要求更严格，但可用标签也更少。选择 $\mu$ 时，要平衡标签数量与筛选严格程度，再通过同一任务的真机评估判断泛化效果。</p>
+<p>笔记还点出一个重要演进：GraspNet-1B 依赖扫描物体与真实桌面标注，多样性受限；如今 <b>Objaverse-XL（千万级 3D 模型）</b>等高质量模型库 + 逼真渲染，已能全程序化生成更大更多样的数据集——「合成数据的潜力是巨大的」。</p>
+</section>
+<!-- ============ 3 ============ -->
+<section id="s3">
+<h2 class="sec"><span class="no">3</span>抓取检测：问题形式化</h2>
+<p><b>抓取检测（Grasp Detection）</b>：给定场景表示（点云/RGB-D/体素），输出候选抓取位姿——位置（3 DoF）+ 朝向（3 DoF）+ 夹爪宽度（1 DoF），附带质量分数（课件 p13）。</p>
+<p>三种输入模态（课件 p14-16 + 笔记）：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>模态</th><th>代表网络</th><th>特点</th></tr>
+<tr><td><b>体素网格 / TSDF</b></td><td>VGN</td><td>显式几何；受体素分辨率限制</td></tr>
+<tr><td><b>点云</b></td><td>GraspNet-baseline（点集骨干）、GS-Net（稀疏卷积骨干）</td><td>显式几何；传感器噪声、深度误差（镜面/透明）</td></tr>
+<tr><td><b>图像</b></td><td>MonoGraspNet（单目 RGB）、GraspNeRF（多视角）</td><td>隐式几何；特定方法面向透明/镜面物体，效果需评测</td></tr>
+</table></div></div>
+<figure>
+<img alt="课程课件：点云输入表示——PointNet、PointNet++、GraspNet-baseline" loading="lazy" src="assets/s_p15.jpg"/>
+<figcaption>点云路线的代表：PointNet/PointNet++ 为 backbone 的 GraspNet-baseline。<span class="src">（来源：Lecture 7 课件 p15）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">视觉输入表示</div><div class="translation-body"><h3>点云</h3><ul><li>骨干网络：PointNet、PointNet++。</li><li>网络：GraspNet-baseline。</li><li>显式几何；传感器噪声、深度误差（镜面反射/透明）。</li></ul><h3>PointNet</h3><p>分类网络：输入点 n×3 → 输入变换 → 多层感知机(64,64)，共享 → 特征变换 → 多层感知机(64,128,1024)，共享 → 最大池化 → 1024维全局特征 → 多层感知机(512,256,k) → 输出分数 k。T-Net：3×3变换、64×64变换；矩阵乘法。</p><p>分割网络：点特征；n×1088 → 多层感知机(512,256,128)，共享 → n×128 → 多层感知机(128,m)，共享 → 输出分数 n×m。</p><h3>PointNet++</h3><p>分层点集特征学习：采样与分组 → PointNet → 集合抽象；采样与分组 → PointNet → 集合抽象。分割：插值 → 单位PointNet → 插值 → 单位PointNet → 逐点分数；跳跃链接拼接。分类：PointNet → 全连接层 → 类别分数。</p><h3>GraspNet-baseline</h3><p>输入：N个点 → 点编码器 / 点解码器 → M个样本及其特征 → 接近方向网络ApproachNet → 接近方向分数 → 分组与对齐 → K个分组簇 → 操作网络OperationNet / 容错网络ToleranceNet → 筛选 → 输出K′个抓取。物体性、V个接近向量、操作参数、抓取亲和场。维度：N×3、M×(3+C)、M×(2+V)、nᵢ×(3+C)、K×(12×R)、K×R×2。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l07-p15">对照原课件第15页与完整中文翻译 →</a></figure>
+<p>为什么优先考虑几何输入？<b>抓取的物理稳定性取决于局部几何（接触点、法线、曲率），几何是重要因素；材料摩擦、质量分布、柔顺性和任务也会影响稳定性，颜色纹理可间接提示材料</b>——直接给几何信息更直接高效（笔记）。老师的「Partial/Complete」观点也值得记住：想建模完整三维场景需要多视角数据，单视角会有遮挡缺失。</p>
+<p>评估指标（课件 p17）：<b>成功率</b>（成功/总尝试）、<b>清理率</b>（移除物体数/总物体数）、<b>规划时间</b>（输入到返回抓取）。任务特点：<b>Object Agnostic</b>（不区分身份，好抓的先抓）+ <b>Non-Task-Oriented</b>（不关心抓来干嘛）。</p>
+</section>
+<!-- ============ 4 ============ -->
+<section id="s4">
+<h2 class="sec"><span class="no">4</span>VGN：体素路线</h2>
+<p><b>VGN（Volumetric Grasping Network, CoRL 2020）</b>直接在三维体素空间预测抓取（课件 p18-24）：</p>
+<figure>
+<img alt="笔记配图：VGN 网络结构与输出" loading="lazy" src="assets/VGN.png"/>
+<figcaption>VGN：输入 TSDF 体素（如 40³），输出质量/朝向/宽度三个体素网格。<span class="src">（来源：笔记 07）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>截断符号距离场（TSDF）：1×40×40×40 → 体积抓取网络（VGN） → 质量：1×40×40×40；朝向：4×40×40×40；宽度：1×40×40×40 → 检测到的抓取。</p></div></div></figure>
+<ul>
+<li><b>输入</b>：多视角深度图融合的 TSDF（截断符号距离场——每个体素存到最近表面的有符号距离，正值在外、负值在内）；</li>
+<li><b>网络</b>：3D 全卷积编码器-解码器（U-Net 风格）；</li>
+<li><b>输出</b>：三个网格：<b>抓取质量</b>（该体素处的质量预测，若要解释为真机成功概率，需要先做校准）、<b>抓取朝向</b>（四元数）、<b>抓取宽度</b>。</li>
+</ul>
+<figure>
+<img alt="课程课件：VGN 方法框架与真机装置" loading="lazy" src="assets/s_p18.jpg"/>
+<figcaption>VGN（Breyer et al., CoRL 2020）：方法框架与真机装置。合成数据与采样条件见课件 p22。<span class="src">（来源：Lecture 7 课件 p18）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">体积抓取网络：杂乱场景中的实时6自由度抓取检测（VGN）</div><div class="translation-body"><p>深度传感器｜TSDF截断符号距离场｜质量｜朝向｜宽度｜检测到的抓取。</p><p>M. Breyer、J. J. Chung、L. Ott、R. Siegwart、J. Nieto：《体积抓取网络：杂乱场景中的实时6自由度抓取检测》，CoRL 2020。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l07-p18">对照原课件第18页与完整中文翻译 →</a></figure>
+<p>笔记介绍了一个工程技巧：<b>预测宽度主要用于减少夹爪张开过宽造成的碰撞</b>。某些夹爪实现采用闭合控制；实际停止条件须由控制模式、力限位与物体安全要求确定。</p>
+<h3>后处理三件套</h3>
+<ol>
+<li><b>高斯平滑</b>：平滑预测质量、偏好连片高分区域；这是一种局部平滑假设，附近点仍可能因碰撞而不可抓；</li>
+<li><b>距离掩膜</b>：依据TSDF表面距离与手指深入距离筛选体素；原课件作了简写，具体符号与阈值以原实现为准；</li>
+<li><b>NMS</b>：按质量分数去冗余。但老师指出：质量、朝向和宽度需要一起检查。「即使前面这个准了后面不准也没用」。</li>
+</ol>
+<h3>VGN 的仿真到真实迁移：差距来自哪些因素？</h3>
+<div class="box green">
+<span class="bt">💡 抓取任务 Sim2Real 的独特之处</span>
+<p>VGN 用大量合成数据训练、真机表现良好，关键在<b>依赖几何表征</b>——不看颜色纹理，只看形状。TSDF 在厘米级体素下对毫米级深度噪声不敏感（小的凹凸被体素化平滑掉）。课程还指出：<b>某些夹爪抓取实验中，真机成功率可能高于对应仿真</b>——</p>
+<ul>
+<li>真实夹爪闭合时持续施力，会轻微移动/压紧物体、使软物体形变——更稳固的接触，仿真里没模拟这些「有利」效应；</li>
+<li>指尖橡胶垫可改变摩擦与柔顺接触，但也改变标定条件，应验证材料、磨损和目标物体上的效果；</li>
+<li>仿真自身缺陷（碰撞检测不准、物理不稳定）反而可能让仿真抓不住、现实抓得住。</li>
+</ul>
+<p><b>仿真结果帮助定位问题，真机实验则检验方法在实际接触条件下的表现。</b></p>
+</div>
+<p>VGN 的局限：多视角依赖（严重遮挡场景需要多视角建完整 TSDF）；精度受体素大小限制（若位置只选体素中心，每轴量化误差可达半个体素；实际误差还包括观测、预测和执行误差）；提高分辨率则内存/计算三次方增长。</p>
+</section>
+<!-- ============ 5 ============ -->
+<section id="s5">
+<h2 class="sec"><span class="no">5</span>GraspNet / GS-Net：点云路线</h2>
+<p>点云对比体素：<b>轻量</b>（只表示表面，几万点与稠密三维网格的对比示例，实际数量依表示配置而定）、<b>高分辨率</b>（坐标连续值）。GraspNet-baseline与<b>GS-Net</b> 都利用参数分解；课件 p25—38 展示的是 GS-Net 管线：</p>
+<figure>
+<img alt="笔记配图：GS-Net 两阶段网络架构" loading="lazy" src="assets/GraspNet.png"/>
+<figcaption>GS-Net 架构：种子点选择 → 球面采样方向 → 绕轴旋转 → 沿轴深入，多阶段分解 6 DoF。<span class="src">（来源：笔记 07）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>点云：N×3 → 点编码器 → 点解码器 → N×(3+C) → 多层感知机（MLP） → 逐点可抓取性分布 → 可抓点最远点采样（FPS） → M×(3+C) → 种子点 → 多层感知机（MLP） → M×(V+C) → 逐视图可抓取性分布。</p><p>可抓取性概率化视图选择（PVS）。将最佳视图转为向量：V→3。</p><p>选定视图：M×(3+3+C) → 圆柱分组 → 每组K×(3+C) → 圆柱分组 → 多层感知机（MLP） → A×D、A×D → 角度—深度搜索：A个角度、D个深度 → 输出 → 输出抓取位姿。</p></div></div></figure>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>阶段</th><th>做什么</th><th>覆盖的自由度</th></tr>
+<tr><td><b>接触点选择</b></td><td>预测每点的 graspness 分数，取高分点</td><td>2 DoF（表面）</td></tr>
+<tr><td><b>接近方向</b></td><td>在离散接近方向集合中预测分数并选择方向（数量按具体方法配置）</td><td>2 DoF（轴向）</td></tr>
+<tr><td><b>绕轴旋转 + 深入</b></td><td>Cylinder Grouping 聚合局部特征预测</td><td>1 DoF（角度）+ 1 DoF（深度）</td></tr>
+</table></div></div>
+<p><b>GS-Net（ICCV 2021）</b>把这个框架系统化，提出 <b>graspness</b>——基于力分析模型的「可抓取性」度量，两阶段设计（Where / How）：</p>
+<figure>
+<img alt="课程课件：GSNet 架构——稀疏卷积 backbone 与两阶段设计" loading="lazy" src="assets/s_p30.jpg"/>
+<figcaption>GS-Net 架构：MinkowskiEngine 稀疏卷积 backbone（ResUNet14）→ 可抓取点采样 → 视图选择 → Cylinder Grouping → 抓取生成。<span class="src">（来源：Lecture 7 课件 p30）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">GSNet架构</div><div class="translation-body"><h3>骨干网络</h3><ul><li>ResUNet14基于MinkowskiEngine构建。</li><li>含残差块的U形架构。</li><li>对于N×3点云，提取C通道特征，输出大小为N×(3+C)的点集。</li></ul><p>点编码器｜点解码器｜输入点云｜输出逐点特征。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l07-p30">对照原课件第30页与完整中文翻译 →</a></figure>
+<ul>
+<li><b>稀疏卷积</b>：3D 点云体素化后大部分体素是空的——只在非空处计算卷积（MinkowskiEngine）；</li>
+<li><b>可抓取 FPS</b>：MLP 输出 graspable landscape，选 graspness 超阈值的点做最远点采样；</li>
+<li><b>视图选择</b>：Fibonacci 球面采样 V 个视图，输出 view-wise graspness；</li>
+<li><b>Cylinder Grouping</b>：以「点-方向」对为中心取圆柱区域，聚合局部点特征；</li>
+<li><b>抓取生成</b>：MLP + max-pooling，输出不同（平面旋转角 × 深入深度）组合的分数与宽度。</li>
+</ul>
+<figure>
+<img alt="课程课件：GSNet 在 GraspNet-1B 上的推理速度对比" loading="lazy" src="assets/s_p37.jpg"/>
+<figcaption>GS-Net 的推理速度优势：CGM（级联 graspness 模型）与 GOM（抓取操作模型）的消融。<span class="src">（来源：Lecture 7 课件 p37）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">GSNet</div><div class="translation-body"><h3>分布类型</h3><div class="table-wrap"><table><thead><tr><th>分布</th><th>平均精度AP</th></tr></thead><tbody><tr><td>物体级</td><td>55.33</td></tr><tr><td>场景级</td><td>59.70</td></tr></tbody></table></div><h3>视图可抓取性类型</h3><div class="table-wrap"><table><thead><tr><th>视图可抓取性</th><th>平均精度AP</th></tr></thead><tbody><tr><td>平均分</td><td>50.62</td></tr><tr><td>最高分</td><td>56.95</td></tr><tr><td>可行比例</td><td>59.70</td></tr></tbody></table></div><p>GraspNet-1Billion上的推理速度。“CGM”为级联可抓取性模型，“GOM”为抓取操作模型。</p><div class="table-wrap"><table><thead><tr><th>相机</th><th>CGM</th><th>GOM</th><th>总计</th></tr></thead><tbody><tr><td>RealSense</td><td>0.08秒</td><td>0.02秒</td><td>0.10秒</td></tr><tr><td>Kinect</td><td>0.10秒</td><td>0.02秒</td><td>0.12秒</td></tr></tbody></table></div></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l07-p37">对照原课件第37页与完整中文翻译 →</a></figure>
+<h3>点云抓取方法的归纳偏置：局部性与平移关系</h3>
+<blockquote>
+<p>① <b>局部性</b>：Cylinder Grouping 只依赖候选点周围的局部几何，以局部几何为主要特征；最终还须检测远处障碍对手臂和夹爪的影响；<br/>
+    ② <b>平移等变性</b>：相对坐标帮助复用平移后的局部几何模式，但具体网络是否严格平移等变须看其坐标编码与实现。<br/>
+    模型学习的是「<b>局部几何特征与抓取成功的关系</b>」：一对平行小平面、一个合适的边缘或角落，在不同物体上可能提示可行抓取，但仍须核对尺度、摩擦与载荷。在数百个物体上学习多样的局部几何模式，有助于泛化到未见物体。评估新物体时，还要覆盖遮挡、尺度、材料和场景变化。</p>
+</blockquote>
+</section>
+<!-- ============ 6 ============ -->
+<section id="s6">
+<h2 class="sec"><span class="no">6</span>条件生成模型：灵巧手抓取</h2>
+<p>VGN 与 GraspNet 本质都是<b>检测</b>——输出有限个离散候选 + NMS。但理论上物体有无限多种抓法，检测式方法只能给有限几个解。对 <b>20+ DoF 的灵巧手</b>，抓取空间巨大，采样+评估或检测都很困难，可以用<b>生成模型</b>表达多种可行抓取（课件 p39-50）：</p>
+<figure>
+<img alt="课程课件：抓取数据的 Scaling Law——抓取位姿与场景数量对性能的影响" loading="lazy" src="assets/s_p46.jpg"/>
+<figcaption>抓取数据的 Scaling Law：减少抓取位姿/场景数量导致性能显著下降——生成模型性能同样受数据规模影响（具体数据规模与实验设置以原论文为准）。<span class="src">（来源：Lecture 7 课件 p46）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">抓取数据的规模规律</div><div class="translation-body"><ul><li>探索扩大抓取位姿数量和场景数量的影响。</li><li>使用更少位姿/场景时，性能显著下降。</li></ul><h3>使用的总场景比例：成功率（%）</h3><div class="table-wrap"><table><thead><tr><th>比例</th><th>本文方法</th><th>ISAGrasp＋局部特征</th></tr></thead><tbody><tr><td>1/128</td><td>52.8</td><td>41.1</td></tr><tr><td>1/64</td><td>68.1</td><td>52.7</td></tr><tr><td>1/32</td><td>76.8</td><td>60.0</td></tr><tr><td>1/16</td><td>79.9</td><td>63.5</td></tr><tr><td>1/8</td><td>81.4</td><td>63.6</td></tr><tr><td>1/4</td><td>83.5</td><td>65.3</td></tr><tr><td>1/2</td><td>84.8</td><td>65.4</td></tr><tr><td>1</td><td>85.8</td><td>66.1</td></tr></tbody></table></div><h3>使用的总抓取比例：成功率（%）</h3><div class="table-wrap"><table><thead><tr><th>比例</th><th>本文方法</th><th>ISAGrasp＋局部特征</th></tr></thead><tbody><tr><td>1/10000</td><td>58.1</td><td>56.5</td></tr><tr><td>1/1000</td><td>74.5</td><td>61.3</td></tr><tr><td>1/100</td><td>83.5</td><td>64.1</td></tr><tr><td>1/10</td><td>84.6</td><td>65.5</td></tr><tr><td>1</td><td>85.8</td><td>66.1</td></tr></tbody></table></div></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l07-p46">对照原课件第46页与完整中文翻译 →</a></figure>
+<p>课件方法（两阶段）：</p>
+<ol>
+<li><b>Where to grasp</b>：稀疏卷积提取局部特征，预测<b>objectness</b>（是否物体上的点）与<b>graspness</b>（是否适合做种子点）；</li>
+<li><b>How to grasp</b>：对种子点的<b>手腕 6D 位姿 $(T, R)$ 用扩散模型生成</b>（处理多峰分布），手指关节角 $\theta$ 直接回归。</li>
+</ol>
+<p>数据来自 <b>DexGraspNet 2.0</b>（课件时 in submission）：7500 个合成训练场景 + 670 测试场景的大规模杂乱灵巧抓取基准。原实验显示灵巧手对较大物体有<b>更强的包裹能力</b>；相应平行夹爪评测中与 GS-Net 表现接近。这些结论限定该论文的物体集、输入和协议。</p>
+<div class="update-box">
+<span class="bt">进一步理解：检测与生成的分工</span>
+<p>检测方法从观测中挑选候选抓取，生成方法表达多个可行抓取；两者都需要检查几何可达性、碰撞和接触条件。比较成功率时，先对齐物体集合、观测条件、成功判定与试验次数。</p>
+</div>
+</section>
+<!-- ============ 7 ============ -->
+<section id="s7">
+<h2 class="sec"><span class="no">7</span>前沿：透明物体与深度难题</h2>
+<p>课件最后展示了课程组的两个前沿工作，主题都是同一个：<b>深度传感器对镜面/透明物体失效</b>（课件 p51-68）：</p>
+<figure>
+<img alt="课程课件：ASGrasp——透明物体重建与抓取检测" loading="lazy" src="assets/s_p61.jpg"/>
+<figcaption>ASGrasp：RGB-D 主动立体相机 + 双层深度图（可见/不可见点云）重建透明物体，用于研究透明物体的重建与抓取；评估结果见原实验的物体与场景条件。<span class="src">（来源：Lecture 7 课件 p61）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">ASGrasp：利用RGB-D主动立体相机进行可泛化透明物体重建与6自由度抓取检测</div><div class="translation-body"><p>Jun Shi¹、Yong A¹、Yixiang Jin¹、Dingzhe Li¹、Haoyu Niu¹、Zhezhu Jin¹、He Wang†²˒³˒⁴</p><p>¹ 三星中国研究院，北京（SRC-B）</p><p>² 北京大学计算机学院前沿计算研究中心（CFCS）｜³ Galbot</p><p>⁴ 北京智源人工智能研究院（BAAI）</p><p>†：通讯作者。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l07-p61">对照原课件第61页与完整中文翻译 →</a></figure>
+<figure>
+<img alt="课程课件：D³RoMa——视差扩散深度感知" loading="lazy" src="assets/s_p66.jpg"/>
+<figcaption>D³RoMa（CoRL 2024）：几何引导的视差扩散，用立体图像与生成模型估计几何，支持材料无关机器人操作。<span class="src">（来源：Lecture 7 课件 p66）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">D³RoMa：用于材料无关机器人操作的视差扩散深度感知</div><div class="translation-body"><p>CoRL 2024</p><h3>方法：几何引导的视差扩散</h3><p>$x_T\sim\mathcal N(0,I)$；$\tilde D,I_l,I_r$；去噪网络；$-\frac1{\sqrt{1-\bar\alpha_t}}\epsilon^*$；立体匹配；$\nabla_{x_t}\mathcal L_{sm}$；$\nabla_{x_t}\log p(x_t\mid I_l,I_r,\tilde D)$；反向采样；循环t；$t\leftarrow t-1$；最终预测$x_0$。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l07-p66">对照原课件第66页与完整中文翻译 →</a></figure>
+<ul>
+<li><b>ASGrasp</b>：主动立体相机 + 相关金字塔，输出两层深度图（可见点云 + 不可见点云），实现透明物体重建与 6-DoF 抓取检测，原课件报告其特定真机实验中成功率超过 95%；阅读这一数值时，应同时查看实验中的物体与场景范围；</li>
+<li><b>D³RoMa</b>（Disparity Diffusion-based Depth Sensing, CoRL 2024）：几何引导的视差扩散模型，估计左右图像视差并转为深度，改善困难材料上的几何感知，支持材料无关的机器人操作；它是深度感知方法，与闭环策略学习的作用层次不同。</li>
+</ul>
+<div class="box blue">
+<span class="bt">🔑 本章与 VLA 时代的关系</span>
+<p>抓取检测（VGN/GraspNet）解决的是「哪里能抓」——它可作为视觉—语言—动作模型（VLA）的几何技能或数据构造模块：GraspVLA 的合成数据管线（对跖抓取合成）会利用与本章 §1-2 相联系的接触可行性与力闭合知识；而第 8-9 章的策略学习将把「抓」扩展为「连续的动作序列」。</p>
+</div>
+</section>
+<!-- ============ 8 ============ -->
+<section id="s8">
+<h2 class="sec"><span class="no">8</span>本章小结</h2>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>核心概念</th><th>一句话解释</th></tr>
+<tr><td><b>摩擦锥</b></td><td>法线 ± $\arctan\mu$ 的锥；锥内压缩接触力满足库仑静摩擦约束</td></tr>
+<tr><td><b>力闭合判据</b></td><td>$\mathrm{rank}(F)=n$ 且存在严格正系数零组合（原点在射线力旋量凸包的满维内部）</td></tr>
+<tr><td><b>GraspNet-1B</b></td><td>采样→力闭合筛选→场景→碰撞检测→真实多视角观测与几何抓取标注的流水线；十亿级规模统计的是抓取标签；真机演示按实际执行次数另行统计</td></tr>
+<tr><td><b>VGN</b></td><td>TSDF 体素 + 3D U-Net，三输出（质量/朝向/宽度）；位置预测受体素离散化影响</td></tr>
+<tr><td><b>GS-Net</b></td><td>graspness 两阶段 + Cylinder Grouping；局部几何与相对坐标有助于泛化；严格等变性取决于实现</td></tr>
+<tr><td><b>抓取 Sim2Real</b></td><td>几何输入缓解部分外观差异；接触与物理建模差异会改变迁移效果</td></tr>
+<tr><td><b>条件生成</b></td><td>扩散模型处理多峰抓取分布，灵巧抓取的一条生成建模路线</td></tr>
+</table></div></div>
+<div class="box green">
+<span class="bt">💡 下一章预告</span>
+<p>第 8 章进入「策略学习」板块：模仿学习与行为克隆——从单次抓取位姿进一步学习连续动作，理解策略如何根据反馈作出下一步决策。</p>
+</div>
+</section>
+<!-- ============ 9 ============ -->
+<section id="s9">
+<h2 class="sec"><span class="no">9</span>动手实践</h2>
+<p>本章没有原版作业，但两个练习能让你亲手触摸「平移力平衡筛选」和「局部平面性采样」——GraspNet-1B 流水线中的部分几何概念。</p>
+<h3>练习 1：摩擦锥筛选器（20 分钟）</h3>
+<p>仅判断二维平移力能否平衡，不含转矩；完整平面刚体力闭合还需接触位置构造三维 wrench。下面用摩擦锥边界力做这个简化检查：</p>
+<pre><code><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">def</span> <span class="fn">friction_cone_check</span>(normals, mu=0.8):
+    <span class="st">"""判断一组接触法向的摩擦锥能否平衡任意二维平移力；忽略力矩。
+    normals: (C,2) 接触点法向。每根法线张成的锥 = 法线 ± arctan(mu) 的扇形。"""</span>
+    alpha = np.arctan(mu)
+    C = normals.shape[0]
+    wrenches = []
+    <span class="kw">for</span> n <span class="kw">in</span> normals:
+        n = n / np.linalg.norm(n)
+        <span class="cm"># 锥的两个边界方向（2D 中锥退化为扇形）</span>
+        R = np.array([[np.cos(alpha), -np.sin(alpha)], [np.sin(alpha), np.cos(alpha)]])
+        wrenches.append(R @ n); wrenches.append(R.T @ n)
+    F = np.column_stack(wrenches)               <span class="cm"># (2,2C) 平移力方向矩阵；不含力矩</span>
+    rank_ok = np.linalg.matrix_rank(F) == 2
+    <span class="cm"># 条件2：严格正系数零组合 ⟺ 原点在凸包内部（用线性规划或采样判定）</span>
+    <span class="kw">from</span> scipy.spatial <span class="kw">import</span> ConvexHull
+    pts = F.T
+    <span class="kw">if</span> np.linalg.matrix_rank(pts - pts.mean(0)) &lt; 2:
+        <span class="kw">return</span> False
+    hull = ConvexHull(pts)
+    interior = bool(np.all(hull.equations[:, -1] &lt; -1e-10))
+    <span class="kw">return</span> rank_ok <span class="kw">and</span> interior
+
+<span class="cm"># 测试：对称的两根法线（左右夹）在 mu&gt;0 时可平衡二维平移力</span>
+<span class="fn">print</span>(<span class="fn">friction_cone_check</span>(np.array([[1.,0],[-1,0]])))    <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="fn">friction_cone_check</span>(np.array([[1.,0],[0.7,0.7]])))  <span class="cm"># False（同侧）</span></code></pre>
+<h3>练习 2：简化 graspness 采样器（25 分钟）</h3>
+<p>对任意点云，用「局部平面性」启发式体验几何候选点评分；完整的可抓取性判断还需加入夹爪碰撞与接触稳定性检查：</p>
+<pre><code><span class="kw">def</span> <span class="fn">graspness_heuristic</span>(pts, k=20, r=0.03):
+    <span class="st">"""对每个点，找 r 邻域内的点做 PCA：最小特征值对应法线方向；</span>
+<span class="st">    邻域越扁平，平面性分数越高；这不是完整 graspness，也不包含夹爪碰撞和接触稳定性。返回 (N,) 分数。"""</span>
+    <span class="kw">from</span> scipy.spatial <span class="kw">import</span> cKDTree
+    tree = cKDTree(pts)
+    scores = np.zeros(len(pts))
+    <span class="kw">for</span> i, p <span class="kw">in</span> <span class="fn">enumerate</span>(pts):
+        idx = tree.query_ball_point(p, r)
+        <span class="kw">if</span> len(idx) &lt; 8: <span class="kw">continue</span>
+        nb = pts[idx] - p
+        <span class="cm"># PCA：协方差特征值 λ1≥λ2≥λ3；扁平 ⟺ λ3 远小于 λ1+λ2</span>
+        lambdas = np.linalg.eigvalsh(nb.T @ nb / len(nb))[::-1]
+        flatness = 1 - lambdas[2] / (lambdas[0] + lambdas[1] + 1e-9)
+        scores[i] = flatness
+    <span class="kw">return</span> np.clip(scores, 0, 1)
+
+<span class="cm"># 相同点数和表面积量级的球面 / 平面表面采样；固定邻域半径</span>
+np.random.seed(42)
+pts_sphere = np.random.randn(2000, 3)
+pts_sphere *= 0.1 / np.linalg.norm(pts_sphere, axis=1, keepdims=True)
+span = 0.1 * np.sqrt(np.pi)
+pts_plane = np.column_stack([np.random.uniform(-span, span, (2000, 2)), np.zeros(2000)])
+<span class="fn">print</span>(<span class="st">"球面局部平面性均值:"</span>, np.round(graspness_heuristic(pts_sphere).mean(), 4))
+<span class="fn">print</span>(<span class="st">"平面局部平面性均值:"</span>, np.round(graspness_heuristic(pts_plane).mean(), 4))</code></pre>
+<h3>进阶（选做）：跑通开源 GraspNet</h3>
+<p>官方代码 <code>graspnet-baseline</code>（GitHub：graspnet/graspnet-baseline）支持在 GraspNet-1B 数据集上训练与真机 demo；如需 GPU 轻量方案，可先跑 VGN 的 PyTorch 实现（ethz-asl/vgn）体验体素路线。两者都有预训练权重。</p>
+<div class="box green">
+<span class="bt">💡 自学路线建议</span>
+<p>两个练习约 45 分钟（练习 1 需 scipy）。做完后你对「力闭合筛选 + 几何可抓取性」有了第一手代码，读 GraspNet-1B 的标注代码会更容易理解。若对扩散模型生成抓取感兴趣，第 9 章强化学习后可以读 GraspLDP 论文作延伸。</p>
+</div>
+</section>
+<!-- ============ 附录 A ============ -->
+<section id="selfcheck"><h2 class="sec">理解检查</h2><p>给定 μ=0.5、法向力 10 N，切向力 6 N 是否可由静摩擦支持？（不能，上限 5 N。）两个方向相反的接触力能平衡平移，就一定能平衡全部转矩吗？（不能，须加入接触位置与力矩。）GraspNet 的十亿标签是否等于十亿次真机抓取？（不是。）</p><p>先遮住括号中的答案，用本章符号和一个具体例子说明理由。遇到疑问时，对照相应节的模型假设检查自己的推理。</p></section>
+<section id="apA">
+<h2 class="sec"><span class="no">附A</span>术语表</h2>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table class="term-table">
+<tr><th>术语</th><th>解释</th></tr>
+<tr><td>摩擦锥（Friction Cone）</td><td>接触点可行力方向构成的锥，半顶角 $\arctan\mu$</td></tr>
+<tr><td>自锁（Self-locking）</td><td>特定几何与摩擦条件下外载荷不能驱动相对滑动；须声明接触和载荷假设</td></tr>
+<tr><td>力旋量（Wrench）</td><td>力 + 力矩拼成的向量（2D 为 3 维，3D 为 6 维）</td></tr>
+<tr><td>抓取矩阵 F</td><td>所有接触点摩擦锥近似力旋量拼成的矩阵</td></tr>
+<tr><td>力闭合判据</td><td>$\mathrm{rank}(F)=n$ + 严格正系数零组合（原点在射线力旋量凸包的满维内部）</td></tr>
+<tr><td>TSDF</td><td>截断符号距离场：体素存到最近表面的截断有符号距离</td></tr>
+<tr><td>graspness</td><td>基于力分析的几何可抓取性度量（GS-Net 提出）</td></tr>
+<tr><td>Cylinder Grouping</td><td>沿接近方向的圆柱区域聚合局部点特征</td></tr>
+<tr><td>稀疏卷积</td><td>只在非空体素上计算卷积（MinkowskiEngine）</td></tr>
+<tr><td>Object Agnostic</td><td>抓取不区分物体身份，好抓的先抓</td></tr>
+<tr><td>抓取检测 vs 生成</td><td>有限离散候选 + NMS / 学习分布并采样（多峰）</td></tr>
+<tr><td>DexGraspNet</td><td>灵巧手抓取数据集系列（2.0 大规模杂乱基准）</td></tr>
+<tr><td>对跖抓取（Antipodal Grasp）</td><td>两个接触点法线反向对置的经典稳定抓取模式</td></tr>
+</table></div></div>
+</section>
+<!-- ============ 附录 B ============ -->
+<section id="apB">
+<h2 class="sec"><span class="no">附B</span>课件 69 页完整索引</h2>
+<p>原版 Lecture 7 课件共 69 页（<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture07_03_31.pdf" target="_blank">GitHub 原文件</a>）。下表逐页列出内容及在本教程中的位置：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table class="page-index">
+<tr><th>页码</th><th>页面内容</th><th>在教程中的位置</th></tr>
+<tr><td class="pg">p1</td><td>封面：Lecture 7 - Vision and Grasping III</td><td>封面区</td></tr>
+<tr><td class="pg">p2</td><td>主题页：抓取数据合成</td><td>§2 开头</td></tr>
+<tr><td class="pg">p3</td><td>抓取位姿与力闭合（回顾）</td><td>§1（回顾第 6 章）</td></tr>
+<tr><td class="pg">p4</td><td>物理定义：力旋量锥正张成 vs 刚性固定</td><td>§1.3</td></tr>
+<tr><td class="pg">p5</td><td>2D 简化力闭合例子（附视频）</td><td>§1（回顾第 6 章）</td></tr>
+<tr><td class="pg">p6</td><td>数据集路线：标注真实数据 / 合成数据 + 力闭合标签</td><td>§2</td></tr>
+<tr><td class="pg">p7</td><td>物体数据集：ShapeNet、ModelNet（无抓取标注）</td><td>§2</td></tr>
+<tr><td class="pg">p8</td><td>Objaverse-XL：1000 万+ 3D 物体</td><td>§2（笔记呼应）</td></tr>
+<tr><td class="pg">p9</td><td>ACRONYM（ICRA 2021）：仿真大规模抓取数据集</td><td>§2</td></tr>
+<tr><td class="pg">p10</td><td>GraspNet-1Billion（CVPR 2020）</td><td>§2</td></tr>
+<tr><td class="pg">p11</td><td>GraspNet-1B 标注流水线（点采样→视角→旋转→深度→投影）</td><td>§2</td></tr>
+<tr><td class="pg">p12</td><td>主题页：抓取检测</td><td>§3 开头</td></tr>
+<tr><td class="pg">p13</td><td>多峰分布 → 形式化为检测问题</td><td>§3</td></tr>
+<tr><td class="pg">p14</td><td>体素网格输入（VGN；显式几何，受分辨率限制）</td><td>§3</td></tr>
+<tr><td class="pg">p15</td><td>点云输入（PointNet/PointNet++、GraspNet-baseline）</td><td>§3</td></tr>
+<tr><td class="pg">p16</td><td>图像输入（MonoGraspNet、GraspNeRF 透明物体）</td><td>§3</td></tr>
+<tr><td class="pg">p17</td><td>评估指标：成功率、清理率、规划时间</td><td>§3</td></tr>
+<tr><td class="pg">p18</td><td>VGN（CoRL 2020）介绍</td><td>§4</td></tr>
+<tr><td class="pg">p19</td><td>抓取定义：位置/朝向（四元数）/宽度 + 质量分数</td><td>§4</td></tr>
+<tr><td class="pg">p20</td><td>VGN 网络：TSDF 输入、三输出、3D FCN</td><td>§4</td></tr>
+<tr><td class="pg">p21</td><td>VGN 后处理：高斯平滑、距离掩膜、NMS</td><td>§4</td></tr>
+<tr><td class="pg">p22</td><td>VGN 合成数据：PyBullet「pile / packed」场景</td><td>§4</td></tr>
+<tr><td class="pg">p23</td><td>VGN 真机 demo</td><td>§4</td></tr>
+<tr><td class="pg">p24</td><td>VGN 局限：多视角、体素分辨率</td><td>§4</td></tr>
+<tr><td class="pg">p25</td><td>GS-Net（ICCV 2021）：杂波中 graspness 发现</td><td>§5</td></tr>
+<tr><td class="pg">p26</td><td>两阶段：Where（可抓取位置）+ How（抓取参数）</td><td>§5</td></tr>
+<tr><td class="pg">p27</td><td>graspness 定义：点级与视图级</td><td>§5</td></tr>
+<tr><td class="pg">p28</td><td>graspness 度量：力分析模型质量分（单物体）</td><td>§5</td></tr>
+<tr><td class="pg">p29</td><td>场景级 graspness：碰撞检查 + 位姿投影</td><td>§5</td></tr>
+<tr><td class="pg">p30</td><td>GS-Net 架构：MinkowskiEngine ResUNet14</td><td>§5</td></tr>
+<tr><td class="pg">p31</td><td>稀疏卷积：只在非空体素计算</td><td>§5</td></tr>
+<tr><td class="pg">p32</td><td>可抓取 FPS：graspable landscape + objectness</td><td>§5</td></tr>
+<tr><td class="pg">p33</td><td>视图选择：Fibonacci 球面采样 + 概率化选择</td><td>§5</td></tr>
+<tr><td class="pg">p34</td><td>Cylinder Grouping：圆柱区域采样 K 点</td><td>§5</td></tr>
+<tr><td class="pg">p35</td><td>抓取生成：MLP 输出（旋转-深度）组合分数与宽度</td><td>§5</td></tr>
+<tr><td class="pg">p36</td><td>GS-Net 定性结果与真机实验</td><td>§5</td></tr>
+<tr><td class="pg">p37</td><td>landscape 类型与推理速度对比（CGM/GOM）</td><td>§5</td></tr>
+<tr><td class="pg">p38</td><td>GS-Net 总结</td><td>§5</td></tr>
+<tr><td class="pg">p39</td><td>主题页：条件抓取生成模型</td><td>§6 开头</td></tr>
+<tr><td class="pg">p40</td><td>数据：DexGraspNet 2.0（in submission）</td><td>§6</td></tr>
+<tr><td class="pg">p41</td><td>扩散式灵巧手位姿生成</td><td>§6</td></tr>
+<tr><td class="pg">p42</td><td>方法 Stage 1：Where to grasp（objectness + graspness）</td><td>§6</td></tr>
+<tr><td class="pg">p43</td><td>方法 Stage 2：扩散模型生成 T、R，回归 θ</td><td>§6</td></tr>
+<tr><td class="pg">p44</td><td>灵巧抓取位姿扩散模型（总览）</td><td>§6</td></tr>
+<tr><td class="pg">p45</td><td>DexGraspNet 2.0 上 SOTA</td><td>§6</td></tr>
+<tr><td class="pg">p46</td><td>抓取数据 Scaling Law</td><td>§6</td></tr>
+<tr><td class="pg">p47</td><td>跨形态迁移：平行夹爪上性能与 GSNet 相当</td><td>§6</td></tr>
+<tr><td class="pg">p48-49</td><td>真机实验：灵巧手包裹能力对比</td><td>§6</td></tr>
+<tr><td class="pg">p50</td><td>总结：大规模基准 + 端到端生成管线</td><td>§6</td></tr>
+<tr><td class="pg">p51</td><td>主题：GraspNet 的泛化性（Fang et al. 引用）</td><td>§5（局部泛化）</td></tr>
+<tr><td class="pg">p52</td><td>深度传感问题：镜面（RGB/深度/点云对比）</td><td>§7 开头</td></tr>
+<tr><td class="pg">p53-54</td><td>Demo：GraspNet-baseline 裸用 vs 精修点云对比</td><td>§7</td></tr>
+<tr><td class="pg">p55</td><td>数据生成（STD-GraspNet）</td><td>§7</td></tr>
+<tr><td class="pg">p56-60</td><td>DREDS 域随机化：布局/材质（BSDF）/背景/光照/视角</td><td>§7（域随机化）</td></tr>
+<tr><td class="pg">p61</td><td>ASGrasp：透明物体重建与抓取（&gt;95% 成功率）</td><td>§7</td></tr>
+<tr><td class="pg">p62</td><td>ASGrasp 管线：相关金字塔 + 双层深度图</td><td>§7</td></tr>
+<tr><td class="pg">p63</td><td>全球首个材料无关抓取（&gt;95%）</td><td>§7</td></tr>
+<tr><td class="pg">p64-65</td><td>（无文字配图页）</td><td>§7</td></tr>
+<tr><td class="pg">p66</td><td>D³RoMa（CoRL 2024）：视差扩散深度感知</td><td>§7</td></tr>
+<tr><td class="pg">p67</td><td>Sim2Real 实验</td><td>§7</td></tr>
+<tr><td class="pg">p68</td><td>结果可视化</td><td>§7</td></tr>
+<tr><td class="pg">p69</td><td>结尾页：下集预告 Vision and Grasping III（Policy Learning 即将开始）</td><td>页脚（下一章预告）</td></tr>
+</table></div></div>
+</section>
+<!-- ============ 附录 C ============ -->
+<section id="apC">
+<h2 class="sec"><span class="no">附C</span>参考资源</h2>
+<ul>
+<li>课程官网：<a href="https://pku-epic.github.io/Intro2EAI_2025/" target="_blank">pku-epic.github.io/Intro2EAI_2025</a></li>
+<li>本教程素材来源仓库：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU" target="_blank">zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU</a></li>
+<li>本章课件：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture07_03_31.pdf" target="_blank"><code>Slides/Lecture07_03_31.pdf</code></a>（69 页）</li>
+<li>本章笔记原文：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Notes/07-Vision-and-Grasping-III.md" target="_blank"><code>Notes/07-Vision-and-Grasping-III.md</code></a></li>
+</ul>
+<h3>延伸阅读</h3>
+<ul>
+<li>Fang et al., <em>GraspNet-1Billion</em>, CVPR 2020：十亿抓取数据集</li>
+<li>Breyer et al., <em>VGN</em>, CoRL 2020：体素抓取网络</li>
+<li>Wang et al., <em>Graspness Discovery in Clutters (GS-Net)</em>, ICCV 2021</li>
+<li>GraspVLA（arXiv 2505.03233）：十亿级合成数据预训练的抓取基础模型</li>
+<li>扩散模型入门：Hammour Yue《概率视角下的生成模型》（知乎）、DDIM 原理推导（知乎）</li>
+</ul>
+</section>
+</main>
+</div>
+<!-- ============ 页脚 ============ -->
+<aside class="recent" id="current-research"><h3>2026年10月技术与政策动态 · 抓取候选与动作策略各管什么</h3><p>新VLA可以生成连续动作，抓取检测则常给出候选位姿或质量分数。比较结果前，先看任务、观测、动作空间和成功判据是否相同。</p><p class="source-note">资料截至2026-10-04 · <a href="../技术动态_20261004.html#groot17">一手来源、发布日期与适用范围</a></p></aside><footer>
+<nav aria-label="章节导航" class="chapter-nav"><a href="../ch06/index.html">← 第6章</a><a href="../index.html">教程目录</a><a href="../ch08/index.html">第8章 →</a></nav>
+<p><b>关于本教程：</b>本教程基于北京大学 2025 春季《具身智能导论》课程的公开资料（王鹤 老师主讲）整理改编，面向零基础自学者，免费提供学习。来源、改编方式与使用声明的完整说明见<a href="#about">篇首「关于本教程」</a>；笔记、课件、作业版权归原作者及课程组所有。</p>
+<p><b>阅读约定：</b>核心知识依照 2025 春季课程组织；正文中的教学解释帮助理解模型假设与工程条件。原始课件、笔记和作业保留作者署名，技术动态标明来源与日期。</p>
+<p><b>下一章预告：</b>第 8 章《策略学习 I：模仿学习》（课件 p69 预告）——行为克隆、分布偏移与可供性，学习根据观测连续决策的策略。</p>
+</footer>
+<script defer="" src="../reader.js"></script></body>
+</html>

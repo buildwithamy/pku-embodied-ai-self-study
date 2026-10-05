@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第 4 章 机器人学 III：运动规划与 PID 控制</title>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script async="" src="../vendor/mathjax/tex-svg.js"></script>
+<style>
+:root {
+  --ink: #1c2430;
+  --ink-soft: #4a5568;
+  --accent: #2563eb;
+  --accent-soft: #eef4ff;
+  --bg: #faf9f6;
+  --card: #ffffff;
+  --line: #e5e2db;
+  --green-bg: #f0f9f1;
+  --green-bd: #7cc98c;
+  --yellow-bg: #fffbeb;
+  --yellow-bd: #e8c766;
+  --red-bg: #fdf1f1;
+  --red-bd: #e8a1a1;
+  --update-bg: #fffaeb;
+  --update-bd: #e8a23d;
+  --update-ink: #8a4b08;
+  --code-bg: #101826;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-size: 16.5px;
+  line-height: 1.85;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.hero {
+  background: linear-gradient(135deg, #0e2a4a 0%, #15406e 55%, #1c5a94 100%);
+  color: #fff;
+  padding: 72px 24px 56px;
+  text-align: center;
+}
+.hero .course-tag {
+  display: inline-block;
+  font-size: 13px;
+  letter-spacing: 2px;
+  border: 1px solid rgba(255,255,255,.4);
+  border-radius: 999px;
+  padding: 4px 16px;
+  margin-bottom: 22px;
+  opacity: .9;
+}
+.hero h1 {
+  margin: 0 auto 14px;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  max-width: 760px;
+  line-height: 1.5;
+}
+.hero .sub {
+  font-size: 15.5px;
+  opacity: .82;
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+.hero .meta {
+  margin-top: 26px;
+  font-size: 13px;
+  opacity: .7;
+}
+.hero .ver-note {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 12.5px;
+  border: 1px dashed rgba(255,210,120,.7);
+  color: #ffd27a;
+  border-radius: 999px;
+  padding: 3px 14px;
+}
+.badge-2026 {
+  display: inline-block;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 2px 9px;
+  letter-spacing: .5px;
+  vertical-align: 2px;
+  margin-right: 6px;
+  box-shadow: 0 1px 4px rgba(217,119,6,.35);
+}
+.update-box {
+  margin: 18px 0;
+  padding: 14px 20px 12px;
+  border: 2px solid var(--update-bd);
+  background: var(--update-bg);
+  border-radius: 10px;
+  font-size: 15.5px;
+  box-shadow: 0 2px 8px rgba(232,162,61,.12);
+}
+.update-box .bt { color: var(--update-ink); font-weight: 700; display: block; margin-bottom: 4px; }
+.update-box p { margin: 5px 0; }
+.update-box ul { margin: 4px 0 4px; }
+.update-box li { margin: 3px 0; }
+.up-text {
+  background: #fef3c7;
+  border-bottom: 2px solid #f59e0b;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+.goals {
+  max-width: 880px;
+  margin: -28px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 28px;
+  box-shadow: 0 6px 24px rgba(16, 42, 74, .08);
+  position: relative;
+}
+.goals h2 { margin: 0 0 10px; font-size: 17px; color: var(--accent); }
+.goals ul { margin: 0; padding-left: 20px; }
+.goals li { margin: 4px 0; font-size: 15px; color: var(--ink-soft); }
+.goals li b { color: var(--ink); }
+.about {
+  max-width: 880px;
+  margin: 36px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px 34px;
+  box-shadow: 0 4px 16px rgba(16, 42, 74, .06);
+}
+.about h2 {
+  margin: 0 0 14px;
+  font-size: 20px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.about h3 { margin: 20px 0 8px; font-size: 16.5px; color: var(--accent); }
+.about p, .about li { font-size: 15px; color: var(--ink-soft); }
+.about .src-badge {
+  display: inline-block;
+  background: #eef4ff;
+  border: 1px solid #b9d0f8;
+  color: #2456b8;
+  font-size: 13px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin: 2px 4px 2px 0;
+}
+.about .license-note {
+  margin: 18px 0 0;
+  padding: 14px 18px;
+  background: var(--red-bg);
+  border: 1px solid var(--red-bd);
+  border-radius: 10px;
+  font-size: 14.5px;
+  line-height: 1.8;
+}
+.about .license-note b { color: #b04848; }
+.layout {
+  display: flex;
+  max-width: 1240px;
+  margin: 40px auto 80px;
+  padding: 0 24px;
+  gap: 36px;
+  align-items: flex-start;
+}
+.toc {
+  position: sticky;
+  top: 24px;
+  width: 240px;
+  flex-shrink: 0;
+  font-size: 13.5px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+}
+.toc .toc-title { font-weight: 700; color: var(--ink-soft); margin-bottom: 8px; letter-spacing: 1px; }
+.toc a {
+  display: block;
+  color: var(--ink-soft);
+  padding: 4px 10px;
+  border-left: 2px solid var(--line);
+  margin: 1px 0;
+  line-height: 1.5;
+}
+.toc a:hover { color: var(--accent); border-left-color: var(--accent); text-decoration: none; background: var(--accent-soft); border-radius: 0 6px 6px 0; }
+main { flex: 1; min-width: 0; }
+section { margin-bottom: 56px; }
+h2.sec {
+  font-size: 25px;
+  margin: 0 0 6px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--ink);
+  letter-spacing: .5px;
+}
+h2.sec .no {
+  display: inline-block;
+  background: var(--ink);
+  color: #fff;
+  font-size: 15px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin-right: 10px;
+  vertical-align: 3px;
+}
+h3 { font-size: 19px; margin: 34px 0 10px; }
+h4 { font-size: 16.5px; margin: 26px 0 8px; }
+p { margin: 10px 0; }
+strong { color: #0f2c4c; }
+em.term {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--accent);
+  border-bottom: 1px dashed var(--accent);
+  cursor: help;
+}
+ul, ol { padding-left: 26px; }
+li { margin: 5px 0; }
+code {
+  background: #eef1f5;
+  border: 1px solid #e0e5ec;
+  border-radius: 5px;
+  padding: 1px 6px;
+  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: 14.5px;
+  color: #0d3d75;
+}
+blockquote {
+  margin: 16px 0;
+  padding: 12px 20px;
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  color: var(--ink-soft);
+  font-size: 15.5px;
+}
+blockquote p { margin: 4px 0; }
+figure { margin: 22px 0; text-align: center; }
+figure img {
+  max-width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 18px rgba(16, 42, 74, .10);
+  background: #fff;
+}
+figcaption {
+  font-size: 13.5px;
+  color: #7a8290;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+figcaption .src { opacity: .75; font-size: 12.5px; }
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+.gallery figure { margin: 0; }
+.gallery img { width: 100%; }
+.gallery figcaption { font-size: 12.5px; margin-top: 6px; }
+.box {
+  margin: 18px 0;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 15.5px;
+}
+.box .bt { font-weight: 700; display: block; margin-bottom: 4px; }
+.box.green { background: var(--green-bg); border: 1px solid var(--green-bd); }
+.box.green .bt { color: #2e7d43; }
+.box.yellow { background: var(--yellow-bg); border: 1px solid var(--yellow-bd); }
+.box.yellow .bt { color: #9a7414; }
+.box.red { background: var(--red-bg); border: 1px solid var(--red-bd); }
+.box.red .bt { color: #b04848; }
+.box.blue { background: var(--accent-soft); border: 1px solid #a9c3f5; }
+.box.blue .bt { color: #2456b8; }
+.box p { margin: 4px 0; }
+.box ul { margin: 4px 0 4px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 18px 0;
+  font-size: 15px;
+  background: var(--card);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+th {
+  background: #17335c;
+  color: #fff;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 14.5px;
+}
+td { padding: 9px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+tr:nth-child(even) td { background: #f7f6f2; }
+.page-index { font-size: 13.5px; }
+.page-index th { font-size: 13.5px; padding: 8px 10px; }
+.page-index td { padding: 6px 10px; line-height: 1.6; }
+.page-index td.pg { font-family: Consolas, monospace; font-weight: 700; white-space: nowrap; color: var(--accent); }
+pre {
+  background: var(--code-bg);
+  color: #e6edf6;
+  border-radius: 10px;
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-size: 13.8px;
+  line-height: 1.65;
+  margin: 16px 0;
+}
+pre code {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+pre .cm { color: #7d8aa0; }
+pre .kw { color: #7fb3ff; }
+pre .st { color: #a5d6a7; }
+pre .fn { color: #ffd479; }
+.term-table td:first-child { font-weight: 700; white-space: nowrap; }
+footer {
+  max-width: 880px;
+  margin: 0 auto 60px;
+  padding: 20px 28px;
+  border-top: 1px solid var(--line);
+  font-size: 12.8px;
+  color: #8a91a0;
+  line-height: 1.8;
+}
+@media (max-width: 960px) {
+  .toc { display: none; }
+  .hero h1 { font-size: 26px; }
+  .layout { padding: 0 16px; }
+  .gallery { grid-template-columns: 1fr; }
+}
+/* 2026-10-04: offline chapters and bounded content scrolling */
+.layout, main, section { min-width:0; }
+main { max-width:100%; }
+img, video { max-width:100%; height:auto; }
+p, li, td, th, a { overflow-wrap:anywhere; }
+.table-scroll { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; margin:18px 0; }
+.table-scroll table { margin:0; min-width:640px; }
+pre { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; }
+mjx-container[display="true"] { max-width:100%; overflow-x:auto; overflow-y:hidden; padding:6px 0; text-align:left !important; }
+mjx-container:not([display="true"]) { display:inline-block; max-width:100%; vertical-align:middle; overflow-x:auto; overflow-y:hidden; }
+.mobile-toc { display:none; }
+.chapter-nav { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; }
+@media(max-width:960px) {
+  .layout { flex-direction:column; gap:16px; }
+  main { width:100%; }
+  .mobile-toc { display:block; width:100%; margin:0; padding:12px 16px; background:var(--card); border:1px solid var(--line); border-radius:10px; }
+  .mobile-toc summary { cursor:pointer; font-weight:700; }
+  .mobile-toc a { display:block; padding:4px 0; }
+}
+</style>
+<link href="../shared.css" rel="stylesheet"/>
+</head>
+<body><nav class="reader-nav"><a class="brand" href="../index.html">北京大学《具身智能导论》自学教程</a><a href="../学习与运行说明.html">学习指南</a><a href="课件中文译解.html">本章课件翻译</a><a href="../术语与符号.html">术语与符号</a><a href="../来源与许可.html">来源</a></nav>
+<!-- ============ 封面 ============ -->
+<div class="hero">
+<span class="course-tag">具身智能自学教程 · 第 4 章</span>
+<h1>机器人学 III：运动规划与 PID 控制</h1>
+<p class="sub">机器人运动分为规划和执行：PRM / RRT / RRT-Connect 在配置空间中寻找路径，PID 控制帮助关节跟踪轨迹。本章把前两章的运动学知识接到这两个环节上。</p>
+<p class="meta">改编自北京大学《具身智能导论》(Introduction to Embodied AI) 2025 春季课程 · 授课：王鹤 老师</p>
+<span class="ver-note">公式、图片与课件中文翻译可离线阅读</span>
+<div class="chapter-toolbar" id="chapter-resources"><a href="课件中文译解.html">英文原课件与逐页中文翻译 →</a><a href="../技术动态_20261004.html">本章相关技术进展 →</a><a href="../术语与符号.html">英文缩写与符号速查 →</a></div></div>
+<!-- ============ 学习目标 ============ -->
+<div class="goals">
+<h2>🎯 本章学习目标</h2>
+<ul>
+<li>理解<b>碰撞检测</b>的两条技术路线（球体包裹、凸包分解）及其取舍</li>
+<li>能说明 <b>PRM</b> 的「采样-建图-查询」三步，理解高斯采样与桥采样如何提高窄通道的采样机会</li>
+<li>能说明 <b>RRT</b> 的探索-利用平衡思想（参数 $\beta$），以及 RRT-Connect 的双向加速</li>
+<li>理解 <b>Shortcutting 与多次重启</b>：为什么单次规划的结果需要后处理</li>
+<li>建立控制系统观：<b>开环 vs 闭环</b>、稳态误差/调节时间/超调量三大指标</li>
+<li>推导 <b>P / PI / PD / PID</b> 控制的误差动态方程，理解三个参数各管什么</li>
+<li>动手实践：用 numpy 完成 <b>2D RRT 路径规划</b>和 <b>P/PI 跟踪仿真</b>，亲眼看到调参效果</li>
+</ul>
+</div>
+<!-- ============ 关于本教程 ============ -->
+<div class="about" id="about">
+<h2>📖 关于本教程</h2>
+<h3>内容来源</h3>
+<p>本教程的课程知识主线来自 <b>北京大学 2025 年春季学期《具身智能导论》</b>（Introduction to Embodied AI）课程，由 <b>王鹤</b> 老师主讲。</p>
+<p>
+<span class="src-badge">📝 课堂笔记 × 9 章</span>
+<span class="src-badge">🎞 授课课件 × 13 讲</span>
+<span class="src-badge">💻 课程作业 × 4 次</span>
+</p>
+<p>以上资料由课程同学整理并开源在 GitHub 仓库 <a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU" target="_blank">zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU</a>（<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/LICENSE" target="_blank">GPL-3.0 许可证</a>），课程官网为 <a href="https://pku-epic.github.io/Intro2EAI_2025/" target="_blank">pku-epic.github.io/Intro2EAI_2025</a>。</p>
+<h3>阅读方式</h3>
+<ul>
+<li><b>三源整合：</b>把每一讲的「课堂笔记 + 授课课件 + 配套作业」融合进同一章，笔记提供知识骨架，课件图提供直观理解，作业提供动手实践；</li>
+<li><b>概念与例子：</b>按「概念 → 直觉 → 数学条件 → 应用」阅读，先理解问题，再学习公式与算法；学习目标与术语表可用于检查理解；</li>
+<li><b>图文并茂：</b>从课件中精选示意图插入正文，全部标注来源页码，方便对照原课件；</li>
+<li><b>补充说明：</b>橙色框提供适用条件与工程接口说明；具体模型、数据和评分以对应一手资料为准；</li>
+<li><b>作业适配自学：</b>保留原版作业的难度与考点，补充环境搭建、解题提示与自测标准，并提供参考答案链接（先自己做，再对照）。</li>
+</ul>
+<h3>教程目的</h3>
+<p>让没有北大课堂环境的自学者，也能按课程原有的知识体系，系统地学完具身智能入门：从机器人学基础，到视觉与抓取，再到策略学习——最终具备读懂前沿论文、跑通基础实验的能力。</p>
+<div class="license-note">
+<b>📜 版权与使用声明</b><br/>
+    原课程资料（笔记、课件、作业）均为开源免费资源，版权归原作者（王鹤老师及课程组、笔记整理者）所有；本教程的改编内容（扩写讲解、中文翻译、编排结构）同样免费公开。<br/>
+    本教程<b>仅用于个人自学</b>，请勿用于任何商业用途（包括付费课程、付费资料包、机构培训等）。教程中所有引用均已标注来源；如内容使用有任何不当之处，请联系相关权利人，我们会及时处理。
+  </div>
+</div>
+<section class="learning-guide"><h2>开始前：把“找路”与“跟踪”分开</h2><p>先修内容是第2—3章的坐标变换、正向运动学与配置空间；会读向量范数和一阶导数即可开始。配置 $q$ 是整组关节变量，路径 $q(s)$ 只描述经过哪里，轨迹 $q(t)$ 还描述何时经过。规划检查几何可行，控制检查实际状态能否跟上目标，两者都依赖明确的系统模型。</p><p>建议先画一个带圆形障碍的二维问题，再把图中的点想成机械臂关节配置。读控制部分时，始终在纸上标出“输入是速度还是力矩”，再套用误差方程。</p><p><a href="课件中文译解.html">阅读全部61页原课件与中文翻译</a> · <a href="../sources/lecture04.pdf">原始PDF</a></p></section>
+<!-- ============ 正文 ============ -->
+<div class="layout">
+<nav class="toc">
+<div class="toc-title">本章目录</div>
+<a href="#about">关于本教程（来源 · 声明）</a>
+<a href="#s1">1. 碰撞检测：规划的「眼睛」</a>
+<a href="#s2">2. PRM：先建地图，再查路径</a>
+<a href="#s3">3. 窄通道攻坚战：高斯采样与桥采样</a>
+<a href="#s4">4. RRT：向未知空间扩张的树</a>
+<a href="#s5">5. RRT-Connect 与路径后处理</a>
+<a href="#s6">6. 工业级实践：OMPL 与 MoveIt</a>
+<a href="#s7">7. 控制系统：让关节「说到做到」</a>
+<a href="#s8">8. P 控制：误差的动态方程</a>
+<a href="#s9">9. PI 控制：消灭稳态误差</a>
+<a href="#s10">10. PD 与 PID：完整的控制律</a>
+<a href="#s11">11. 本章小结</a>
+<a href="#s12">12. 动手实践</a>
+<a href="#apA">附录 A：术语表</a>
+<a href="#apB">附录 B：课件 61 页完整索引</a>
+<a href="#apC">附录 C：参考资源</a>
+</nav>
+<details class="mobile-toc"><summary>本章目录</summary><a href="#about">关于本教程（来源 · 声明）</a><a href="#s1">1. 碰撞检测：规划的「眼睛」</a><a href="#s2">2. PRM：先建地图，再查路径</a><a href="#s3">3. 窄通道攻坚战：高斯采样与桥采样</a><a href="#s4">4. RRT：向未知空间扩张的树</a><a href="#s5">5. RRT-Connect 与路径后处理</a><a href="#s6">6. 工业级实践：OMPL 与 MoveIt</a><a href="#s7">7. 控制系统：让关节「说到做到」</a><a href="#s8">8. P 控制：误差的动态方程</a><a href="#s9">9. PI 控制：消灭稳态误差</a><a href="#s10">10. PD 与 PID：完整的控制律</a><a href="#s11">11. 本章小结</a><a href="#s12">12. 动手实践</a><a href="#apA">附录 A：术语表</a><a href="#apB">附录 B：课件 61 页完整索引</a><a href="#apC">附录 C：参考资源</a></details>
+<main>
+<!-- ============ 1 ============ -->
+<section id="s1">
+<h2 class="sec"><span class="no">1</span>碰撞检测：规划的「眼睛」</h2>
+<p>第 3 章定义了配置空间和规划问题。规划算法反复要回答一个问题：<b>「给定关节角 $q$，机械臂会不会撞东西？」</b>碰撞检测（Collision Detection）为规划算法提供这样的判断。</p>
+<h3>1.1 网格碰撞检测为什么计算量大</h3>
+<p>如果直接用高精度三维网格（mesh）做检测，朴素逐面对比的计算量很大：</p>
+<div class="box red">
+<span class="bt">⚠️ 计算瓶颈</span>
+<p>检测两个各含 $10^5$ 个三角面片的模型是否碰撞，朴素全配对最坏要比较约 $10^{10}$ 对面片。实际库会先用包围体层次结构（BVH）等宽相位方法排除大部分候选，再检查剩余面片；也可以使用简化碰撞几何来减少计算量。</p>
+</div>
+<h3>1.2 球体包裹法（Bounding Spheres）</h3>
+<p>思想：用一串球体近似每个连杆。碰撞判断退化为球心距比较：两球 $\mathbf{p}_i, \mathbf{p}_j$ 碰撞当且仅当 $\|\mathbf{p}_i - \mathbf{p}_j\| \le r_i + r_j$。</p>
+<figure>
+<img alt="笔记配图：球体包裹法——用球体序列近似机械臂连杆" loading="lazy" src="assets/bounding_spheres.png"/>
+<figcaption>球体包裹法：用球体序列近似连杆，碰撞检测变成 $O(n^2)$ 的球心距比较。<span class="src">（来源：笔记 04）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><p>显示网格</p></div><div><p>碰撞网格（碰撞体）</p></div></div></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Visual mesh＝显示网格；Collision mesh (collider)＝碰撞网格（碰撞体）。左侧是外观模型，右侧用简化碰撞体表示连杆；简化程度会影响可行空间，不能把图中碰撞体理解为真实机械臂外形。</p></div>
+<p><b>优点</b>：高效（$O(n^2)$）。<b>缺点</b>：<b>保守性导致可行解丢失</b>——包裹球可能填满真实存在的小间隙，还可能产生虚假自碰撞（self-collision）。</p>
+<h3>1.3 凸包分解（Convex Decomposition）</h3>
+<p>思想：把凹几何体分解为多个<b>凸包</b>。凸体之间的碰撞检测非常高效，凹体检测则更复杂，因此先用凸体表示复杂几何（课件 p11-12）：</p>
+<figure>
+<img alt="笔记配图：凸包分解——将凹网格分解为凸网格聚类" loading="lazy" src="assets/convex_hull_mesh_decomposition.png"/>
+<figcaption>凸包分解：把复杂凹网格近似为一组凸物体。<span class="src">（来源：笔记 04）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="table-wrap"><table><thead><tr><th>原始网格</th><th>凸包</th><th>近似凸分解</th></tr></thead><tbody><tr><td>原始网格</td><td>精确凸分解（7611个部分）</td><td>近似凸分解（20个部分）</td></tr></tbody></table></div></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Original Mesh＝原始网格；Convex-Hull＝凸包；Exact Convex Decomposition＝精确凸分解（图中兔子为7611块）；Approximate Convex Decomposition＝近似凸分解（示例20块）。从左到右比较凹形细节与块数的取舍，数字仅对应图示模型。</p></div>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>方法</th><th>做法</th><th>评价</th></tr>
+<tr><td><b>凸包（Convex-Hull）</b></td><td>整个网格包一个凸壳</td><td>效率最高，精度最低</td></tr>
+<tr><td><b>精确凸分解</b></td><td>完全精确地分解</td><td>NP-hard，产生大量聚类，不实用</td></tr>
+<tr><td><b>近似凸分解（ACD）</b></td><td>尽量减少聚类数，每簇凹度低于阈值</td><td>常见工程选择，平衡精度与效率</td></tr>
+</table></div></div>
+<p>ACD 比球体更精确、保守性误差更小；但凹形物体的高效分解至今仍是几何处理的研究课题。</p>
+<div class="box green">
+<span class="bt">💡 检查碰撞模型</span>
+<p>仿真结果异常时，可以先检查<b>碰撞模型和物理参数</b>，再定位算法与代码。错误的碰撞体可能把可行通路封住，物理配置也会影响执行结果。</p>
+</div>
+</section>
+<!-- ============ 2 ============ -->
+<section id="s2">
+<h2 class="sec"><span class="no">2</span>PRM：先建地图，再查路径</h2>
+<p>有了碰撞检测，就可以用<b>采样法（sampling-based）</b>寻找路径：随机生成配置点，检查哪些点有效，再尝试把它们连接起来。这样能逐步探索配置空间。</p>
+<p><b>概率路图法（Probabilistic Roadmap, PRM）</b>分三步：</p>
+<ol>
+<li><b>采样</b>：在 $C_{\text{free}}$ 中随机生成 $N$ 个配置点（均匀采样 $C$-space，拒绝碰撞点——即课件 p16 的 <b>Rejection Sampling</b>）。注意：对 $C$-space 均匀采样自然也对 $C_{\text{free}}$ 均匀（PDF 恒为常数）；</li>
+<li><b>建图</b>：连接邻近点，剔除穿过 $C_{\text{obs}}$ 的边；</li>
+<li><b>查询</b>：在图搜索（Dijkstra / A*）中找 $Q_{\text{start}}$ 到 $Q_{\text{goal}}$ 的路径。</li>
+</ol>
+<figure>
+<img alt="课程课件：拒绝采样——均匀采样配置空间并丢弃碰撞点" loading="lazy" src="assets/s_p16.jpg"/>
+<figcaption>拒绝采样：均匀生成配置点，筛去碰撞点，保留的点都在 $C_{\text{free}}$ 中。<span class="src">（来源：Lecture 4 课件 p16）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">拒绝采样</div><div class="translation-body"><ul><li>目标是在\(C_{\mathrm{free}}\)中均匀采样。</li><li>方法：<ul><li>在C上均匀采样。</li><li>拒绝不在可行区域中的样本。</li></ul></li></ul></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l04-p16">对照原课件第16页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Rejection Sampling＝拒绝采样</p><p>目标是在C_free均匀采样</p><p>方法：在整个C中均匀采样，拒绝不在可行区域内的样本。</p><p><b>读图提示：</b>在有界空间和明确测度下，均匀采样后仅按自由／碰撞筛选，保留样本在自由区的条件分布仍为均匀分布。</p><p><a href="课件中文译解.html#l04-p16">对照本页完整译解</a></p></div>
+<figure>
+<img alt="课程课件：PRM 概率路图法示意" loading="lazy" src="assets/s_p15.jpg"/>
+<figcaption>PRM：采样点 + 近邻连边，构成一张可反复查询的「路图」。<span class="src">（来源：Lecture 4 课件 p15）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">概率路图（PRM）</div><div class="translation-body"><ul><li>算法包含两个阶段：<ul><li>建图阶段：<ul><li>在\(C_{\mathrm{free}}\)中随机采样状态。</li><li>将每个采样状态与其邻居连接。</li><li>将起始状态和目标状态连接到图。</li></ul></li><li>查询阶段：运行Dijkstra等寻路算法。</li></ul></li></ul></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l04-p15">对照原课件第15页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>算法分为建图和查询：建图时在C_free随机采样状态，连接每个样本及其邻居，把起点和终点连接到图</p><p>查询时运行Dijkstra等路径搜索算法。</p><p><b>读图提示：</b>同一静态场景中可以复用路图。找到的图路径还需检查边及执行条件。</p><p><a href="课件中文译解.html#l04-p15">对照本页完整译解</a></p></div>
+<p>一个实现细节：<b>如何判断一条边全在 $C_{\text{free}}$ 中？</b>在线段上线性采样一些点（可用二分法加速），逐个做碰撞检测。全部通过时，得到的是该离散分辨率下的有效边；采样点之间的部分需要进一步检查。</p>
+<p>PRM 的特点：<b>预计算的路图可复用</b>，适合<b>静态场景下的多查询</b>（换起点终点不用重建图）；场景动态变化时则需重建，效率下降。</p>
+<div class="box blue"><span class="bt">概率完备与边检查</span><p>在有正间隙的可行路径、覆盖相关自由区的采样分布、可靠局部连接和碰撞判定等条件下，PRM和基础几何RRT可具有概率完备性：采样次数趋于无穷时，找到路径的概率趋近1。<b>有限次搜索失败时，可以增加采样预算并检查场景；搜索成功后，还需另行评价路径代价。</b>概率完备性讨论的是找到可行路径的概率，最优性则是另一项性质。离散插值检查有限状态；要严格排除两次检查之间的碰撞，可采用连续碰撞检测或有依据的步长界。角度变量跨过±π时需使用周期插值。</p></div></section>
+<!-- ============ 3 ============ -->
+<section id="s3">
+<h2 class="sec"><span class="no">3</span>窄通道攻坚战：高斯采样与桥采样</h2>
+<p>均匀采样有一个常见困难——<b>窄通道（Narrow Passages）</b>。下图展示了有限采样的 PRM 容易失败的场景：障碍物之间有可通行的窄缝，但落在其中的样本太少：</p>
+<figure>
+<img alt="笔记配图：PRM 在窄通道场景下不适用" loading="lazy" src="assets/rpm_not_applicable.png"/>
+<figcaption>PRM 的困难场景：窄通道体积占比小，有限均匀样本可能漏掉关键通路。<span class="src">（来源：笔记 04）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><p>q_start：起始配置</p></div><div><p>q_goal：目标配置</p></div></div></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>q_start＝起始配置；q_goal＝目标配置。绿色点是样本，灰色矩形是障碍；中央狭缝虽可通行，却缺少足够样本和有效连接，因此本次有限路图可能找不到路径。</p></div>
+<figure>
+<img alt="课程课件：PRM 的局限——窄通道问题" loading="lazy" src="assets/s_p21.jpg"/>
+<figcaption>PRM 的局限：狭窄通道面积占比小，均匀采样很难采到里面的点。<span class="src">（来源：Lecture 4 课件 p21）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">局限：窄通道</div><div class="translation-body"><p>不容易在狭窄桥接区域采到点。</p><p>\(q_{\mathrm{start}}\)；\(q_{\mathrm{goal}}\)。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l04-p21">对照原课件第21页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Limitations: Narrow Passages＝局限：窄通道</p><p>很难在狭窄桥接区域采到点</p><p>图中左右区域通过中央狭缝连通。</p><p><b>读图提示：</b>这是有限采样下的效率问题。非零宽度通道被均匀采中的概率小，却不是永远采不到。</p><p><a href="课件中文译解.html#l04-p21">对照本页完整译解</a></p></div>
+<p>门缝比房间小得多，同一采样预算下落在门缝里的点可能不足——路图就可能断开。高斯采样与桥采样会增加对这些区域的关注：</p>
+<h3>3.1 高斯采样（Gaussian Sampling）</h3>
+<ol>
+<li>均匀采样 $q_1$；以 $q_1$ 为均值、$\sigma^2$ 为方差采样 $q_2 \sim \mathcal{N}(q_1, \sigma^2)$；</li>
+<li><b>若 $q_1 \in C_{\text{free}}$ 且 $q_2 \notin C_{\text{free}}$，添加 $q_1$</b>——即只保留「紧挨着障碍物的自由点」。</li>
+</ol>
+<figure>
+<img alt="笔记配图：均匀采样 vs 高斯采样对比" loading="lazy" src="assets/uniform_vs_gaussian_sampling.png"/>
+<figcaption>均匀采样 vs 高斯采样：高斯采样产生「边界偏好」——点密集分布在自由空间边界，更可能命中窄通道入口。<span class="src">（来源：笔记 04）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><p>均匀采样</p></div><div><p>高斯采样</p></div></div></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Uniform sampling＝均匀采样；Gaussian sampling＝高斯采样。右图沿障碍边界的点更密集；这是边界偏置的效果，不表示所有窄通道都会被找到。</p></div>
+<p>效果：<b>边界偏好</b>，更容易获取地图连通信息、找到关键通路。代价：采样效率可能降低，且仍有冗余（凹陷、转角处的路标点）。</p>
+<p>$\sigma$ 的权衡：太大难以对窄通道采样；太小则采样效率低、点离障碍太近易碰撞。</p>
+<h3>3.2 桥采样（Bridge Sampling）</h3>
+<p>高斯采样的变体，专门在窄通道里「架桥」：均匀采样 $q_1$ → 高斯采样 $q_2$ → 取中点 $q_3$；<b>当 $q_1, q_2 \in C_{\text{obs}}$ 而 $q_3 \in C_{\text{free}}$ 时，添加 $q_3$</b>。</p>
+<figure data-no-visible-text="true">
+<img alt="笔记配图：桥采样——两端在障碍内、中点在自由空间的点" loading="lazy" src="assets/bridge_sampling.png"/>
+<figcaption>桥采样：两端都撞、中点不撞——中点有机会落在狭窄通道内部。<span class="src">（来源：笔记 04）</span></figcaption>
+</figure>
+<div class="translation"><b>图中英文与中文释义</b><p>左图是较窄通道，右图是宽自由区。桥两端落在障碍内，中点落在自由区时，中点被保留；图只有几何标记，没有额外英文句子。</p></div>
+<div class="box blue">
+<span class="bt">🔑 工程实践</span>
+<p>实际规划可以<b>混合使用</b>均匀、高斯和桥采样，兼顾开放区域与窄通道。选择时，查看规划库支持的采样器，再根据场景设置混合比例。</p>
+</div>
+</section>
+<!-- ============ 4 ============ -->
+<section id="s4">
+<h2 class="sec"><span class="no">4</span>RRT：向未知空间扩张的树</h2>
+<p>PRM 先建全局地图再查询；RRT 换一个思路——<b>从起点长出一棵树，直接朝目标方向扩张</b>：</p>
+<ol>
+<li><b>生长树</b>：从 $Q_{\text{start}}$ 出发，向随机采样点扩展树枝；</li>
+<li><b>目标偏置</b>：以概率 $\beta$ 朝 $Q_{\text{goal}}$ 扩展，以概率 $1-\beta$ 朝随机点扩展；</li>
+<li><b>终止</b>：树枝到达 $Q_{\text{goal}}$ 邻域。</li>
+</ol>
+<figure>
+<img alt="笔记配图：RRT 快速扩展随机树示意" loading="lazy" src="assets/rrt_pathfinding_algorithm_diagram.png"/>
+<figcaption>RRT：从起点生长的树，在「奔向目标」与「随机探索」之间平衡。<span class="src">（来源：笔记 04）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>\(q_{\mathrm{random}}\)：随机配置；\(q_{\mathrm{near}}\)：最近配置；\(q_{\mathrm{new}}\)：新配置；\(q_{\mathrm{init}}\)：初始配置。</p><p>\(q\)；\(\epsilon\)。</p></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>q_init＝初始配置；q_near＝树上最近节点；q_new＝新增节点；q_random／q＝随机目标；ε＝扩展步长。沿虚线方向从最近节点走有限步，再检查连边。</p></div>
+<div class="box green">
+<span class="bt">💡 直觉：探索与目标偏置</span>
+<p>可以把参数 $\beta$ 理解为类似 RL 中的<b>探索与利用（exploration vs exploitation）平衡</b>。一味冲向目标（$\beta$ 大）可能错过更好的路径甚至根本找不到路；较少目标偏置可能使搜索更慢。可固定采样预算，比较不同参数下的成功率与耗时，再为具体场景选择参数。</p>
+</div>
+<p>RRT 的 <b>Extend 操作</b>：找到树上离 $q_{\text{target}}$ 最近的节点 $q_{\text{near}}$，向目标方向走一个步长 $\epsilon$ 得到 $q_{\text{new}}$，检查 $q_{\text{new}}$ 及其连线都在 $C_{\text{free}}$ 中才加入树。</p>
+<p>步长 $\epsilon$ 的权衡：太大——扩展快但可能跳过窄通道；太小——探索精细但节点爆炸、计算负担重。</p>
+<figure>
+<img alt="课程课件：RRT 算法示意" loading="lazy" src="assets/s_p25.jpg"/>
+<figcaption>RRT 的生长过程：树向随机方向扩张，遇到障碍则停止该方向。<span class="src">（来源：Lecture 4 课件 p25）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">快速扩展随机树（RRT）</div><div class="translation-body"><ul><li>RRT利用配置空间中的随机样本，生长一棵以起始状态为根的树。</li><li>每采到一个样本，尝试连接它与树中最近的状态。若该连接位于配置空间中，便在树中产生一个新状态。</li></ul></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l04-p25">对照原课件第25页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>从起始状态为根，利用配置空间随机样本生长树</p><p>每抽到一个样本，尝试连接样本与树中离它最近的状态</p><p>连接有效时在树中产生新状态。</p><p><b>读图提示：</b>扩展通常只向样本方向走有限步长，再检查整段边；不是每次都把随机样本完整加入树。</p><p><a href="课件中文译解.html#l04-p25">对照本页完整译解</a></p></div>
+</section>
+<!-- ============ 5 ============ -->
+<section id="s5">
+<h2 class="sec"><span class="no">5</span>RRT-Connect 与路径后处理</h2>
+<h3>5.1 RRT-Connect：两棵树相向生长</h3>
+<p>RRT-Connect（Kuffner &amp; LaValle, ICRA 2000）在 RRT 上加入以下操作：</p>
+<ul>
+<li><b>双向树</b>：从 $q_{\text{start}}$ 和 $q_{\text{goal}}$ 同时各长一棵树；</li>
+<li><b>定向生长</b>：先让一棵树朝随机样本扩展，再让另一棵树从其最近节点朝新节点连接；每轮可交换两棵树的角色；</li>
+<li><b>贪婪扩展</b>：重复按同一步长扩展，直到受阻或到达连接目标。</li>
+</ul>
+<figure>
+<img alt="课程课件：RRT-Connect 双向树生长示意" loading="lazy" src="assets/s_p29.jpg"/>
+<figcaption>RRT-Connect：两棵树相向生长、贪婪连接。<span class="src">（来源：Lecture 4 课件 p29）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">RRT-Connect</div><div class="translation-body"><ul><li>分别从\(q_{\mathrm{start}}\)和\(q_{\mathrm{start}}\)开始生长两棵树，而不是只生长一棵。</li><li>让两棵树朝彼此生长，而不是朝随机配置生长。</li><li>以多个\(\varepsilon\)步长生长，代替单步生长，从而加强贪婪性。</li></ul><p>Kuffner, James J., and Steven M. LaValle. 《RRT-connect：一种高效的单次查询路径规划方法》。ICRA 2000，IEEE国际机器人与自动化会议，卷2，IEEE，2000。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l04-p29">对照原课件第29页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>用分别以起点和目标为根的两棵树代替一棵树</p><p>让树朝彼此连接</p><p>用多个ε步连续贪婪扩展代替一次扩展</p><p>引用Kuffner与LaValle的ICRA 2000论文。</p><p><b>读图提示：</b>课件两次写q_start，结合原算法应理解为q_start与q_goal。多个ε步指重复同一步长扩展，不是每次换不同步长。</p><p><a href="课件中文译解.html#l04-p29">对照本页完整译解</a></p></div>
+<h3>5.2 Shortcutting：给路径「拉直」</h3>
+<p>基础 RRT 与 RRT-Connect <b>不渐近最优</b>，即不能保证路径代价随采样增多趋于全局最优值。有限采样的 PRM 也常产生曲折路径；具有适当连边规则的 PRM*、RRT* 则有相应的渐近最优理论。<b>捷径算法（Shortcutting）</b>是后处理启发式：路径上不相邻的两点若直接连线在自由空间中，就跳过中间点——反复尝试消除弯路。</p>
+<figure data-no-visible-text="true">
+<img alt="笔记配图：捷径算法消除路径中的不必要弯路" loading="lazy" src="assets/shortcutting.png"/>
+<figcaption>Shortcutting：直接把可行路径上不相邻的点连起来，消除抖动。<span class="src">（来源：笔记 04）</span></figcaption>
+</figure>
+<div class="translation"><b>图中英文与中文释义</b><p>按从左到右读取：原路径曲折；第一次候选直连穿过障碍，红叉表示拒绝；另一候选无碰撞则替换片段；继续尝试缩短路径。图中没有额外英文正文。</p></div>
+<h3>5.3 多次重启：逃出局部最优</h3>
+<p>Shortcutting 通过替换路径片段做<b>局部优化</b>。图中 RRT 找到了下方路线，更短的路线却从上方绕过障碍；局部捷径化可能仍留在原来的通道内：</p>
+<figure data-no-visible-text="true">
+<img alt="笔记配图：Shortcutting 无法修复主干路径的次优性" loading="lazy" src="assets/shortcutting_not_applicable.png"/>
+<figcaption>Shortcutting 的局限：局部平滑可能保留原来绕障碍的通道。<span class="src">（来源：笔记 04）</span></figcaption>
+</figure>
+<div class="translation"><b>图中英文与中文释义</b><p>图中方块是障碍，离散点和折线表示已有路线。局部删去弯路不一定能换到另一条绕障碍的通道，因此可配合重新规划。图中没有可译英文句子。</p></div>
+<p>一种改进方法是<b>多次重启</b>：多次运行RRT，对可行路径做捷径化，再按代价选取当前最好的一条。时间紧迫时，捷径化往往能快速改进初始路径，但也会停滞；RRT*等方法的渐近保证建立在理论假设和持续采样上。有限时间内的速度与路径质量，应通过同一任务上的实验比较。</p>
+</section>
+<!-- ============ 6 ============ -->
+<section id="s6">
+<h2 class="sec"><span class="no">6</span>工业级实践：OMPL 与 MoveIt</h2>
+<p>实现基础算法后，可以学习工程系统如何调用这些规划器（课件 p35-37）：</p>
+<figure>
+<img alt="课程课件：OMPL——ROS MoveIt 的默认规划库" loading="lazy" src="assets/s_p35.jpg"/>
+<figcaption>OMPL（Open Motion Planning Library）：ROS-MoveIt 的默认规划库，提供多种采样规划算法。<span class="src">（来源：Lecture 4 课件 p35）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">实例：OMPL</div><div class="translation-body"><h3>开放运动规划库</h3><ul><li>ROS-MoveIt中的默认规划库。</li><li>强大的先进采样运动规划算法集合。</li></ul><h3>MoveIt系统架构</h3><p>用户／人工智能；MoveIt命令接口；RViz插件；原始动作；占据地图；运动组；规划场景；运动规划模块；规划流水线；规划接口；轨迹执行管理器；控制器；CHOMP：协变哈密顿运动优化；OMPL：开放运动规划库；SBPL：基于搜索的规划库；碰撞检测；FCL：灵活碰撞库；PCD：近邻碰撞检测。</p><p>图例：moveit_core包；moveit_ros包；外部包依赖。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l04-p35">对照原课件第35页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>OMPL＝Open Motion Planning Library，开放运动规划库</p><p>课件介绍它是ROS-MoveIt的默认规划库，提供多种采样式运动规划算法</p><p>MoveIt System Architecture＝MoveIt系统架构</p><p>Motion Planning Module＝运动规划模块。</p><p><b>读图提示：</b>从感知、场景、规划流水线到轨迹执行，各模块各有职责；OMPL主要解决规划问题，环境与机器人有效性由应用提供。</p><p><a href="课件中文译解.html#l04-p35">对照本页完整译解</a></p></div>
+<ul>
+<li><b>OMPL</b>：几何规划器（RRTConnect 为默认、RRT*、PRM、LazyPRM 等）+ 基于控制的规划器；其中几何规划器只考虑几何与运动学约束（需另检验路径到动力学可行轨迹的转换），控制规划器则按系统模型传播状态；</li>
+<li>课件附了 RRTConnect 的三段官方演示视频链接（YouTube），可搜索「OMPL RRTConnect demo」观看。</li>
+</ul>
+<div class="update-box">
+<span class="bt">工程说明：规划栈的选择</span>
+<p>采样规划可用于生成可行路径，轨迹优化可用于改善平滑性或代价，学习策略可提供目标或初值。比较 GPU 并行与 CPU 实现的速度时，固定硬件、场景与工作量，并记录这些条件。路径生成后，继续检查轨迹及执行反馈。</p>
+</div>
+</section>
+<!-- ============ 7 ============ -->
+<section id="s7">
+<h2 class="sec"><span class="no">7</span>控制系统：让关节「说到做到」</h2>
+<p>规划给出轨迹，但机器人凭什么精确走完？——<b>控制系统</b>。先看组成（课件 p39）：传感器（关节角、速度、力矩）→ 控制器 → 执行器（关节电机），构成回路。</p>
+<figure>
+<img alt="课程课件：控制系统组成——传感器、执行器、控制器" loading="lazy" src="assets/s_p39.jpg"/>
+<figcaption>控制系统的主要组成：传感器、执行器（电机）、控制器。<span class="src">（来源：Lecture 4 课件 p39）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">控制系统</div><div class="translation-body"><ul><li>主要组成：<ul><li>传感器，例如关节角度、速度、力矩传感器。</li><li>执行器，例如关节电机。</li><li>控制器。</li></ul></li><li>控制系统框图。</li></ul><p>期望行为→控制器→低功率控制信号→放大器→高功率控制信号→执行器与传动机构→力与力矩→机械臂与环境动力学。</p><p>局部反馈；力扰动；运动与力；传感器；传感器误差。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l04-p39">对照原课件第39页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>主要组件：Sensor＝传感器，例如关节角、速度、力矩传感器</p><p>Actuator＝执行器，例如关节电机</p><p>Controller＝控制器</p><p>框图含desired behavior（期望行为）、amplifiers（放大器）、actuators and transmission（执行器与传动）、dynamics of arm and environment（机械臂与环境动力学）、sensors（传感器）。</p><p><b>读图提示：</b>沿箭头读取：指令驱动系统，状态测量反馈给控制器；外部扰动和传感误差会影响响应。</p><p><a href="课件中文译解.html#l04-p39">对照本页完整译解</a></p></div>
+<p>执行器、负载和外部扰动会使实际运动偏离目标。<b>反馈控制利用测得的状态持续修正误差</b>，让实际运动接近规划轨迹。</p>
+<h3>开环 vs 闭环</h3>
+<div class="gallery">
+<figure>
+<img alt="笔记配图：开环控制框图" loading="lazy" src="assets/ff.png"/>
+<figcaption>开环控制（FF）：预设指令直通执行器，无反馈——「闭着眼睛做事」</figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>输入 → 控制器 → 输出</p></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Input＝输入；Controller＝控制器；Output＝输出。图中没有输出回到输入的箭头，表示无状态反馈的开环控制链。</p></div>
+<figure>
+<img alt="笔记配图：闭环控制框图" loading="lazy" src="assets/fb.png"/>
+<figcaption>闭环控制（FB）：传感器反馈误差，控制器持续修正</figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="stacked"><div><p>输入 → 求和点（＋输入、－反馈）→ 误差 → 控制器 → 输出</p></div><div><p>输入 → 前馈控制器（FF）→ 输出求和点（＋）</p><p>输入 → 求和点（＋输入、－反馈）→ 反馈控制器（FB）→ 输出求和点（＋）→ 输出</p></div></div></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Input＝输入；Error＝误差；Controller＝控制器；Output＝输出；FF Controller＝前馈控制器；FB Controller＝反馈控制器。上图用输出反馈修正误差，下图把基于目标的前馈与基于误差的反馈相加。</p></div>
+</div>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th></th><th>开环（Feedforward, FF）</th><th>闭环（Feedback, FB）</th></tr>
+<tr><td><b>机制</b></td><td>按预设动作或模型生成输入，不利用当前输出误差修正</td><td>实时反馈，构建反馈回路</td></tr>
+<tr><td><b>弱点</b></td><td>受噪声和干扰影响大，依赖精确建模</td><td>需要传感器与状态估计</td></tr>
+<tr><td><b>能力</b></td><td>—</td><td>设计合适时可抵抗干扰并稳定系统</td></tr>
+</table></div></div>
+<h3>性能三大指标</h3>
+<p>定义误差 $\theta_e = \theta_d - \theta$（期望 − 当前），一个「好」的控制系统要：</p>
+<ol>
+<li><b>稳态误差（Steady-State Error）</b>最小：$e_{ss} = \lim_{t\to\infty}\theta_e(t)$，理想为 0；</li>
+<li><b>调节时间（Settling Time）</b>最短：误差首次进入并保持在 ±2% 误差带所需时间；</li>
+<li><b>超调量（Overshoot）</b>最小：$\text{overshoot} = |a/b| \times 100\%$（$a$ 最大偏移、$b$ 稳态值；需要非零归一化基准）。</li>
+</ol>
+<figure>
+<img alt="笔记配图：性能评价指标——超调量、调节时间、稳态误差" loading="lazy" src="assets/performance_evaluation_metrics.png"/>
+<figcaption>性能评价指标：超调量、调节时间与稳态误差。<span class="src">（来源：笔记 04）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>超调量 \(=|a/b|\times100\%\)</p><p>超调量；2%调节时间。</p><p>\(\theta_e\)；\(e_{\mathrm{ss}}\)；\(t\)；0；1。</p></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>overshoot＝超调；2% settling time＝2%误差带的调节时间；θ_e＝误差，e_ss＝稳态误差，t＝时间。看曲线何时进入误差带并保持；超调百分比需要明确分母基准。</p></div>
+</section>
+<!-- ============ 8 ============ -->
+<section id="s8">
+<h2 class="sec"><span class="no">8</span>P 控制：误差的动态方程</h2>
+<p>最简单的问题：如何把误差信号变成电机指令？<b>P 控制（比例控制）</b>：控制信号与误差大小成正比：</p>
+<p style="text-align:center">$$ P = K_p\,\theta_e(t) $$</p>
+<p>假设控制信号改变状态的导数（速度信号）：$\dot{\theta}(t) = K_p\theta_e(t)$。结合 $\dot{\theta}_e = \dot{\theta}_d - \dot{\theta}$，且目标以恒定速度移动 $\dot{\theta}_d = c$，得到一阶微分方程：</p>
+<p style="text-align:center">$$ \dot{\theta}_e(t) + K_p\theta_e(t) = c $$</p>
+<p>解这个 ODE（齐次通解 + 特解）：</p>
+<p style="text-align:center">$$ \theta_e(t) = \frac{c}{K_p} + \left(\theta_e(0) - \frac{c}{K_p}\right)e^{-K_p t} $$</p>
+<p>从这个解可以读出两种情况：</p>
+<ul>
+<li><b>$c=0$（目标静止）</b>：$\theta_e(t) = \theta_e(0)e^{-K_pt}$——在本理想连续模型且 $K_p&gt;0$ 时，误差指数衰减到 0；</li>
+<li><b>$c \neq 0$（目标移动）</b>：稳态误差 $\lim_{t\to\infty}\theta_e = c/K_p \neq 0$——<b>保持一定跟踪滞后</b>。误差与目标速度成正比、与增益成反比。增大 $K_p$ 能减小但不消除。</li>
+</ul>
+<div class="box red">
+<span class="bt">⚠️ P 控制的另一个坑：二阶形式</span>
+<p>若控制信号改变的是二阶导数（力/力矩信号）：$\ddot{\theta}(t) = K_p\theta_e(t)$——在正增益、固定目标的理想无阻尼模型中，系统会<b>持续振荡而不渐近收敛</b>（相当于弹簧无阻尼）。分析其他力控系统时，先写出其惯量、阻尼与控制输入关系，再判断响应。</p>
+</div>
+</section>
+<!-- ============ 9 ============ -->
+<section id="s9">
+<h2 class="sec"><span class="no">9</span>PI 控制：消灭稳态误差</h2>
+<p>在上一节的理想速度输入模型中，P 控制对恒速目标保留跟踪滞后；可增加一个累积误差的项。这就是<b>积分项</b>：</p>
+<p style="text-align:center">$$ PI = K_p\theta_e(t) + K_i\int_0^t \theta_e(\tau)\,\mathrm{d}\tau $$</p>
+<p>误差持续得越久、量越大，积分输出越大——把「一直差一点」累积成可观的修正量。</p>
+<p>对速度信号控制的系统（目标加速度为零时），误差动态方程是二阶常系数齐次 ODE：</p>
+<p style="text-align:center">$$ \ddot{\theta}_e + K_p\dot{\theta}_e + K_i\theta_e = 0 $$</p>
+<p>其特征方程 $r^2 + K_pr + K_i = 0$ 的根决定阻尼形态。先假定 $K_p&gt;0,K_i&gt;0$，使两根实部为负；判别式 $K_p^2-4K_i$ 大于、等于、小于零分别对应过阻尼、临界阻尼、欠阻尼。也可写自然频率 $\omega_n=\sqrt{K_i}$、阻尼比 $\zeta=K_p/(2\sqrt{K_i})$。</p>
+<figure>
+<img alt="笔记配图：过阻尼、临界阻尼、欠阻尼三种响应" loading="lazy" src="assets/overdamped_critical_underdamped.png"/>
+<figcaption>三种阻尼形态：I 过阻尼、II 临界阻尼、III 欠阻尼；图是特定参数与初值下的响应。<span class="src">（来源：笔记 04）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>\(\theta_e\)；\(t\)；0；1。</p><p>I；II；III。</p></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>I＝过阻尼；II＝临界阻尼；III＝欠阻尼；纵轴θ_e是误差，横轴t是时间。是否振荡由特征根决定，快慢比较还需固定自然频率和初始条件。</p></div>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>特征根</th><th>形态</th><th>表现</th></tr>
+<tr><td>两个相异实根</td><td>过阻尼（Overdamped）</td><td>缓慢收敛，无振荡</td></tr>
+<tr><td>二重实根</td><td>临界阻尼（Critically damped）</td><td>相同自然频率下的典型临界阻尼响应；具体最快性还取决于初值</td></tr>
+<tr><td>共轭复根</td><td>欠阻尼（Underdamped）</td><td>振荡收敛（有超调）</td></tr>
+</table></div></div>
+<figure>
+<img alt="笔记配图：P 控制 vs PI 控制对比" loading="lazy" src="assets/pi_vs_p_control.png"/>
+<figcaption>P vs PI：P 控制对移动目标存在恒定差距（$\theta_e \to c/K_p \neq 0$）；PI 控制最终与目标重合（$\theta_e \to 0$）。<span class="src">（来源：笔记 04）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><p>PI控制；P控制。</p><p>纵轴：\(\theta\)，刻度0、0.5、1.0。</p><p>横轴：时间（秒），刻度0、0.5、1.0。</p></div><div><p>P控制；PI控制。</p><p>纵轴：\(\theta_e\)，刻度－0.2、0、0.2。</p><p>横轴：时间（秒），刻度0、0.5、1.0。</p></div></div></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>P control＝比例控制；PI control＝比例积分控制；time (s)＝时间（秒）。左图对比状态与恒速目标，右图对比误差；本例P误差趋于c/K_p，PI在稳定条件下趋于0。</p></div>
+<p>在<b>理想速度输入模型</b>、连续时间且闭环稳定的条件下，P 可消除固定目标的误差，PI 可消除恒速目标的稳态误差；任意加速轨迹通常仍有跟踪误差。实际负载、延迟、饱和和积分状态都会改变结论。Setpoint 是“固定设定值”，能否只用P仍需按对象及精度要求判断。</p>
+</section>
+<!-- ============ 10 ============ -->
+<section id="s10">
+<h2 class="sec"><span class="no">10</span>PD 与 PID：完整的控制律</h2>
+<p>最后一项是<b>微分项</b>——用误差变化率反映趋势：</p>
+<p style="text-align:center">$$ D = K_d\frac{\mathrm{d}}{\mathrm{d}t}\theta_e(t) $$</p>
+<p>与误差变化率成正比：误差在增大时加强控制，误差在减小时温和收力——<b>预测趋势、抑制超调和振荡</b>。当控制输入直接作用于二阶状态导数、惯量已归一化且没有其他动力学项时，PD 误差方程与前节速度输入PI的方程形式相似（$K_d$ 占阻尼位）：</p>
+<p style="text-align:center">$$ \ddot{\theta}_e + K_d\dot{\theta}_e + K_p\theta_e = \ddot{\theta}_d $$</p>
+<p>三者合一就是工业界最广泛使用的<b>PID 控制律</b>：</p>
+<p style="text-align:center">$$ PID = K_p\theta_e(t) + K_i\int_0^t\theta_e(\tau)\,\mathrm{d}\tau + K_d\frac{\mathrm{d}}{\mathrm{d}t}\theta_e(t) $$</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>项</th><th>管什么</th><th>一句话</th></tr>
+<tr><td><b>P 比例项</b></td><td>当前状态</td><td>误差大就大力修正，响应快但留稳态误差</td></tr>
+<tr><td><b>I 积分项</b></td><td>历史累积</td><td>消灭稳态误差</td></tr>
+<tr><td><b>D 微分项</b></td><td>未来趋势</td><td>抑制超调与振荡</td></tr>
+</table></div></div>
+<figure>
+<img alt="课程课件：PID 调参示意" loading="lazy" src="assets/s_p56.jpg"/>
+<figcaption>PID 调参：三个增益的增大对系统响应的影响各不相同。<span class="src">（来源：Lecture 4 课件 p56）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">PID调参</div><div class="translation-body"><h3>独立增大一个参数的影响</h3><div class="table-wrap"><table><tr><th>参数</th><th>上升时间</th><th>超调</th><th>调节时间</th><th>稳态误差</th><th>稳定性</th></tr><tr><td>\(K_p\)</td><td>减小</td><td>增大</td><td>小变化</td><td>减小</td><td>变差</td></tr><tr><td>\(K_i\)</td><td>减小</td><td>增大</td><td>增大</td><td>消除</td><td>变差</td></tr><tr><td>\(K_d\)</td><td>小变化</td><td>减小</td><td>减小</td><td>理论上无影响</td><td>\(K_d\)小时改善</td></tr></table></div><p>Kiam Heong Ang; Chong, G.; Yun Li（2005）。《PID控制系统分析、设计与技术》。IEEE Transactions on Control Systems Technology，13(4):559–576。</p><p>Jinghua Zhong（2006年春）。《PID控制器调参：简短教程》（PDF）。2015-04-21存档，2011-04-04查阅。</p><p>https://en.wikipedia.org/wiki/PID_controller#cite_note-24</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l04-p56">对照原课件第56页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Tuning PID＝PID调参</p><p>表比较单独增大参数的影响：K_p通常缩短上升时间、增加超调、减小稳态误差</p><p>K_i可消除稳态误差但可能增加超调及调节时间</p><p>K_d通常减小超调及调节时间，理论上不改稳态误差</p><p>Rise time＝上升时间，Stability＝稳定性。</p><p><b>读图提示：</b>这是常见经验趋势，依赖对象、工作点、滤波与采样，不能替代稳定性分析。Increase/Decrease分别是增大／减小，Small/Minor change是小变化。</p><p><a href="课件中文译解.html#l04-p56">对照本页完整译解</a></p></div>
+<p><b>调参经验表</b>（展示常见趋势；使用时结合被控对象、延迟、滤波和采样时间，并检查闭环稳定性）：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>参数</th><th>上升时间</th><th>超调量</th><th>调节时间</th><th>稳态误差</th><th>稳定性</th></tr>
+<tr><td>$K_p$ ↑</td><td>减小</td><td>增大</td><td>小变化</td><td>减小</td><td>变差</td></tr>
+<tr><td>$K_i$ ↑</td><td>减小</td><td>增大</td><td>增加</td><td><b>消除</b></td><td>变差</td></tr>
+<tr><td>$K_d$ ↑</td><td>小变化</td><td>减小</td><td>减小</td><td>理论上无影响</td><td>$K_d$ 小则改善</td></tr>
+</table></div></div>
+<div class="box blue"><span class="bt">为什么正增益仍需检验稳定性？</span><p>对理想二阶力矩模型 $\ddot\theta=u$ 和固定目标，PID令误差满足 $\dddot e+K_d\ddot e+K_p\dot e+K_i e=0$。当三增益均为正时，渐近稳定还要求 $K_dK_p&gt;K_i$。调节积分增益时，要与比例、微分增益一起满足这个稳定条件。真实关节还需考虑惯量、阻尼、负载与执行器饱和；微分常加低通滤波，积分可加抗饱和处理。</p></div><h3>机器人关节里的 PD 控制（课件 p57）</h3>
+<p>课件示例把每个关节自由度（DoF）作为一个PD驱动接口；实际机械臂可能还包含动力学补偿和其他控制环节，参数叫 stiffness（刚度）与 damping（阻尼）——本质上就是 $K_p$ 和 $K_d$：</p>
+<p style="text-align:center">$$ \text{force} = \text{stiffness} \times (\text{targetPosition} - \text{Position}) + \text{damping} \times (\text{targetVelocity} - \text{Velocity}) $$</p>
+<figure>
+<img alt="课程课件：机器人关节的 PD 控制——刚度与阻尼参数" loading="lazy" src="assets/s_p57.jpg"/>
+<figcaption>机械臂关节的 PD 控制：stiffness 与 damping 就是 $K_p$ 与 $K_d$。<span class="src">（来源：Lecture 4 课件 p57）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">机械臂控制器：内部PD控制器</div><div class="translation-body"><ul><li>自由度控制：<ul><li>使用PD控制器控制每个自由度（关节）。</li><li>关节参数：刚度、阻尼等。</li><li>控制力：\(\mathrm{force}=\mathrm{stiffness}\cdot(\mathrm{targetPosition}-\mathrm{Position})+\mathrm{damping}\cdot(\mathrm{targetVelocity}-\mathrm{Velocity})\)。</li></ul></li><li>刚度与阻尼可视为PID控制器中的\(k_p\)与\(k_d\)。</li></ul></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l04-p57">对照原课件第57页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>每个DoF（自由度、关节）可采用PD控制</p><p>关节参数有stiffness（刚度）和damping（阻尼）</p><p>force=stiffness×(targetPosition−Position)+damping×(targetVelocity−Velocity)</p><p>刚度、阻尼可视作K_p、K_d。</p><p><b>读图提示：</b>旋转关节的force应理解为力矩，平移关节为力；真实机械臂还可能包含耦合动力学、重力补偿和其他控制环节。</p><p><a href="课件中文译解.html#l04-p57">对照本页完整译解</a></p></div>
+<p>课件演示了它在两大仿真器中的实践：<b>SAPIEN</b>（sapien.ucsd.edu，课程组自己的仿真器，抓取方向的核心工具）与 <b>Isaac Gym</b>（NVIDIA 并行物理仿真，强化学习标配）。</p>
+<div class="gallery">
+<figure>
+<img alt="课程课件：SAPIEN 中的关节控制示例" loading="lazy" src="assets/s_p58.jpg"/>
+<figcaption>SAPIEN 中的关节控制（课程组自研仿真器）<span class="src">（课件 p58）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">SAPIEN中的示例</div><div class="translation-body"><h3>使用PhysX内部PD控制器驱动机器人</h3><p>active_joints = robot.get_active_joints()</p><p>if use_internal_drive:</p><p>　for joint_idx, joint in enumerate(active_joints):</p><p>　　joint.set_drive_property(stiffness=20, damping=5)</p><p>　　joint.set_drive_target(target_qpos[joint_idx])</p><p>　# 或者，直接为整个关节结构设置关节目标</p><p>　# robot.set_drive_target(target_qpos)</p><p>SAPIEN提供内置PhysX驱动（控制器），以控制关节的位置或速度。对每个活动关节（自由度非零），可调用set_drive_property(...)设置驱动属性stiffness（刚度）和damping（阻尼）。驱动采用比例微分形式，施加的力如下：</p><p>\(\mathrm{force}=\mathrm{stiffness}\cdot(\mathrm{targetPosition}-\mathrm{position})+\mathrm{damping}\cdot(\mathrm{targetVelocity}-\mathrm{velocity})\)</p><p>https://sapien.ucsd.edu/docs</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l04-p58">对照原课件第58页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Examples in SAPIEN＝SAPIEN中的示例</p><p>Drive the robot with the PhysX internal PD controller＝使用PhysX内部PD控制器驱动机器人</p><p>对活动关节设置drive properties（驱动参数）的stiffness和damping，再设置drive target（目标位置）</p><p>图下给出控制力公式。</p><p><b>读图提示：</b>接口名按原示例保留，须对照对应版本文档。上方代码表达“设置增益，再设置关节目标”的操作次序。</p><p><a href="课件中文译解.html#l04-p58">对照本页完整译解</a></p></div>
+<figure>
+<img alt="课程课件：Isaac Gym 中的关节控制示例" loading="lazy" src="assets/s_p59.jpg"/>
+<figcaption>Isaac Gym 中的关节控制（并行物理仿真）<span class="src">（课件 p59）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">Isaac Gym中的示例</div><div class="translation-body"><p>DOF_MODE_POS与DOF_MODE_VEL启用PD控制器，可使用刚度与阻尼参数调节。控制器施加的自由度力与\(\mathrm{posError}\cdot\mathrm{stiffness}+\mathrm{velError}\cdot\mathrm{damping}\)成正比。</p><p>DOF_MODE_POS用于位置控制，通常将刚度与阻尼都设置为非零值。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l04-p59">对照原课件第59页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Examples in Isaac Gym＝Isaac Gym中的示例</p><p>DOF_MODE_POS与DOF_MODE_VEL使用由刚度、阻尼调节的PD控制器</p><p>控制力与位置误差posError×stiffness及速度误差velError×damping成正比</p><p>位置模式通常把刚度和阻尼都设为非零。</p><p><b>读图提示：</b>黑色区域是演示媒体占位／视频区域，PDF静态页不包含完整动作。模式与参数含义需按对应接口核对。</p><p><a href="课件中文译解.html#l04-p59">对照本页完整译解</a></p></div>
+</div>
+<div class="update-box">
+<span class="bt">工程说明：控制律与仿真环境</span>
+<p>PD/PID 是关节控制的常见基础工具。使用具体接口时，先查看对应仿真器与作业的依赖：公开作业 2 使用 MuJoCo，作业 3 使用 MuJoCo Playground/JAX；课件中的 SAPIEN、Isaac Gym 示例可用于理解控制思路。</p>
+</div>
+</section>
+<!-- ============ 11 ============ -->
+<section id="s11">
+<h2 class="sec"><span class="no">11</span>本章小结</h2>
+<p>本章把运动规划与控制接到前两章的运动学上。课件 p60 将机器人学概括为四部分：</p>
+<blockquote>
+<p><b>机器人学四大件：</b>① 运动学（Kinematics）——笛卡尔空间与关节空间互转；② 动力学（Dynamics）——本课程跳过；③ 运动规划（Motion Planning）——得到几何可行的路径；④ 控制（Control）——确保运动精确跟随规划的轨迹。</p>
+</blockquote>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>核心概念</th><th>一句话解释</th></tr>
+<tr><td><b>碰撞检测</b></td><td>球体包裹（快而保守）/ 凸包分解（ACD 平衡精度效率）</td></tr>
+<tr><td><b>PRM</b></td><td>采样-建图-查询，静态场景多查询首选</td></tr>
+<tr><td><b>高斯/桥采样</b></td><td>边界偏好 / 窄通道架桥，攻克均匀采样的盲区</td></tr>
+<tr><td><b>RRT / RRT-Connect</b></td><td>树扩张 + 探索-利用平衡；双向生长 + 贪婪连接</td></tr>
+<tr><td><b>Shortcutting + 重启</b></td><td>局部平滑 + 并行多次尝试，逃出次优主干</td></tr>
+<tr><td><b>PID</b></td><td>P按当前误差修正、I累积误差、D反馈变化率；效果需结合对象与稳定性</td></tr>
+</table></div></div>
+<div class="box green">
+<span class="bt">💡 下一章预告</span>
+<p>从第 5 章开始，机器人长出「眼睛」——3D 视觉与抓取（课件 p61 预告）。第 5 章讲抓取的第一性原理与旋转回归（含作业 2 位姿估计），其中会用到第 2-4 章的旋转与坐标变换。</p>
+</div>
+</section>
+<!-- ============ 12 ============ -->
+<section id="s12">
+<h2 class="sec"><span class="no">12</span>动手实践</h2>
+<p>本章没有原版课程作业，但两个练习用纯 numpy 就能把算法跑起来——<b>建议都用 matplotlib 可视化</b>，亲眼看到树怎么长、误差怎么收敛。</p>
+<h3>练习 1：2D RRT 路径规划（40 分钟）</h3>
+<p>在 $[0,100]^2$ 的平面上放几个圆形障碍物，实现基础 RRT（含目标偏置与 Shortcutting），画出树和最终路径：</p>
+<pre><code><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+obstacles = [((30, 40), 8), ((60, 65), 10), ((75, 25), 7)]   <span class="cm"># (圆心, 半径)</span>
+
+<span class="kw">def</span> <span class="fn">in_collision</span>(p):
+    <span class="kw">return</span> <span class="fn">any</span>(np.linalg.norm(p - np.array(c)) &lt;= r <span class="kw">for</span> c, r <span class="kw">in</span> obstacles)
+
+<span class="kw">def</span> <span class="fn">edge_free</span>(a, b):
+    d = b - a
+    length2 = np.dot(d, d)
+    <span class="kw">for</span> center, radius <span class="kw">in</span> obstacles:
+        u = 0.0 <span class="kw">if</span> length2 == 0 <span class="kw">else</span> np.clip(np.dot(np.array(center)-a, d) / length2, 0, 1)
+        <span class="kw">if</span> np.linalg.norm(a + u*d - np.array(center)) &lt;= radius:
+            <span class="kw">return</span> False
+    <span class="kw">return</span> True
+
+q_start, q_goal = np.array([5., 5.]), np.array([95., 95.])
+V = [q_start]; parent = [-1]; eps = 4; beta = 0.1
+np.random.seed(42)
+
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(2000):
+    q_target = q_goal <span class="kw">if</span> np.random.rand() &lt; beta <span class="kw">else</span> np.random.rand(2)*100
+    idx = <span class="fn">min</span>(<span class="fn">range</span>(<span class="fn">len</span>(V)), key=<span class="kw">lambda</span> j: np.linalg.norm(V[j]-q_target))
+    d = q_target - V[idx]; distance = np.linalg.norm(d)
+    <span class="kw">if</span> distance &lt; 1e-12: <span class="kw">continue</span>
+    q_new = V[idx] + min(eps, distance) * d / distance
+    <span class="kw">if</span> np.any(q_new &lt; 0) <span class="kw">or</span> np.any(q_new &gt; 100): <span class="kw">continue</span>
+    <span class="kw">if</span> <span class="kw">not</span> <span class="fn">in_collision</span>(q_new) <span class="kw">and</span> <span class="fn">edge_free</span>(V[idx], q_new):
+        V.append(q_new); parent.append(idx)
+        <span class="kw">if</span> np.linalg.norm(q_new - q_goal) &lt; eps <span class="kw">and</span> edge_free(q_new, q_goal):
+            V.append(q_goal.copy()); parent.append(len(V)-2)
+            <span class="fn">print</span>(<span class="st">"已验证并连接目标！"</span>); <span class="kw">break</span>
+
+<span class="cm"># 回溯路径并可视化（略：画障碍圆、树边、最终路径）</span></code></pre>
+<p><b>挑战 1</b>：加 Shortcutting——随机挑路径上两点，直连无碰撞就删中间点。<b>挑战 2</b>：把 $\beta$ 调到 0.8 和 0.02，观察树的形态差异（探索 vs 利用）。</p>
+<h3>练习 2：P 与 PI 跟踪仿真（30 分钟）</h3>
+<p>仿真一个一阶系统（如关节速度指令控制位置），对比 P 与 PI 在恒速目标下的表现：</p>
+<pre><code><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+dt, T = 0.01, 10.0
+ts = np.arange(0, T, dt)
+theta = 0.0; theta_d = 0.0
+Kp, Ki = 8.0, 12.0
+
+errs_p, errs_pi = [], []
+theta_p = theta_pi = 0.0
+integral = 0.0
+<span class="kw">for</span> t <span class="kw">in</span> ts:
+    theta_d = 1.0 * t          <span class="cm"># 目标以恒速 1 移动</span>
+    <span class="cm"># P 控制：theta_dot = Kp * err</span>
+    theta_p += Kp * (theta_d - theta_p) * dt
+    errs_p.append(1.0 * (t + dt) - theta_p)
+    <span class="cm"># PI 控制：theta_dot = Kp*err + Ki*∫err</span>
+    e = theta_d - theta_pi
+    integral += e * dt
+    theta_pi += (Kp * e + Ki * integral) * dt
+    errs_pi.append(1.0 * (t + dt) - theta_pi)
+
+<span class="fn">print</span>(<span class="st">"P  稳态误差:"</span>, np.round(errs_p[-1], 4))
+<span class="fn">print</span>(<span class="st">"PI 稳态误差:"</span>, np.round(errs_pi[-1], 4))   <span class="cm"># 应趋近 0</span></code></pre>
+<p><b>挑战</b>：画出两条误差曲线；把 $K_p$ 翻倍看稳态误差是否减半（验证 $c/K_p$）；增大 $K_i$ 观察欠阻尼与数值积分误差；若出现发散，同时检查时间步长，区分离散数值积分误差与连续模型的稳定性。</p>
+<div class="box green">
+<span class="bt">💡 自学路线建议</span>
+<p>两个练习共约 70 分钟，全部只需 numpy + matplotlib。完成后，结合路径图解释窄通道中的采样困难，再用误差曲线验证 $c/K_p$ 的预测。若想深入，OMPL 的 Python 绑定与 MoveIt 2 教程是下一步。</p>
+</div>
+</section>
+<!-- ============ 附录 A ============ -->
+<section id="apA">
+<h2 class="sec"><span class="no">附A</span>术语表</h2>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table class="term-table">
+<tr><th>术语</th><th>解释</th></tr>
+<tr><td>碰撞检测</td><td>判断给定关节角 $q$ 是否与环境碰撞（在 $C_{\text{free}}$ 还是 $C_{\text{obs}}$）</td></tr>
+<tr><td>球体包裹法</td><td>用球体序列近似连杆，球心距比较做碰撞检测，快但保守</td></tr>
+<tr><td>近似凸分解（ACD）</td><td>把凹网格切成凹度受限的凸聚类，并尽量减少块数，精度效率平衡</td></tr>
+<tr><td>拒绝采样（Rejection Sampling）</td><td>均匀采样配置空间，丢弃碰撞点，保留 $C_{\text{free}}$ 点</td></tr>
+<tr><td>PRM</td><td>概率路图：采样-建图-查询三步，静态场景多查询</td></tr>
+<tr><td>高斯采样</td><td>保留「自由点紧邻障碍点」的样本，产生边界偏好</td></tr>
+<tr><td>桥采样</td><td>保留「两端碰撞、中点自由」的中点，专攻窄通道</td></tr>
+<tr><td>RRT</td><td>快速扩展随机树：从起点长树，目标偏置参数 $\beta$ 平衡探索利用</td></tr>
+<tr><td>RRT-Connect</td><td>双向树 + 定向生长 + 贪婪扩展（Kuffner &amp; LaValle 2000）</td></tr>
+<tr><td>Shortcutting</td><td>路径后处理：直连不相邻点消除弯路（局部优化）</td></tr>
+<tr><td>开环 / 闭环控制</td><td>无反馈直接执行 / 传感器反馈修正误差</td></tr>
+<tr><td>稳态误差 $e_{ss}$</td><td>系统到达稳态后的残余误差，理想为 0</td></tr>
+<tr><td>调节时间 / 超调量</td><td>误差进入 ±2% 带的时间 / 响应超过稳态值的程度</td></tr>
+<tr><td>PID</td><td>比例（当下）+ 积分（历史，消稳态误差）+ 微分（趋势，抑超调）</td></tr>
+<tr><td>刚度 / 阻尼（stiffness / damping）</td><td>机器人关节 PD 控制中 $K_p$ / $K_d$ 的工程叫法</td></tr>
+<tr><td>OMPL</td><td>开放运动规划库，ROS-MoveIt 的默认规划库</td></tr>
+</table></div></div>
+</section>
+<!-- ============ 附录 B ============ -->
+<section id="apB">
+<h2 class="sec"><span class="no">附B</span>课件 61 页完整索引</h2>
+<p>原版 Lecture 4 课件共 61 页（<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture04_03_10.pdf" target="_blank">GitHub 原文件</a>）。下表逐页列出内容及在本教程中的位置：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><p><a href="课件中文译解.html">逐页原图与中文翻译</a> · <a href="../sources/lecture04.pdf">本地原始课件PDF</a></p><div class="table-wrap"><table class="page-index">
+<tr><th>页码</th><th>页面内容</th><th>在教程中的位置</th></tr>
+<tr><td class="pg">p1</td><td>封面：Lecture 4 - Robotics III</td><td>封面区</td></tr>
+<tr><td class="pg">p2</td><td>Logistics 页</td><td>§12（作业背景）</td></tr>
+<tr><td class="pg">p3</td><td>作业 1 发布通知（旋转工具库 + 玩具 FK）</td><td>§12（呼应第 1/2 章）</td></tr>
+<tr><td class="pg">p4</td><td>主题页：运动规划</td><td>§1 开头</td></tr>
+<tr><td class="pg">p5</td><td>议程：问题定义、PRM、RRT</td><td>§1-5（导航）</td></tr>
+<tr><td class="pg">p6</td><td>配置空间（回顾）</td><td>§1（回顾第 3 章）</td></tr>
+<tr><td class="pg">p7</td><td>运动规划示意</td><td>§1</td></tr>
+<tr><td class="pg">p8</td><td>运动规划示意</td><td>§1</td></tr>
+<tr><td class="pg">p9</td><td>配置空间例子</td><td>§1</td></tr>
+<tr><td class="pg">p10</td><td>碰撞建模：URDF 网格 + FK + 碰撞检查</td><td>§1.1</td></tr>
+<tr><td class="pg">p11</td><td>替代方案：凸分解（凹网格 → 凸物体集合）</td><td>§1.3</td></tr>
+<tr><td class="pg">p12</td><td>凸包 / 精确凸分解（NP-hard）/ 近似凸分解 ACD</td><td>§1.3</td></tr>
+<tr><td class="pg">p13</td><td>主题页：采样算法</td><td>§2 开头</td></tr>
+<tr><td class="pg">p14</td><td>主题页：PRM</td><td>§2</td></tr>
+<tr><td class="pg">p15</td><td>PRM 示意</td><td>§2</td></tr>
+<tr><td class="pg">p16</td><td>拒绝采样</td><td>§2（步骤 1）</td></tr>
+<tr><td class="pg">p17</td><td>PRM 流程</td><td>§2</td></tr>
+<tr><td class="pg">p18</td><td>挑战</td><td>§2-3</td></tr>
+<tr><td class="pg">p19</td><td>例子</td><td>§2</td></tr>
+<tr><td class="pg">p20</td><td>例子</td><td>§2</td></tr>
+<tr><td class="pg">p21</td><td>局限：窄通道</td><td>§3</td></tr>
+<tr><td class="pg">p22</td><td>高斯采样</td><td>§3.1</td></tr>
+<tr><td class="pg">p23</td><td>桥采样</td><td>§3.2</td></tr>
+<tr><td class="pg">p24</td><td>主题页：RRT</td><td>§4 开头</td></tr>
+<tr><td class="pg">p25</td><td>RRT 示意</td><td>§4</td></tr>
+<tr><td class="pg">p26</td><td>Extend 操作</td><td>§4</td></tr>
+<tr><td class="pg">p27</td><td>RRT 流程</td><td>§4</td></tr>
+<tr><td class="pg">p28</td><td>挑战（参数调节）</td><td>§4（步长权衡）</td></tr>
+<tr><td class="pg">p29</td><td>RRT-Connect（Kuffner &amp; LaValle, ICRA 2000）</td><td>§5.1</td></tr>
+<tr><td class="pg">p30</td><td>RRT-Connect 伪代码</td><td>§5.1</td></tr>
+<tr><td class="pg">p31</td><td>Shortcutting：非渐近最优、抖动路径、后处理</td><td>§5.2</td></tr>
+<tr><td class="pg">p32</td><td>Shortcutting 示意</td><td>§5.2</td></tr>
+<tr><td class="pg">p33</td><td>Shortcutting 的局限与多次重启</td><td>§5.3</td></tr>
+<tr><td class="pg">p34</td><td>Shortcutting 示意</td><td>§5.3</td></tr>
+<tr><td class="pg">p35</td><td>OMPL：MoveIt 默认规划库</td><td>§6</td></tr>
+<tr><td class="pg">p36</td><td>OMPL 规划器清单（RRTConnect 默认、RRT*、LazyPRM 等）</td><td>§6</td></tr>
+<tr><td class="pg">p37</td><td>OMPL 演示视频链接（YouTube）</td><td>§6</td></tr>
+<tr><td class="pg">p38</td><td>主题页：控制系统</td><td>§7 开头</td></tr>
+<tr><td class="pg">p39</td><td>控制系统组成：传感器、执行器、控制器</td><td>§7</td></tr>
+<tr><td class="pg">p40</td><td>控制器框图（完整版 / 简化版）</td><td>§7</td></tr>
+<tr><td class="pg">p41</td><td>开环（FF）vs 闭环（FB）控制</td><td>§7</td></tr>
+<tr><td class="pg">p42</td><td>控制系统的有效性：稳态快、调节快、稳定</td><td>§7</td></tr>
+<tr><td class="pg">p43</td><td>误差响应：稳态误差、超调量、调节时间</td><td>§7</td></tr>
+<tr><td class="pg">p44</td><td>主题页：PID 控制器</td><td>§8 开头</td></tr>
+<tr><td class="pg">p45</td><td>控制器：误差信号 → 电机指令</td><td>§8</td></tr>
+<tr><td class="pg">p46</td><td>P 控制定义</td><td>§8</td></tr>
+<tr><td class="pg">p47</td><td>P 控制一阶形式：ODE 求解与稳态误差</td><td>§8</td></tr>
+<tr><td class="pg">p48</td><td>P 控制二阶形式：振荡不稳定</td><td>§8（红框）</td></tr>
+<tr><td class="pg">p49</td><td>积分信号</td><td>§9</td></tr>
+<tr><td class="pg">p50</td><td>PI 控制</td><td>§9</td></tr>
+<tr><td class="pg">p51</td><td>PI 的二阶 ODE 与三种阻尼</td><td>§9</td></tr>
+<tr><td class="pg">p52</td><td>P 与 PI 对比（setpoint 场景）</td><td>§9</td></tr>
+<tr><td class="pg">p53</td><td>微分信号</td><td>§10</td></tr>
+<tr><td class="pg">p54</td><td>PD 控制</td><td>§10</td></tr>
+<tr><td class="pg">p55</td><td>PID 控制完整式（位置/速度控制常用）</td><td>§10</td></tr>
+<tr><td class="pg">p56</td><td>PID 调参</td><td>§10（调参表）</td></tr>
+<tr><td class="pg">p57</td><td>机器人关节 PD：stiffness / damping</td><td>§10</td></tr>
+<tr><td class="pg">p58</td><td>SAPIEN 中的关节控制示例</td><td>§10（画廊）</td></tr>
+<tr><td class="pg">p59</td><td>Isaac Gym 中的关节控制示例</td><td>§10（画廊）</td></tr>
+<tr><td class="pg">p60</td><td>机器人学总结：运动学/动力学/规划/控制</td><td>§11</td></tr>
+<tr><td class="pg">p61</td><td>结尾页：下集预告 3D Vision</td><td>页脚（下一章预告）</td></tr>
+</table></div></div>
+</section>
+<!-- ============ 附录 C ============ -->
+<section id="apC">
+<h2 class="sec"><span class="no">附C</span>参考资源</h2>
+<ul>
+<li>课程官网：<a href="https://pku-epic.github.io/Intro2EAI_2025/" target="_blank">pku-epic.github.io/Intro2EAI_2025</a></li>
+<li>本教程素材来源仓库：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU" target="_blank">zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU</a></li>
+<li>本章课件：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture04_03_10.pdf" target="_blank"><code>Slides/Lecture04_03_10.pdf</code></a>（61 页）</li>
+<li>本章笔记原文：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Notes/04-Robotics-III.md" target="_blank"><code>Notes/04-Robotics-III.md</code></a></li>
+</ul>
+<p>最优性理论参见<a href="https://arxiv.org/abs/1105.1186">Karaman与Frazzoli：采样式最优运动规划</a>；规划器区别参见<a href="https://ompl.kavrakilab.org/planners.html">OMPL官方规划器文档</a>。</p><h3>延伸阅读</h3>
+<ul>
+<li>Kuffner &amp; LaValle, <em>RRT-Connect</em>, ICRA 2000：双向 RRT 原始论文</li>
+<li>OMPL 官网（<a href="https://ompl.kavrakilab.org/" target="_blank">ompl.kavrakilab.org</a>）与 MoveIt 2 教程（ROS 2 官方文档）</li>
+<li>SAPIEN 仿真器文档（<a href="https://sapien.ucsd.edu/" target="_blank">sapien.ucsd.edu</a>）：关节控制接口</li>
+<li>Isaac Lab 文档：并行物理仿真与 RL 训练框架（Isaac Gym 的继任者）</li>
+<li>课件附 OMPL 演示视频：YouTube 搜索「OMPL RRTConnect demo」</li>
+</ul>
+</section>
+<section class="self-check"><h2>自测：能解释这些现象吗？</h2><ol><li>RRT已经把节点长到目标附近，为何仍要检查最后一段边？</li><li>PRM采样2000次失败，能否断言任务无解？</li><li>为什么速度输入系统的P与力矩输入系统的P响应不同？</li><li>为什么PI消除误差的结论需要先检查闭环稳定？</li></ol><details><summary>参考思路</summary><p>目标连接边可能碰撞；有限随机失败不构成无解证明；一阶和二阶被控对象不同；不稳定系统不一定存在稳态误差极限。请回到各节的假设再推导。</p></details></section></main>
+</div>
+<!-- ============ 页脚 ============ -->
+<aside class="recent" id="current-research"><h3>2026年10月技术与政策动态 · 规划与学习正在组合使用</h3><p>当前GPU运动生成工具依然提供考虑碰撞的路径与轨迹方法。比较规划器时，要同时说明机器人模型、碰撞条件、时间参数化和硬件。</p><p class="source-note">资料截至2026-10-04 · <a href="../技术动态_20261004.html#cumotion">一手来源、发布日期与适用范围</a></p></aside><footer>
+<nav aria-label="章节导航" class="chapter-nav"><a href="../ch03/index.html">← 第3章</a><a href="../index.html">教程目录</a><a href="../ch05/index.html">第5章 →</a></nav>
+<p><b>关于本教程：</b>本教程基于北京大学 2025 春季《具身智能导论》课程的公开资料（王鹤 老师主讲）整理改编，面向零基础自学者，免费开源、仅限个人自学使用。来源、改编方式与使用声明的完整说明见<a href="#about">篇首「关于本教程」</a>；笔记、课件、作业版权归原作者及课程组所有。</p>
+<p><b>阅读说明：</b>课程知识主线与原始课件保持对应；中文翻译和理解提示帮助辨认术语、公式与适用条件。实验设置与课程题目可通过原始资料逐项对照。</p>
+<p><b>下一章预告：</b>第 5 章《视觉与抓取 I：抓取原理与旋转回归》——含作业 2（已知电钻的位姿估计），3D 视觉之旅启程。</p>
+</footer>
+<script src="../reader.js"></script>
+</body>
+</html>

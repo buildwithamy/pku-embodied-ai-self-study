@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第1章 具身智能导论｜含作业1前置讲解与练习</title>
+<script>
+window.MathJax = {
+  tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        packages: ['base', 'ams', 'newcommand', 'configmacros']},
+  svg: {fontCache: 'global'}
+};
+</script>
+<script defer="" src="../vendor/mathjax/tex-svg.js"></script>
+<style>
+:root {
+  --ink: #1c2430;
+  --ink-soft: #4a5568;
+  --accent: #2563eb;
+  --accent-soft: #eef4ff;
+  --bg: #faf9f6;
+  --card: #ffffff;
+  --line: #e5e2db;
+  --green-bg: #f0f9f1;
+  --green-bd: #7cc98c;
+  --yellow-bg: #fffbeb;
+  --yellow-bd: #e8c766;
+  --red-bg: #fdf1f1;
+  --red-bd: #e8a1a1;
+  --update-bg: #fffaeb;
+  --update-bd: #e8a23d;
+  --update-ink: #8a4b08;
+  --code-bg: #101826;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-size: 16.5px;
+  line-height: 1.85;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ===== 封面 ===== */
+.hero {
+  background: linear-gradient(135deg, #0e2a4a 0%, #15406e 55%, #1c5a94 100%);
+  color: #fff;
+  padding: 72px 24px 56px;
+  text-align: center;
+}
+.hero .course-tag {
+  display: inline-block;
+  font-size: 13px;
+  letter-spacing: 2px;
+  border: 1px solid rgba(255,255,255,.4);
+  border-radius: 999px;
+  padding: 4px 16px;
+  margin-bottom: 22px;
+  opacity: .9;
+}
+.hero h1 {
+  margin: 0 auto 14px;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  max-width: 760px;
+  line-height: 1.5;
+}
+.hero .sub {
+  font-size: 15.5px;
+  opacity: .82;
+  max-width: 620px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+.hero .meta {
+  margin-top: 26px;
+  font-size: 13px;
+  opacity: .7;
+}
+.hero .ver-note {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 12.5px;
+  border: 1px dashed rgba(255,210,120,.7);
+  color: #ffd27a;
+  border-radius: 999px;
+  padding: 3px 14px;
+}
+
+/* ===== 2026 更新样式（与原文区分） ===== */
+.badge-2026 {
+  display: inline-block;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 2px 9px;
+  letter-spacing: .5px;
+  vertical-align: 2px;
+  margin-right: 6px;
+  box-shadow: 0 1px 4px rgba(217,119,6,.35);
+}
+.update-box {
+  margin: 18px 0;
+  padding: 14px 20px 12px;
+  border: 2px solid var(--update-bd);
+  background: var(--update-bg);
+  border-radius: 10px;
+  font-size: 15.5px;
+  box-shadow: 0 2px 8px rgba(232,162,61,.12);
+}
+.update-box .bt { color: var(--update-ink); font-weight: 700; display: block; margin-bottom: 4px; }
+.update-box p { margin: 5px 0; }
+.update-box ul { margin: 4px 0 4px; }
+.update-box li { margin: 3px 0; }
+.up-text {
+  background: #fef3c7;
+  border-bottom: 2px solid #f59e0b;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+
+/* ===== 关于本教程 ===== */
+.about {
+  max-width: 880px;
+  margin: 36px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px 34px;
+  box-shadow: 0 4px 16px rgba(16, 42, 74, .06);
+}
+.about h2 {
+  margin: 0 0 14px;
+  font-size: 20px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.about h3 { margin: 20px 0 8px; font-size: 16.5px; color: var(--accent); }
+.about p, .about li { font-size: 15px; color: var(--ink-soft); }
+.about .src-badge {
+  display: inline-block;
+  background: #eef4ff;
+  border: 1px solid #b9d0f8;
+  color: #2456b8;
+  font-size: 13px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin: 2px 4px 2px 0;
+}
+.about .license-note {
+  margin: 18px 0 0;
+  padding: 14px 18px;
+  background: var(--red-bg);
+  border: 1px solid var(--red-bd);
+  border-radius: 10px;
+  font-size: 14.5px;
+  line-height: 1.8;
+}
+.about .license-note b { color: #b04848; }
+
+/* ===== 学习目标卡 ===== */
+.goals {
+  max-width: 880px;
+  margin: -28px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 28px;
+  box-shadow: 0 6px 24px rgba(16, 42, 74, .08);
+  position: relative;
+}
+.goals h2 { margin: 0 0 10px; font-size: 17px; color: var(--accent); }
+.goals ul { margin: 0; padding-left: 20px; }
+.goals li { margin: 4px 0; font-size: 15px; color: var(--ink-soft); }
+.goals li b { color: var(--ink); }
+
+/* ===== 布局 ===== */
+.layout {
+  display: flex;
+  max-width: 1240px;
+  margin: 40px auto 80px;
+  padding: 0 24px;
+  gap: 36px;
+  align-items: flex-start;
+}
+.toc {
+  position: sticky;
+  top: 24px;
+  width: 240px;
+  flex-shrink: 0;
+  font-size: 13.5px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+}
+.toc .toc-title { font-weight: 700; color: var(--ink-soft); margin-bottom: 8px; letter-spacing: 1px; }
+.toc a {
+  display: block;
+  color: var(--ink-soft);
+  padding: 4px 10px;
+  border-left: 2px solid var(--line);
+  margin: 1px 0;
+  line-height: 1.5;
+}
+.toc a:hover { color: var(--accent); border-left-color: var(--accent); text-decoration: none; background: var(--accent-soft); border-radius: 0 6px 6px 0; }
+.toc a.lv2 { padding-left: 26px; font-size: 12.5px; }
+
+main { flex: 1; min-width: 0; }
+section { margin-bottom: 56px; }
+h2.sec {
+  font-size: 25px;
+  margin: 0 0 6px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--ink);
+  letter-spacing: .5px;
+}
+h2.sec .no {
+  display: inline-block;
+  background: var(--ink);
+  color: #fff;
+  font-size: 15px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin-right: 10px;
+  vertical-align: 3px;
+}
+h3 { font-size: 19px; margin: 34px 0 10px; }
+h4 { font-size: 16.5px; margin: 26px 0 8px; }
+p { margin: 10px 0; }
+strong { color: #0f2c4c; }
+em.term {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--accent);
+  border-bottom: 1px dashed var(--accent);
+  cursor: help;
+}
+ul, ol { padding-left: 26px; }
+li { margin: 5px 0; }
+code {
+  background: #eef1f5;
+  border: 1px solid #e0e5ec;
+  border-radius: 5px;
+  padding: 1px 6px;
+  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: 14.5px;
+  color: #0d3d75;
+}
+blockquote {
+  margin: 16px 0;
+  padding: 12px 20px;
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  color: var(--ink-soft);
+  font-size: 15.5px;
+}
+blockquote p { margin: 4px 0; }
+
+/* 图片 */
+figure { margin: 22px 0; text-align: center; }
+figure img {
+  max-width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 18px rgba(16, 42, 74, .10);
+}
+figcaption {
+  font-size: 13.5px;
+  color: #7a8290;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+figcaption .src { opacity: .75; font-size: 12.5px; }
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+.gallery figure { margin: 0; }
+.gallery img { width: 100%; }
+.gallery figcaption { font-size: 12.5px; margin-top: 6px; }
+
+/* 提示框 */
+.box {
+  margin: 18px 0;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 15.5px;
+}
+.box .bt { font-weight: 700; display: block; margin-bottom: 4px; }
+.box.green { background: var(--green-bg); border: 1px solid var(--green-bd); }
+.box.green .bt { color: #2e7d43; }
+.box.yellow { background: var(--yellow-bg); border: 1px solid var(--yellow-bd); }
+.box.yellow .bt { color: #9a7414; }
+.box.red { background: var(--red-bg); border: 1px solid var(--red-bd); }
+.box.red .bt { color: #b04848; }
+.box.blue { background: var(--accent-soft); border: 1px solid #a9c3f5; }
+.box.blue .bt { color: #2456b8; }
+.box p { margin: 4px 0; }
+.box ul { margin: 4px 0 4px; }
+
+/* 表格 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 18px 0;
+  font-size: 15px;
+  background: var(--card);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+th {
+  background: #17335c;
+  color: #fff;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 14.5px;
+}
+td { padding: 9px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+tr:nth-child(even) td { background: #f7f6f2; }
+
+/* 课件页索引表 */
+.page-index { font-size: 13.5px; }
+.page-index th { font-size: 13.5px; padding: 8px 10px; }
+.page-index td { padding: 6px 10px; line-height: 1.6; }
+.page-index td.pg { font-family: Consolas, monospace; font-weight: 700; white-space: nowrap; color: var(--accent); }
+.page-index td.pg .up { color: var(--update-ink); }
+
+/* 代码块 */
+pre {
+  background: var(--code-bg);
+  color: #e6edf6;
+  border-radius: 10px;
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-size: 13.8px;
+  line-height: 1.65;
+  margin: 16px 0;
+}
+pre code {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+pre .cm { color: #7d8aa0; }
+pre .kw { color: #7fb3ff; }
+pre .st { color: #a5d6a7; }
+pre .fn { color: #ffd479; }
+
+/* 术语表 */
+.term-table td:first-child { font-weight: 700; white-space: nowrap; }
+
+/* 页脚 */
+footer {
+  max-width: 880px;
+  margin: 0 auto 60px;
+  padding: 20px 28px;
+  border-top: 1px solid var(--line);
+  font-size: 12.8px;
+  color: #8a91a0;
+  line-height: 1.8;
+}
+
+/* 移动端 */
+@media (max-width: 960px) {
+  .toc { display: none; }
+  .hero h1 { font-size: 26px; }
+  .layout { padding: 0 16px; }
+  .gallery { grid-template-columns: 1fr; }
+}
+</style>
+<style>
+:root {--radius:10px;}
+.book-nav{max-width:1240px;margin:auto;padding:12px 24px;display:flex;gap:12px 24px;flex-wrap:wrap;font-size:14px;}
+.mobile-toc{display:none;} details{margin:14px 0;border:1px solid var(--line);border-radius:8px;padding:12px 16px;background:white;} summary{font-weight:600;cursor:pointer;color:#17335c;line-height:1.7;} details[open] summary{margin-bottom:10px;}
+.study-path{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:22px 0;} .study-path span{padding:8px 14px;background:#eef4ff;border:1px solid #c8d6ed;border-radius:6px;}
+.source{font-size:13px;color:#59677a;} .table-scroll{overflow-x:auto;max-width:100%;margin:18px 0;border-radius:8px;} .table-scroll table{margin:0;} .table-scroll:focus-visible{outline:2px solid #2563eb;outline-offset:3px;}
+figure img{height:auto;display:block;margin:auto;} figure>a{display:block;cursor:zoom-in;} .zoom-hint{font-size:12px;color:#46566d;display:block;margin-top:4px;} a{overflow-wrap:anywhere;} .math-scroll{overflow:auto;max-width:100%;}
+.box li{margin-bottom:8px;} .exercise{border-left:3px solid #7cc98c;} section{scroll-margin-top:20px;} mjx-container[display="true"]{display:block;overflow-x:auto;overflow-y:hidden;max-width:100%;padding:6px 0;}
+dialog{border:1px solid #b9c5d5;border-radius:12px;padding:16px;max-width:96vw;max-height:94vh;} dialog::backdrop{background:rgba(5,18,34,.8);} dialog img{display:block;max-width:90vw;max-height:78vh;object-fit:contain;} .dialog-controls{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:10px;} .dialog-controls button{padding:8px 16px;border:1px solid #9baac0;border-radius:6px;background:white;font:inherit;cursor:pointer;}
+@media(max-width:960px){.mobile-toc{display:block;margin:24px 16px 0;} .mobile-toc nav{display:grid;gap:8px;} .layout{margin-top:26px;}.about,.goals{margin-left:16px;margin-right:16px;padding:20px;}.hero{padding:44px 20px 44px;}.hero h1{font-size:26px;}.term-table td:first-child{white-space:normal;} .table-scroll th,.table-scroll td{min-width:120px;}.book-nav{padding:12px 16px;}footer{padding:20px 16px;} .box,.update-box{padding:14px 16px;} h2.sec{font-size:23px;}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}}
+@media print{.toc,.mobile-toc,.book-nav,.zoom-hint{display:none;} .layout{display:block;margin:20px 0;padding:0;}details{break-inside:avoid;} body{font-size:11pt;}figure{break-inside:avoid;}}
+</style><link href="../shared.css" rel="stylesheet"/></head>
+<body><nav class="reader-nav"><a class="brand" href="../index.html">北京大学《具身智能导论》自学教程</a><a href="../学习与运行说明.html">学习指南</a><a href="课件中文译解.html">本章课件翻译</a><a href="../术语与符号.html">术语与符号</a><a href="../来源与许可.html">来源</a></nav>
+<nav aria-label="章节导航" class="book-nav"><a href="../index.html">教程目录</a><a href="../ch02/index.html">下一章：刚体变换 →</a><a href="课件中文译解.html">原课件逐页中文翻译</a><a href="../sources/lecture01.pdf">完整原课件PDF</a></nav><div class="hero">
+<span class="course-tag">具身智能自学教程 · 第 1 章</span>
+<h1>具身智能导论：从工厂机械臂到通用机器人</h1>
+<p class="sub">机器人如何从“按程序执行”走向“根据环境调整行动”？从具体例子认识感知—动作循环、VLA与数据问题，再通过前置讲解和小练习，完成本章的四元数与正向运动学作业。</p>
+<p class="meta">改编自北京大学《具身智能导论》(Introduction to Embodied AI) 2025 春季课程 · 授课：王鹤 老师</p>
+<div class="chapter-toolbar" id="chapter-resources"><a href="课件中文译解.html">英文原课件与逐页中文翻译 →</a><a href="../技术动态_20261004.html">本章相关技术进展 →</a><a href="../术语与符号.html">英文缩写与符号速查 →</a></div></div>
+<div class="goals"><h2>本章学习目标</h2><ul>
+<li>用“识别杯子”和“拿起杯子”解释感知任务与交互任务的区别。</li>
+<li>区分底层控制反馈与任务层感知反馈，说明预设轨迹如何由闭环控制器执行。</li>
+<li>画出一个包含观察、决策、执行、再观察的感知—动作循环。</li>
+<li>理解VLA的输入与动作表示，区分模型路线、系统架构和产品能力。</li>
+<li>区分数据帧与任务轨迹，说明仿真数据的优势和迁移条件。</li>
+<li>完成本章作业前的入门练习，并逐步实现原作业1的11个旋转函数和正向运动学。</li>
+</ul></div>
+<div class="about" id="about"><h2>关于本教程</h2>
+<p>课程知识框架来自北京大学2025年春季《具身智能导论》，授课教师为王鹤。本章依据第一讲课件、Notes 01及官方作业1整理，是个人自学改编材料。</p>
+<p><a href="https://pku-epic.github.io/Intro2EAI_2025/">课程官网</a> · <a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU">素材仓库</a> · <a href="../sources/lecture01.pdf">本地完整课件（89页）</a> · <a href="homework01/Assignment1.pdf">原作业题目</a></p>
+<h3>阅读原材料与教学说明</h3><ul>
+<li><b>原课件内容：</b>图下标注PDF页序，保留原课程例子和89页索引。</li>
+<li><b>教学补充：</b>蓝色或绿色提示框，以及作业前的讲解、小练习，由改编者补充，帮助衔接概念与练习。</li>
+<li><b>后续资料：</b>橙色框注明事实、日期和一手来源。阅读产能、订单、融资和成功率等数据时，结合来源与统计条件理解。</li></ul>
+<p>作业1完整保留在第一章。先读概念，再走完本章的前置讲解和热身练习，最后做原作业；遇到需要深入的数学问题，还可以参阅后续机器人学章节。</p>
+<div class="license-note"><b>来源与使用说明</b><p>本教程是依据课程资料编写的个人自学材料。原课程、笔记及第三方素材版权归相应权利人，源仓库的<a href="../LICENSE.source">GPL-3.0许可证副本</a>随教程保留，第三方素材按各自实际授权使用。</p><p>本地MathJax另附Apache-2.0许可证。引用、署名与来源链接均保留，便于回查。</p></div></div>
+<details class="mobile-toc"><summary>本章目录与学习检查点</summary><nav aria-label="手机本章目录"><a href="#about">来源与学习说明</a><a href="#s0">怎么使用这一章</a><a href="#s1">1. 从回答到物理任务</a><a href="#s2">2. 认识机器人的身体</a><a href="#s3">3. 预设任务与反馈</a><a href="#s4">4. 通用机器人的愿景</a><a href="#s5">5. 感知—动作循环</a><a href="#s6">6. VLA的输入与动作</a><a href="#s7">7. 数据与仿真</a><a href="#s8">8. 具身性与主动交互</a><a href="#s9">9. 课程与自学安排</a><a href="#s10">10. 概念自测</a><a href="#s11">11. 作业1与前置练习</a><a href="#apA">附A：术语</a><a href="#apB">附B：89页索引</a><a href="#apC">附C：资源</a></nav></details><div class="layout">
+<nav class="toc"><div class="toc-title">本章目录</div><a href="#about">来源与学习说明</a><a href="#s0">怎么使用这一章</a><a href="#s1">1. 从回答到物理任务</a><a href="#s2">2. 认识机器人的身体</a><a href="#s3">3. 预设任务与反馈</a><a href="#s4">4. 通用机器人的愿景</a><a href="#s5">5. 感知—动作循环</a><a href="#s6">6. VLA的输入与动作</a><a href="#s7">7. 数据与仿真</a><a href="#s8">8. 具身性与主动交互</a><a href="#s9">9. 课程与自学安排</a><a href="#s10">10. 概念自测</a><a href="#s11">11. 作业1与前置练习</a><a href="#apA">附A：术语</a><a href="#apB">附B：89页索引</a><a href="#apC">附C：资源</a></nav>
+<main>
+<section id="s0"><h2 class="sec"><span class="no">起步</span>怎么使用这一章</h2>
+<p>如果你刚接触机器人，先读§1—10建立整体图景。进入§11后，把每个公式和一个具体数字例子对应起来；先做热身练习，再填写原作业的函数。</p>
+<div class="study-path"><span>概念与例子</span><b>→</b><span>数学与NumPy前置</span><b>→</b><span>热身自检</span><b>→</b><span>原作业1</span></div>
+<p>本章文字、图片、课件和公式可离线阅读。Python练习需要预先安装Python与相应依赖；安装依赖和访问外部参考链接需要联网。学习时先读原题，在模板中实现函数，再通过测试或章内示例核对结果。</p>
+<p>阅读检查点：<a href="#s10">概念自测</a> · <a href="#s11">作业前置讲解</a> · <a href="#apB">按页回查课件</a>。</p></section><section id="s1"><h2 class="sec"><span class="no">1</span>从回答问题到完成物理任务</h2>
+<p>先看一个熟悉的例子：你把杯子的照片发给AI，问“这是什么？”，它回答“杯子”。这是一次信息处理任务。如果你要求“把杯子拿到桌子的另一边”，机器人还必须确定杯子的位置、选择抓法、移动手臂，并检查杯子是否真的被拿起。</p>
+<figure>
+<a aria-label="放大查看：课程课件：What do you want AI to do? 列举了 DeepSeek、MidJourney 等经典 AI 应用" class="image-zoom" href="assets/s_p3.jpg"><img alt="课程课件：What do you want AI to do? 列举了 DeepSeek、MidJourney 等经典 AI 应用" height="719" loading="lazy" src="assets/s_p3.jpg" width="1280"/></a>
+<figcaption>课件列举文字、代码与图像生成应用，引出对物理任务的讨论。（来源：Lecture 1 PDF页序p3）<a href="../sources/lecture01.pdf#page=3" rel="noopener noreferrer" target="_blank"> 查看课件p3</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">人工智能</div><div class="translation-body"><ul><li>DeepSeek。</li><li>MidJourney。</li></ul><p>你希望人工智能做什么？</p><p>DeepSeek 对话标题：人工智能模型身份询问的回答。</p><p>用户：你是什么模型？</p><p>回答：我是一个名为 DeepSeek-V3 的人工智能语言模型，由 DeepSeek 创建。我基于先进的自然语言处理技术，并在大型数据集上接受训练，以帮助回答问题、生成文本和提供有用信息。告诉我可以怎样帮助你！</p><p>用户：你是 ChatGPT-4 模型吗？</p><p>回答：不，我不是 ChatGPT-4。我是 DeepSeek-V3，是中国公司 DeepSeek 开发的人工智能语言模型。虽然我能完成许多与 ChatGPT 类似的任务，例如回答问题、生成文本和协助处理各种话题，但我是一个独立的模型，有自己的架构和训练过程。告诉我可以怎样帮助你！</p><p>DeepSeek 侧栏：DeepSeek 的人工智能模型介绍；人工智能模型合规与开发…；OpenAI GPT-4 模型概览；人工智能模型询问与解释；人工智能模型身份询问的说明；人工智能模型身份询问的回答…；人工智能模型身份询问。新增。</p><p>Midjourney 提示词：骑马的宇航员——@neeyik（快速模式），19:22。</p><p>Discord 界面：公开；首页；1个活动；频道与身份组；新增；信息；公告；最近的更改；状态；规则；入门指南；支持；试用支持；新用户房间；新用户房间2；新手41、新手11、新手71；向新手11频道发送消息。</p><p>新手11频道：供新用户使用的机器人房间。输入 /imagine，然后描述你想画什么。参见 https://docs… 。</p><p>自19:21以来有37条新消息；标记为已读。</p><p>图像操作按钮：U1、U2、U3、U4；V1、V2、V3、V4。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p3">对照原课件第3页与完整中文翻译 →</a></figure>
+<p>第一讲用DeepSeek和MidJourney引出一个问题：我们希望AI做什么？随后提出希望AI参与体力劳动的方向（课件p3—4）。这里讨论的是AI与物理设备结合后的任务执行能力。</p>
+<div class="box blue"><span class="bt">教学补充：知道答案与完成动作</span><p>语言模型可能从文字和图像中学到物理常识；完成真实任务还需要把这些知识接到传感器、执行器和反馈机制上。例如“杯子易碎”是一条知识，“用多大的力夹住它、掉落后怎样恢复”是需要实践验证的问题。</p></div>
+<p><b>具身智能（Embodied AI）</b>研究具有身体或行动能力的智能体，如何通过感知和与环境交互完成任务。课程主要讨论真实机器人；相关研究也常在模拟环境中进行。</p>
+<aside class="update-box"><h3>2026年政策：从未来产业培育走向实景实训</h3><p>2026年政府工作报告将具身智能列入培育发展的未来产业。工信厅联科函〔2026〕256号部署2026年度人形机器人与具身智能实景实训专项行动，围绕工业、服务和特种场景开展数据采集、技能训练、应用验证与评估。通知提出到2026年底形成100个以上高价值应用场景、万台级规模落地能力等目标。</p><p>实景实训将“在演示中做对一次”推进到“在真实流程中持续完成任务”。院校项目可以据此组织场景、数据、技能和评价四个环节，分别记录任务完成率、效率、干预与部署条件。</p><p>这些是面向2026年底的政策目标，阅读时应区分目标与截至2026-10-04的实际进展。文件以年度专项行动组织实施，各场景的技术指标仍需分别确定。</p><p class="source-note">2026年政府工作报告；专项行动成文2026-06-03、发布2026-06-08 · <a href="../技术动态_20261004.html#policy2026">来源与详情</a></p></aside></section>
+<section id="s2"><h2 class="sec"><span class="no">2</span>什么是机器人？先认识身体</h2>
+<p>本课以Baxter双臂机器人引入机器人概念（p6—7）。机器人通常包含机械结构、传感器、执行器和控制系统；机器人学研究它的构思、设计、制造与操作（p9）。</p>
+<figure>
+<a aria-label="放大查看：课程课件：What is a Robot? 以 Rethink Robotics 的 Baxter 双臂机器人为例" class="image-zoom" href="assets/s_p6.jpg"><img alt="课程课件：What is a Robot? 以 Rethink Robotics 的 Baxter 双臂机器人为例" height="674" loading="lazy" src="assets/s_p6.jpg" width="1200"/></a>
+<figcaption>什么是机器人？课件以 Baxter 双臂机器人为例引入。<span class="src">（来源：Lecture 1 课件 p6）</span><a href="../sources/lecture01.pdf#page=6" rel="noopener noreferrer" target="_blank"> 查看课件p6</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">什么是机器人？</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><ul><li>机器人是一种能够自动执行一系列复杂动作的机器。</li><li>机器人可以由外部控制装置引导，也可以由安装在内部的控制装置引导。</li><li>机器人可以被制造成人的形态。</li></ul></div><div style="align-self:end"><p>Rethink Robotics 的智能机器人 Baxter。</p></div></div></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p6">对照原课件第6页与完整中文翻译 →</a></figure>
+<p>身体决定机器人能到哪里、能碰到什么、能承受多大负载。课件按移动方式列出固定式、轮式、腿式及无人机等类型（p8）；这是一种分类视角，实际产品可以组合多个类型。</p>
+<figure>
+<a aria-label="放大查看：课程课件：按移动方式分类的机器人类型——固定式、轮式、腿式、无人机" class="image-zoom" href="assets/s_p8.jpg"><img alt="课程课件：按移动方式分类的机器人类型——固定式、轮式、腿式、无人机" height="674" loading="lazy" src="assets/s_p8.jpg" width="1200"/></a>
+<figcaption>按移动方式分类的机器人类型：固定式、轮式、腿式、无人机。<span class="src">（来源：Lecture 1 课件 p8）</span><a href="../sources/lecture01.pdf#page=8" rel="noopener noreferrer" target="_blank"> 查看课件p8</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">按移动方式划分的机器人类型</div><div class="translation-body"><ul><li>固定式机器人：笛卡尔式、关节式、圆柱式、球面式、并联式。</li><li>轮式机器人：单轮、双轮、三轮或更多轮。</li><li>足式机器人：双足、三足、四足、六足或更多足。</li><li>无人机/无人驾驶飞行器（UAV）：单旋翼、四旋翼、固定翼。</li><li>……</li></ul></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p8">对照原课件第8页与完整中文翻译 →</a></figure>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table><tr><th>类型</th><th>例子</th><th>适合观察的能力</th></tr><tr><td>固定式</td><td>关节机械臂、并联机器人</td><td>工作空间、定位精度、负载</td></tr><tr><td>轮式</td><td>仓储移动机器人、轮式双臂机器人</td><td>平地移动、导航与操作结合</td></tr><tr><td>腿式</td><td>双足、四足机器人</td><td>平衡、落脚点、复杂地形通过</td></tr><tr><td>无人机</td><td>多旋翼、固定翼</td><td>飞行控制、空中感知</td></tr></table></div></div>
+<figure>
+<a aria-label="放大查看：课程课件：机器人的应用场景图集——工业、服务等各领域的机器人应用" class="image-zoom" href="assets/s_p10.jpg"><img alt="课程课件：机器人的应用场景图集——工业、服务等各领域的机器人应用" height="674" loading="lazy" src="assets/s_p10.jpg" width="1200"/></a>
+<figcaption>机器人的应用：工业、物流、服务等领域。<span class="src">（来源：Lecture 1 课件 p10）</span><a href="../sources/lecture01.pdf#page=10" rel="noopener noreferrer" target="_blank"> 查看课件p10</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">机器人学的应用</div><div class="translation-body"><p>工业机器人。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p10">对照原课件第10页与完整中文翻译 →</a></figure>
+<div class="box green"><span class="bt">教学补充：身体与算法一起决定能力</span><p>识别出杯子之后，还需要适合抓取的硬件来执行动作。硬件可达性、传感器质量、控制算法和任务模型共同影响结果。本课程前半部分建立描述身体的数学工具，后半部分讨论视觉和策略学习。</p></div>
+<aside class="update-box"><h3>2026年工业机器人数据：写清统计期和口径</h3><p>国家统计局公布：2026年8月工业机器人产量为96,174套，同比增长34.6%；2026年1—8月累计729,352套，同比增长29.0%。数据来自规模以上工业主要产品产量表。</p><p>这里的产量指统计范围内的生产数量。保有量、销量、人形机器人数量和具身智能系统部署数量各有不同口径，需要分别查证；同比则比较上一年同一时期。</p><p>本章采用截至2026-10-04已公开的2026年数据，统计期为1—8月；全年总量需等待全年数据公布。</p><p class="source-note">数据期2026年1—8月；发布2026-09-15 · <a href="../技术动态_20261004.html#statistics2026">来源与详情</a></p></aside></section>
+<section id="s3"><h2 class="sec"><span class="no">3</span>预设任务的优势与适应局限</h2>
+<p>汽车工厂里的机械臂能够高精度、重复地完成焊接或搬运。课件p11—12用固定场景下的专用机器人举例：先设计轨迹，再执行轨迹。产品、工位或任务变化时，工程师需要重新配置和验证。</p>
+<figure>
+<a aria-label="放大查看：课程课件：汽车工厂中的经典专用机器人，说明预设计算轨迹并重放的工作模式" class="image-zoom" href="assets/s_p12.jpg"><img alt="课程课件：汽车工厂中的经典专用机器人，说明预设计算轨迹并重放的工作模式" height="719" loading="lazy" src="assets/s_p12.jpg" width="1280"/></a>
+<figcaption>汽车工厂里的专用机器人：核心是「预先设计轨迹，然后不断重放」。课件同时指出两大局限：部署耗时、无法灵活处理多任务，并强调这「与人类智能非常不同」。<span class="src">（来源：Lecture 1 课件 p12）</span><a href="../sources/lecture01.pdf#page=12" rel="noopener noreferrer" target="_blank"> 查看课件p12</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">汽车工厂中的传统专用机器人</div><div class="translation-body"><ul><li>预先设计并计算轨迹。</li><li>使用机械臂时只回放轨迹。</li><li>局限1：部署耗时。</li><li>局限2：无法灵活处理多种任务。</li></ul><p>与人类智能非常不同！</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p12">对照原课件第12页与完整中文翻译 →</a></figure>
+<ul><li><b>部署需要工程工作：</b>示教、编程、工装和验收都需要时间。具体耗时取决于任务及现场条件。</li><li><b>跨任务适应有限：</b>从焊接转到折衣服，需要按新任务重新考虑夹具、感知与控制方法。</li></ul>
+<div class="box blue"><span class="bt">教学补充：反馈发生在哪一层？</span><p><b>底层控制反馈：</b>关节编码器测出当前角度，控制器纠正与目标角度的误差。<br/><b>任务层感知反馈：</b>相机发现杯子被挪走，系统重新估计位置并调整抓取动作。</p><p>预设轨迹可以由闭环控制器跟踪。底层反馈帮助执行既定动作，跨任务适应则需要感知与决策系统支持，两者解决不同层次的问题。<a href="https://www.universal-robots.com/products/physical-ai/">厂商关于实时运动、力反馈与AI层的说明</a>提供了一个具体例子。</p></div>
+<p>课件p13—16展示多种机器人应用，p17展示自动驾驶汽车。自动驾驶在定义的运行条件内不断感知路况、规划和控制，为理解感知—动作循环提供了例子。评估其能力时，应先确认允许的道路、天气等运行条件。</p>
+<blockquote><p><b>通用性</b>指向跨任务、跨物体或跨环境的适应能力。学习方法有望减少逐任务设计的工作量，但仍需要工程集成和验证。</p></blockquote></section>
+<section id="s4"><h2 class="sec"><span class="no">4</span>通用机器人的愿景与条件</h2>
+<p>课件p18按工业机器人、自动驾驶、通用机器人组织一条教学叙事。其中“未来”指研究愿景。这几类系统服务于不同任务，也会在实际应用中并存。</p>
+<figure>
+<a aria-label="放大查看：课程课件：机器人的过去现在未来——过去是工业机器人，现在是自动驾驶，未来是通用人形机器人" class="image-zoom" href="assets/s_p18.jpg"><img alt="课程课件：机器人的过去现在未来——过去是工业机器人，现在是自动驾驶，未来是通用人形机器人" height="719" loading="lazy" src="assets/s_p18.jpg" width="1280"/></a>
+<figcaption>课件以工业机器人、自动驾驶与通用机器人愿景串起不同任务中的智能需求。（来源：Lecture 1 PDF页序p18）<a href="../sources/lecture01.pdf#page=18" rel="noopener noreferrer" target="_blank"> 查看课件p18</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">机器人学的过去、现在与未来</div><div class="translation-body"><div class="table-wrap"><table><thead><tr><th>过去与已有</th><th>现在与正在发生</th><th>未来与我们的梦想</th></tr></thead><tbody><tr><td>工业机器人</td><td>自动驾驶汽车</td><td>通用机器人——人形机器人</td></tr></tbody></table></div><p>Galbot G1：具身智能机器人。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p18">对照原课件第18页与完整中文翻译 →</a></figure><figure>
+<a aria-label="放大查看：课程课件：通用机器人的代表——OpenAI 投资的 Figure、特斯拉 Optimus、银河通用的 Galbot G1" class="image-zoom" href="assets/s_p19.jpg"><img alt="课程课件：通用机器人的代表——OpenAI 投资的 Figure、特斯拉 Optimus、银河通用的 Galbot G1" height="719" loading="lazy" src="assets/s_p19.jpg" width="1280"/></a>
+<figcaption>2025年课件展示的通用性研究例子：Figure、Optimus与Galbot G1；实际能力需按任务评测。（来源：Lecture 1 PDF页序p19）<a href="../sources/lecture01.pdf#page=19" rel="noopener noreferrer" target="_blank"> 查看课件p19</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">通用机器人</div><div class="translation-body"><div class="columns" style="--translation-columns:3;--translation-columns:3"><div><p>OpenAI + Figure</p></div><div><p>Tesla Optimus（特斯拉擎天柱）</p></div><div><p>Galbot G1</p></div></div><ul><li>任务通用。</li><li>环境通用。</li></ul></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p19">对照原课件第19页与完整中文翻译 →</a></figure>
+<p>p19展示Figure、Optimus与Galbot G1，强调任务和环境两种泛化方向。它们是当时的代表性例子。理解其泛化能力，需要回到具体任务、环境和评测条件。</p>
+<h3>特征一：适合任务的高自由度身体</h3><p><b>自由度</b>可以理解为可独立变化的运动变量。更多自由度可能增加可达姿态和操作灵活性，也增加控制难度。关节范围、力矩、碰撞、平衡和负载都会限制能完成的动作。</p>
+<p>课件p21—23展示高自由度本体，以Galbot G1能伸到2.4米高、降低身体捡取地面物体为例。阅读这一例子时，可以结合物体、环境和负载条件理解展示的能力。</p>
+<figure>
+<a aria-label="放大查看：课程课件：Galbot G1 轮式人形机器人大图" class="image-zoom" href="assets/s_p25.jpg"><img alt="课程课件：Galbot G1 轮式人形机器人大图" height="674" loading="lazy" src="assets/s_p25.jpg" width="1200"/></a>
+<figcaption>Galbot G1：轮式人形机器人——上身人形双臂，下身轮式底盘，兼顾稳定移动与灵巧操作。<span class="src">（来源：Lecture 1 课件 p25）</span><a href="../sources/lecture01.pdf#page=25" rel="noopener noreferrer" target="_blank"> 查看课件p25</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">Galbot G1</div><div class="translation-body"><p>Galbot。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p25">对照原课件第25页与完整中文翻译 →</a></figure>
+<div class="box green"><span class="bt">教学补充：为什么研究人形？</span><p>许多工具和空间适合人类使用，人形或类人双臂结构有利于复用这些设施。轮式底盘、机械臂和四足等形态同样能承担交互任务，身体形态应按任务选择。</p></div>
+<h3>特征二：数据驱动的技能学习</h3><p>p24以数据采集与电池分拣说明从示范数据中学习动作的思路。学习方法与工程编程可以协作：模型产生动作目标，传统规划、控制与安全机制负责执行和约束。</p>
+<figure>
+<a aria-label="放大查看：课程课件：Tesla Data Factory 采集抓取数据、训练电池分拣任务" class="image-zoom" href="assets/s_p24.jpg"><img alt="课程课件：Tesla Data Factory 采集抓取数据、训练电池分拣任务" height="674" loading="lazy" src="assets/s_p24.jpg" width="1200"/></a>
+<figcaption>特征二：数据驱动的物理智能——Tesla Data Factory 采集抓取数据（电池分拣）。<span class="src">（来源：Lecture 1 课件 p24）</span><a href="../sources/lecture01.pdf#page=24" rel="noopener noreferrer" target="_blank"> 查看课件p24</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">特征2：数据驱动的物理智能</div><div class="translation-body"><p>特斯拉数据工厂。</p><p>训练数据通过人类遥操作收集。</p><p>采集抓取数据。</p><p>电池分拣。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p24">对照原课件第24页与完整中文翻译 →</a></figure><figure>
+<a aria-label="放大查看：课程课件：通用机器人的跨行业应用——制造、家庭、餐饮、研究、物流、零售、养老、办公" class="image-zoom" href="assets/s_p26.jpg"><img alt="课程课件：通用机器人的跨行业应用——制造、家庭、餐饮、研究、物流、零售、养老、办公" height="674" loading="lazy" src="assets/s_p26.jpg" width="1200"/></a>
+<figcaption>课件展示制造、家庭、餐饮、研究、物流、零售、养老和办公等跨行业应用愿景。（来源：Lecture 1 PDF页序p26）<a href="../sources/lecture01.pdf#page=26" rel="noopener noreferrer" target="_blank"> 查看课件p26</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">通用机器人的跨行业应用</div><div class="translation-body"><div class="table-wrap"><table><thead><tr><th>制造</th><th>物流</th><th>零售</th><th>科研</th></tr></thead><tbody><tr><td>餐饮</td><td>办公</td><td>家庭</td><td>养老</td></tr></tbody></table></div><p>革命性意义：跨行业应用，应对未来劳动力短缺与养老带来的挑战。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p26">对照原课件第26页与完整中文翻译 →</a></figure>
+<p>p26展示跨行业应用愿景；p27—31给出汽车工厂、零售和酒店场景的案例。阅读演示时，留意任务条件、人工辅助和持续运行情况；这些信息帮助判断演示能力能否用于实际流程。</p>
+<div class="gallery"><figure>
+<a aria-label="放大查看：汽车工厂：天窗玻璃装载" class="image-zoom" href="assets/s_p27.jpg"><img alt="汽车工厂：天窗玻璃装载" height="674" loading="lazy" src="assets/s_p27.jpg" width="1200"/></a>
+<figcaption>汽车工厂：天窗玻璃装载<br/><span class="src">（课件 p27）</span><a href="../sources/lecture01.pdf#page=27" rel="noopener noreferrer" target="_blank"> 查看课件p27</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">汽车工厂：天窗玻璃上料</div><div class="translation-body"><p>机器人为天窗玻璃上料。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p27">对照原课件第27页与完整中文翻译 →</a></figure><figure>
+<a aria-label="放大查看：汽车工厂：箱子转运" class="image-zoom" href="assets/s_p28.jpg"><img alt="汽车工厂：箱子转运" height="674" loading="lazy" src="assets/s_p28.jpg" width="1200"/></a>
+<figcaption>汽车工厂：箱子转运<br/><span class="src">（课件 p28）</span><a href="../sources/lecture01.pdf#page=28" rel="noopener noreferrer" target="_blank"> 查看课件p28</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">汽车工厂：箱体搬运</div><div class="translation-body"></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p28">对照原课件第28页与完整中文翻译 →</a></figure><figure>
+<a aria-label="放大查看：零售：取货" class="image-zoom" href="assets/s_p29.jpg"><img alt="零售：取货" height="674" loading="lazy" src="assets/s_p29.jpg" width="1200"/></a>
+<figcaption>零售：取货<br/><span class="src">（课件 p29）</span><a href="../sources/lecture01.pdf#page=29" rel="noopener noreferrer" target="_blank"> 查看课件p29</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">零售：取货</div><div class="translation-body"></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p29">对照原课件第29页与完整中文翻译 →</a></figure><figure>
+<a aria-label="放大查看：零售：补货上架" class="image-zoom" href="assets/s_p30.jpg"><img alt="零售：补货上架" height="674" loading="lazy" src="assets/s_p30.jpg" width="1200"/></a>
+<figcaption>零售：补货上架<br/><span class="src">（课件 p30）</span><a href="../sources/lecture01.pdf#page=30" rel="noopener noreferrer" target="_blank"> 查看课件p30</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">零售：补货</div><div class="translation-body"></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p30">对照原课件第30页与完整中文翻译 →</a></figure><figure>
+<a aria-label="放大查看：酒店前台接待" class="image-zoom" href="assets/s_p31.jpg"><img alt="酒店前台接待" height="674" loading="lazy" src="assets/s_p31.jpg" width="1200"/></a>
+<figcaption>酒店前台接待<br/><span class="src">（课件 p31）</span><a href="../sources/lecture01.pdf#page=31" rel="noopener noreferrer" target="_blank"> 查看课件p31</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">酒店接待</div><div class="translation-body"><p>瑞吉酒店（St. Regis）。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p31">对照原课件第31页与完整中文翻译 →</a></figure></div>
+<aside class="update-box"><h3>Helix 2.5：在30个未见家庭中检验全身操作泛化</h3><p>Figure报告，基于Index人类行为数据预训练的模型，在30个未见家庭中测试整理玩具、叠毛巾和整理床铺三类行为。控制任务数据、架构和评估条件后，报告的完整任务成功率由从头训练的9%提高到56%。</p><p>Zero-shot（零样本）在这里指评估家庭和操作物体未用于环境适配；三类行为仍用其他地点采集的数据训练。这项评估检验的是已学行为向新环境的迁移。</p><p>这项成功率来自企业发布的限定任务评估。理解56%这一结果，还应同时查看完整任务判据、失败、超时、人工安全干预及环境范围。</p><p class="source-note">2026-09-17 · <a href="../技术动态_20261004.html#helix25">来源与详情</a></p></aside></section>
+<section id="s5"><h2 class="sec"><span class="no">5</span>核心概念：感知—动作循环</h2>
+<p>机器人拿杯子时，环境会随着动作改变。系统需要反复观察：杯子在哪里、夹爪是否接触、杯子是否被拿起，再决定下一步。课件p20将这种机制称为<b>Perception-Action Loop</b>。</p>
+<figure>
+<a aria-label="放大查看：课程课件：Perception-Action Loop 示意图——感知环境后做出动作，动作改变环境后再感知，形成闭环" class="image-zoom" href="assets/s_p20.jpg"><img alt="课程课件：Perception-Action Loop 示意图——感知环境后做出动作，动作改变环境后再感知，形成闭环" height="719" loading="lazy" src="assets/s_p20.jpg" width="1280"/></a>
+<figcaption>感知-动作循环：机器人感知环境 → 做出动作 → 环境改变 → 再感知 → 再动作，周而复始。<span class="src">（来源：Lecture 1 课件 p20）</span><a href="../sources/lecture01.pdf#page=20" rel="noopener noreferrer" target="_blank"> 查看课件p20</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">感知—行动闭环</div><div class="translation-body"><p>环境。</p><p>通过交互改变环境。</p><p>来自环境的感觉信号。</p><p>效应器。</p><p>感官。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p20">对照原课件第20页与完整中文翻译 →</a></figure>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table><tr><th>环节</th><th>拿杯子的例子</th></tr><tr><td>感知</td><td>相机观察杯子，编码器读取关节角度</td></tr><tr><td>决策</td><td>根据任务目标和当前状态选择抓取动作</td></tr><tr><td>执行</td><td>控制器驱动机械臂和夹爪</td></tr><tr><td>反馈</td><td>再次观察杯子是否移动、抓取是否成功，决定继续、调整或重试</td></tr></table></div></div>
+<p>输出动作可以是末端位姿、关节目标、夹爪开闭或底盘速度；它们再由相应控制器落实。规划器、状态估计和多个模型也可以在系统中分工协作。</p>
+<figure>
+<a aria-label="放大查看：课程课件：人类如何学习——感知、形成假设、采取行动检验的感知-动作循环" class="image-zoom" href="assets/s_p55.jpg"><img alt="课程课件：人类如何学习——感知、形成假设、采取行动检验的感知-动作循环" height="674" loading="lazy" src="assets/s_p55.jpg" width="1200"/></a>
+<figcaption>课件用观察、形成假设与行动帮助理解感知—动作循环。（来源：Lecture 1 PDF页序p55）<a href="../sources/lecture01.pdf#page=55" rel="noopener noreferrer" target="_blank"> 查看课件p55</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">人类如何学习：感知—行动闭环</div><div class="translation-body"><ul><li>感知，形成假设，然后采取行动检验。</li><li>我们的大脑通过创建并检验关于世界如何运行的假设，理解周围的世界。</li></ul><p>学习循环：预测 → 行动 → 结果 → 感知。</p><p>已有图式；强化图式、扩展图式、构建新图式。</p><p>MIND 研究所。</p><p>感知—行动闭环：环境；通过交互改变环境；来自环境的感觉信号；效应器；感官。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p55">对照原课件第55页与完整中文翻译 →</a></figure>
+<p>p55用人类的观察、形成假设和行动来帮助理解这一循环。类比的重点是观察如何支持行动、行动如何带来新的反馈；人脑与机器人模型的具体机制各有不同。</p>
+<div class="box green"><span class="bt">随手练：动作失败后看什么？</span><p>机器人抓空了。如果只能追加一项反馈，你会检查“杯子的新位置”，还是再次播放原轨迹？说明这项反馈如何改变下一步动作。</p><details><summary>查看一种回答</summary><p>先重新估计杯子位置，并确认定位误差、夹爪可达性等条件。若物体移动，原轨迹可能失效；若物体没移动，也需要排查手眼标定或夹爪状态。反馈的作用是支持下一步决策。</p></details></div></section>
+<section id="s6"><h2 class="sec"><span class="no">6</span>VLA：把视觉和语言接到动作</h2><div class="box blue"><span class="bt">先读懂VLA三个字母</span><p>Vision是视觉观察，Language是任务语言，Action是动作。这里的动作可以是末端位姿增量或一段控制目标，具体表示由模型与控制接口约定。把“拿起杯子”连到执行器，需要明确动作单位、参考系、控制频率和夹爪指令。</p></div>
+<p><b>VLA（Vision-Language-Action）</b>模型利用视觉观察和语言指令预测机器人动作。例如，输入桌面图像和“拿起红杯子”，输出一段使机器人接近并抓取目标的动作。具体实现还可能使用本体状态、触觉或历史观察。</p>
+<figure>
+<a aria-label="放大查看：课程课件：大模型分类——非具身大模型（LLM、VLM）vs 具身大模型（自动驾驶 FSD、机器人 VLA）" class="image-zoom" href="assets/s_p32.jpg"><img alt="课程课件：大模型分类——非具身大模型（LLM、VLM）vs 具身大模型（自动驾驶 FSD、机器人 VLA）" height="719" loading="lazy" src="assets/s_p32.jpg" width="1280"/></a>
+<figcaption>课件按输入和输出作大模型教学分类；机器人动作可以有多种表示，实际系统也可组合不同模块。（来源：Lecture 1 PDF页序p32）<a href="../sources/lecture01.pdf#page=32" rel="noopener noreferrer" target="_blank"> 查看课件p32</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">大模型集合</div><div class="translation-body"><h3>大模型</h3><div class="table-wrap"><table><thead><tr><th colspan="2">非具身大模型</th><th colspan="2">具身大模型</th></tr><tr><th>语言大模型（LLM）</th><th>图文视觉语言模型（VLM）</th><th>自动驾驶大模型</th><th>机器人视觉—语言—动作大模型（VLA）</th></tr></thead><tbody><tr><td>GPT-4、DS</td><td>GPT-4V、Emu</td><td>Tesla FSD、理想智驾</td><td>谷歌 RT-2、银河 GraspVLA</td></tr><tr><td>语言</td><td>语言、图片</td><td>实时视觉信号</td><td>实时视觉信号、语言</td></tr><tr><td>语言</td><td>语言、图片</td><td>方向盘、油门</td><td>底盘/腿、臂、手运动</td></tr></tbody></table></div></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p32">对照原课件第32页与完整中文翻译 →</a></figure>
+<p>课件p32用输出类型对大模型作教学分类。实际系统中，语言模型也可以调用工具和机器人接口，视觉模型也可以作为控制系统的感知模块；这些模块可以在同一系统中配合使用。</p>
+<h3>从“说出是什么”到“决定怎样做”</h3><p>p33—35对比模式识别与交互任务。识别红杯子是抓取的一部分；任务还需要选择抓取位置、控制动作，并处理失败。</p>
+<figure>
+<a aria-label="放大查看：课程课件：具身大模型 RT-2——输入语言、视觉、本体感受信号，输出语言或动作" class="image-zoom" href="assets/s_p36.jpg"><img alt="课程课件：具身大模型 RT-2——输入语言、视觉、本体感受信号，输出语言或动作" height="674" loading="lazy" src="assets/s_p36.jpg" width="1200"/></a>
+<figcaption>具身大模型 RT-2：Google 提出的 VLA 模型，解决开放式指令操作问题。<span class="src">（来源：Lecture 1 课件 p36）</span><a href="../sources/lecture01.pdf#page=36" rel="noopener noreferrer" target="_blank"> 查看课件p36</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">具身大模型：RT-2</div><div class="translation-body"><p>输入：语言、视觉、其他本体感觉/传感器信号。</p><p>输出：语言或动作。</p><p>谷歌提出了 RT-2，一种视觉—语言—动作（VLA）模型，用于解决开放指令操作问题。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p36">对照原课件第36页与完整中文翻译 →</a></figure>
+<p>RT-2把动作编码为文本token，与视觉语言任务一起训练；执行时将token解码为控制动作。因此，阅读模型输出时，先确认动作的编码形式及其解码方式。<a href="https://robotics-transformer2.github.io/">RT-2原项目</a>给出该模型的训练和执行方式。</p>
+<figure>
+<a aria-label="放大查看：课程课件：GraspVLA——银河通用的抓取大模型" class="image-zoom" href="assets/s_p41.jpg"><img alt="课程课件：GraspVLA——银河通用的抓取大模型" height="674" loading="lazy" src="assets/s_p41.jpg" width="1200"/></a>
+<figcaption>GraspVLA：银河通用的端到端抓取大模型。<span class="src">（来源：Lecture 1 课件 p41）</span><a href="../sources/lecture01.pdf#page=41" rel="noopener noreferrer" target="_blank"> 查看课件p41</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">GraspVLA</div><div class="translation-body"><p>Galbot；北京大学。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p41">对照原课件第41页与完整中文翻译 →</a></figure>
+<div class="update-box"><span class="bt">历史研究实例｜GraspVLA（2025年）</span><p>GraspVLA论文于2025-05-06在arXiv首次提交，介绍十亿帧合成抓取数据集SynGrasp-1B。项目页从干扰物、光照、空间姿态、背景、物体类别和闭环调整六个方面展示泛化。帧数描述观测规模，能力仍需结合测试任务和条件理解。</p><p>来源：<a href="https://arxiv.org/abs/2505.03233">原论文与版本记录</a>、<a href="https://pku-epic.github.io/GraspVLA-web/">项目页</a>。</p></div>
+<div class="box blue"><span class="bt">教学类比：慢思考与快动作</span><p>复杂推理可能以较低频率更新目标，快速动作模块则高频响应当前观察。2025年发布的Helix采用这种快慢层次设计；其他VLA可能采用不同架构。“大脑与小脑”是帮助理解这种分工的教学类比；阅读具体模型时，以论文定义的模块和更新频率为准。</p></div>
+<blockquote><p><b>课程观点：</b>Notes 01提出“没有具身智能，就没有AGI”。这是一种关于通用智能发展路径的观点。交互有助于检验和运用物理知识。学习时可以把这一观点转化为问题：不同学习方式各能获得哪些物理知识，又怎样验证？</p></blockquote>
+<p>舞蹈、空翻等表演展示运动能力；评价VLA的泛化能力，则要查看模型的实际输入、输出、训练方式和评测任务。</p></section>
+<section id="s7"><h2 class="sec"><span class="no">7</span>数据：采集成本、质量与泛化</h2><div class="box blue"><span class="bt">数据量之外，先问“数据记了什么”</span><p>一帧桌面图片只能告诉你某一时刻的外观；一次取放轨迹还包含接近、接触、搬运和放下的动作时序。训练策略时，观察与动作需要按时间对应，任务成功与失败的记录也影响它学到的行为。</p></div>
+<p>机器人示范需要设备、操作人员、任务场景与时间。课件p37以13万条示范、17个月、16人、13台机器人说明成本问题。这些历史统计记录了该案例的投入，其他项目的成本需按设备、任务与采集方式估算。</p>
+<figure>
+<a aria-label="放大查看：课程课件：数据饥饿问题——130K 演示数据花费 17 个月、16 人、13 台机器人" class="image-zoom" href="assets/s_p37.jpg"><img alt="课程课件：数据饥饿问题——130K 演示数据花费 17 个月、16 人、13 台机器人" height="674" loading="lazy" src="assets/s_p37.jpg" width="1200"/></a>
+<figcaption>课件案例：收集13万条示范，涉及17个月、16人和13台机器人；各数字分别说明时间、人员与设备投入。（来源：Lecture 1 PDF页序p37）<a href="../sources/lecture01.pdf#page=37" rel="noopener noreferrer" target="_blank"> 查看课件p37</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">问题：数据需求大，场景泛化有限</div><div class="translation-body"><p>在700多种任务、13万条示范上训练。</p><p>泛化到任务。</p><p>对背景、干扰物与场景具有鲁棒性。</p><p>长时域任务。</p><p>新的数据来源。</p><p>(b) RT-1 的大规模真实世界训练（13万条示范）与评估（3,000次真实世界试验）展示了出色的泛化能力、鲁棒性，以及从多样化数据中学习的能力。</p><p>图1：RT-1 的架构、数据集与评估的总体概览。</p><ul><li>数据采集与评估：Noah Brown、Justice Carbajal、Joseph Dabis、Tomas Jackson、Utsav Malla、Deeksha Manjunath、Jodily Peralta、Emily Perez、Jornell Quiambao、Grecia Salazar、Kevin Sayed、Jaspiar Singh、Clayton Tan、Huong Tran、Steve Vega、Brianna Zitkovich。</li></ul><p>示范数据的成本高昂（13万条示范，17个月，16人，13台机器人）。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p37">对照原课件第37页与完整中文翻译 →</a></figure>
+<p>p38展示Open X-Embodiment：多个团队、数据集与机器人本体构成的真实操作数据集合。回查时可用项目名称定位数据组成与论文。</p>
+<figure>
+<a aria-label="放大查看：课程课件：真实数据采集——ICRA 2024 最佳会议论文的 1M+ 轨迹数据集" class="image-zoom" href="assets/s_p38.jpg"><img alt="课程课件：真实数据采集——ICRA 2024 最佳会议论文的 1M+ 轨迹数据集" height="674" loading="lazy" src="assets/s_p38.jpg" width="1200"/></a>
+<figcaption>Open X-Embodiment真实操作数据集合；课件注明ICRA 2024最佳会议论文与1M+条轨迹。（来源：Lecture 1 PDF页序p38）<a href="../sources/lecture01.pdf#page=38" rel="noopener noreferrer" target="_blank"> 查看课件p38</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">真实数据采集</div><div class="translation-body"><p>Open X-Embodiment：机器人学习数据集与 RT-X 模型。</p><p>Open X-Embodiment 合作团队（悬停可显示完整作者名单）。</p><p>来自311个场景的100万条交互回合；跨21所机构的34个研究实验室；22种具身形态；527种技能；60个数据集；1,798种属性；5,228种对象；23,486种空间关系。</p><p>技能：倾倒、堆叠、布线。</p><p>QT-Opt：拾取任何物体；把绿色布扫到桌子左侧。</p><p>TOTO：倾倒。</p><p>Jaco Play：把黑碗放进沥水架。</p><p>ALOHA：堆叠杯子。</p><p>Push T；Taco Play：拾取红色积木。</p><p>电缆布线。</p><p>RT-1：从台面拾取绿色薯片袋。</p><p>Bridge：把碗放到桌子右侧。</p><p>开门。</p><p>ICRA 2024 最佳会议论文。</p><p>100多万条轨迹，主要涵盖抓取放置、关节物体操作等。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p38">对照原课件第38页与完整中文翻译 →</a></figure><figure>
+<a aria-label="放大查看：课程课件：具身数据难题——Tesla 雇佣 40 人团队遥操人形机器人采集数据，Stanford Aloha 遥操采集，大模型需要上亿条数据" class="image-zoom" href="assets/s_p39.jpg"><img alt="课程课件：具身数据难题——Tesla 雇佣 40 人团队遥操人形机器人采集数据，Stanford Aloha 遥操采集，大模型需要上亿条数据" height="719" loading="lazy" src="assets/s_p39.jpg" width="1280"/></a>
+<figcaption>课件中的历史数据采集案例及规模判断；“可能需要上亿条”是对当时数据规模的判断，适用范围需结合任务理解。（来源：Lecture 1 PDF页序p39）<a href="../sources/lecture01.pdf#page=39" rel="noopener noreferrer" target="_blank"> 查看课件p39</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">数据瓶颈</div><div class="translation-body"><p>具身数据难题：真实数据采集贵，难以规模化到大模型所需的量。</p><p>Tesla 雇佣40人团队进行人形机器人遥操作，以产生数据。</p><p>训练数据通过人类遥操作收集。</p><p>Stanford ALOHA 工作通过遥操作采集数据。</p><p>4倍速遥操作；改进的夹爪响应。</p><p>大模型可能需要上亿条数据才能泛化！</p><p>OpenVLA：视觉—语言—动作模型。</p><p>大规模机器人训练数据：97万条机器人交互回合。</p><p>使用机器人动作微调视觉语言模型；基础视觉语言模型；Llama 2 7B；视觉 Transformer（ViT）。</p><p>闭环机器人控制策略：用户“擦桌子”；OpenVLA 输出 \([\Delta x,\Delta\theta,\Delta\mathrm{Grip}]\) = … 。</p><p>多机器人控制与高效微调。</p><p>完全开源：数据、权重、代码。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p39">对照原课件第39页与完整中文翻译 →</a></figure>
+<div class="box blue"><span class="bt">教学补充：先把数据单位说清楚</span><p><b>轨迹／episode：</b>一次任务从开始到结束的观察与动作序列。<br/><b>帧：</b>某一时刻的一张图像或一组观察。<br/><b>动作步：</b>某一控制时刻的动作记录。</p><p>一条20秒轨迹以每秒10帧记录，约包含200帧图像；如果控制频率更高，动作步数又可能不同。比较百万条轨迹和十亿帧数据时，应先换算到相同单位。还要考虑任务多样性、成功失败样本、本体差异和标注质量。</p></div>
+<p>课件p39提出“大模型可能需要上亿条数据才能泛化”，属于当时的规模判断。Scaling Law描述特定设置下规模与性能的经验关系，阅读时需要同时查看数据质量、任务和训练条件。</p>
+<figure>
+<a aria-label="放大查看：课程课件：大规模合成数据" class="image-zoom" href="assets/s_p40.jpg"><img alt="课程课件：大规模合成数据" height="674" loading="lazy" src="assets/s_p40.jpg" width="1200"/></a>
+<figcaption>大规模合成数据：在仿真器中批量生成。<span class="src">（来源：Lecture 1 课件 p40）</span><a href="../sources/lecture01.pdf#page=40" rel="noopener noreferrer" target="_blank"> 查看课件p40</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">大规模合成数据</div><div class="translation-body"></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p40">对照原课件第40页与完整中文翻译 →</a></figure><figure>
+<a aria-label="放大查看：课程课件：在仿真环境中学习交互——仿真+真实感渲染，标注免费、省时、可迁移到现实" class="image-zoom" href="assets/s_p42.jpg"><img alt="课程课件：在仿真环境中学习交互——仿真+真实感渲染，标注免费、省时、可迁移到现实" height="719" loading="lazy" src="assets/s_p42.jpg" width="1280"/></a>
+<figcaption>课件展示仿真与真实感渲染的学习路线；迁移到现实仍需核验建模、感知与控制差异。（来源：Lecture 1 PDF页序p42）<a href="../sources/lecture01.pdf#page=42" rel="noopener noreferrer" target="_blank"> 查看课件p42</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">在仿真环境中学习交互</div><div class="translation-body"><p>仿真与照片级真实感渲染：</p><ul><li>无需标注。</li><li>时间效率高。</li><li>可迁移到真实世界。</li></ul></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p42">对照原课件第42页与完整中文翻译 →</a></figure>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table><tr><th>仿真数据的优势</th><th>适用条件与限制</th></tr><tr><td>可自动获得状态标签</td><td>可读取物体位姿等模拟状态；标签相对于仿真模型准确，仍需检查建模误差、任务定义和生成质量</td></tr><tr><td>可并行生成</td><td>减少真人逐条操作，但资产制作、计算、存储与质检仍有成本</td></tr><tr><td>可用于Sim2Real</td><td>真实感渲染、域随机化、标定等有助于迁移；接触、摩擦、时延及传感器差异仍需真机验证</td></tr></table></div></div>
+<div class="box yellow"><span class="bt">课件p43的研究判断</span><p>现实已解决的任务，如果改在仿真中学习，需要验证能否迁移回现实；现实尚未解决的问题，可以先在仿真里探索方法。无论从哪条路线起步，迁移结果都需要在现实中检验。</p></div>
+<p>本课程将反复用到真实数据、仿真与学习方法。GraspVLA提供了合成数据路线的具体研究案例。其他任务可以结合真实示范、仿真数据及各自的迁移结果选择路线。</p></section>
+<section id="s8"><h2 class="sec"><span class="no">8</span>怎样理解具身性与主动交互</h2>
+<p>p44—49通过设问对比传统感知任务与具身交互任务。下面用图像分类与机器人抓取，比较这门课关心的感知和交互问题。</p>
+<figure>
+<a aria-label="放大查看：课程课件：Classical AI vs Embodied AI 对比图" class="image-zoom" href="assets/s_p49.jpg"><img alt="课程课件：Classical AI vs Embodied AI 对比图" height="674" loading="lazy" src="assets/s_p49.jpg" width="1200"/></a>
+<figcaption>课件对比感知与交互任务；本章用图像分类和抓取说明两者的侧重点。（来源：Lecture 1 PDF页序p49）<a href="../sources/lecture01.pdf#page=49" rel="noopener noreferrer" target="_blank"> 查看课件p49</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">经典人工智能与具身智能的比较</div><div class="translation-body"><ul><li>经典人工智能。<ul><li>思考、推理、解决抽象问题。</li></ul></li><li>具身智能。<ul><li>运动，以及与真实世界的物理交互。</li></ul></li></ul><p>“植物为什么没有大脑？答案其实很简单：它们不需要移动。”</p><p>Lewis Wolpert，伦敦大学学院（UCL）。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p49">对照原课件第49页与完整中文翻译 →</a></figure>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table><tr><th>比较视角</th><th>图像分类例子</th><th>机器人抓取例子</th></tr><tr><td>输入</td><td>一张待分类图像</td><td>视觉、本体状态、任务指令与历史反馈</td></tr><tr><td>输出</td><td>类别或描述</td><td>影响物体和机器人状态的动作</td></tr><tr><td>评价</td><td>预测是否正确</td><td>是否完成任务，能否恢复失败，是否满足约束</td></tr><tr><td>学习</td><td>可采用监督或自监督等方法</td><td>可采用离线示范、模仿学习、强化学习等；执行时可用固定参数的策略根据反馈调整动作</td></tr></table></div></div>
+<p>课件p50引用图灵1950年的《Computing Machinery and Intelligence》，p51引用Held与Hein 1963年关于主动运动与视觉引导行为发展的实验。它们提供思想与实验背景。</p>
+<figure>
+<a aria-label="放大查看：课程课件：小猫实验——主动移动的小猫与被动经历相同视觉刺激的小猫对比" class="image-zoom" href="assets/s_p51.jpg"><img alt="课程课件：小猫实验——主动移动的小猫与被动经历相同视觉刺激的小猫对比" height="674" loading="lazy" src="assets/s_p51.jpg" width="1200"/></a>
+<figcaption>Held与Hein（1963）实验研究主动运动经验与特定视觉引导行为的发展。（来源：Lecture 1 PDF页序p51）<a href="../sources/lecture01.pdf#page=51" rel="noopener noreferrer" target="_blank"> 查看课件p51</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">具身智能简史</div><div class="translation-body"><p>被动猫；主动猫。</p><p>Held, R., &amp; Hein, A.（1963）。《视觉引导行为发展中的运动所产生的刺激》（Movement-produced stimulation in the development of visually guided behavior）。《比较与生理心理学杂志》（Journal of Comparative and Physiological Psychology），56(5)，872。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p51">对照原课件第51页与完整中文翻译 →</a></figure>
+<p>小猫实验支持主动运动经验对特定视觉引导行为的重要性，理解其结论时应保留这一研究范围。p52以直立行走、工具使用和语言帮助理解身体与智能发展的联系。</p>
+<figure>
+<a aria-label="放大查看：课程课件：视觉运动协调——眼睛提供感官反馈调整身体运动" class="image-zoom" href="assets/s_p53.jpg"><img alt="课程课件：视觉运动协调——眼睛提供感官反馈调整身体运动" height="674" loading="lazy" src="assets/s_p53.jpg" width="1200"/></a>
+<figcaption>课件展示视觉运动协调：视觉反馈参与身体动作的调整。（来源：Lecture 1 PDF页序p53）<a href="../sources/lecture01.pdf#page=53" rel="noopener noreferrer" target="_blank"> 查看课件p53</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">视觉运动协调/整合</div><div class="translation-body"><ul><li>视觉运动控制是协调视觉信息与运动输出的能力，在这个过程中，眼睛提供感觉反馈来调整身体运动。</li><li>它对协调双手、双腿和身体其他部位的运动与眼睛所感知的信息至关重要。</li></ul><p>OT Mom 的视觉感知活动。</p><p>为什么视觉运动整合对手写如此重要。</p><p>OT Mom 学习活动。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p53">对照原课件第53页与完整中文翻译 →</a></figure><figure>
+<a aria-label="放大查看：课程课件：具身 AI 的五种能力——看、说、听、动、推理" class="image-zoom" href="assets/s_p56.jpg"><img alt="课程课件：具身 AI 的五种能力——看、说、听、动、推理" height="674" loading="lazy" src="assets/s_p56.jpg" width="1200"/></a>
+<figcaption>具身 AI 的五种能力：See（看）· Talk（说）· Listen（听）· Act（动）· Reason（推理）。<span class="src">（来源：Lecture 1 课件 p56）</span><a href="../sources/lecture01.pdf#page=56" rel="noopener noreferrer" target="_blank"> 查看课件p56</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">具身智能与具身视觉</div><div class="translation-body"><p>看：通过视觉或其他感官感知环境。</p><p>说：进行以所在环境为基础的自然语言对话。</p><p>听：理解场景中任何位置的声音输入，并作出反应。</p><p>行动：在环境中导航并与环境交互，以完成目标。</p><p>推理：考虑并规划其行动的长期后果。</p><p>具身智能是为虚拟机器人解决人工智能问题的领域。这些机器人能够移动、看、说，并在虚拟世界中及与其他虚拟机器人交互——随后，这些模拟机器人的解决方案被迁移到真实世界机器人。</p><p>——Luis Bermudez，《具身人工智能概览》（Overview of Embodied Artificial Intelligence）。</p><p>家用机器人。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p56">对照原课件第56页与完整中文翻译 →</a></figure>
+<p>p53—54展示视觉运动协调，p56列出看（See）、说（Talk）、听（Listen）、行动（Act）与推理（Reason）五类能力。这五项概括了该页讨论的交互能力。具体机器人需要哪些能力，应由任务决定。</p>
+<div class="box green"><span class="bt">随手练：看起来会动，是否就会学习？</span><p>一台机器人按预设程序走路，另一台用离线示范训练出的策略拿杯子。能仅凭它们“在动”就断定正在学习吗？</p><details><summary>查看回答</summary><p>需要进一步查看参数是否在更新。执行动作、根据观察调整动作和更新模型参数是三个不同概念。训练可能发生在执行之前；闭环执行时参数也可以固定。</p></details></div></section>
+<section id="s9"><h2 class="sec"><span class="no">9</span>课程全景与自学安排</h2>
+<p>第一讲p58将本课定位为具身智能前沿课程，目的是为研究建立基础。面向自学者，本教程保留知识路线，并通过前置讲解和可检查的练习支持学习。</p>
+<figure>
+<a aria-label="放大查看：课程课件：传统机器人学大纲缺了什么——Intelligence！Intelligence！Intelligence！" class="image-zoom" href="assets/s_p68.jpg"><img alt="课程课件：传统机器人学大纲缺了什么——Intelligence！Intelligence！Intelligence！" height="674" loading="lazy" src="assets/s_p68.jpg" width="1200"/></a>
+<figcaption>传统《机器人学导论》大纲缺了什么？——Intelligence！Intelligence！Intelligence！<span class="src">（来源：Lecture 1 课件 p68）</span><a href="../sources/lecture01.pdf#page=68" rel="noopener noreferrer" target="_blank"> 查看课件p68</a><span class="zoom-hint">点击图片放大；按Esc关闭</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">典型的机器人学导论教学大纲</div><div class="translation-body"><ul><li>机器人学是工程学的一个分支，涉及机器人的构思、设计、制造和运行。</li></ul><p>缺少了什么？</p><p>智能！智能！智能！</p><p>机器人学导论，CS223A，斯坦福大学工程学院。</p><p>内容包括：空间描述；运动学；雅可比矩阵；静力学；动力学；运动规划与控制；轨迹生成。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l01-p68">对照原课件第68页与完整中文翻译 →</a></figure>
+<h3>四大板块</h3><ol><li><b>机器人学基础（第2—4章）：</b>刚体几何、正逆运动学、规划与控制。</li><li><b>机器人3D视觉（第5—7章）：</b>深度、点云、物体位姿、跟踪和抓取；课件p76—80给出混合、透明、移动和灵巧抓取场景展示。</li><li><b>策略学习（第8—9章）：</b>模仿学习与强化学习。</li><li><b>机器人任务与前沿（第10章）：</b>抓取、关节物体操作、导航、移动操作、QuadWBG及多模态模型专题。</li></ol>
+<h3>先修要求和自学支架</h3><div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table><tr><th>原课程要求</th><th>自学时怎么准备</th></tr><tr><td>Python熟练；课件还列出PyTorch</td><td>本章作业只使用NumPy等CPU依赖；先完成§11的数组、矩阵和误差练习，再实现函数</td></tr><tr><td>计算机视觉、深度学习；课件还列出大学力学</td><td>本章概念阅读可先开始，后续数学与学习章节仍需相应基础；遇到缺口按章节补学</td></tr><tr><td>课程作业</td><td>作业1保留在本章，用“前置知识→小练习→逐函数实现→自测”的顺序完成</td></tr></table></div></div>
+<div class="box yellow"><span class="bt">来源版本差异：考核安排</span><p>首讲PDF p64写“3次作业共40%＋真实机器人实验20%＋课堂参与最多5%加分”，该页不是完整的100%成绩表。现存<a href="https://pku-epic.github.io/Intro2EAI_2025/">课程官网</a>写“作业60%＋期中考试40%”，真实实验单独介绍。两份来源对应各自的课程安排，应分别阅读。本地自学以练习成果检查掌握程度。</p></div>
+<p>p65说明作业通常给两周、迟交会扣分。官方作业1于2025-03-07公开，截止2025-03-22 23:59；这些日期记录原课堂安排，自学者可按自己的进度完成。具体见<a href="https://pku-epic.github.io/Intro2EAI_2025/assignments/01_assignments">作业发布页</a>。</p>
+<p>学习节奏可以按“今天完成一组练习”安排。每次记录：做了哪项、输出是什么、哪里仍不懂。查术语时先看原课件、官方文档或原论文；搜索引擎用于找来源，再回到原文核对。</p></section>
+<section id="s10"><h2 class="sec"><span class="no">10</span>本章自测：解释一个完整任务</h2>
+<p>现在用“机器人把红杯子放进托盘”回顾本章。先独立回答，再展开提示。</p>
+<details class="exercise"><summary>1．机器人需要观察哪些信息？</summary><p>杯子与托盘的位置、机器人本体状态、夹爪状态，以及任务目标。具体传感器由系统设计和任务要求决定。</p></details>
+<details class="exercise"><summary>2．执行器闭环与任务层闭环有什么区别？</summary><p>关节控制器跟踪目标角度属于底层反馈；相机发现杯子移动并触发重新规划属于任务层反馈。两者都重要，但作用层次不同。</p></details>
+<details class="exercise"><summary>3．VLA在这个系统里可能做什么？</summary><p>根据图像、语言及其他观察预测动作；再由规划或控制系统落实。具体输出可能是末端位姿、动作序列或关节目标，取决于模型设计。</p></details>
+<details class="exercise"><summary>4．十亿帧数据一定比百万条轨迹多吗？</summary><p>先统一单位，再比较。每条轨迹的时长、采样频率、任务分布和质量都是必要信息。</p></details>
+<details class="exercise"><summary>5．仿真成功后，真机还要检查什么？</summary><p>几何与传感器标定、接触与摩擦差异、控制时延、任务成功与失败恢复等。这些条件需要通过真机验证。</p></details>
+<div class="box blue"><span class="bt">进入作业1</span><p>本章原作业需要描述旋转和机械臂位姿。下一节先补这些知识，再提供小练习和实现提示。你可以在同一章内完成从入门到原作业的学习过程。</p></div></section>
+<section id="s11">
+<h2 class="sec"><span class="no">11</span>动手实践：作业 1 · 四元数与正向运动学</h2>
+<p>这份作业完整保留在第一章。它把前面“让机器人行动”的愿景变成一个具体问题：给定机械臂各关节的角度，怎样算出每段连杆的位置和朝向？原课程面对有编程和数学基础的学生，这里先补一层入门台阶，再进入原题。你可以按“运行前置示例 → 做小练习 → 逐个实现函数 → 验证机械臂”的顺序推进，不必在第一次阅读时完成全部任务。</p>
+<p>练习中的每个符号都有操作含义：向量保存一个方向或位置，矩阵把坐标转换到另一个坐标系，四元数保存旋转，正向运动学把这些转换沿机械臂连接起来。先看懂一个小例子，再扩大到整台机器人，会比同时背下所有公式更容易。以下小练习只帮助你掌握前置知识，原作业的学生函数仍留给你自己完成。</p>
+<h3>11.1 原题、模板与学习路线</h3>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>原作业任务</th><th>分值</th><th>要交付的结果</th></tr>
+<tr><td>旋转函数库</td><td>66%</td><td>在 <code>rotation.py</code> 实现 11 个函数，每个 6%；处理归一化、组合旋转、旋转表示转换和插值。</td></tr>
+<tr><td>正向运动学</td><td>34%</td><td>在 <code>robot_model.py</code> 实现 <code>RobotModel.fk</code>，输入旋转关节角，返回所有连杆的 <code>(L, 4, 4)</code> 位姿数组。</td></tr>
+</table></div></div>
+<p>官方实际于 2025 年 3 月 7 日发布作业，截止时间为 3 月 22 日 23:59。这里保留原题难度和分值，但自学不受原课程期限约束。环境启动成功说明工具已就绪；函数通过测试，才说明完成了相应作业检查。建议分多次学习，每次完成少量函数，并记下输入、预期输出和遇到的问题。</p>
+<p>本章提供<a href="homework01/Assignment1.pdf">原题PDF</a>、<a href="homework01/Assignment1.zip">官方原始ZIP</a>与可运行的<code>homework01/Assignment1/</code>学生模板。模板包括题目说明、待实现函数、测试、测试数据、Galbot左臂URDF与网格模型。材料入口与使用方法见<a href="homework01/作业1来源与使用说明.md">作业1来源与使用说明</a>，课程要求可回查<a href="https://pku-epic.github.io/Intro2EAI_2025/assignments/01_assignments">官方发布页</a>。</p>
+<h3>11.2 先把环境和工作目录准备好</h3>
+<p>本地运行需要 Python 和 NumPy；完整作业还需要 pytest、trimesh、plotly。这里使用原题指定的 Python 3.10。Windows 安装 Conda 后打开 Anaconda Prompt，用终端进入本章的 <code>homework01</code> 目录：可以先输入 <code>cd /d </code>，再粘贴该文件夹实际路径；路径有空格时用双引号包住。看到目录中有 <code>warmup.py</code> 和 <code>Assignment1</code> 后，再执行下面命令。</p>
+<pre><code>conda create -n hw1 python=3.10
+conda activate hw1
+cd Assignment1
+python -m pip install -r requirements.txt
+python -c "import numpy, pytest, trimesh, plotly; print('依赖导入成功')"
+python ../warmup.py</code></pre>
+<p><code>cd Assignment1</code> 很重要：原模板用相对路径读取 <code>data/fk.npz</code> 和机器人模型，后面的测试与可视化都应在这个工作目录执行。前置脚本在上一级，所以运行时写 <code>../warmup.py</code>。它只依赖 NumPy，包含已知数值的小例子和断言，不导入原作业的待实现函数；成功时会逐项打印结果，最后提示“前置示例全部通过”。</p>
+<div class="box yellow"><span class="bt">环境启动与学生任务是两件事</span><p>第一次对原模板运行 pytest，出现 <code>NotImplementedError: Implement this function</code> 是预期结果，意思是“这个函数需要你实现”。如果提示缺模块，先检查是否激活 <code>hw1</code>、是否装齐四项依赖。学习时使用完整学生模板，其中包含模型和测试资产；Handin 中的两个代码文件是已填写的实现，适合最后核对思路。遇到测试失败，按输入、计算过程与预期输出逐步排查。</p></div>
+<h3>11.3 NumPy 入门：形状、运算、弧度和误差</h3>
+<p>NumPy 数组可以看成整齐摆放的数字容器。<code>np.array([3., 4., 0.])</code> 的形状是 <code>(3,)</code>，表示三个分量的一维向量；<code>np.eye(3)</code> 的形状是 <code>(3, 3)</code>，表示三行三列的单位矩阵。初学时先打印 <code>shape</code> 再计算，能避免把四元数的四个数和三维向量的三个数混在一起。浮点数写法如 <code>3.0</code>，也能避免整数数组在赋小数时被截断。</p>
+<p><code>*</code> 是逐元素乘法，<code>@</code> 则随输入形状表示点积或矩阵乘法。两个一维数组的点积把对应乘积相加，输出一个数；矩阵乘向量会输出一个新向量。叉积 <code>np.cross(a, b)</code> 输出垂直于两者的三维向量，方向遵循右手法则。模长 <code>np.linalg.norm(a)</code> 衡量向量长度，把向量除以非零模长得到单位向量。</p>
+<pre><code>import numpy as np
+a = np.array([3.0, 4.0, 0.0])
+b = np.array([0.0, 1.0, 0.0])
+print(a.shape)                 # (3,)
+print(a * b)                   # [0. 4. 0.]
+print(a @ b)                   # 4.0
+print(np.cross(a, b))          # [0. 0. 3.]
+print(np.linalg.norm(a))       # 5.0
+print(a / np.linalg.norm(a))   # [0.6 0.8 0.]</code></pre>
+<p>NumPy 的三角函数使用弧度，\(180^\circ=\pi\) 弧度，\(90^\circ=\pi/2\) 弧度。用 <code>np.deg2rad(90)</code> 转换后，再将结果传给 <code>np.sin</code>。电脑的浮点运算存在微小误差，计算出的 \(\cos(\pi/2)\) 往往是接近零的小数。比较单个数用 <code>np.isclose</code>，比较数组用 <code>np.allclose</code>；浮点结果应按容差比较，逐位使用 <code>==</code> 要求精确相等通常不适合这类计算。</p>
+<p>Python 中的一维数组没有强制的“行”或“列”外观，前面的数学推导仍统一按列向量理解。矩阵 <code>(3, 3)</code> 乘一维向量 <code>(3,)</code> 会得到 <code>(3,)</code>；两个矩阵相乘则要求左矩阵列数等于右矩阵行数。若遇到维度报错，先把每个中间结果的 shape 打印出来。转置前先核对坐标转换方向，因为转置会改变旋转矩阵的输入系与输出系。</p>
+<details><summary>前置练习 1：逐元素乘法、点积和归一化有什么不同？（展开答案）</summary><p>对上面的 a、b，先预测 <code>a * b</code>、<code>a @ b</code>，再算单位 a 的模长。答案分别为 <code>[0, 4, 0]</code>、<code>4</code>、<code>1</code>。点积把三个数合成一个数，归一化保持方向、把长度改为 1。零向量没有唯一方向，不能直接除以零模长。</p></details>
+<details><summary>前置练习 2：把 90 度变成弧度，并检查 cos 是否接近零（展开答案）</summary><pre><code>angle = np.deg2rad(90.0)
+assert np.isclose(angle, np.pi / 2)
+assert np.isclose(np.cos(angle), 0.0, atol=1e-12)</code></pre><p>这里 <code>atol</code> 是绝对误差容许量。它适用于本例的已知数值检查，其他任务的阈值应按量纲与精度要求设置。</p></details>
+<h3>11.4 从三维旋转走到四维齐次变换</h3>
+<p>坐标总是相对于某个坐标系说的。“杯子在右边”需要先说明是谁的右边。机器人有基座坐标系，连杆也各有自己的坐标系。以下约定使用列向量：\(R_{AB}\) 把 B 系表示的向量转换为 A 系表示；\(t_{AB}\) 是 B 系原点在 A 系中的位置。因此一个点满足 \(p_A=R_{AB}p_B+t_{AB}\)。转换过程中点本身可以不动，变化的是它的数字表示。</p>
+<p>一个合法旋转矩阵由三个互相垂直的单位轴组成，满足 \(R^TR=I\) 和 \(\det R=1\)。单位矩阵代表无旋转。绕 Z 轴按右手方向转 90 度时，局部 X 方向会指向 Y 方向。把下面的例子想成“一个连杆朝向改变后，它的局部 X 轴在基座中指向哪里”，不必先背一般转换公式。</p>
+<pre><code>R = np.array([[0., -1., 0.],
+              [1.,  0., 0.],
+              [0.,  0., 1.]])
+p_B = np.array([1., 0., 0.])
+t_AB = np.array([2., 0., 0.])
+p_A = R @ p_B + t_AB
+assert np.allclose(p_A, [2., 1., 0.])</code></pre>
+<p>把旋转和平移放进同一个矩阵，得到齐次变换：\(T_{AB}=\begin{bmatrix}R_{AB}&amp;t_{AB}\\0&amp;1\end{bmatrix}\)。点补上末尾的 1，写成 \(\tilde p_B=(x,y,z,1)^T\)，于是 \(\tilde p_A=T_{AB}\tilde p_B\)。末尾的 1 让平移项能够参与运算；纯方向向量则补 0，因为位置改变不应改变方向。下方代码里的平移是最后一列，不是最后一行。</p>
+<pre><code>T_AB = np.eye(4)
+T_AB[:3, :3] = R
+T_AB[:3, 3] = t_AB
+p_A_h = T_AB @ np.append(p_B, 1.0)
+assert np.allclose(p_A_h, [2., 1., 0., 1.])</code></pre>
+<details><summary>前置练习 3：同一矩阵作用于点和方向，有何区别？（展开答案）</summary><p>用上面的 T_AB 分别乘 <code>[1, 0, 0, 1]</code> 与 <code>[1, 0, 0, 0]</code>。前者得到 <code>[2, 1, 0, 1]</code>，后者得到 <code>[0, 1, 0, 0]</code>。点的位置加上平移，方向只发生旋转。</p></details>
+<details><summary>前置练习 4：两个坐标转换按什么顺序相乘？（展开答案）</summary><p>从 C 系到 B 系是 T_BC，从 B 系到 A 系是 T_AB。点先经过右边的变换，因此 \(T_{AC}=T_{AB}T_{BC}\)。在 Python 中写 <code>T_AC = T_AB @ T_BC</code>。下标中相邻的 B 可以帮助你检查是否衔接；交换顺序通常得不到同一结果。</p></details>
+<h3>11.5 四元数：先理解单位、半角和表示约定</h3>
+<p>四元数把旋转保存成四个数。本题统一采用 <b>wxyz</b> 顺序，写成 \(q=(w,\mathbf v)\)，其中 \(\mathbf v=(x,y,z)\)。这里 q 表示旋转四元数；后面机械臂的一串关节角统一叫 <code>qpos</code>，后文按这两个名称区分旋转与关节配置。原题允许假设除 <code>quat_normalize</code> 外的输入四元数已经单位化，即 \(w^2+x^2+y^2+z^2=1\)。用四元数表示旋转时，需要满足这个单位模长条件。</p>
+<p>绕单位轴 \(\mathbf u\) 转角 \(\theta\)，可以表示为 \(q=(\cos(\theta/2),\,\mathbf u\sin(\theta/2))\)。注意公式用的是半角，轴向量需要长度为 1。绕 Z 轴转 90 度的四元数为 \((\sqrt2/2,0,0,\sqrt2/2)\)，无旋转则为 \((1,0,0,0)\)。四元数编码旋转；向量旋转后的坐标则要通过旋转运算得到。</p>
+<p>四元数有“双重覆盖”：q 和 -q 表示同一个三维旋转，四个分量不同不一定意味着姿态不同。因此判断转换后的结果时，经常需要允许整体反号。计算相对旋转角时用 \(\theta_{\mathrm{rel}}=2\arccos(|q_1\cdot q_2|)\)，绝对值消除了表示符号的影响；进入反余弦前再把点积限制在合法区间，防止浮点误差把 1 变成略大于 1 的数。</p>
+<p>四元数乘法表示旋转复合，通常不满足交换律。本题按 \(q(0,\mathbf p)q^*\) 旋转向量的约定理解：若先执行 q1，再执行 q2，组合为 \(q_2q_1\)，对应矩阵 \(R_2R_1\)。右边先作用。要用两个不同轴的例子检查次序，绕同一轴的旋转可能交换后仍一样，不能充分暴露错误。</p>
+<p>本题的“轴角”函数使用一个长度为 3 的<b>旋转向量</b> \(\mathbf r=\theta\mathbf u\)，方向是旋转轴，模长是弧度角；接口不返回“一个轴加一个角”的二元组。按 docstring，本题要求 \(\|\mathbf r\|\leq\pi\)。零向量表示无旋转，这时无需强行指定唯一轴。转角为 \(\pi\) 时，轴的正反两种表示都可能正确。</p>
+<details><summary>前置练习 5：q 和 -q 的相对旋转角是多少？（展开答案）</summary><p>对任意单位 q，有 \(|q\cdot(-q)|=1\)，相对旋转角为 \(2\arccos(1)=0\)。两者代表同一旋转。若直接比较四个分量，可能错误地把同一姿态判成不同。</p></details>
+<details><summary>前置练习 6：绕 Z 轴转 90 度的旋转向量是什么？（展开答案）</summary><p>答案为 <code>[0, 0, np.pi / 2]</code>，模长是 \(\pi/2\)。<code>[0, 0, 1]</code> 只转了 1 弧度；<code>[0, 0, 90]</code> 把角度单位用错且超出了本题模长约束。对应四元数的非零分量却使用 \(\pi/4\) 的半角。</p></details>
+<h3>11.6 十一个函数：实现前先写下边界情况</h3>
+<p>先阅读每个函数的 docstring，确定输入形状、输出形状和原题约束。下面提供推导入口与边界提醒，帮助你独立实现模板中的函数。推荐先做归一化与共轭，再做乘法和向量旋转，然后处理表示转换，最后完成插值与随机采样。每实现一个函数，先用你能手算的小例子检查，再运行对应测试。</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>函数</th><th>实现提示与必须考虑的边界</th></tr>
+<tr><td><code>quat_normalize</code></td><td>用四维模长归一化，返回形状 (4,)。全零四元数不能代表旋转。调试时应明确识别并处理这个输入，避免除零产生 NaN。</td></tr>
+<tr><td><code>quat_conjugate</code></td><td>实部不变，虚部整体反号。对单位四元数，共轭就是旋转的逆；非单位四元数求逆时还需除以模长的平方。检查输出是否意外修改了原输入。</td></tr>
+<tr><td><code>quat_multiply</code></td><td>拆成实部和三维向量：\(w=w_1w_2-\mathbf v_1\cdot\mathbf v_2\)，\(\mathbf v=w_1\mathbf v_2+w_2\mathbf v_1+\mathbf v_1\times\mathbf v_2\)。返回四个分量。叉积的参数顺序与原公式一致。</td></tr>
+<tr><td><code>quat_rotate</code></td><td>把待旋转向量嵌入纯虚四元数 (0, v)，按 \(q(0,\mathbf v)q^*\) 组合，再取三维虚部。也可推导等价的向量表达式。测试单位旋转、绕 Z 轴 90 度和向量模长保持。</td></tr>
+<tr><td><code>quat_relative_angle</code></td><td>使用绝对点积消除 q/-q 的歧义，并裁剪到 [0, 1] 再求反余弦。结果是弧度非负标量；同一旋转应得 0，半圈相差应得 \(\pi\)。</td></tr>
+<tr><td><code>quat_to_mat</code></td><td>由旋转三个单位基向量的结果组成矩阵的三列，或推导标准展开式。检查矩阵是 (3, 3)、转置乘自身为 I、行列式为 1，并与 quat_rotate 对同一向量的结果一致。</td></tr>
+<tr><td><code>mat_to_quat</code></td><td>接近半圈旋转时，需要分支计算。若先用 \(w=\frac12\sqrt{1+\mathrm{tr}(R)}\) 再将所有虚部都除以 w，接近180度时就会遇到 w 接近0的问题。迹为正可从 w 起算；否则按最大的对角元素选择 x/y/z 中稳定的分量起算，再恢复其余分量、归一化。用绕 X、Y、Z 各转 180 度的矩阵检查分支。</td></tr>
+<tr><td><code>quat_to_axis_angle</code></td><td>先按双重覆盖选 w 非负的表示，使角落在 [0, \(\pi\)]；求角可用 \(2\operatorname{atan2}(\|\mathbf v\|,w)\)。虚部近零时直接返回零旋转向量，否则用单位轴乘角度。输出必须是 (3,) 且模长不超过 \(\pi\)。</td></tr>
+<tr><td><code>axis_angle_to_quat</code></td><td>输入三维旋转向量，先取模长作为角，再取方向作为轴，代入半角公式。零或极小模长需要独立处理，避免除以零。本题输入限定模长不超过 \(\pi\)。</td></tr>
+<tr><td><code>interpolate_quat</code></td><td>按最短弧做 SLERP。点积为负先将第二个四元数整体取反，并同步将点积反号；点积接近 1 时改用线性插值后归一化，避免除以极小的正弦。其余情况将点积 d 裁剪到合法范围，设球面夹角 \(\alpha=\arccos(d)\)，插值系数为 \(\sin((1-s)\alpha)/\sin\alpha\) 与 \(\sin(s\alpha)/\sin\alpha\)。s 是 ratio，不是机器人平移。检查 s=0、s=1、同向和反号表示；s=1 的结果可与原 q2 整体反号，但仍表示相同终点姿态。</td></tr>
+<tr><td><code>uniform_random_quat</code></td><td>需要单位四维球面 \(S^3\) 上均匀分布，可抽取四个独立标准正态数，再用四维模长归一化；四维正态的方向具有旋转对称性。均匀抽三个欧拉角或归一化均匀立方体样本，得到的旋转分布通常并不均匀。</td></tr>
+</table></div></div>
+<p>插值的球面夹角 \(\alpha\) 与三维相对旋转角不是同一个量；对最短表示，两者相差一个倍数 2。接近同向时采用归一化线性插值，用于提高小夹角情况下的数值稳定性；其余情况仍使用 SLERP 公式。随机采样则要区分“每个结果是单位四元数”和“所有方向概率均匀”：前者只是合法性，后者才是此函数的考点。</p>
+<details><summary>前置练习 7：为什么绕 X 轴 180 度能暴露矩阵转换的错误？（展开答案）</summary><p>此时 \(R=\operatorname{diag}(1,-1,-1)\)，所以 \(1+\mathrm{tr}(R)=0\)，真实四元数可取 (0, 1, 0, 0)。若用实部 w 作分母会除以零，而虚部 x 的绝对值为 1，适合从 x 分支稳定计算。绕 Y、Z 的半圈同理，需要能选相应分支。</p></details>
+<h3>11.7 正向运动学：让每段连杆的坐标接起来</h3>
+<p>URDF 用文字描述连杆、关节、关节原点和旋转轴。模板已经提供读取函数；你的任务是利用读取函数给出的 <code>joint.trans</code>、<code>joint.rot</code>、<code>joint.axis</code> 和 <code>qpos</code> 算位姿。这里的 fk 只处理题目约定的顺序链：第 i 个关节连接第 i 和第 i+1 个连杆。真实机器人可以有树状分支，本题按上述顺序链逐级计算即可。</p>
+<p>令 \(T_i\) 表示第 i 个连杆到机器人基座的变换，根连杆 \(T_0=I_4\)。关节的固定安装变换为 \(O_i=[R_i^{\mathrm{origin}},t_i^{\mathrm{origin}};0,1]\)。若它是旋转关节，运动变换 \(M_i\) 由绕关节轴转角产生；若是固定关节，\(M_i=I_4\)。逐级计算 \(T_{i+1}=T_iO_iM_i\)。含义是：先在关节局部坐标中运动，再转换到父连杆，最后转换到基座。</p>
+<p>绕单位轴 \(\mathbf u\) 转角 \(\theta\) 的罗德里格斯公式为：</p>
+<div class="formula">\[R(\theta)=\cos\theta I+(1-\cos\theta)\mathbf u\mathbf u^T+\sin\theta[\mathbf u]_\times\]</div>
+<p>其中 \([\mathbf u]_\times=\begin{bmatrix}0&amp;-u_z&amp;u_y\\u_z&amp;0&amp;-u_x\\-u_y&amp;u_x&amp;0\end{bmatrix}\)。轴必须单位化，零轴要检查；\(\mathbf u\mathbf u^T\) 是外积，可用 <code>np.outer</code>。公式的叉乘矩阵符号与右手旋转一致，实现时按右手规则核对符号。</p>
+<p>写输出数组时，可以先创建 L 个单位齐次矩阵，再逐个覆盖连杆位姿；若从全零数组开始，则每次构造变换都要正确设置右下角的 1。最后检查根连杆始终为单位变换、每个结果底行均为 [0, 0, 0, 1]，并确认读到的角度数等于 qpos 长度。在全零关节角下，连杆长度和固定安装偏移仍然存在，它们正是机械臂在零姿态时展开的结构。</p>
+<p>为了避免两种索引混用，遍历所有关节时用 <code>joint_idx</code>，读取旋转角时用独立的 <code>qpos_idx</code>。固定关节也有安装平移和旋转，仍需累乘它的变换。固定关节不消耗关节角，所以只有遇到 <code>RevoluteJoint</code> 才读取并递增 <code>qpos_idx</code>。模板的 qpos 长度是旋转关节数，而不是全部关节数。</p>
+<pre><code># 这是算法流程，不是可直接粘贴运行的完整代码。
+# O_i、M_i 需按上文定义实际构造。
+T_0 = 单位 4x4 矩阵
+qpos_idx = 0
+对每个关节 joint_idx:
+    O_i = 该关节的固定安装变换
+    如果是旋转关节:
+        theta = qpos[qpos_idx]
+        M_i = 绕单位关节轴旋转 theta 的齐次矩阵
+        qpos_idx += 1
+    否则:
+        M_i = 单位 4x4 矩阵
+    T_(joint_idx+1) = T_joint_idx @ O_i @ M_i</code></pre>
+<details><summary>前置练习 8：转过 90 度后，固定工具沿局部 X 伸出 1 米，末端在哪？（展开答案）</summary><p>假设没有其他平移，第一段绕 Z 轴转 90 度，工具再沿这段连杆的局部 X 平移 1 米。累乘是 <code>T_base_link @ T_link_tool</code>，得到基座中 [0, 1, 0]。工具没有新角度，仍必须累乘固定变换。这个已知例子已放进 warmup.py；可先运行观察，再将同样的思路用到原机械臂。</p></details>
+<h3>11.8 逐项自测、可视化与排错</h3>
+<p>在 <code>Assignment1</code> 目录逐函数测试，可以让尚未实现的其他函数暂时不干扰当前学习。pytest 的 <code>-k</code> 根据测试名称筛选。部分后续函数依赖前面的实现，所以要按依赖逐步推进。最后再运行完整测试，原题的自测标准是 <b>12 passed</b>；它表示通过本题提供的示例检查。进一步理解实现，可结合边界输入与数学推导核对。</p>
+<pre><code>python -m pytest test_rotation.py -k quat_normalize -q
+python -m pytest test_rotation.py -k quat_conjugate -q
+python -m pytest test_rotation.py -k quat_multiply -q
+python -m pytest test_fk.py -q
+python -m pytest -q
+python robot_model.py</code></pre>
+<p>可视化中浅绿色网格为标准结果，棕色网格为你的结果；红、绿、蓝坐标轴分别代表X、Y、Z。示例用<code>robot_model.fk(q)</code>计算与标准结果相同关节配置下的位姿。图形默认在浏览器显示，未弹出时查看终端提示；数值正确性以测试为准。</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>症状</th><th>优先检查</th></tr>
+<tr><td>找不到 requirements 或 data/*.npz</td><td>工作目录是否进入完整模板 Assignment1；模型、数据目录是否完整，是否只下载了两个代码文件。</td></tr>
+<tr><td>NotImplementedError</td><td>当前测试调用的函数是否仍有学生 TODO；这是模板提示你继续实现函数。</td></tr>
+<tr><td>NaN、除零或形状不匹配</td><td>模长与单位轴、零旋转、180 度分支，以及数组是 (3,) 还是 (4,)；点积进入反三角函数前是否裁剪。</td></tr>
+<tr><td>FK 从某个连杆开始整体错误</td><td>测试会报告第一个不匹配连杆；从其关节起核对安装变换乘法次序、固定关节、qpos_idx 和角度单位。</td></tr>
+<tr><td>随机四元数偶发测试不稳定</td><td>先检查采样分布和单位模长，再复查统计测试；结合采样方法的数学依据判断结果，再分析测试的随机波动。</td></tr>
+</table></div></div>
+<p>完成后保留三样学习证据：通过测试的输出、机械臂可视化截图，以及你对“旋转表示如何接成坐标变换”的一段解释。若卡住，先用本节小例子缩小问题，再阅读原文件 docstring。最后才对照<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/tree/main/Homeworks/01-Robot-Kinematics/Handin" rel="noopener noreferrer" target="_blank">公开仓库作者的已完成实现</a>；它不是课程组官方标准答案。自学可按自己的进度进行，用这些记录检查掌握程度。能解释每步输入输出，比一次复制所有答案更有价值。</p>
+</section>
+<section id="apA"><h2 class="sec"><span class="no">附A</span>术语速查</h2><div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table class="term-table"><tr><th>术语</th><th>解释</th></tr><tr><td>具身智能（Embodied AI）</td><td>研究有身体或行动能力的智能体如何通过感知和与环境交互完成任务；可在真实或模拟环境中研究</td></tr><tr><td>VLA</td><td>Vision-Language-Action；利用视觉、语言等观察预测动作的一类模型，不规定唯一动作表示或架构</td></tr><tr><td>感知—动作循环</td><td>观察→决策→执行→再次观察，利用反馈调整后续动作</td></tr><tr><td>通用性</td><td>跨任务、跨物体或跨环境的适应能力；应明确评测范围</td></tr><tr><td>轨迹重放</td><td>按预先设计的轨迹执行；底层仍可有反馈控制</td></tr><tr><td>Scaling Law</td><td>特定数据、模型和训练条件下，规模与性能关系的经验规律</td></tr><tr><td>合成数据／Sim2Real</td><td>利用模拟等方法产生数据；将仿真中得到的能力迁移到现实，并需要验证差异</td></tr><tr><td>轨迹／帧</td><td>轨迹是一段任务序列；帧是某一时刻的观察，比较时先统一单位</td></tr><tr><td>单位四元数</td><td>模长为1的四元数可表示3D旋转；本作业使用wxyz，q与−q表示同一旋转</td></tr><tr><td>轴角向量</td><td>方向是旋转轴，长度是旋转角（弧度）；本作业使用长度不超过π的3维向量</td></tr><tr><td>FK／正向运动学</td><td>给定模型与关节角，计算连杆在基坐标系中的位姿</td></tr><tr><td>URDF</td><td>用XML描述机器人连杆、关节及它们的几何关系的格式</td></tr><tr><td>遥操作</td><td>人通过远程输入控制机器人，可用于采集操作示范</td></tr><tr><td>训练／推理</td><td>训练更新模型参数；推理使用模型产生结果。闭环执行不一定在线训练</td></tr></table></div></div></section>
+<section id="apB">
+<h2 class="sec"><span class="no">附B</span>课件 89 页完整索引</h2>
+<p><b>页码按PDF中的物理页序（1—89）计数</b>，不同于课件页角印刷的号码；例如PDF第60页印刷为72。索引用于回查资料；视频页提供静态画面与可识别文字。点击页码打开本地PDF，点击教程位置跳转到讲解。</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table class="page-index">
+<tr><th>页码</th><th>页面内容</th><th>在教程中的位置</th></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=1" rel="noopener noreferrer" target="_blank">p1</a></td><td>封面：课程名、教师、Lecture 1 - Overview</td><td><a href="#about">封面区</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=2" rel="noopener noreferrer" target="_blank">p2</a></td><td>About Me：王鹤（北大 CFCS 助理教授、Galbot 创始人&amp;CTO、智源具身智能中心主任、斯坦福博士 2021、清华本科 2014）</td><td><a href="#about">封面与来源介绍；完整履历见原课件p2</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=3" rel="noopener noreferrer" target="_blank">p3</a></td><td>AI 应用（DeepSeek、MidJourney）：「What do you want AI to do?」</td><td><a href="#s1">§1</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=4" rel="noopener noreferrer" target="_blank">p4</a></td><td>AI 最佳方向：We need AI to do physical labor works!</td><td><a href="#s1">§1</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=5" rel="noopener noreferrer" target="_blank">p5</a></td><td>过渡页：From Robotics to Embodied AI</td><td><a href="#s2">§2 开头（叙事线）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=6" rel="noopener noreferrer" target="_blank">p6</a></td><td>What is a Robot?（Baxter 机器人）</td><td><a href="#s2">§2</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=7" rel="noopener noreferrer" target="_blank">p7</a></td><td>What is a Robot?（图注致谢 Kuan Fang）</td><td><a href="#s2">§2（Baxter 图注）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=8" rel="noopener noreferrer" target="_blank">p8</a></td><td>机器人按移动方式分类（固定/轮式/腿式/无人机）</td><td><a href="#s2">§2</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=9" rel="noopener noreferrer" target="_blank">p9</a></td><td>What is Robotics? 机器人学定义</td><td><a href="#s2">§2</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=10" rel="noopener noreferrer" target="_blank">p10</a></td><td>机器人的应用（图集）</td><td><a href="#s2">§2</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=11" rel="noopener noreferrer" target="_blank">p11</a></td><td>汽车工厂中的经典专用机器人（标题页）</td><td><a href="#s3">§3</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=12" rel="noopener noreferrer" target="_blank">p12</a></td><td>预设计算轨迹+重放；两大局限；与人类智能不同</td><td><a href="#s3">§3</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=13" rel="noopener noreferrer" target="_blank">p13</a></td><td>机器人的应用（图集，工业）</td><td><a href="#s3">§3（应用图集说明）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=14" rel="noopener noreferrer" target="_blank">p14</a></td><td>机器人的应用（图集）</td><td><a href="#s3">§3（应用图集说明）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=15" rel="noopener noreferrer" target="_blank">p15</a></td><td>机器人的应用（图集）</td><td><a href="#s3">§3（应用图集说明）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=16" rel="noopener noreferrer" target="_blank">p16</a></td><td>机器人的应用（图集）</td><td><a href="#s3">§3（应用图集说明）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=17" rel="noopener noreferrer" target="_blank">p17</a></td><td>应用：自动驾驶汽车</td><td><a href="#s3">§3</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=18" rel="noopener noreferrer" target="_blank">p18</a></td><td>机器人的过去、现在与未来（工业→自动驾驶→通用人形）</td><td><a href="#s4">§4</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=19" rel="noopener noreferrer" target="_blank">p19</a></td><td>通用机器人：OpenAI+Figure、Tesla Optimus、Galbot G1（任务/环境双通用）</td><td><a href="#s4">§4</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=20" rel="noopener noreferrer" target="_blank">p20</a></td><td>Perception-Action Loop</td><td><a href="#s5">§5</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=21" rel="noopener noreferrer" target="_blank">p21</a></td><td>特征一：高自由度本体</td><td><a href="#s4">§4（特征一）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=22" rel="noopener noreferrer" target="_blank">p22</a></td><td>特征一：高自由度本体（续）</td><td><a href="#s4">§4（特征一）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=23" rel="noopener noreferrer" target="_blank">p23</a></td><td>轮式人形 Galbot G1：站起 2.4 米、弯腰捡地面物体</td><td><a href="#s4">§4（特征一）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=24" rel="noopener noreferrer" target="_blank">p24</a></td><td>特征二：数据驱动物理智能（Tesla Data Factory、电池分拣）</td><td><a href="#s4">§4（特征二）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=25" rel="noopener noreferrer" target="_blank">p25</a></td><td>Galbot G1（大图）</td><td><a href="#s4">§4（特征一配图）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=26" rel="noopener noreferrer" target="_blank">p26</a></td><td>通用机器人跨行业应用（8 宫格）+ 革命性意义</td><td><a href="#s4">§4</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=27" rel="noopener noreferrer" target="_blank">p27</a></td><td>应用案例：汽车工厂天窗玻璃装载</td><td><a href="#s4">§4（案例画廊）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=28" rel="noopener noreferrer" target="_blank">p28</a></td><td>应用案例：汽车工厂箱子转运</td><td><a href="#s4">§4（案例画廊）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=29" rel="noopener noreferrer" target="_blank">p29</a></td><td>应用案例：零售取货</td><td><a href="#s4">§4（案例画廊）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=30" rel="noopener noreferrer" target="_blank">p30</a></td><td>应用案例：零售补货上架</td><td><a href="#s4">§4（案例画廊）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=31" rel="noopener noreferrer" target="_blank">p31</a></td><td>应用案例：酒店前台接待</td><td><a href="#s4">§4（案例画廊）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=32" rel="noopener noreferrer" target="_blank">p32</a></td><td>大模型家族：非具身（LLM/VLM）vs 具身（FSD/VLA：RT-2、GraspVLA）</td><td><a href="#s6">§6</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=33" rel="noopener noreferrer" target="_blank">p33</a></td><td>计算机视觉擅长什么：互联网数据上的模式识别</td><td><a href="#s6">§6</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=34" rel="noopener noreferrer" target="_blank">p34</a></td><td>Vision-Language 基础模型</td><td><a href="#s6">§6</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=35" rel="noopener noreferrer" target="_blank">p35</a></td><td>计算机视觉不擅长什么：与环境交互完成任务（Embodied AI）</td><td><a href="#s6">§6</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=36" rel="noopener noreferrer" target="_blank">p36</a></td><td>具身大模型 RT-2：输入语言/视觉/本体信号，输出语言或动作</td><td><a href="#s6">§6</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=37" rel="noopener noreferrer" target="_blank">p37</a></td><td>数据饥饿：130K demo = 17 个月 × 16 人 × 13 机器人</td><td><a href="#s7">§7</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=38" rel="noopener noreferrer" target="_blank">p38</a></td><td>Open X-Embodiment真实操作数据集合；课件注明ICRA 2024最佳会议论文、1M+轨迹</td><td><a href="#s7">§7</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=39" rel="noopener noreferrer" target="_blank">p39</a></td><td>数据瓶颈（中文）：Tesla 40 人遥操、Stanford Aloha、需上亿条数据</td><td><a href="#s7">§7</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=40" rel="noopener noreferrer" target="_blank">p40</a></td><td>大规模合成数据</td><td><a href="#s7">§7</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=41" rel="noopener noreferrer" target="_blank">p41</a></td><td>GraspVLA（银河通用抓取大模型）</td><td><a href="#s6">§6</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=42" rel="noopener noreferrer" target="_blank">p42</a></td><td>仿真环境学习：标注免费、高效、可迁移真实世界</td><td><a href="#s7">§7</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=43" rel="noopener noreferrer" target="_blank">p43</a></td><td>在仿真还是现实中学？（辩证判断标准）</td><td><a href="#s7">§7</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=44" rel="noopener noreferrer" target="_blank">p44</a></td><td>标题页：Embodied AI</td><td><a href="#s8">§8 开头</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=45" rel="noopener noreferrer" target="_blank">p45</a></td><td>标题页：Classic AI</td><td><a href="#s8">§8 开头</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=46" rel="noopener noreferrer" target="_blank">p46</a></td><td>设问页：Problems?</td><td><a href="#s8">§8 开头</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=47" rel="noopener noreferrer" target="_blank">p47</a></td><td>Embodied Agents（具身智能体）</td><td><a href="#s8">§8</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=48" rel="noopener noreferrer" target="_blank">p48</a></td><td>Embodiment（具身性）</td><td><a href="#s8">§8</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=49" rel="noopener noreferrer" target="_blank">p49</a></td><td>Classical AI vs. Embodied AI 对比</td><td><a href="#s8">§8</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=50" rel="noopener noreferrer" target="_blank">p50</a></td><td>图灵《Computing Machinery and Intelligence》（1950）</td><td><a href="#s8">§8</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=51" rel="noopener noreferrer" target="_blank">p51</a></td><td>具身智能简史：Held &amp; Hein (1963) 小猫实验（被动猫 vs 主动猫）</td><td><a href="#s8">§8</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=52" rel="noopener noreferrer" target="_blank">p52</a></td><td>人类智能进化三钥匙：直立行走、使用工具、语言</td><td><a href="#s8">§8</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=53" rel="noopener noreferrer" target="_blank">p53</a></td><td>视觉运动协调（Visual Motor Coordination/Integration）</td><td><a href="#s8">§8</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=54" rel="noopener noreferrer" target="_blank">p54</a></td><td>视觉运动协调示例：眼手协调（Eye-Hand Coordination）</td><td><a href="#s8">§8</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=55" rel="noopener noreferrer" target="_blank">p55</a></td><td>人类如何学习：感知-动作循环（假设-行动-检验）</td><td><a href="#s5">§5</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=56" rel="noopener noreferrer" target="_blank">p56</a></td><td>Embodied AI and Embodied Vision：五能力（See/Talk/Listen/Act/Reason）</td><td><a href="#s8">§8</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=57" rel="noopener noreferrer" target="_blank">p57</a></td><td>过渡页：Course Logistics</td><td><a href="#s9">§9 开头</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=58" rel="noopener noreferrer" target="_blank">p58</a></td><td>课程目标：具身智能前沿课，奠定研究基础</td><td><a href="#s9">§9 开头</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=59" rel="noopener noreferrer" target="_blank">p59</a></td><td>授课信息（教师/助教/时间地点）</td><td><a href="#s9">§9.2（参照）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=60" rel="noopener noreferrer" target="_blank">p60</a></td><td>先修要求：深度学习、计算机视觉、大学力学；Python、PyTorch</td><td><a href="#s9">§9.2</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=61" rel="noopener noreferrer" target="_blank">p61</a></td><td>课程网站（pku-epic.github.io/Intro2EAI_2025）</td><td><a href="#s9">§9.2 + 附录 C</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=62" rel="noopener noreferrer" target="_blank">p62</a></td><td>参考资源：花书、CS231N、CS285、CSE291（无指定教材）</td><td><a href="#s9">§9.2 + 附录 C</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=63" rel="noopener noreferrer" target="_blank">p63</a></td><td>学习方法：Just google it! Search in wikipedia!</td><td><a href="#s9">§9.2</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=64" rel="noopener noreferrer" target="_blank">p64</a></td><td>成绩构成：3 作业 40% + 真实实验 20% + 参与加分 5%</td><td><a href="#s9">§9（初版课件与官网考核差异）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=65" rel="noopener noreferrer" target="_blank">p65</a></td><td>作业政策：2 周完成，迟交扣分，超 2 天零分</td><td><a href="#s9">§9.2</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=66" rel="noopener noreferrer" target="_blank">p66</a></td><td>微信群通知</td><td><a href="#s9">§9.2（自学可忽略）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=67" rel="noopener noreferrer" target="_blank">p67</a></td><td>过渡页：Course Organization</td><td><a href="#s9">§9.1 开头</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=68" rel="noopener noreferrer" target="_blank">p68</a></td><td>传统机器人课大纲缺什么：Intelligence! Intelligence! Intelligence!</td><td><a href="#s9">§9.1</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=69" rel="noopener noreferrer" target="_blank">p69</a></td><td>板块一：Intro to Robotics（见官网 schedule）</td><td><a href="#s9">§9.1</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=70" rel="noopener noreferrer" target="_blank">p70</a></td><td>主题：刚体几何建模机器人</td><td><a href="#s9">§9.1（板块一）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=71" rel="noopener noreferrer" target="_blank">p71</a></td><td>主题：机器人正逆运动学</td><td><a href="#s9">§9.1（板块一）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=72" rel="noopener noreferrer" target="_blank">p72</a></td><td>主题：经典规划与控制</td><td><a href="#s9">§9.1（板块一）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=73" rel="noopener noreferrer" target="_blank">p73</a></td><td>板块二：Robot 3D Vision</td><td><a href="#s9">§9.1</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=74" rel="noopener noreferrer" target="_blank">p74</a></td><td>主题：深度与点云感知</td><td><a href="#s9">§9.1（板块二）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=75" rel="noopener noreferrer" target="_blank">p75</a></td><td>主题：物体位姿估计与可泛化追踪</td><td><a href="#s9">§9.1（板块二）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=76" rel="noopener noreferrer" target="_blank">p76</a></td><td>成果展示：Mixed Scene（混合场景）</td><td><a href="#s9">§9.1（板块二）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=77" rel="noopener noreferrer" target="_blank">p77</a></td><td>成果展示：Transparent Scene（透明物体场景）</td><td><a href="#s9">§9.1（板块二）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=78" rel="noopener noreferrer" target="_blank">p78</a></td><td>成果展示：Galbot Mobile Grasping（移动抓取）</td><td><a href="#s9">§9.1（板块二）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=79" rel="noopener noreferrer" target="_blank">p79</a></td><td>成果展示：Dexterous Grasp Diffusion Model（灵巧抓取扩散模型）</td><td><a href="#s9">§9.1（板块二）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=80" rel="noopener noreferrer" target="_blank">p80</a></td><td>视频演示页（4 段灵巧抓取演示视频）</td><td><a href="#s9">§9.1（板块二成果）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=81" rel="noopener noreferrer" target="_blank">p81</a></td><td>板块三：Policy Learning</td><td><a href="#s9">§9.1</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=82" rel="noopener noreferrer" target="_blank">p82</a></td><td>主题：无模型强化学习（on-policy / off-policy）</td><td><a href="#s9">§9.1（板块三）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=83" rel="noopener noreferrer" target="_blank">p83</a></td><td>主题：模仿学习</td><td><a href="#s9">§9.1（板块三）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=84" rel="noopener noreferrer" target="_blank">p84</a></td><td>板块四：Robotic Tasks</td><td><a href="#s9">§9.1</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=85" rel="noopener noreferrer" target="_blank">p85</a></td><td>主题：物体抓取、关节物体操作（DexGraspNet）</td><td><a href="#s9">§9.1（板块四）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=86" rel="noopener noreferrer" target="_blank">p86</a></td><td>主题：导航与移动操作</td><td><a href="#s9">§9.1（板块四）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=87" rel="noopener noreferrer" target="_blank">p87</a></td><td>专题：QuadWBG</td><td><a href="#s9">§9.1（板块四后）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=88" rel="noopener noreferrer" target="_blank">p88</a></td><td>专题课表：多模态大模型 I（CLIP、GPT-4v/4o）、多模态大模型 II（模块化通用操作系统与端到端 VLA）</td><td><a href="#s9">§9.1（板块四后）</a></td></tr>
+<tr><td class="pg"><a href="../sources/lecture01.pdf#page=89" rel="noopener noreferrer" target="_blank">p89</a></td><td>结尾页：下集预告 Lecture 2 - The Basics of Robotics</td><td><a href="#s9">页脚（下一章预告）</a></td></tr>
+</table></div></div>
+<p style="font-size:13.5px;color:#7a8290">含图像文字的页面可在<a href="课件中文译解.html">逐页中文翻译</a>中阅读；视频页面保留静态画面及可识别文字，理解动作过程时，还需观看原视频。</p>
+</section>
+<section id="apC"><h2 class="sec"><span class="no">附C</span>参考资源与本地材料</h2><p>资料时间基线：2026-10-04。网络页面可能继续变化；阅读时注意页面发布时间与版本。</p><ul><li><a href="https://pku-epic.github.io/Intro2EAI_2025/" rel="noopener noreferrer" target="_blank">课程官网（现存先修、考核）</a></li><li><a href="https://pku-epic.github.io/Intro2EAI_2025/assignments/01_assignments" rel="noopener noreferrer" target="_blank">课程作业1发布页</a></li><li><a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/main/Notes/01-EAI-Overview.md" rel="noopener noreferrer" target="_blank">Notes 01提纲（观点与分类）</a></li><li><a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/main/Slides/Lecture01_02_17.pdf" rel="noopener noreferrer" target="_blank">第一讲原课件（Git LFS）</a></li><li><a href="https://pku-epic.github.io/Intro2EAI_2025/static_files/assignments/Assignment1.pdf" rel="noopener noreferrer" target="_blank">官方作业1 PDF</a></li><li><a href="https://pku-epic.github.io/Intro2EAI_2025/static_files/assignments/Assignment1.zip" rel="noopener noreferrer" target="_blank">官方完整作业1 ZIP</a></li><li><a href="https://robotics-transformer2.github.io/" rel="noopener noreferrer" target="_blank">RT-2项目</a></li><li><a href="https://arxiv.org/abs/2505.03233" rel="noopener noreferrer" target="_blank">GraspVLA论文（2025-05-06首次提交）</a></li><li><a href="https://pku-epic.github.io/GraspVLA-web/" rel="noopener noreferrer" target="_blank">GraspVLA项目（六个泛化方面、十亿帧数据）</a></li><li><a href="https://www.figure.ai/news/helix" rel="noopener noreferrer" target="_blank">Helix（2025-02-20，多机器人演示）</a></li><li><a href="https://www.figure.ai/news/helix-02" rel="noopener noreferrer" target="_blank">Helix 02（2026-01-27，全身控制）</a></li><li><a href="https://www.universal-robots.com/products/physical-ai/" rel="noopener noreferrer" target="_blank">工业机器人底层反馈与AI层例子</a></li><li><a href="https://www.gov.cn/yaowen/liebiao/202503/content_7010168.htm" rel="noopener noreferrer" target="_blank">历史背景：2025年政府工作报告</a></li><li><a href="https://www.stats.gov.cn/sj/zxfb/202602/t20260228_1962662.html" rel="noopener noreferrer" target="_blank">历史背景：国家统计局2025年统计公报（表3）</a></li><li><a href="https://www.gnu.org/licenses/gpl-faq.en.html" rel="noopener noreferrer" target="_blank">GNU许可FAQ</a></li><li><a href="https://www.gov.cn/yaowen/liebiao/202603/content_7062625.htm" rel="noopener noreferrer" target="_blank">2026年政府工作报告</a></li><li><a href="https://www.miit.gov.cn/zwgk/zcwj/wjfb/tz/art/2026/art_f291ccd3da4c47ce95741de63cc088e6.html" rel="noopener noreferrer" target="_blank">2026年度人形机器人与具身智能实景实训专项行动</a></li><li><a href="https://www.stats.gov.cn/sj/zxfb/202609/t20260915_1965308.html" rel="noopener noreferrer" target="_blank">国家统计局2026年1—8月工业机器人产量</a></li><li><a href="https://www.figure.ai/news/helix-2-5-zero-shot-30-home-generalization" rel="noopener noreferrer" target="_blank">Helix 2.5（2026-09-17）</a></li></ul><h3>本地学习材料</h3><ul><li><a href="../sources/lecture01.pdf">89页完整原课件</a>与<a href="课件中文译解.html">逐页中文翻译</a>。</li><li><a href="homework01/Assignment1.pdf">作业1原题</a>、<a href="homework01/Assignment1.zip">官方原包</a>与本地学生模板。</li><li><a download="" href="homework01/warmup.py">作业前置NumPy示例</a>。</li><li>及<a href="../LICENSE.source">源许可证</a>。</li></ul><h3>原课件p62推荐的补充资源</h3><p>《Deep Learning》（Goodfellow等，2016）、Stanford CS231N、Berkeley CS285、UCSD CSE291。它们适合按学习中遇到的问题选读。</p></section>
+</main>
+</div>
+<aside class="recent" id="current-research"><h3>2026年10月技术与政策动态 · 从新环境评估理解具身智能</h3><p>2026年9月Helix 2.5报告在30个未见家庭中测试三类全身行为。区分任务学习与环境泛化，再结合2026年的产业政策和已公开统计看应用条件。</p><p class="source-note">资料截至2026-10-04 · <a href="../技术动态_20261004.html#helix25">一手来源、发布日期与适用范围</a></p></aside><footer><nav aria-label="章节导航" class="book-nav"><a href="../index.html">教程目录</a><a href="../ch02/index.html">下一章：刚体变换 →</a></nav><p>资料依据北京大学2025年春季《具身智能导论》课程。原课件、课堂笔记及引用图的作者和来源见篇首与图注；许可证原件随教程保留。正文、图片、公式与本地课件可离线阅读，Python练习需要相应依赖。</p></footer>
+<style>.dialog-controls button{flex-shrink:0;white-space:nowrap;}.dialog-original{display:inline-block;margin-top:10px;}</style><dialog aria-labelledby="image-title" id="image-dialog"><div class="dialog-controls"><span id="image-title">课件图片</span><button id="close-image" type="button">关闭</button></div><img alt="放大的课件图片" id="zoomed-image"/><a class="dialog-original" href="#" id="original-image" rel="noopener" target="_blank">打开原图（可在浏览器中缩放）</a></dialog>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+ const dialog=document.getElementById('image-dialog'), view=document.getElementById('zoomed-image');
+ document.querySelectorAll('.image-zoom').forEach(link=>link.addEventListener('click',event=>{
+   if(!dialog.showModal)return;
+   event.preventDefault();const image=link.querySelector('img');view.src=image.src;view.alt=image.alt;
+   document.getElementById('image-title').textContent=image.alt;document.getElementById('original-image').href=image.src;dialog.showModal();
+ }));
+ document.getElementById('close-image').addEventListener('click',()=>dialog.close());
+ dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
+});
+</script><script defer="" src="../reader.js"></script></body>
+</html>

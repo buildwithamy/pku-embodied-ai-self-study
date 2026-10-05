@@ -1,0 +1,1678 @@
+[
+  {
+    "lecture": 8,
+    "page": 1,
+    "title": "具身智能导论",
+    "translated_title": "具身智能导论",
+    "translation": [
+      "第8讲——策略 I",
+      "李祎教授",
+      "具身感知与交互实验室｜2025年春季"
+    ],
+    "translation_html": "<p>第8讲——策略 I</p><p>李祎教授</p><p>具身感知与交互实验室｜2025年春季</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 2,
+    "title": "课程安排：期中考试",
+    "translated_title": "课程安排：期中考试",
+    "translation": [
+      "期中考试（占总成绩40%）。",
+      "4月21日15:10—17:00，课堂进行。",
+      "前两节课，共110分钟。",
+      "第三节课用于授课。",
+      "一张A4纸，可双面书写的辅助资料。",
+      "范围：第1讲至第9讲（4月14日）。"
+    ],
+    "translation_html": "<ul><li>期中考试（占总成绩40%）。<ul><li>4月21日15:10—17:00，课堂进行。</li><li>前两节课，共110分钟。</li><li>第三节课用于授课。</li></ul></li><li>一张A4纸，可双面书写的辅助资料。</li><li>范围：第1讲至第9讲（4月14日）。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 3,
+    "title": "课程安排：期中考试",
+    "translated_title": "课程安排：期中考试",
+    "translation": [
+      "题型：",
+      "多项选择题。",
+      "判断题。",
+      "简答题。",
+      "简要陈述为什么和怎样。",
+      "部分题目可能需要数学推导。"
+    ],
+    "translation_html": "<ul><li>题型：<ul><li>多项选择题。</li><li>判断题。</li><li>简答题。<ul><li>简要陈述为什么和怎样。</li><li>部分题目可能需要数学推导。</li></ul></li></ul></li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 4,
+    "title": "课程安排：作业2",
+    "translated_title": "课程安排：作业2",
+    "translation": [
+      "作业2（15%）：4月11日发布，4月26日（周六）23:59截止。（仍有两个宽限日，分别扣10%和20%分数。）",
+      "这份作业要求在模拟器中抓取一个已知物体。需要利用点云估计物体位姿，以将物体系中的抓取位姿变换到世界系。"
+    ],
+    "translation_html": "<ul><li>作业2（15%）：4月11日发布，4月26日（周六）23:59截止。（仍有两个宽限日，分别扣10%和20%分数。）</li><li>这份作业要求在模拟器中抓取一个已知物体。需要利用点云估计物体位姿，以将物体系中的抓取位姿变换到世界系。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 5,
+    "title": "课程安排：作业2",
+    "translated_title": "课程安排：作业2",
+    "translation": [
+      "作业2和3包含真实世界实验（各占10%）。需要组成不超过4人的小组，共同完成真实世界实验。具体安排稍后公布。（会晚于作业2截止日期。）"
+    ],
+    "translation_html": "<p>作业2和3包含真实世界实验（各占10%）。需要组成不超过4人的小组，共同完成真实世界实验。具体安排稍后公布。（会晚于作业2截止日期。）</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 6,
+    "title": "条件抓取生成模型",
+    "translated_title": "条件抓取生成模型",
+    "translation": [],
+    "translation_html": "",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 7,
+    "title": "数据：DexGraspNet 2.0",
+    "translated_title": "数据：DexGraspNet 2.0",
+    "translation": [
+      "DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取",
+      "我们提出DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取。",
+      "投稿中。"
+    ],
+    "translation_html": "<p>DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取</p><p>我们提出DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取。</p><p>投稿中。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 8,
+    "title": "基于扩散的灵巧手位姿生成",
+    "translated_title": "基于扩散的灵巧手位姿生成",
+    "translation": [
+      "推理",
+      "种子点提议：点云P（N×3）→ ResUNet14编码器 / 解码器 → 局部特征N×C → 可抓取性多层感知机 → 可抓取性GS（N×1）与物体性O（N×2）；可抓取性前1%、最远点采样；种子特征f_s（M×C）。",
+      "抓取位姿生成：条件生成；扩散；g_E¹ → v_θ → g_E⁰；GS_E：12维，R：3×3，奇异值分解SVD；关节多层感知机 → θ：16维 → 抓取位姿g_r。",
+      "训练",
+      "真值可抓取性GS^gt、物体性O^gt、抓取g(T,R,θ)^gt；点云P（N×3）→ ResUNet14编码器 / 解码器 → 可抓取性多层感知机；对应点P_correspond；扩散的时间t、g_Eᵗ、g_E⁰及预测v_θ和真值v_gt；关节多层感知机。",
+      "总损失：$L=\\lambda_oL_o+\\lambda_gL_g+\\lambda_dL_d+\\lambda_\\theta L_\\theta$。"
+    ],
+    "translation_html": "<h3>推理</h3><p>种子点提议：点云P（N×3）→ ResUNet14编码器 / 解码器 → 局部特征N×C → 可抓取性多层感知机 → 可抓取性GS（N×1）与物体性O（N×2）；可抓取性前1%、最远点采样；种子特征f_s（M×C）。</p><p>抓取位姿生成：条件生成；扩散；g_E¹ → v_θ → g_E⁰；GS_E：12维，R：3×3，奇异值分解SVD；关节多层感知机 → θ：16维 → 抓取位姿g_r。</p><h3>训练</h3><p>真值可抓取性GS^gt、物体性O^gt、抓取g(T,R,θ)^gt；点云P（N×3）→ ResUNet14编码器 / 解码器 → 可抓取性多层感知机；对应点P_correspond；扩散的时间t、g_Eᵗ、g_E⁰及预测v_θ和真值v_gt；关节多层感知机。</p><p>总损失：$L=\\lambda_oL_o+\\lambda_gL_g+\\lambda_dL_d+\\lambda_\\theta L_\\theta$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 9,
+    "title": "方法",
+    "translated_title": "方法",
+    "translation": [
+      "阶段1：在哪里抓",
+      "使用稀疏卷积获得局部特征。",
+      "预测可抓取性与物体性分数。",
+      "物体性：是否为物体上的点。",
+      "可抓取性：是否可能成为种子点。",
+      "由邻近真值种子点累积得到。",
+      "推理",
+      "种子点提议：点云P（N×3）→ ResUNet14编码器 / 解码器 → 局部特征N×C → 可抓取性多层感知机 → 可抓取性GS（N×1）与物体性O（N×2）；可抓取性前1%、最远点采样；种子特征f_s（M×C）。",
+      "抓取位姿生成：条件生成；扩散；g_E¹ → v_θ → g_E⁰；GS_E：12维，R：3×3，奇异值分解SVD；关节多层感知机 → θ：16维 → 抓取位姿g_r。",
+      "训练",
+      "真值可抓取性GS^gt、物体性O^gt、抓取g(T,R,θ)^gt；点云P（N×3）→ ResUNet14编码器 / 解码器 → 可抓取性多层感知机；对应点P_correspond；扩散的时间t、g_Eᵗ、g_E⁰及预测v_θ和真值v_gt；关节多层感知机。",
+      "总损失：$L=\\lambda_oL_o+\\lambda_gL_g+\\lambda_dL_d+\\lambda_\\theta L_\\theta$。"
+    ],
+    "translation_html": "<h3>阶段1：在哪里抓</h3><ul><li>使用稀疏卷积获得局部特征。</li><li>预测可抓取性与物体性分数。</li><li>物体性：是否为物体上的点。</li><li>可抓取性：是否可能成为种子点。<ul><li>由邻近真值种子点累积得到。</li></ul></li></ul><h3>推理</h3><p>种子点提议：点云P（N×3）→ ResUNet14编码器 / 解码器 → 局部特征N×C → 可抓取性多层感知机 → 可抓取性GS（N×1）与物体性O（N×2）；可抓取性前1%、最远点采样；种子特征f_s（M×C）。</p><p>抓取位姿生成：条件生成；扩散；g_E¹ → v_θ → g_E⁰；GS_E：12维，R：3×3，奇异值分解SVD；关节多层感知机 → θ：16维 → 抓取位姿g_r。</p><h3>训练</h3><p>真值可抓取性GS^gt、物体性O^gt、抓取g(T,R,θ)^gt；点云P（N×3）→ ResUNet14编码器 / 解码器 → 可抓取性多层感知机；对应点P_correspond；扩散的时间t、g_Eᵗ、g_E⁰及预测v_θ和真值v_gt；关节多层感知机。</p><p>总损失：$L=\\lambda_oL_o+\\lambda_gL_g+\\lambda_dL_d+\\lambda_\\theta L_\\theta$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 10,
+    "title": "方法",
+    "translated_title": "方法",
+    "translation": [
+      "阶段2：怎样抓",
+      "仅使用阶段1的局部特征。",
+      "预测残差位置T、旋转R与手指关节角θ。",
+      "为处理多峰抓取位姿分布，使用扩散模型生成T和R。",
+      "随后直接预测θ。",
+      "推理",
+      "种子点提议：点云P（N×3）→ ResUNet14编码器 / 解码器 → 局部特征N×C → 可抓取性多层感知机 → 可抓取性GS（N×1）与物体性O（N×2）；可抓取性前1%、最远点采样；种子特征f_s（M×C）。",
+      "抓取位姿生成：条件生成；扩散；g_E¹ → v_θ → g_E⁰；GS_E：12维，R：3×3，奇异值分解SVD；关节多层感知机 → θ：16维 → 抓取位姿g_r。",
+      "训练",
+      "真值可抓取性GS^gt、物体性O^gt、抓取g(T,R,θ)^gt；点云P（N×3）→ ResUNet14编码器 / 解码器 → 可抓取性多层感知机；对应点P_correspond；扩散的时间t、g_Eᵗ、g_E⁰及预测v_θ和真值v_gt；关节多层感知机。",
+      "总损失：$L=\\lambda_oL_o+\\lambda_gL_g+\\lambda_dL_d+\\lambda_\\theta L_\\theta$。"
+    ],
+    "translation_html": "<h3>阶段2：怎样抓</h3><ul><li>仅使用阶段1的局部特征。</li><li>预测残差位置T、旋转R与手指关节角θ。</li><li>为处理多峰抓取位姿分布，使用扩散模型生成T和R。</li><li>随后直接预测θ。</li></ul><h3>推理</h3><p>种子点提议：点云P（N×3）→ ResUNet14编码器 / 解码器 → 局部特征N×C → 可抓取性多层感知机 → 可抓取性GS（N×1）与物体性O（N×2）；可抓取性前1%、最远点采样；种子特征f_s（M×C）。</p><p>抓取位姿生成：条件生成；扩散；g_E¹ → v_θ → g_E⁰；GS_E：12维，R：3×3，奇异值分解SVD；关节多层感知机 → θ：16维 → 抓取位姿g_r。</p><h3>训练</h3><p>真值可抓取性GS^gt、物体性O^gt、抓取g(T,R,θ)^gt；点云P（N×3）→ ResUNet14编码器 / 解码器 → 可抓取性多层感知机；对应点P_correspond；扩散的时间t、g_Eᵗ、g_E⁰及预测v_θ和真值v_gt；关节多层感知机。</p><p>总损失：$L=\\lambda_oL_o+\\lambda_gL_g+\\lambda_dL_d+\\lambda_\\theta L_\\theta$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 11,
+    "title": "灵巧抓取位姿扩散模型",
+    "translated_title": "灵巧抓取位姿扩散模型",
+    "translation": [
+      "DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取",
+      "我们提出DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取。"
+    ],
+    "translation_html": "<p>DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取</p><p>我们提出DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 12,
+    "title": "真实实验",
+    "translated_title": "真实实验",
+    "translation": [
+      "DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取",
+      "我们提出DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取。"
+    ],
+    "translation_html": "<p>DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取</p><p>我们提出DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 13,
+    "title": "实验",
+    "translated_title": "实验",
+    "translation": [
+      "在DexGraspNet 2.0基准达到最先进水平。",
+      "组别",
+      "方法",
+      "GraspNet密集",
+      "GraspNet随机",
+      "GraspNet疏松",
+      "ShapeNet密集",
+      "ShapeNet随机",
+      "ShapeNet疏松",
+      "基线",
+      "HGC-Net [8]",
+      "46.0",
+      "37.8",
+      "26.7",
+      "46.4",
+      "44.8",
+      "30.4",
+      "基线",
+      "GraspTTA† [11]",
+      "62.5",
+      "54.1",
+      "42.8",
+      "56.6",
+      "57.8",
+      "46.4",
+      "基线",
+      "ISAGrasp† [5]",
+      "63.4",
+      "60.7",
+      "51.4",
+      "64.0",
+      "56.3",
+      "52.7",
+      "消融",
+      "局部特征",
+      "16.8",
+      "10.9",
+      "4.8",
+      "21.3",
+      "17.6",
+      "10.9",
+      "消融",
+      "分解模型",
+      "84.2",
+      "80.7",
+      "71.3",
+      "74.9",
+      "72.5",
+      "66.4",
+      "消融",
+      "随机场景",
+      "90.0",
+      "84.1",
+      "68.2",
+      "78.9",
+      "78.8",
+      "71.3",
+      "本文",
+      "本文方法",
+      "90.6",
+      "83.7",
+      "73.2",
+      "81.0",
+      "85.4",
+      "74.2",
+      "表1：灵巧抓取的基线与消融研究。†表示修改过的基线。消融研究围绕表格下半部分的三个方面进行。每个密集场景含8—11个物体；每个随机场景含1—10个物体，通过从密集场景删除物体获得；每个疏松场景含1—2个物体。"
+    ],
+    "translation_html": "<ul><li>在DexGraspNet 2.0基准达到最先进水平。</li></ul><table><thead><tr><th>组别</th><th>方法</th><th>GraspNet密集</th><th>GraspNet随机</th><th>GraspNet疏松</th><th>ShapeNet密集</th><th>ShapeNet随机</th><th>ShapeNet疏松</th></tr></thead><tbody><tr><td>基线</td><td>HGC-Net [8]</td><td>46.0</td><td>37.8</td><td>26.7</td><td>46.4</td><td>44.8</td><td>30.4</td></tr><tr><td>基线</td><td>GraspTTA† [11]</td><td>62.5</td><td>54.1</td><td>42.8</td><td>56.6</td><td>57.8</td><td>46.4</td></tr><tr><td>基线</td><td>ISAGrasp† [5]</td><td>63.4</td><td>60.7</td><td>51.4</td><td>64.0</td><td>56.3</td><td>52.7</td></tr><tr><td>消融</td><td>局部特征</td><td>16.8</td><td>10.9</td><td>4.8</td><td>21.3</td><td>17.6</td><td>10.9</td></tr><tr><td>消融</td><td>分解模型</td><td>84.2</td><td>80.7</td><td>71.3</td><td>74.9</td><td>72.5</td><td>66.4</td></tr><tr><td>消融</td><td>随机场景</td><td>90.0</td><td>84.1</td><td>68.2</td><td>78.9</td><td>78.8</td><td>71.3</td></tr><tr><td>本文</td><td>本文方法</td><td>90.6</td><td>83.7</td><td>73.2</td><td>81.0</td><td>85.4</td><td>74.2</td></tr></tbody></table><p>表1：灵巧抓取的基线与消融研究。†表示修改过的基线。消融研究围绕表格下半部分的三个方面进行。每个密集场景含8—11个物体；每个随机场景含1—10个物体，通过从密集场景删除物体获得；每个疏松场景含1—2个物体。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 14,
+    "title": "抓取数据的规模规律",
+    "translated_title": "抓取数据的规模规律",
+    "translation": [
+      "探索扩大抓取位姿数量和场景数量的影响。",
+      "使用更少位姿/场景时，性能显著下降。",
+      "使用的总场景比例：成功率（%）",
+      "比例",
+      "本文方法",
+      "ISAGrasp＋局部特征",
+      "1/128",
+      "52.8",
+      "41.1",
+      "1/64",
+      "68.1",
+      "52.7",
+      "1/32",
+      "76.8",
+      "60.0",
+      "1/16",
+      "79.9",
+      "63.5",
+      "1/8",
+      "81.4",
+      "63.6",
+      "1/4",
+      "83.5",
+      "65.3",
+      "1/2",
+      "84.8",
+      "65.4",
+      "1",
+      "85.8",
+      "66.1",
+      "使用的总抓取比例：成功率（%）",
+      "比例",
+      "本文方法",
+      "ISAGrasp＋局部特征",
+      "1/10000",
+      "58.1",
+      "56.5",
+      "1/1000",
+      "74.5",
+      "61.3",
+      "1/100",
+      "83.5",
+      "64.1",
+      "1/10",
+      "84.6",
+      "65.5",
+      "1",
+      "85.8",
+      "66.1"
+    ],
+    "translation_html": "<ul><li>探索扩大抓取位姿数量和场景数量的影响。</li><li>使用更少位姿/场景时，性能显著下降。</li></ul><h3>使用的总场景比例：成功率（%）</h3><table><thead><tr><th>比例</th><th>本文方法</th><th>ISAGrasp＋局部特征</th></tr></thead><tbody><tr><td>1/128</td><td>52.8</td><td>41.1</td></tr><tr><td>1/64</td><td>68.1</td><td>52.7</td></tr><tr><td>1/32</td><td>76.8</td><td>60.0</td></tr><tr><td>1/16</td><td>79.9</td><td>63.5</td></tr><tr><td>1/8</td><td>81.4</td><td>63.6</td></tr><tr><td>1/4</td><td>83.5</td><td>65.3</td></tr><tr><td>1/2</td><td>84.8</td><td>65.4</td></tr><tr><td>1</td><td>85.8</td><td>66.1</td></tr></tbody></table><h3>使用的总抓取比例：成功率（%）</h3><table><thead><tr><th>比例</th><th>本文方法</th><th>ISAGrasp＋局部特征</th></tr></thead><tbody><tr><td>1/10000</td><td>58.1</td><td>56.5</td></tr><tr><td>1/1000</td><td>74.5</td><td>61.3</td></tr><tr><td>1/100</td><td>83.5</td><td>64.1</td></tr><tr><td>1/10</td><td>84.6</td><td>65.5</td></tr><tr><td>1</td><td>85.8</td><td>66.1</td></tr></tbody></table>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 15,
+    "title": "真实实验",
+    "translated_title": "真实实验",
+    "translation": [
+      "与夹爪比较",
+      "灵巧手有更强的包裹能力。",
+      "末端执行器",
+      "普通",
+      "大型",
+      "平行夹爪",
+      "92.4",
+      "0.0",
+      "灵巧手",
+      "81.5",
+      "100.0"
+    ],
+    "translation_html": "<h3>与夹爪比较</h3><p>灵巧手有更强的包裹能力。</p><table><thead><tr><th>末端执行器</th><th>普通</th><th>大型</th></tr></thead><tbody><tr><td>平行夹爪</td><td>92.4</td><td>0.0</td></tr><tr><td>灵巧手</td><td>81.5</td><td>100.0</td></tr></tbody></table>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 16,
+    "title": "小结",
+    "translated_title": "小结",
+    "translation": [
+      "主要贡献",
+      "杂乱场景灵巧抓取的大规模基准：7500个合成训练场景与670个测试场景。",
+      "提出端到端生成式抓取预测管线。",
+      "通过扩散模型生成手腕6D位姿。",
+      "在手腕位姿条件下回归手关节姿态。",
+      "局限",
+      "限于力量型/包裹式抓取。",
+      "数据仅覆盖力闭合情况。"
+    ],
+    "translation_html": "<h3>主要贡献</h3><ul><li>杂乱场景灵巧抓取的大规模基准：7500个合成训练场景与670个测试场景。</li><li>提出端到端生成式抓取预测管线。<ul><li>通过扩散模型生成手腕6D位姿。</li><li>在手腕位姿条件下回归手关节姿态。</li></ul></li></ul><h3>局限</h3><ul><li>限于力量型/包裹式抓取。</li><li>数据仅覆盖力闭合情况。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 17,
+    "title": "深度感知问题导致透明物体抓取失败",
+    "translated_title": "深度感知问题导致透明物体抓取失败",
+    "translation": [
+      "RGB彩色图｜深度｜点云｜镜面反射｜透明。"
+    ],
+    "translation_html": "<p>RGB彩色图｜深度｜点云｜镜面反射｜透明。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 18,
+    "title": "演示：机器人抓取",
+    "translated_title": "演示：机器人抓取",
+    "translation": [
+      "仅GraspNet-baseline。"
+    ],
+    "translation_html": "<p>仅GraspNet-baseline。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 19,
+    "title": "ASGrasp：利用RGB-D主动立体相机进行可泛化透明物体重建与6自由度抓取检测",
+    "translated_title": "ASGrasp：利用RGB-D主动立体相机进行可泛化透明物体重建与6自由度抓取检测",
+    "translation": [
+      "Jun Shi¹、Yong A¹、Yixiang Jin¹、Dingzhe Li¹、Haoyu Niu¹、Zhezhu Jin¹、He Wang†²˒³˒⁴",
+      "¹ 三星中国研究院，北京（SRC-B）",
+      "² 北京大学计算机学院前沿计算研究中心（CFCS）｜³ Galbot",
+      "⁴ 北京智源人工智能研究院（BAAI）",
+      "†：通讯作者。"
+    ],
+    "translation_html": "<p>Jun Shi¹、Yong A¹、Yixiang Jin¹、Dingzhe Li¹、Haoyu Niu¹、Zhezhu Jin¹、He Wang†²˒³˒⁴</p><p>¹ 三星中国研究院，北京（SRC-B）</p><p>² 北京大学计算机学院前沿计算研究中心（CFCS）｜³ Galbot</p><p>⁴ 北京智源人工智能研究院（BAAI）</p><p>†：通讯作者。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 20,
+    "title": "",
+    "translated_title": "",
+    "translation": [],
+    "translation_html": "",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 21,
+    "title": "DREDS：域随机化",
+    "translated_title": "DREDS：域随机化",
+    "translation": [
+      "物体布局随机化：物体实例、排列。"
+    ],
+    "translation_html": "<p>物体布局随机化：物体实例、排列。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 22,
+    "title": "DREDS：域随机化",
+    "translated_title": "DREDS：域随机化",
+    "translation": [
+      "物体材质随机化：BSDF（双向散射分布函数）。"
+    ],
+    "translation_html": "<p>物体材质随机化：BSDF（双向散射分布函数）。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 23,
+    "title": "DREDS：域随机化",
+    "translated_title": "DREDS：域随机化",
+    "translation": [
+      "背景随机化。"
+    ],
+    "translation_html": "<p>背景随机化。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 24,
+    "title": "DREDS：域随机化",
+    "translated_title": "DREDS：域随机化",
+    "translation": [
+      "光照随机化。"
+    ],
+    "translation_html": "<p>光照随机化。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 25,
+    "title": "DREDS：域随机化",
+    "translated_title": "DREDS：域随机化",
+    "translation": [
+      "相机视角随机化。"
+    ],
+    "translation_html": "<p>相机视角随机化。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 26,
+    "title": "ASGrasp管线",
+    "translated_title": "ASGrasp管线",
+    "translation": [
+      "场景重建模块F₁",
+      "RGB彩色图I_c → 编码器 → 上下文F_c。左红外图I_ir_l → 编码器 → 特征F_ir_l；右红外图I_ir_r → 编码器 → 特征F_ir_r。相关金字塔C₁…C_n…C₀；Δ₁、Δ₂；几何损失L_geo。第一层深度图D₁ → 可见点云P_visible；第二层深度图D₂ → 不可见点云P_invisible；完整点云P_comp。",
+      "抓取检测模块F₂",
+      "GSNet F_gsnet → 抓取位姿g；抓取损失L_grasp；内积〈·,·〉。"
+    ],
+    "translation_html": "<h3>场景重建模块F₁</h3><p>RGB彩色图I_c → 编码器 → 上下文F_c。左红外图I_ir_l → 编码器 → 特征F_ir_l；右红外图I_ir_r → 编码器 → 特征F_ir_r。相关金字塔C₁…C_n…C₀；Δ₁、Δ₂；几何损失L_geo。第一层深度图D₁ → 可见点云P_visible；第二层深度图D₂ → 不可见点云P_invisible；完整点云P_comp。</p><h3>抓取检测模块F₂</h3><p>GSNet F_gsnet → 抓取位姿g；抓取损失L_grasp；内积〈·,·〉。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 27,
+    "title": "",
+    "translated_title": "",
+    "translation": [
+      "十倍速｜抓取位姿｜RViz可视化。"
+    ],
+    "translation_html": "<p>十倍速｜抓取位姿｜RViz可视化。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 28,
+    "title": "真实世界实验",
+    "translated_title": "真实世界实验",
+    "translation": [
+      "全球首个材料无关抓取方法。",
+      "成功率＞95%。"
+    ],
+    "translation_html": "<p>全球首个材料无关抓取方法。</p><p>成功率＞95%。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 29,
+    "title": "",
+    "translated_title": "",
+    "translation": [],
+    "translation_html": "",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 30,
+    "title": "基于三维视觉的抓取小结",
+    "translated_title": "基于三维视觉的抓取小结",
+    "translation": [
+      "主要贡献",
+      "杂乱场景灵巧抓取的大规模基准：7500个合成训练场景与670个测试场景。",
+      "提出端到端生成式抓取预测管线。",
+      "通过扩散模型生成手腕6D位姿。",
+      "在手腕位姿条件下回归手关节姿态。",
+      "局限",
+      "限于力量型/包裹式抓取。",
+      "数据仅覆盖力闭合情况。"
+    ],
+    "translation_html": "<h3>主要贡献</h3><ul><li>杂乱场景灵巧抓取的大规模基准：7500个合成训练场景与670个测试场景。</li><li>提出端到端生成式抓取预测管线。<ul><li>通过扩散模型生成手腕6D位姿。</li><li>在手腕位姿条件下回归手关节姿态。</li></ul></li></ul><h3>局限</h3><ul><li>限于力量型/包裹式抓取。</li><li>数据仅覆盖力闭合情况。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 31,
+    "title": "迈向操作：可供性",
+    "translated_title": "迈向操作：可供性",
+    "translation": [
+      "Where2Act。",
+      "做什么？推；拉。在哪里？怎样做？",
+      "可供性刻度：0、0.25、0.5、0.75、1。推方向候选：0.94、0.92、0.81、0.35；拉方向候选：0.95、0.92、0.85、0.29。",
+      "Mo, Kaichun等：《Where2Act：从像素到关节式三维物体动作》，IEEE/CVF国际计算机视觉会议论文集，2021。"
+    ],
+    "translation_html": "<ul><li>Where2Act。</li></ul><p>做什么？推；拉。在哪里？怎样做？</p><p>可供性刻度：0、0.25、0.5、0.75、1。推方向候选：0.94、0.92、0.81、0.35；拉方向候选：0.95、0.92、0.85、0.29。</p><p class=\"source\">Mo, Kaichun等：《Where2Act：从像素到关节式三维物体动作》，IEEE/CVF国际计算机视觉会议论文集，2021。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 32,
+    "title": "另一种基于视觉的方法：可供性",
+    "translated_title": "另一种基于视觉的方法：可供性",
+    "translation": [
+      "Where2Act管线。",
+      "二维U-Net，或三维PointNet++；H、W、F、N；候选点特征f_p；D_a → a_p，D_r（z）→ R_z|p，D_s（R）→ s_R|p。",
+      "Mo, Kaichun等：《Where2Act：从像素到关节式三维物体动作》，IEEE/CVF国际计算机视觉会议论文集，2021。"
+    ],
+    "translation_html": "<p>Where2Act管线。</p><p>二维U-Net，或三维PointNet++；H、W、F、N；候选点特征f_p；D_a → a_p，D_r（z）→ R_z|p，D_s（R）→ s_R|p。</p><p>Mo, Kaichun等：《Where2Act：从像素到关节式三维物体动作》，IEEE/CVF国际计算机视觉会议论文集，2021。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 33,
+    "title": "另一种基于视觉的方法：可供性",
+    "translated_title": "另一种基于视觉的方法：可供性",
+    "translation": [
+      "Where2Act结果。",
+      "推｜拉；默认｜向上｜向左；训练类别｜测试类别｜图像；刻度0、0.25、0.5、0.75、1。",
+      "Mo, Kaichun等：《Where2Act：从像素到关节式三维物体动作》，IEEE/CVF国际计算机视觉会议论文集，2021。"
+    ],
+    "translation_html": "<p>Where2Act结果。</p><p>推｜拉；默认｜向上｜向左；训练类别｜测试类别｜图像；刻度0、0.25、0.5、0.75、1。</p><p>Mo, Kaichun等：《Where2Act：从像素到关节式三维物体动作》，IEEE/CVF国际计算机视觉会议论文集，2021。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 34,
+    "title": "另一种基于视觉的方法：可供性",
+    "translated_title": "另一种基于视觉的方法：可供性",
+    "translation": [
+      "VAT-Mart。",
+      "感知",
+      "检测门把手。",
+      "提议抓取候选。",
+      "估计门关节参数。",
+      "操作",
+      "抓住把手。",
+      "驱动并沿轨迹运动。",
+      "开门30°；推门关闭33°；拉开抽屉0.5。",
+      "（a）输入形状；（b）可供性；（c）轨迹提议；刻度0、0.25、0.5、0.75、1。",
+      "Wu, Ruihai等：《VAT-Mart：学习用于操作三维关节式物体的视觉动作轨迹提议》，ICLR 2022。"
+    ],
+    "translation_html": "<ul><li>VAT-Mart。</li></ul><h3>感知</h3><ul><li>检测门把手。</li><li>提议抓取候选。</li><li>估计门关节参数。</li></ul><h3>操作</h3><ul><li>抓住把手。</li><li>驱动并沿轨迹运动。</li></ul><p>开门30°；推门关闭33°；拉开抽屉0.5。</p><p>（a）输入形状；（b）可供性；（c）轨迹提议；刻度0、0.25、0.5、0.75、1。</p><p class=\"source\">Wu, Ruihai等：《VAT-Mart：学习用于操作三维关节式物体的视觉动作轨迹提议》，ICLR 2022。</p>",
+    "layout": "columns"
+  },
+  {
+    "lecture": 8,
+    "page": 35,
+    "title": "另一种基于视觉的方法：可供性",
+    "translated_title": "另一种基于视觉的方法：可供性",
+    "translation": [
+      "真实机器人实验。",
+      "任务：开门30°；接触：顶部边缘。",
+      "可供性｜轨迹提议。",
+      "Wu, Ruihai等：《VAT-Mart：学习用于操作三维关节式物体的视觉动作轨迹提议》，ICLR 2022。"
+    ],
+    "translation_html": "<p>真实机器人实验。</p><p>任务：开门30°；接触：顶部边缘。</p><p>可供性｜轨迹提议。</p><p>Wu, Ruihai等：《VAT-Mart：学习用于操作三维关节式物体的视觉动作轨迹提议》，ICLR 2022。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 36,
+    "title": "基于视觉的开环方法小结",
+    "translated_title": "基于视觉的开环方法小结",
+    "translation": [
+      "利用视觉输入预测：",
+      "物体位姿（需要CAD模型、需要抓取标注）。",
+      "或抓取位姿（无需CAD模型与抓取标注）。",
+      "或可供性（稍超出抓取范围）。",
+      "通过运动规划到达，通过启发式抓取/操作。",
+      "限于某些预定义操作（瓶颈在启发式方法）。",
+      "通常不是闭环，但可以构成闭环。"
+    ],
+    "translation_html": "<ul><li>利用视觉输入预测：<ul><li>物体位姿（需要CAD模型、需要抓取标注）。</li><li>或抓取位姿（无需CAD模型与抓取标注）。</li><li>或可供性（稍超出抓取范围）。</li></ul></li><li>通过运动规划到达，通过启发式抓取/操作。</li><li>限于某些预定义操作（瓶颈在启发式方法）。</li><li>通常不是闭环，但可以构成闭环。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 37,
+    "title": "策略学习",
+    "translated_title": "策略学习",
+    "translation": [
+      "部分幻灯片借用并修改自伯克利CS285。"
+    ],
+    "translation_html": "<p>部分幻灯片借用并修改自伯克利CS285。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 38,
+    "title": "术语与记号",
+    "translated_title": "术语与记号",
+    "translation": [
+      "符号",
+      "术语",
+      "sₜ",
+      "状态",
+      "oₜ",
+      "观测",
+      "aₜ",
+      "动作",
+      "πθ(aₜ|oₜ)",
+      "策略",
+      "πθ(aₜ|sₜ)",
+      "策略（完全可观测）",
+      "oₜ：观测；sₜ：状态。"
+    ],
+    "translation_html": "<table><thead><tr><th>符号</th><th>术语</th></tr></thead><tbody><tr><td>sₜ</td><td>状态</td></tr><tr><td>oₜ</td><td>观测</td></tr><tr><td>aₜ</td><td>动作</td></tr><tr><td>πθ(aₜ|oₜ)</td><td>策略</td></tr><tr><td>πθ(aₜ|sₜ)</td><td>策略（完全可观测）</td></tr></tbody></table><p>oₜ：观测；sₜ：状态。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 39,
+    "title": "策略学习",
+    "translated_title": "策略学习",
+    "translation": [
+      "如何学习策略？",
+      "监督策略学习；目标点导航；RGB彩色图、深度、GPS/罗盘。",
+      "当最优策略或专家演示可用时，可以考虑监督策略学习，例如模仿学习（IL）。"
+    ],
+    "translation_html": "<p>如何学习策略？</p><p>监督策略学习；目标点导航；RGB彩色图、深度、GPS/罗盘。</p><p>当最优策略或专家演示可用时，可以考虑监督策略学习，例如模仿学习（IL）。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 40,
+    "title": "强化学习",
+    "translated_title": "强化学习",
+    "translation": [
+      "当最优策略不可用时，试错！",
+      "数据：(x,u,x′)，（成功，失败）；强化学习。"
+    ],
+    "translation_html": "<p>当最优策略不可用时，试错！</p><p>数据：(x,u,x′)，（成功，失败）；强化学习。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 41,
+    "title": "模仿学习",
+    "translated_title": "模仿学习",
+    "translation": [
+      "部分幻灯片借用自伯克利CS285。"
+    ],
+    "translation_html": "<p>部分幻灯片借用自伯克利CS285。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 42,
+    "title": "术语与记号",
+    "translated_title": "术语与记号",
+    "translation": [
+      "符号",
+      "术语",
+      "sₜ",
+      "状态",
+      "oₜ",
+      "观测",
+      "aₜ",
+      "动作",
+      "πθ(aₜ|oₜ)",
+      "策略",
+      "πθ(aₜ|sₜ)",
+      "策略（完全可观测）",
+      "oₜ：观测；sₜ：状态。",
+      "$p(s_{t+1}\\mid s_t,a_t)$。马尔可夫性：与$s_{t-1}$无关。"
+    ],
+    "translation_html": "<table><thead><tr><th>符号</th><th>术语</th></tr></thead><tbody><tr><td>sₜ</td><td>状态</td></tr><tr><td>oₜ</td><td>观测</td></tr><tr><td>aₜ</td><td>动作</td></tr><tr><td>πθ(aₜ|oₜ)</td><td>策略</td></tr><tr><td>πθ(aₜ|sₜ)</td><td>策略（完全可观测）</td></tr></tbody></table><p>oₜ：观测；sₜ：状态。</p><p>$p(s_{t+1}\\mid s_t,a_t)$。马尔可夫性：与$s_{t-1}$无关。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 43,
+    "title": "模仿学习",
+    "translated_title": "模仿学习",
+    "translation": [
+      "oₜ、aₜ → 训练数据 → 监督学习 → πθ(aₜ|oₜ)。",
+      "行为克隆。",
+      "图片：Bojarski等，2016，NVIDIA。"
+    ],
+    "translation_html": "<p>oₜ、aₜ → 训练数据 → 监督学习 → πθ(aₜ|oₜ)。</p><p>行为克隆。</p><p>图片：Bojarski等，2016，NVIDIA。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 44,
+    "title": "早期深度模仿学习系统",
+    "translated_title": "早期深度模仿学习系统",
+    "translation": [
+      "ALVINN：神经网络中的自主陆地车辆，1989。",
+      "30×32视频输入图像网格；4个隐藏单元；30个输出单元。"
+    ],
+    "translation_html": "<p>ALVINN：神经网络中的自主陆地车辆，1989。</p><p>30×32视频输入图像网格；4个隐藏单元；30个输出单元。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 45,
+    "title": "有效吗？",
+    "translated_title": "有效吗？",
+    "translation": [
+      "训练轨迹；πθ预期轨迹；状态s；时间。",
+      "不，因为分布漂移！"
+    ],
+    "translation_html": "<p>训练轨迹；πθ预期轨迹；状态s；时间。</p><p>不，因为分布漂移！</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 46,
+    "title": "有效吗？",
+    "translated_title": "有效吗？",
+    "translation": [
+      "视频：Bojarski等，2016，NVIDIA。"
+    ],
+    "translation_html": "<p>视频：Bojarski等，2016，NVIDIA。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 47,
+    "title": "为什么有效？",
+    "translated_title": "为什么有效？",
+    "translation": [
+      "记录的转向角；左相机、中央相机、右相机；调整偏移与旋转；随机偏移与旋转；CNN；网络计算的转向命令；期望转向命令；误差；反向传播、权重调整。",
+      "Bojarski等，2016，NVIDIA。"
+    ],
+    "translation_html": "<p>记录的转向角；左相机、中央相机、右相机；调整偏移与旋转；随机偏移与旋转；CNN；网络计算的转向命令；期望转向命令；误差；反向传播、权重调整。</p><p>Bojarski等，2016，NVIDIA。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 48,
+    "title": "机器人演示采集：遥操作",
+    "translated_title": "机器人演示采集：遥操作",
+    "translation": [
+      "特斯拉使用的遥操作系统；斯坦福ALOHA系统。",
+      "四倍速遥操作；改进夹爪响应性。",
+      "Abramson, Norman：《ALOHA系统：计算机通信的另一种选择》，1970年11月17—19日秋季联合计算机会议论文集，1970。"
+    ],
+    "translation_html": "<p>特斯拉使用的遥操作系统；斯坦福ALOHA系统。</p><p>四倍速遥操作；改进夹爪响应性。</p><p>Abramson, Norman：《ALOHA系统：计算机通信的另一种选择》，1970年11月17—19日秋季联合计算机会议论文集，1970。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 49,
+    "title": "特斯拉Optimus：电池分拣与纠正演示采集",
+    "translated_title": "特斯拉Optimus：电池分拣与纠正演示采集",
+    "translation": [],
+    "translation_html": "",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 50,
+    "title": "使用远程遥操作的人在回路模仿学习",
+    "translated_title": "使用远程遥操作的人在回路模仿学习",
+    "translation": [
+      "用于采集干预的远程遥操作。",
+      "操作员通过移动手机干预；操作员通过视频流监控策略。",
+      "Mandlekar, Ajay等：《使用远程遥操作的人在回路模仿学习》，arXiv:2012.06733，2020。"
+    ],
+    "translation_html": "<p>用于采集干预的远程遥操作。</p><p>操作员通过移动手机干预；操作员通过视频流监控策略。</p><p>Mandlekar, Ajay等：《使用远程遥操作的人在回路模仿学习》，arXiv:2012.06733，2020。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 51,
+    "title": "能让它更常成功吗？",
+    "translated_title": "能让它更常成功吗？",
+    "translation": [
+      "训练轨迹；πθ预期轨迹；代价；状态s；时间。",
+      "稳定性。",
+      "稍后进一步讨论。"
+    ],
+    "translation_html": "<p>训练轨迹；πθ预期轨迹；代价；状态s；时间。</p><p>稳定性。</p><p>稍后进一步讨论。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 52,
+    "title": "能让它更常成功吗？",
+    "translated_title": "能让它更常成功吗？",
+    "translation": [
+      "训练轨迹；πθ预期轨迹；p_data(oₜ)、p_πθ(oₜ)、πθ(aₜ|oₜ)。",
+      "能否令$p_{data}(o_t)=p_{\\pi_\\theta}(o_t)$？"
+    ],
+    "translation_html": "<p>训练轨迹；πθ预期轨迹；p_data(oₜ)、p_πθ(oₜ)、πθ(aₜ|oₜ)。</p><p>能否令$p_{data}(o_t)=p_{\\pi_\\theta}(o_t)$？</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 53,
+    "title": "能让它更常成功吗？",
+    "translated_title": "能让它更常成功吗？",
+    "translation": [
+      "能否令$p_{data}(o_t)=p_{\\pi_\\theta}(o_t)$？",
+      "想法：与其巧妙处理p_πθ(oₜ)，不如巧妙处理p_data(oₜ)！",
+      "DAgger：数据集聚合",
+      "目标：从p_πθ(oₜ)而非p_data(oₜ)采集训练数据。",
+      "怎么做？直接执行πθ(aₜ|oₜ)。但还需要标签aₜ！",
+      "用人类数据$\\mathcal D=\\{o_1,a_1,\\ldots,o_N,a_N\\}$训练$\\pi_\\theta(a_t\\mid o_t)$。",
+      "执行$\\pi_\\theta(a_t\\mid o_t)$获得数据集$\\mathcal D_\\pi=\\{o_1,\\ldots,o_M\\}$。",
+      "请人类为$\\mathcal D_\\pi$标注动作$a_t$。",
+      "聚合：$\\mathcal D\\leftarrow\\mathcal D\\cup\\mathcal D_\\pi$。",
+      "Ross等，2011。"
+    ],
+    "translation_html": "<p>能否令$p_{data}(o_t)=p_{\\pi_\\theta}(o_t)$？</p><p>想法：与其巧妙处理p_πθ(oₜ)，不如巧妙处理p_data(oₜ)！</p><h3>DAgger：数据集聚合</h3><p>目标：从p_πθ(oₜ)而非p_data(oₜ)采集训练数据。</p><p>怎么做？直接执行πθ(aₜ|oₜ)。但还需要标签aₜ！</p><ul><li>用人类数据$\\mathcal D=\\{o_1,a_1,\\ldots,o_N,a_N\\}$训练$\\pi_\\theta(a_t\\mid o_t)$。</li><li>执行$\\pi_\\theta(a_t\\mid o_t)$获得数据集$\\mathcal D_\\pi=\\{o_1,\\ldots,o_M\\}$。</li><li>请人类为$\\mathcal D_\\pi$标注动作$a_t$。</li><li>聚合：$\\mathcal D\\leftarrow\\mathcal D\\cup\\mathcal D_\\pi$。</li></ul><p class=\"source\">Ross等，2011。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 54,
+    "title": "问题是什么？",
+    "translated_title": "问题是什么？",
+    "translation": [
+      "用人类数据$\\mathcal D=\\{o_1,a_1,\\ldots,o_N,a_N\\}$训练$\\pi_\\theta(a_t\\mid o_t)$。",
+      "执行$\\pi_\\theta(a_t\\mid o_t)$获得数据集$\\mathcal D_\\pi=\\{o_1,\\ldots,o_M\\}$。",
+      "请人类为$\\mathcal D_\\pi$标注动作$a_t$。",
+      "聚合：$\\mathcal D\\leftarrow\\mathcal D\\cup\\mathcal D_\\pi$。",
+      "πθ(aₜ|oₜ)；oₜ → 人类 → aₜ。",
+      "Ross等，2011。"
+    ],
+    "translation_html": "<ul><li>用人类数据$\\mathcal D=\\{o_1,a_1,\\ldots,o_N,a_N\\}$训练$\\pi_\\theta(a_t\\mid o_t)$。</li><li>执行$\\pi_\\theta(a_t\\mid o_t)$获得数据集$\\mathcal D_\\pi=\\{o_1,\\ldots,o_M\\}$。</li><li>请人类为$\\mathcal D_\\pi$标注动作$a_t$。</li><li>聚合：$\\mathcal D\\leftarrow\\mathcal D\\cup\\mathcal D_\\pi$。</li></ul><p>πθ(aₜ|oₜ)；oₜ → 人类 → aₜ。</p><p class=\"source\">Ross等，2011。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 55,
+    "title": "动作标签的其他来源",
+    "translated_title": "动作标签的其他来源",
+    "translation": [
+      "1. 来自最优解",
+      "直接计算最短路径，获得动作标签。",
+      "RGB彩色图｜深度｜GPS/罗盘。",
+      "2. 来自教师策略",
+      "执行学生策略（蓝色），让教师策略（红色）在线纠正。"
+    ],
+    "translation_html": "<h3>1. 来自最优解</h3><p>直接计算最短路径，获得动作标签。</p><p>RGB彩色图｜深度｜GPS/罗盘。</p><h3>2. 来自教师策略</h3><p>执行学生策略（蓝色），让教师策略（红色）在线纠正。</p>",
+    "layout": "columns"
+  },
+  {
+    "lecture": 8,
+    "page": 56,
+    "title": "不增加数据，能让它有效吗？",
+    "translated_title": "不增加数据，能让它有效吗？",
+    "translation": [
+      "DAgger解决分布“漂移”问题。",
+      "如果模型好到不会漂移呢？",
+      "需要非常准确地模仿专家行为。",
+      "但不要过拟合！",
+      "训练轨迹；πθ预期轨迹。"
+    ],
+    "translation_html": "<ul><li>DAgger解决分布“漂移”问题。</li><li>如果模型好到不会漂移呢？</li><li>需要非常准确地模仿专家行为。</li><li>但不要过拟合！</li></ul><p>训练轨迹；πθ预期轨迹。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 57,
+    "title": "为什么可能拟合不了专家？",
+    "translated_title": "为什么可能拟合不了专家？",
+    "translation": [
+      "非马尔可夫行为。",
+      "多峰行为。",
+      "$\\pi_\\theta(a_t\\mid o_t)$：行为只依赖当前观测。",
+      "如果两次看见相同事物，就做同样的事，不管此前发生了什么。",
+      "$\\pi_\\theta(a_t\\mid o_1,\\ldots,o_t)$：行为依赖所有过去观测。",
+      "对于人类示范者，这往往很不自然。"
+    ],
+    "translation_html": "<ul><li>非马尔可夫行为。</li><li>多峰行为。</li></ul><p>$\\pi_\\theta(a_t\\mid o_t)$：行为只依赖当前观测。</p><p>如果两次看见相同事物，就做同样的事，不管此前发生了什么。</p><p>$\\pi_\\theta(a_t\\mid o_1,\\ldots,o_t)$：行为依赖所有过去观测。</p><p>对于人类示范者，这往往很不自然。</p>",
+    "layout": "columns"
+  },
+  {
+    "lecture": 8,
+    "page": 58,
+    "title": "如何使用完整历史？",
+    "translated_title": "如何使用完整历史？",
+    "translation": [
+      "oₜ → πθ(aₜ|oₜ) → aₜ。",
+      "帧数可变，权重太多。"
+    ],
+    "translation_html": "<p>oₜ → πθ(aₜ|oₜ) → aₜ。</p><p>帧数可变，权重太多。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 59,
+    "title": "如何使用完整历史？",
+    "translated_title": "如何使用完整历史？",
+    "translation": [
+      "共享权重；RNN状态。",
+      "通常LSTM单元在这里效果更好。"
+    ],
+    "translation_html": "<p>共享权重；RNN状态。</p><p>通常LSTM单元在这里效果更好。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 60,
+    "title": "旁注：为什么效果可能很差？",
+    "translated_title": "旁注：为什么效果可能很差？",
+    "translation": [
+      "情景A：完全信息。策略关注刹车指示灯。刹车：×。",
+      "情景B：不完整信息。策略关注行人。刹车：✓。",
+      "“因果混淆”。参见de Haan等：《模仿学习中的因果混淆》。",
+      "问题1：加入历史能减轻因果混淆吗？",
+      "问题2：DAgger能减轻因果混淆吗？"
+    ],
+    "translation_html": "<p>情景A：完全信息。策略关注刹车指示灯。刹车：×。</p><p>情景B：不完整信息。策略关注行人。刹车：✓。</p><p>“因果混淆”。参见de Haan等：《模仿学习中的因果混淆》。</p><p>问题1：加入历史能减轻因果混淆吗？</p><p>问题2：DAgger能减轻因果混淆吗？</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 61,
+    "title": "为什么可能拟合不了专家？",
+    "translated_title": "为什么可能拟合不了专家？",
+    "translation": [
+      "非马尔可夫行为。",
+      "多峰行为。",
+      "输出高斯混合。",
+      "隐变量模型。",
+      "扩散模型。",
+      "自回归离散化。"
+    ],
+    "translation_html": "<ul><li>非马尔可夫行为。</li><li>多峰行为。</li></ul><ul><li>输出高斯混合。</li><li>隐变量模型。</li><li>扩散模型。</li><li>自回归离散化。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 62,
+    "title": "为什么可能拟合不了专家？",
+    "translated_title": "为什么可能拟合不了专家？",
+    "translation": [
+      "输出高斯混合。",
+      "隐变量模型。",
+      "扩散模型。",
+      "自回归离散化。",
+      "$\\pi(a\\mid o)=\\sum_iw_i\\mathcal N(\\mu_i,\\Sigma_i)$",
+      "$w_1,\\mu_1,\\Sigma_1,\\ldots,w_N,\\mu_N,\\Sigma_N$。",
+      "$w_1,\\mu_1,\\Sigma_1,\\ldots,w_N,\\mu_N,\\sigma_N$。"
+    ],
+    "translation_html": "<ul><li>输出高斯混合。</li><li>隐变量模型。</li><li>扩散模型。</li><li>自回归离散化。</li></ul><p>$\\pi(a\\mid o)=\\sum_iw_i\\mathcal N(\\mu_i,\\Sigma_i)$</p><p>$w_1,\\mu_1,\\Sigma_1,\\ldots,w_N,\\mu_N,\\Sigma_N$。</p><p>$w_1,\\mu_1,\\Sigma_1,\\ldots,w_N,\\mu_N,\\sigma_N$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 63,
+    "title": "为什么可能拟合不了专家？",
+    "translated_title": "为什么可能拟合不了专家？",
+    "translation": [
+      "输出高斯混合。",
+      "隐变量模型。",
+      "扩散模型。",
+      "自回归离散化。",
+      "$\\xi\\sim\\mathcal N(0,I)$",
+      "查阅以下方法：",
+      "条件变分自编码器。",
+      "归一化流/realNVP。",
+      "Stein变分梯度下降。"
+    ],
+    "translation_html": "<ul><li>输出高斯混合。</li><li>隐变量模型。</li><li>扩散模型。</li><li>自回归离散化。</li></ul><p>$\\xi\\sim\\mathcal N(0,I)$</p><p>查阅以下方法：</p><ul><li>条件变分自编码器。</li><li>归一化流/realNVP。</li><li>Stein变分梯度下降。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 64,
+    "title": "案例研究：使用CVAE进行模仿",
+    "translated_title": "案例研究：使用CVAE进行模仿",
+    "translation": [
+      "z：风格变量；Transformer编码器；[CLS]、关节、动作序列＋位置嵌入。",
+      "相机1—4；480×640×3；CNN；Transformer编码器；相机1、相机4、关节、z；Transformer解码器；动作序列；位置嵌入（固定）。",
+      "Zhao等：《用低成本硬件学习精细双臂操作》，2023。"
+    ],
+    "translation_html": "<p>z：风格变量；Transformer编码器；[CLS]、关节、动作序列＋位置嵌入。</p><p>相机1—4；480×640×3；CNN；Transformer编码器；相机1、相机4、关节、z；Transformer解码器；动作序列；位置嵌入（固定）。</p><p>Zhao等：《用低成本硬件学习精细双臂操作》，2023。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 65,
+    "title": "为什么可能拟合不了专家？",
+    "translated_title": "为什么可能拟合不了专家？",
+    "translation": [
+      "输出高斯混合。",
+      "隐变量模型。",
+      "扩散模型。",
+      "自回归离散化。",
+      "$x_0$：真实图像；$x_{i+1}=x_i+\\text{噪声}$。",
+      "学习网络：$f(x_i)=x_{i-1}$；实际采用$f(x_i)=\\text{噪声}$；$x_{i-1}=x_i-f(x_i)$。",
+      "$p_0(x_0)$；干净样本；$x_0,x_1,\\ldots,x_{T-1},x_T$；纯噪声；$p_T(x_T)\\sim\\mathcal N(0,I)$。"
+    ],
+    "translation_html": "<ul><li>输出高斯混合。</li><li>隐变量模型。</li><li>扩散模型。</li><li>自回归离散化。</li></ul><p>$x_0$：真实图像；$x_{i+1}=x_i+\\text{噪声}$。</p><p>学习网络：$f(x_i)=x_{i-1}$；实际采用$f(x_i)=\\text{噪声}$；$x_{i-1}=x_i-f(x_i)$。</p><p>$p_0(x_0)$；干净样本；$x_0,x_1,\\ldots,x_{T-1},x_T$；纯噪声；$p_T(x_T)\\sim\\mathcal N(0,I)$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 66,
+    "title": "基于扩散的策略",
+    "translated_title": "基于扩散的策略",
+    "translation": [
+      "Diffusion Policy：扩散策略",
+      "通过动作扩散学习视觉运动策略。",
+      "（a）显式策略：$F_\\theta(o)$；动作表示；标量（回归）、高斯混合、分类。",
+      "（b）隐式策略：$\\arg\\min(E)$，$E_\\theta(o,a)$；能量；o、a。",
+      "（c）扩散策略：$\\nabla E(a)$，$\\epsilon_\\theta(o,a)$；K次迭代；梯度场；o、a。",
+      "本文介绍扩散策略：一种通过条件去噪扩散过程表示机器人视觉运动策略、从而生成机器人行为的新方法。我们在4个机器人操作基准的12项不同任务上评测扩散策略，发现其持续优于现有最先进机器人学习方法，平均提升46.9%。扩散策略学习动作分布分数函数的梯度，并在推理时通过一系列随机朗之万动力学步骤沿此梯度场迭代优化。我们发现，扩散表述用于机器人策略时具有多项优势，包括平稳处理多峰动作分布、适合高维动作空间以及表现出良好训练稳定性。为充分释放扩散模型在实体机器人视觉运动策略学习中的潜力，本文提出一组关键技术贡献，包括引入滚动时域控制、视觉条件化以及时间序列扩散Transformer。我们希望这项工作推动新一代策略学习技术，利用扩散模型强大的生成建模能力。",
+      "https://diffusion-policy.cs.columbia.edu/"
+    ],
+    "translation_html": "<h3>Diffusion Policy：扩散策略</h3><p>通过动作扩散学习视觉运动策略。</p><p>（a）显式策略：$F_\\theta(o)$；动作表示；标量（回归）、高斯混合、分类。</p><p>（b）隐式策略：$\\arg\\min(E)$，$E_\\theta(o,a)$；能量；o、a。</p><p>（c）扩散策略：$\\nabla E(a)$，$\\epsilon_\\theta(o,a)$；K次迭代；梯度场；o、a。</p><p>本文介绍扩散策略：一种通过条件去噪扩散过程表示机器人视觉运动策略、从而生成机器人行为的新方法。我们在4个机器人操作基准的12项不同任务上评测扩散策略，发现其持续优于现有最先进机器人学习方法，平均提升46.9%。扩散策略学习动作分布分数函数的梯度，并在推理时通过一系列随机朗之万动力学步骤沿此梯度场迭代优化。我们发现，扩散表述用于机器人策略时具有多项优势，包括平稳处理多峰动作分布、适合高维动作空间以及表现出良好训练稳定性。为充分释放扩散模型在实体机器人视觉运动策略学习中的潜力，本文提出一组关键技术贡献，包括引入滚动时域控制、视觉条件化以及时间序列扩散Transformer。我们希望这项工作推动新一代策略学习技术，利用扩散模型强大的生成建模能力。</p><p class=\"source\">https://diffusion-policy.cs.columbia.edu/</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 67,
+    "title": "为什么可能拟合不了专家？",
+    "translated_title": "为什么可能拟合不了专家？",
+    "translation": [
+      "输出高斯混合。",
+      "隐变量模型。",
+      "扩散模型。",
+      "自回归离散化。",
+      "$x_0$：真实图像；$x_{i+1}=x_i+\\text{噪声}$。",
+      "学习网络：$f(x_i)=x_{i-1}$；实际采用$f(x_i)=\\text{噪声}$；$x_{i-1}=x_i-f(x_i)$。",
+      "噪声 → $a_{t,i}$；观测；$a_{t,i-1}$；$a_t$。"
+    ],
+    "translation_html": "<ul><li>输出高斯混合。</li><li>隐变量模型。</li><li>扩散模型。</li><li>自回归离散化。</li></ul><p>$x_0$：真实图像；$x_{i+1}=x_i+\\text{噪声}$。</p><p>学习网络：$f(x_i)=x_{i-1}$；实际采用$f(x_i)=\\text{噪声}$；$x_{i-1}=x_i-f(x_i)$。</p><p>噪声 → $a_{t,i}$；观测；$a_{t,i-1}$；$a_t$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 68,
+    "title": "为什么可能拟合不了专家？",
+    "translated_title": "为什么可能拟合不了专家？",
+    "translation": [
+      "输出高斯混合。",
+      "隐变量模型。",
+      "扩散模型。",
+      "自回归离散化。",
+      "问题：这对于一维动作很好；但维度更高时，对整个空间离散化是不现实的。",
+      "解决办法：一次离散一个维度。"
+    ],
+    "translation_html": "<ul><li>输出高斯混合。</li><li>隐变量模型。</li><li>扩散模型。</li><li>自回归离散化。</li></ul><p>问题：这对于一维动作很好；但维度更高时，对整个空间离散化是不现实的。</p><p>解决办法：一次离散一个维度。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 69,
+    "title": "自回归离散化",
+    "translated_title": "自回归离散化",
+    "translation": [
+      "$a_t=(0.1,1.2,-0.3)^T$；分量$a_{t,0},a_{t,1},a_{t,2}$。",
+      "使用LSTM或Transformer；序列模型模块；共享视觉编码器。",
+      "为什么有效？",
+      "第一步：$p(a_{t,0}\\mid s_t)$。第二步：$p(a_{t,1}\\mid s_t,a_{t,0})$。第三步：$p(a_{t,2}\\mid s_t,a_{t,0},a_{t,1})$。",
+      "$p(a_{t,2}\\mid s_t,a_{t,0},a_{t,1})p(a_{t,1}\\mid s_t,a_{t,0})p(a_{t,0}\\mid s_t)=p(a_{t,0},a_{t,1},a_{t,2}\\mid s_t)=p(a_t\\mid s_t)$。"
+    ],
+    "translation_html": "<p>$a_t=(0.1,1.2,-0.3)^T$；分量$a_{t,0},a_{t,1},a_{t,2}$。</p><p>使用LSTM或Transformer；序列模型模块；共享视觉编码器。</p><h3>为什么有效？</h3><p>第一步：$p(a_{t,0}\\mid s_t)$。第二步：$p(a_{t,1}\\mid s_t,a_{t,0})$。第三步：$p(a_{t,2}\\mid s_t,a_{t,0},a_{t,1})$。</p><p>$p(a_{t,2}\\mid s_t,a_{t,0},a_{t,1})p(a_{t,1}\\mid s_t,a_{t,0})p(a_{t,0}\\mid s_t)=p(a_{t,0},a_{t,1},a_{t,2}\\mid s_t)=p(a_t\\mid s_t)$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 70,
+    "title": "学习很多任务会更容易吗？",
+    "translated_title": "学习很多任务会更容易吗？",
+    "translation": [
+      "多任务学习。",
+      "πθ(a|s)：到达p₁的策略。",
+      "πθ(a|s,p)：到达任意p的策略；p₁、p₂、p₃。",
+      "Where2Act管线。"
+    ],
+    "translation_html": "<p>多任务学习。</p><p>πθ(a|s)：到达p₁的策略。</p><p>πθ(a|s,p)：到达任意p的策略；p₁、p₂、p₃。</p><p>Where2Act管线。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 71,
+    "title": "学习很多任务会更容易吗？",
+    "translated_title": "学习很多任务会更容易吗？",
+    "translation": [
+      "目标条件化行为克隆",
+      "训练时：",
+      "演示1：$\\{s_1,a_1,\\ldots,s_{T-1},a_{T-1},s_T^1\\}$；演示2：$\\{s_1,a_1,\\ldots,s_{T-1},a_{T-1},s_T^2\\}$；演示3：$\\{s_1,a_1,\\ldots,s_{T-1},a_{T-1},s_T^3\\}$。",
+      "到达$s_T$的成功演示；学习$\\pi_\\theta(a\\mid s,g)$；g为目标状态。",
+      "对每个演示$\\{s_1^i,a_1^i,\\ldots,s_{T-1}^i,a_{T-1}^i,s_T^i\\}$，最大化$\\log\\pi_\\theta(a_t^i\\mid s_t^i,g=s_T^i)$。",
+      "这里有两处分布偏移！你能指出第二处吗？",
+      "Where2Act管线。"
+    ],
+    "translation_html": "<h3>目标条件化行为克隆</h3><p>训练时：</p><p>演示1：$\\{s_1,a_1,\\ldots,s_{T-1},a_{T-1},s_T^1\\}$；演示2：$\\{s_1,a_1,\\ldots,s_{T-1},a_{T-1},s_T^2\\}$；演示3：$\\{s_1,a_1,\\ldots,s_{T-1},a_{T-1},s_T^3\\}$。</p><p>到达$s_T$的成功演示；学习$\\pi_\\theta(a\\mid s,g)$；g为目标状态。</p><p>对每个演示$\\{s_1^i,a_1^i,\\ldots,s_{T-1}^i,a_{T-1}^i,s_T^i\\}$，最大化$\\log\\pi_\\theta(a_t^i\\mid s_t^i,g=s_T^i)$。</p><p>这里有两处分布偏移！你能指出第二处吗？</p><p>Where2Act管线。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 72,
+    "title": "小结：模仿学习",
+    "translated_title": "小结：模仿学习",
+    "translation": [
+      "观测oₜ、动作aₜ → 训练数据 → 监督学习 → πθ(aₜ|oₜ)。",
+      "单独使用往往（但并非总是）不足。",
+      "分布不匹配问题。",
+      "有时效果很好。",
+      "技巧（例如左/右图像）。",
+      "从稳定的轨迹分布采样。",
+      "加入更多同策略数据，例如DAgger。",
+      "使用拟合更准确的模型。"
+    ],
+    "translation_html": "<p>观测oₜ、动作aₜ → 训练数据 → 监督学习 → πθ(aₜ|oₜ)。</p><ul><li>单独使用往往（但并非总是）不足。<ul><li>分布不匹配问题。</li></ul></li><li>有时效果很好。<ul><li>技巧（例如左/右图像）。</li><li>从稳定的轨迹分布采样。</li></ul></li><li>加入更多同策略数据，例如DAgger。</li><li>使用拟合更准确的模型。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 73,
+    "title": "强化学习",
+    "translated_title": "强化学习",
+    "translation": [
+      "部分幻灯片借用自伯克利CS285。"
+    ],
+    "translation_html": "<p>部分幻灯片借用自伯克利CS285。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 74,
+    "title": "强化学习导论",
+    "translated_title": "强化学习导论",
+    "translation": [
+      "什么是强化学习？"
+    ],
+    "translation_html": "<p>什么是强化学习？</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 75,
+    "title": "强化学习导论",
+    "translated_title": "强化学习导论",
+    "translation": [
+      "什么是强化学习？",
+      "基于学习进行决策的数学形式化。",
+      "从经验中学习决策与控制的方法。"
+    ],
+    "translation_html": "<h3>什么是强化学习？</h3><ul><li>基于学习进行决策的数学形式化。</li><li>从经验中学习决策与控制的方法。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 76,
+    "title": "强化学习导论",
+    "translated_title": "强化学习导论",
+    "translation": [
+      "这与其他机器学习主题有什么不同？",
+      "标准（监督）机器学习",
+      "给定$\\mathcal D=\\{(x_i,y_i)\\}$，学习从x预测y：$f(x)\\approx y$。",
+      "通常假设：",
+      "独立同分布数据。",
+      "训练时已知真值输出。",
+      "强化学习",
+      "数据不是独立同分布：以前的输出影响未来输入！",
+      "真值答案未知，只知道成功还是失败。",
+      "更一般地，我们知道奖励。"
+    ],
+    "translation_html": "<h3>这与其他机器学习主题有什么不同？</h3><h3>标准（监督）机器学习</h3><p>给定$\\mathcal D=\\{(x_i,y_i)\\}$，学习从x预测y：$f(x)\\approx y$。</p><p>通常假设：</p><ul><li>独立同分布数据。</li><li>训练时已知真值输出。</li></ul><h3>强化学习</h3><ul><li>数据不是独立同分布：以前的输出影响未来输入！</li><li>真值答案未知，只知道成功还是失败。<ul><li>更一般地，我们知道奖励。</li></ul></li></ul>",
+    "layout": "columns"
+  },
+  {
+    "lecture": 8,
+    "page": 77,
+    "title": "强化学习导论",
+    "translated_title": "强化学习导论",
+    "translation": [
+      "决策（动作） → 环境 → 后果：观测（状态）、奖励。",
+      "动物：动作—肌肉收缩；观测—视觉、嗅觉；奖励—食物。",
+      "机器人：动作—电机电流或力矩；观测—相机图像；奖励—任务成功度量（例如跑步速度）。",
+      "库存管理：动作—采购什么；观测—库存水平；奖励—利润。"
+    ],
+    "translation_html": "<p>决策（动作） → 环境 → 后果：观测（状态）、奖励。</p><p>动物：动作—肌肉收缩；观测—视觉、嗅觉；奖励—食物。</p><p>机器人：动作—电机电流或力矩；观测—相机图像；奖励—任务成功度量（例如跑步速度）。</p><p>库存管理：动作—采购什么；观测—库存水平；奖励—利润。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 78,
+    "title": "术语与记号",
+    "translated_title": "术语与记号",
+    "translation": [
+      "符号",
+      "术语",
+      "sₜ",
+      "状态",
+      "oₜ",
+      "观测",
+      "aₜ",
+      "动作",
+      "πθ(aₜ|oₜ)",
+      "策略",
+      "πθ(aₜ|sₜ)",
+      "策略（完全可观测）",
+      "oₜ：观测；sₜ：状态。",
+      "$p(s_{t+1}\\mid s_t,a_t)$。马尔可夫性：与$s_{t-1}$无关。"
+    ],
+    "translation_html": "<table><thead><tr><th>符号</th><th>术语</th></tr></thead><tbody><tr><td>sₜ</td><td>状态</td></tr><tr><td>oₜ</td><td>观测</td></tr><tr><td>aₜ</td><td>动作</td></tr><tr><td>πθ(aₜ|oₜ)</td><td>策略</td></tr><tr><td>πθ(aₜ|sₜ)</td><td>策略（完全可观测）</td></tr></tbody></table><p>oₜ：观测；sₜ：状态。</p><p>$p(s_{t+1}\\mid s_t,a_t)$。马尔可夫性：与$s_{t-1}$无关。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 79,
+    "title": "奖励函数",
+    "translated_title": "奖励函数",
+    "translation": [
+      "$o_t\\rightarrow\\pi_\\theta(a_t\\mid o_t)\\rightarrow a_t$。",
+      "哪个动作更好，哪个更差？",
+      "$r(s,a)$：奖励函数；告诉我们哪些状态和动作更好。",
+      "高奖励｜低奖励。",
+      "$s,a,r(s,a),p(s^\\prime\\mid s,a)$定义马尔可夫决策过程。"
+    ],
+    "translation_html": "<p>$o_t\\rightarrow\\pi_\\theta(a_t\\mid o_t)\\rightarrow a_t$。</p><p>哪个动作更好，哪个更差？</p><p>$r(s,a)$：奖励函数；告诉我们哪些状态和动作更好。</p><p>高奖励｜低奖励。</p><p>$s,a,r(s,a),p(s^\\prime\\mid s,a)$定义马尔可夫决策过程。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 80,
+    "title": "定义",
+    "translated_title": "定义",
+    "translation": [
+      "马尔可夫链",
+      "$\\mathcal M=\\{S,\\mathcal T\\}$。",
+      "量",
+      "含义",
+      "S：状态空间",
+      "s∈S，离散或连续",
+      "T：转移算子",
+      "p(sₜ₊₁|sₜ)",
+      "为什么称为“算子”？",
+      "令$\\mu_{t,i}=p(s_t=i)$，$\\vec\\mu_t$是概率向量。令$\\mathcal T_{i,j}=p(s_{t+1}=i\\mid s_t=j)$，则$\\vec\\mu_{t+1}=\\mathcal T\\vec\\mu_t$。",
+      "马尔可夫性：与sₜ₋₁无关。Andrey Markov（安德烈·马尔可夫）。",
+      "状态s₁、s₂、s₃。"
+    ],
+    "translation_html": "<h3>马尔可夫链</h3><p>$\\mathcal M=\\{S,\\mathcal T\\}$。</p><table><thead><tr><th>量</th><th>含义</th></tr></thead><tbody><tr><td>S：状态空间</td><td>s∈S，离散或连续</td></tr><tr><td>T：转移算子</td><td>p(sₜ₊₁|sₜ)</td></tr></tbody></table><p>为什么称为“算子”？</p><p>令$\\mu_{t,i}=p(s_t=i)$，$\\vec\\mu_t$是概率向量。令$\\mathcal T_{i,j}=p(s_{t+1}=i\\mid s_t=j)$，则$\\vec\\mu_{t+1}=\\mathcal T\\vec\\mu_t$。</p><p>马尔可夫性：与sₜ₋₁无关。Andrey Markov（安德烈·马尔可夫）。</p><p>状态s₁、s₂、s₃。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 81,
+    "title": "定义",
+    "translated_title": "定义",
+    "translation": [
+      "马尔可夫决策过程",
+      "$\\mathcal M=\\{S,A,\\mathcal T,r\\}$。",
+      "量",
+      "含义",
+      "S：状态空间",
+      "s∈S，离散或连续",
+      "A：动作空间",
+      "a∈A，离散或连续",
+      "T：转移算子",
+      "现在是张量！",
+      "令$\\mu_{t,j}=p(s_t=j)$；令$\\xi_{t,k}=p(a_t=k)$；令$\\mathcal T_{i,j,k}=p(s_{t+1}=i\\mid s_t=j,a_t=k)$；$\\mu_{t+1,i}=\\sum_{j,k}\\mathcal T_{i,j,k}\\mu_{t,j}\\xi_{t,k}$。",
+      "$p(s_{t+1}\\mid s_t,a_t)$；Richard Bellman（理查德·贝尔曼）。",
+      "状态s₁、s₂、s₃。"
+    ],
+    "translation_html": "<h3>马尔可夫决策过程</h3><p>$\\mathcal M=\\{S,A,\\mathcal T,r\\}$。</p><table><thead><tr><th>量</th><th>含义</th></tr></thead><tbody><tr><td>S：状态空间</td><td>s∈S，离散或连续</td></tr><tr><td>A：动作空间</td><td>a∈A，离散或连续</td></tr><tr><td>T：转移算子</td><td>现在是张量！</td></tr></tbody></table><p>令$\\mu_{t,j}=p(s_t=j)$；令$\\xi_{t,k}=p(a_t=k)$；令$\\mathcal T_{i,j,k}=p(s_{t+1}=i\\mid s_t=j,a_t=k)$；$\\mu_{t+1,i}=\\sum_{j,k}\\mathcal T_{i,j,k}\\mu_{t,j}\\xi_{t,k}$。</p><p>$p(s_{t+1}\\mid s_t,a_t)$；Richard Bellman（理查德·贝尔曼）。</p><p>状态s₁、s₂、s₃。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 82,
+    "title": "定义",
+    "translated_title": "定义",
+    "translation": [
+      "马尔可夫决策过程",
+      "$\\mathcal M=\\{S,A,\\mathcal T,r\\}$。",
+      "量",
+      "含义",
+      "S：状态空间",
+      "s∈S，离散或连续",
+      "A：动作空间",
+      "a∈A，离散或连续",
+      "T：转移算子",
+      "现在是张量！",
+      "r：奖励函数",
+      "r:S×A→ℝ；r(sₜ,aₜ)：奖励"
+    ],
+    "translation_html": "<h3>马尔可夫决策过程</h3><p>$\\mathcal M=\\{S,A,\\mathcal T,r\\}$。</p><table><thead><tr><th>量</th><th>含义</th></tr></thead><tbody><tr><td>S：状态空间</td><td>s∈S，离散或连续</td></tr><tr><td>A：动作空间</td><td>a∈A，离散或连续</td></tr><tr><td>T：转移算子</td><td>现在是张量！</td></tr><tr><td>r：奖励函数</td><td>r:S×A→ℝ；r(sₜ,aₜ)：奖励</td></tr></tbody></table>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 83,
+    "title": "定义",
+    "translated_title": "定义",
+    "translation": [
+      "部分可观测马尔可夫决策过程",
+      "$\\mathcal M=\\{S,A,O,\\mathcal T,\\mathcal E,r\\}$。",
+      "量",
+      "含义",
+      "S：状态空间",
+      "s∈S，离散或连续",
+      "A：动作空间",
+      "a∈A，离散或连续",
+      "O：观测空间",
+      "o∈O，离散或连续",
+      "T：转移算子",
+      "与之前相同",
+      "E：发射概率",
+      "p(oₜ|sₜ)",
+      "r：奖励函数",
+      "r:S×A→ℝ",
+      "状态s₁、s₂、s₃；动作a₁、a₂；观测o₁、o₂、o₃。"
+    ],
+    "translation_html": "<h3>部分可观测马尔可夫决策过程</h3><p>$\\mathcal M=\\{S,A,O,\\mathcal T,\\mathcal E,r\\}$。</p><table><thead><tr><th>量</th><th>含义</th></tr></thead><tbody><tr><td>S：状态空间</td><td>s∈S，离散或连续</td></tr><tr><td>A：动作空间</td><td>a∈A，离散或连续</td></tr><tr><td>O：观测空间</td><td>o∈O，离散或连续</td></tr><tr><td>T：转移算子</td><td>与之前相同</td></tr><tr><td>E：发射概率</td><td>p(oₜ|sₜ)</td></tr><tr><td>r：奖励函数</td><td>r:S×A→ℝ</td></tr></tbody></table><p>状态s₁、s₂、s₃；动作a₁、a₂；观测o₁、o₂、o₃。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 84,
+    "title": "强化学习的目标",
+    "translated_title": "强化学习的目标",
+    "translation": [
+      "θ；状态s；动作a；πθ(a|s)；p(s′|s,a)。稍后再回到部分可观测情况。",
+      "$p_\\theta(s_1,a_1,\\ldots,s_T,a_T)=p(s_1)\\prod_{t=1}^T\\pi_\\theta(a_t\\mid s_t)p(s_{t+1}\\mid s_t,a_t)=p_\\theta(\\tau)$。",
+      "$\\theta^*=\\arg\\max_\\theta\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]$。"
+    ],
+    "translation_html": "<p>θ；状态s；动作a；πθ(a|s)；p(s′|s,a)。稍后再回到部分可观测情况。</p><p>$p_\\theta(s_1,a_1,\\ldots,s_T,a_T)=p(s_1)\\prod_{t=1}^T\\pi_\\theta(a_t\\mid s_t)p(s_{t+1}\\mid s_t,a_t)=p_\\theta(\\tau)$。</p><p>$\\theta^*=\\arg\\max_\\theta\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 85,
+    "title": "强化学习的目标",
+    "translated_title": "强化学习的目标",
+    "translation": [
+      "θ；状态s；动作a；πθ(a|s)；p(s′|s,a)。",
+      "$p_\\theta(s_1,a_1,\\ldots,s_T,a_T)=p(s_1)\\prod_{t=1}^T\\pi_\\theta(a_t\\mid s_t)p(s_{t+1}\\mid s_t,a_t)=p_\\theta(\\tau)$。",
+      "关于(s,a)的马尔可夫链。",
+      "自行阅读。"
+    ],
+    "translation_html": "<p>θ；状态s；动作a；πθ(a|s)；p(s′|s,a)。</p><p>$p_\\theta(s_1,a_1,\\ldots,s_T,a_T)=p(s_1)\\prod_{t=1}^T\\pi_\\theta(a_t\\mid s_t)p(s_{t+1}\\mid s_t,a_t)=p_\\theta(\\tau)$。</p><p>关于(s,a)的马尔可夫链。</p><p>自行阅读。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 86,
+    "title": "强化学习的目标",
+    "translated_title": "强化学习的目标",
+    "translation": [
+      "θ；状态s；动作a；πθ(a|s)；p(s′|s,a)。",
+      "$p_\\theta(s_1,a_1,\\ldots,s_T,a_T)=p(s_1)\\prod_{t=1}^T\\pi_\\theta(a_t\\mid s_t)p(s_{t+1}\\mid s_t,a_t)=p_\\theta(\\tau)$。",
+      "关于(s,a)的马尔可夫链。",
+      "$p((s_{t+1},a_{t+1})\\mid(s_t,a_t))=p(s_{t+1}\\mid s_t,a_t)\\pi_\\theta(a_{t+1}\\mid s_{t+1})$。",
+      "自行阅读。"
+    ],
+    "translation_html": "<p>θ；状态s；动作a；πθ(a|s)；p(s′|s,a)。</p><p>$p_\\theta(s_1,a_1,\\ldots,s_T,a_T)=p(s_1)\\prod_{t=1}^T\\pi_\\theta(a_t\\mid s_t)p(s_{t+1}\\mid s_t,a_t)=p_\\theta(\\tau)$。</p><p>关于(s,a)的马尔可夫链。</p><p>$p((s_{t+1},a_{t+1})\\mid(s_t,a_t))=p(s_{t+1}\\mid s_t,a_t)\\pi_\\theta(a_{t+1}\\mid s_{t+1})$。</p><p>自行阅读。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 87,
+    "title": "有限时域情形：状态—动作边际分布",
+    "translated_title": "有限时域情形：状态—动作边际分布",
+    "translation": [
+      "$\\theta^*=\\arg\\max_\\theta\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]$。",
+      "$=\\arg\\max_\\theta\\sum_{t=1}^T\\mathbb E_{(s_t,a_t)\\sim p_\\theta(s_t,a_t)}[r(s_t,a_t)]$。",
+      "$p_\\theta(s_t,a_t)$：状态—动作边际分布。",
+      "$p((s_{t+1},a_{t+1})\\mid(s_t,a_t))=p(s_{t+1}\\mid s_t,a_t)\\pi_\\theta(a_{t+1}\\mid s_{t+1})$。",
+      "自行阅读。"
+    ],
+    "translation_html": "<p>$\\theta^*=\\arg\\max_\\theta\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]$。</p><p>$=\\arg\\max_\\theta\\sum_{t=1}^T\\mathbb E_{(s_t,a_t)\\sim p_\\theta(s_t,a_t)}[r(s_t,a_t)]$。</p><p>$p_\\theta(s_t,a_t)$：状态—动作边际分布。</p><p>$p((s_{t+1},a_{t+1})\\mid(s_t,a_t))=p(s_{t+1}\\mid s_t,a_t)\\pi_\\theta(a_{t+1}\\mid s_{t+1})$。</p><p>自行阅读。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 88,
+    "title": "无限时域情形：平稳分布",
+    "translated_title": "无限时域情形：平稳分布",
+    "translation": [
+      "$\\theta^*=\\arg\\max_\\theta\\sum_{t=1}^T\\mathbb E_{(s_t,a_t)\\sim p_\\theta(s_t,a_t)}[r(s_t,a_t)]$。",
+      "如果T=∞呢？p(sₜ,aₜ)会收敛到平稳分布吗？",
+      "$\\mu=\\mathcal T\\mu$；$(\\mathcal T-I)\\mu=0$；$\\mu=p_\\theta(s,a)$：平稳分布。",
+      "平稳＝转移前后相同。μ是T的特征值1对应的特征向量！（在一定正则条件下总是存在。）",
+      "状态—动作转移算子：$\\binom{s_{t+1}}{a_{t+1}}=\\mathcal T\\binom{s_t}{a_t}$；$\\binom{s_{t+k}}{a_{t+k}}=\\mathcal T^k\\binom{s_t}{a_t}$。",
+      "自行阅读。"
+    ],
+    "translation_html": "<p>$\\theta^*=\\arg\\max_\\theta\\sum_{t=1}^T\\mathbb E_{(s_t,a_t)\\sim p_\\theta(s_t,a_t)}[r(s_t,a_t)]$。</p><p>如果T=∞呢？p(sₜ,aₜ)会收敛到平稳分布吗？</p><p>$\\mu=\\mathcal T\\mu$；$(\\mathcal T-I)\\mu=0$；$\\mu=p_\\theta(s,a)$：平稳分布。</p><p>平稳＝转移前后相同。μ是T的特征值1对应的特征向量！（在一定正则条件下总是存在。）</p><p>状态—动作转移算子：$\\binom{s_{t+1}}{a_{t+1}}=\\mathcal T\\binom{s_t}{a_t}$；$\\binom{s_{t+k}}{a_{t+k}}=\\mathcal T^k\\binom{s_t}{a_t}$。</p><p>自行阅读。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 89,
+    "title": "无限时域情形：平稳分布",
+    "translated_title": "无限时域情形：平稳分布",
+    "translation": [
+      "$\\theta^*=\\arg\\max_\\theta\\frac1T\\sum_{t=1}^T\\mathbb E_{(s_t,a_t)\\sim p_\\theta(s_t,a_t)}[r(s_t,a_t)]\\longrightarrow\\mathbb E_{(s,a)\\sim p_\\theta(s,a)}[r(s,a)]$，当$T\\to\\infty$。",
+      "如果T=∞呢？p(sₜ,aₜ)会收敛到平稳分布吗？",
+      "$\\mu=\\mathcal T\\mu$；$(\\mathcal T-I)\\mu=0$；$\\mu=p_\\theta(s,a)$：平稳分布。",
+      "平稳＝转移前后相同。μ是T的特征值1对应的特征向量！（在一定正则条件下总是存在。）",
+      "状态—动作转移算子：$\\binom{s_{t+1}}{a_{t+1}}=\\mathcal T\\binom{s_t}{a_t}$；$\\binom{s_{t+k}}{a_{t+k}}=\\mathcal T^k\\binom{s_t}{a_t}$。",
+      "自行阅读。"
+    ],
+    "translation_html": "<p>$\\theta^*=\\arg\\max_\\theta\\frac1T\\sum_{t=1}^T\\mathbb E_{(s_t,a_t)\\sim p_\\theta(s_t,a_t)}[r(s_t,a_t)]\\longrightarrow\\mathbb E_{(s,a)\\sim p_\\theta(s,a)}[r(s,a)]$，当$T\\to\\infty$。</p><p>如果T=∞呢？p(sₜ,aₜ)会收敛到平稳分布吗？</p><p>$\\mu=\\mathcal T\\mu$；$(\\mathcal T-I)\\mu=0$；$\\mu=p_\\theta(s,a)$：平稳分布。</p><p>平稳＝转移前后相同。μ是T的特征值1对应的特征向量！（在一定正则条件下总是存在。）</p><p>状态—动作转移算子：$\\binom{s_{t+1}}{a_{t+1}}=\\mathcal T\\binom{s_t}{a_t}$；$\\binom{s_{t+k}}{a_{t+k}}=\\mathcal T^k\\binom{s_t}{a_t}$。</p><p>自行阅读。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 90,
+    "title": "期望与随机系统",
+    "translated_title": "期望与随机系统",
+    "translation": [
+      "$\\theta^*=\\arg\\max_\\theta\\mathbb E_{(s,a)\\sim p_\\theta(s,a)}[r(s,a)]$。无限时域情形。",
+      "$\\theta^*=\\arg\\max_\\theta\\sum_{t=1}^T\\mathbb E_{(s_t,a_t)\\sim p_\\theta(s_t,a_t)}[r(s_t,a_t)]$。有限时域情形。",
+      "强化学习中，我们几乎总是关心期望",
+      "$r(x)$：不平滑。$\\pi_\\theta(a=\\text{坠落})=\\theta$。$\\mathbb E_{\\pi_\\theta}[r(x)]$：关于θ平滑！",
+      "奖励：＋1、−1。"
+    ],
+    "translation_html": "<p>$\\theta^*=\\arg\\max_\\theta\\mathbb E_{(s,a)\\sim p_\\theta(s,a)}[r(s,a)]$。无限时域情形。</p><p>$\\theta^*=\\arg\\max_\\theta\\sum_{t=1}^T\\mathbb E_{(s_t,a_t)\\sim p_\\theta(s_t,a_t)}[r(s_t,a_t)]$。有限时域情形。</p><h3>强化学习中，我们几乎总是关心期望</h3><p>$r(x)$：不平滑。$\\pi_\\theta(a=\\text{坠落})=\\theta$。$\\mathbb E_{\\pi_\\theta}[r(x)]$：关于θ平滑！</p><p>奖励：＋1、−1。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 91,
+    "title": "策略梯度",
+    "translated_title": "策略梯度",
+    "translation": [],
+    "translation_html": "",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 92,
+    "title": "强化学习的目标",
+    "translated_title": "强化学习的目标",
+    "translation": [
+      "θ；状态s；动作a；πθ(a|s)；p(s′|s,a)。",
+      "$p_\\theta(s_1,a_1,\\ldots,s_T,a_T)=p(s_1)\\prod_{t=1}^T\\pi_\\theta(a_t\\mid s_t)p(s_{t+1}\\mid s_t,a_t)=p_\\theta(\\tau)$。",
+      "关于(s,a)的马尔可夫链。",
+      "$p((s_{t+1},a_{t+1})\\mid(s_t,a_t))=p(s_{t+1}\\mid s_t,a_t)\\pi_\\theta(a_{t+1}\\mid s_{t+1})$。"
+    ],
+    "translation_html": "<p>θ；状态s；动作a；πθ(a|s)；p(s′|s,a)。</p><p>$p_\\theta(s_1,a_1,\\ldots,s_T,a_T)=p(s_1)\\prod_{t=1}^T\\pi_\\theta(a_t\\mid s_t)p(s_{t+1}\\mid s_t,a_t)=p_\\theta(\\tau)$。</p><p>关于(s,a)的马尔可夫链。</p><p>$p((s_{t+1},a_{t+1})\\mid(s_t,a_t))=p(s_{t+1}\\mid s_t,a_t)\\pi_\\theta(a_{t+1}\\mid s_{t+1})$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 93,
+    "title": "强化学习的目标",
+    "translated_title": "强化学习的目标",
+    "translation": [
+      "$\\theta^*=\\arg\\max_\\theta\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]$。",
+      "$\\theta^*=\\arg\\max_\\theta\\mathbb E_{(s,a)\\sim p_\\theta(s,a)}[r(s,a)]$。无限时域情形。",
+      "$\\theta^*=\\arg\\max_\\theta\\sum_{t=1}^T\\mathbb E_{(s_t,a_t)\\sim p_\\theta(s_t,a_t)}[r(s_t,a_t)]$。有限时域情形。"
+    ],
+    "translation_html": "<p>$\\theta^*=\\arg\\max_\\theta\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]$。</p><p>$\\theta^*=\\arg\\max_\\theta\\mathbb E_{(s,a)\\sim p_\\theta(s,a)}[r(s,a)]$。无限时域情形。</p><p>$\\theta^*=\\arg\\max_\\theta\\sum_{t=1}^T\\mathbb E_{(s_t,a_t)\\sim p_\\theta(s_t,a_t)}[r(s_t,a_t)]$。有限时域情形。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 94,
+    "title": "评估目标",
+    "translated_title": "评估目标",
+    "translation": [
+      "$\\theta^*=\\arg\\max_\\theta\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]$。",
+      "J(θ)",
+      "$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]\\approx\\frac1N\\sum_i\\sum_t r(s_{i,t},a_{i,t})$。",
+      "对来自πθ的样本求和。"
+    ],
+    "translation_html": "<p>$\\theta^*=\\arg\\max_\\theta\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]$。</p><p>J(θ)</p><p>$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]\\approx\\frac1N\\sum_i\\sum_t r(s_{i,t},a_{i,t})$。</p><p>对来自πθ的样本求和。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 95,
+    "title": "直接对策略求导",
+    "translated_title": "直接对策略求导",
+    "translation": [
+      "$\\theta^*=\\arg\\max_\\theta\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]$。",
+      "J(θ)",
+      "$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[r(\\tau)]=\\int p_\\theta(\\tau)r(\\tau)d\\tau$；$r(\\tau)=\\sum_{t=1}^Tr(s_t,a_t)$。",
+      "一个方便的恒等式",
+      "$p_\\theta(\\tau)\\nabla_\\theta\\log p_\\theta(\\tau)=p_\\theta(\\tau)\\frac{\\nabla_\\theta p_\\theta(\\tau)}{p_\\theta(\\tau)}=\\nabla_\\theta p_\\theta(\\tau)$。",
+      "$\\nabla_\\theta J(\\theta)=\\int\\nabla_\\theta p_\\theta(\\tau)r(\\tau)d\\tau=\\int p_\\theta(\\tau)\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)d\\tau=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)]$。"
+    ],
+    "translation_html": "<p>$\\theta^*=\\arg\\max_\\theta\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]$。</p><p>J(θ)</p><p>$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[r(\\tau)]=\\int p_\\theta(\\tau)r(\\tau)d\\tau$；$r(\\tau)=\\sum_{t=1}^Tr(s_t,a_t)$。</p><h3>一个方便的恒等式</h3><p>$p_\\theta(\\tau)\\nabla_\\theta\\log p_\\theta(\\tau)=p_\\theta(\\tau)\\frac{\\nabla_\\theta p_\\theta(\\tau)}{p_\\theta(\\tau)}=\\nabla_\\theta p_\\theta(\\tau)$。</p><p>$\\nabla_\\theta J(\\theta)=\\int\\nabla_\\theta p_\\theta(\\tau)r(\\tau)d\\tau=\\int p_\\theta(\\tau)\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)d\\tau=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)]$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 96,
+    "title": "直接对策略求导",
+    "translated_title": "直接对策略求导",
+    "translation": [
+      "$\\theta^*=\\arg\\max_\\theta J(\\theta)$；$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[r(\\tau)]$。",
+      "$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)]$。",
+      "$p_\\theta(s_1,a_1,\\ldots,s_T,a_T)=p(s_1)\\prod_{t=1}^T\\pi_\\theta(a_t\\mid s_t)p(s_{t+1}\\mid s_t,a_t)=p_\\theta(\\tau)$。",
+      "两边取对数：",
+      "$\\log p_\\theta(\\tau)=\\log p(s_1)+\\sum_{t=1}^T[\\log\\pi_\\theta(a_t\\mid s_t)+\\log p(s_{t+1}\\mid s_t,a_t)]$。",
+      "$\\nabla_\\theta[\\log p(s_1)+\\sum_{t=1}^T\\log\\pi_\\theta(a_t\\mid s_t)+\\log p(s_{t+1}\\mid s_t,a_t)]$。",
+      "$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t))(\\sum_{t=1}^T r(s_t,a_t))]$。"
+    ],
+    "translation_html": "<p>$\\theta^*=\\arg\\max_\\theta J(\\theta)$；$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[r(\\tau)]$。</p><p>$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)]$。</p><p>$p_\\theta(s_1,a_1,\\ldots,s_T,a_T)=p(s_1)\\prod_{t=1}^T\\pi_\\theta(a_t\\mid s_t)p(s_{t+1}\\mid s_t,a_t)=p_\\theta(\\tau)$。</p><p>两边取对数：</p><p>$\\log p_\\theta(\\tau)=\\log p(s_1)+\\sum_{t=1}^T[\\log\\pi_\\theta(a_t\\mid s_t)+\\log p(s_{t+1}\\mid s_t,a_t)]$。</p><p>$\\nabla_\\theta[\\log p(s_1)+\\sum_{t=1}^T\\log\\pi_\\theta(a_t\\mid s_t)+\\log p(s_{t+1}\\mid s_t,a_t)]$。</p><p>$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t))(\\sum_{t=1}^T r(s_t,a_t))]$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 97,
+    "title": "评估策略梯度",
+    "translated_title": "评估策略梯度",
+    "translation": [
+      "回顾：",
+      "$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]\\approx\\frac1N\\sum_i\\sum_t r(s_{i,t},a_{i,t})$。",
+      "$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t))(\\sum_{t=1}^T r(s_t,a_t))]$。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。",
+      "$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。",
+      "生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。",
+      "REINFORCE算法",
+      "从$\\pi_\\theta(a_t\\mid s_t)$采样$\\{\\tau^i\\}$（执行该策略）。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。",
+      "$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。"
+    ],
+    "translation_html": "<p>回顾：</p><p>$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]\\approx\\frac1N\\sum_i\\sum_t r(s_{i,t},a_{i,t})$。</p><p>$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t))(\\sum_{t=1}^T r(s_t,a_t))]$。</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</p><p>$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</p><p>生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。</p><h3>REINFORCE算法</h3><ul><li>从$\\pi_\\theta(a_t\\mid s_t)$采样$\\{\\tau^i\\}$（执行该策略）。</li><li>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</li><li>$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 98,
+    "title": "评估策略梯度",
+    "translated_title": "评估策略梯度",
+    "translation": [
+      "回顾：",
+      "$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]\\approx\\frac1N\\sum_i\\sum_t r(s_{i,t},a_{i,t})$。",
+      "$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t))(\\sum_{t=1}^T r(s_t,a_t))]$。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。",
+      "这是什么？",
+      "sₜ → πθ(aₜ|sₜ) → aₜ。"
+    ],
+    "translation_html": "<p>回顾：</p><p>$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]\\approx\\frac1N\\sum_i\\sum_t r(s_{i,t},a_{i,t})$。</p><p>$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t))(\\sum_{t=1}^T r(s_t,a_t))]$。</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</p><p>这是什么？</p><p>sₜ → πθ(aₜ|sₜ) → aₜ。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 99,
+    "title": "与最大似然比较",
+    "translated_title": "与最大似然比较",
+    "translation": [
+      "策略梯度：",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。",
+      "最大似然：",
+      "$\\nabla_\\theta J_{ML}(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))$。",
+      "sₜ、aₜ → 训练数据 → 监督学习 → πθ(aₜ|sₜ)。"
+    ],
+    "translation_html": "<p>策略梯度：</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</p><p>最大似然：</p><p>$\\nabla_\\theta J_{ML}(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))$。</p><p>sₜ、aₜ → 训练数据 → 监督学习 → πθ(aₜ|sₜ)。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 100,
+    "title": "例子：高斯策略",
+    "translated_title": "例子：高斯策略",
+    "translation": [
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。",
+      "例：$\\pi_\\theta(a_t\\mid s_t)=\\mathcal N(f_{neural\\ network}(s_t);\\Sigma)$。",
+      "$\\log\\pi_\\theta(a_t\\mid s_t)=-\\frac12\\|f(s_t)-a_t\\|_\\Sigma^2+\\text{常数}$。",
+      "$\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t)=-\\frac12\\Sigma^{-1}(f(s_t)-a_t)\\frac{df}{d\\theta}$。",
+      "第2000次迭代。",
+      "REINFORCE算法",
+      "从$\\pi_\\theta(a_t\\mid s_t)$采样$\\{\\tau^i\\}$（执行该策略）。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。",
+      "$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。"
+    ],
+    "translation_html": "<p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</p><p>例：$\\pi_\\theta(a_t\\mid s_t)=\\mathcal N(f_{neural\\ network}(s_t);\\Sigma)$。</p><p>$\\log\\pi_\\theta(a_t\\mid s_t)=-\\frac12\\|f(s_t)-a_t\\|_\\Sigma^2+\\text{常数}$。</p><p>$\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t)=-\\frac12\\Sigma^{-1}(f(s_t)-a_t)\\frac{df}{d\\theta}$。</p><p>第2000次迭代。</p><h3>REINFORCE算法</h3><ul><li>从$\\pi_\\theta(a_t\\mid s_t)$采样$\\{\\tau^i\\}$（执行该策略）。</li><li>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</li><li>$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 101,
+    "title": "我们刚刚做了什么？",
+    "translated_title": "我们刚刚做了什么？",
+    "translation": [
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)$。",
+      "$\\nabla_\\theta\\log p_\\theta(\\tau)=\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})$。",
+      "最大似然：$\\nabla_\\theta J_{ML}(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\nabla_\\theta\\log p_\\theta(\\tau)$。",
+      "让好行为更可能发生。让坏行为更不可能发生。",
+      "只是把“试错”的概念形式化！",
+      "REINFORCE算法",
+      "从$\\pi_\\theta(a_t\\mid s_t)$采样$\\{\\tau^i\\}$（执行该策略）。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。",
+      "$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。"
+    ],
+    "translation_html": "<p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)$。</p><p>$\\nabla_\\theta\\log p_\\theta(\\tau)=\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})$。</p><p>最大似然：$\\nabla_\\theta J_{ML}(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\nabla_\\theta\\log p_\\theta(\\tau)$。</p><p>让好行为更可能发生。让坏行为更不可能发生。</p><p>只是把“试错”的概念形式化！</p><h3>REINFORCE算法</h3><ul><li>从$\\pi_\\theta(a_t\\mid s_t)$采样$\\{\\tau^i\\}$（执行该策略）。</li><li>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</li><li>$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 102,
+    "title": "部分可观测性",
+    "translated_title": "部分可观测性",
+    "translation": [
+      "oₜ → πθ(aₜ|oₜ) → aₜ。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid o_{i,t}))(\\sum_{t=1}^T r(o_{i,t},a_{i,t}))$。",
+      "实际上并未使用马尔可夫性质！",
+      "无需修改，即可在部分可观测MDP中使用策略梯度。"
+    ],
+    "translation_html": "<p>oₜ → πθ(aₜ|oₜ) → aₜ。</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid o_{i,t}))(\\sum_{t=1}^T r(o_{i,t},a_{i,t}))$。</p><p>实际上并未使用马尔可夫性质！</p><p>无需修改，即可在部分可观测MDP中使用策略梯度。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 103,
+    "title": "策略梯度有什么问题？",
+    "translated_title": "策略梯度有什么问题？",
+    "translation": [
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)$。",
+      "r(τ)；τ。",
+      "更糟：如果两个“好”样本的r(τ)=0呢？",
+      "高方差。"
+    ],
+    "translation_html": "<p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)$。</p><p>r(τ)；τ。</p><p>更糟：如果两个“好”样本的r(τ)=0呢？</p><p>高方差。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 104,
+    "title": "回顾",
+    "translated_title": "回顾",
+    "translation": [
+      "评估强化学习目标。",
+      "生成样本。",
+      "评估策略梯度。",
+      "对数梯度技巧。",
+      "生成样本。",
+      "理解策略梯度。",
+      "试错的形式化。",
+      "部分可观测性。",
+      "同样有效。",
+      "策略梯度有什么问题？",
+      "生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。",
+      "$\\sum_{t=1}^Tr(x_t,u_t)$；$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。"
+    ],
+    "translation_html": "<ul><li>评估强化学习目标。<ul><li>生成样本。</li></ul></li><li>评估策略梯度。<ul><li>对数梯度技巧。</li><li>生成样本。</li></ul></li><li>理解策略梯度。<ul><li>试错的形式化。</li></ul></li><li>部分可观测性。<ul><li>同样有效。</li></ul></li><li>策略梯度有什么问题？</li></ul><p>生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。</p><p>$\\sum_{t=1}^Tr(x_t,u_t)$；$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 8,
+    "page": 105,
+    "title": "具身智能导论",
+    "translated_title": "具身智能导论",
+    "translation": [
+      "下周：第9讲，策略 II。",
+      "具身感知与交互实验室｜2025年春季"
+    ],
+    "translation_html": "<p>下周：第9讲，策略 II。</p><p>具身感知与交互实验室｜2025年春季</p>",
+    "layout": "single"
+  }
+]

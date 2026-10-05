@@ -1,0 +1,1169 @@
+[
+  {
+    "lecture": 7,
+    "page": 1,
+    "title": "具身智能导论",
+    "translated_title": "具身智能导论",
+    "translation": [
+      "第7讲——视觉与抓取 III",
+      "王鹤教授",
+      "具身感知与交互实验室｜2025年春季"
+    ],
+    "translation_html": "<p>第7讲——视觉与抓取 III</p><p>王鹤教授</p><p>具身感知与交互实验室｜2025年春季</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 2,
+    "title": "抓取数据合成",
+    "translated_title": "抓取数据合成",
+    "translation": [],
+    "translation_html": "",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 3,
+    "title": "术语",
+    "translated_title": "术语",
+    "translation": [
+      "抓取位姿定义手的位置和朝向。",
+      "4自由度抓取：三维位置，以及与重力方向对齐的一维手朝向，也称“自上而下抓取”。",
+      "6自由度抓取：由三维位置与三维朝向定义。",
+      "力闭合意味着：抓取在一组有摩擦接触上能够施加的力，足以补偿作用于物体的任意外部力旋量。",
+      "灵巧手｜平行夹爪｜自上而下｜6自由度抓取"
+    ],
+    "translation_html": "<ul><li>抓取位姿定义手的位置和朝向。<ul><li>4自由度抓取：三维位置，以及与重力方向对齐的一维手朝向，也称“自上而下抓取”。</li><li>6自由度抓取：由三维位置与三维朝向定义。</li></ul></li><li>力闭合意味着：抓取在一组有摩擦接触上能够施加的力，足以补偿作用于物体的任意外部力旋量。</li></ul><p>灵巧手｜平行夹爪｜自上而下｜6自由度抓取</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 4,
+    "title": "力闭合",
+    "translated_title": "力闭合",
+    "translation": [
+      "在物理学中：",
+      "给定作用在刚体上的一组有摩擦接触，如果力旋量锥的正张成覆盖整个力旋量空间，则该接触组处于力闭合。",
+      "如果一个刚体被一组刚性固定夹具完全固定，则称其处于形闭合。",
+      "如果所有接触均无摩擦，力闭合条件与一阶形闭合条件相同。",
+      "机器人手规划抓取时，力闭合是合适的最低要求。形闭合通常过于严格，需要太多接触。",
+      "简单地说：成功抓取 ≤ 力闭合 ≤ 形闭合。",
+      "https://modernrobotics.northwestern.edu/nu-gm-book-resource/12-2-3-force-closure"
+    ],
+    "translation_html": "<ul><li>在物理学中：<ul><li>给定作用在刚体上的一组有摩擦接触，如果力旋量锥的正张成覆盖整个力旋量空间，则该接触组处于力闭合。</li><li>如果一个刚体被一组刚性固定夹具完全固定，则称其处于形闭合。</li></ul></li><li>如果所有接触均无摩擦，力闭合条件与一阶形闭合条件相同。</li><li>机器人手规划抓取时，力闭合是合适的最低要求。形闭合通常过于严格，需要太多接触。</li><li>简单地说：成功抓取 ≤ 力闭合 ≤ 形闭合。</li></ul><p class=\"source\">https://modernrobotics.northwestern.edu/nu-gm-book-resource/12-2-3-force-closure</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 5,
+    "title": "力闭合",
+    "translated_title": "力闭合",
+    "translation": [
+      "简化的二维问题。",
+      "无摩擦接触的二维抓取",
+      "✓ 三个可能的力向量，其中两个线性独立。",
+      "× 每个接触均施加非零力时，无法产生零合力。",
+      "× 原点不在可能施加力的空间内部。",
+      "一个有摩擦接触与一个无摩擦接触构成的二维抓取",
+      "✓ 三个可能的力向量，其中两个线性独立。",
+      "✓ 每个接触均施加非零力时，能够产生零合力。",
+      "✓ 原点位于可能施加力的空间内部。",
+      "观看：https://www.youtube.com/watch?v=6RWFFMtD5k8"
+    ],
+    "translation_html": "<ul><li>简化的二维问题。</li></ul><h3>无摩擦接触的二维抓取</h3><ul><li>✓ 三个可能的力向量，其中两个线性独立。</li><li>× 每个接触均施加非零力时，无法产生零合力。</li><li>× 原点不在可能施加力的空间内部。</li></ul><h3>一个有摩擦接触与一个无摩擦接触构成的二维抓取</h3><ul><li>✓ 三个可能的力向量，其中两个线性独立。</li><li>✓ 每个接触均施加非零力时，能够产生零合力。</li><li>✓ 原点位于可能施加力的空间内部。</li></ul><p>观看：https://www.youtube.com/watch?v=6RWFFMtD5k8</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 6,
+    "title": "数据集",
+    "translated_title": "数据集",
+    "translation": [
+      "标注真实数据。",
+      "生成带抓取标签的合成数据。",
+      "根据物体几何采样候选抓取。",
+      "用物理模拟器评估这些候选。",
+      "将构成力闭合的抓取标为正例。"
+    ],
+    "translation_html": "<ul><li>标注真实数据。</li><li>生成带抓取标签的合成数据。<ul><li>根据物体几何采样候选抓取。</li><li>用物理模拟器评估这些候选。</li><li>将构成力闭合的抓取标为正例。</li></ul></li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 7,
+    "title": "物体数据集",
+    "translated_title": "物体数据集",
+    "translation": [
+      "合成数据集",
+      "物体集合：不带抓取标注。",
+      "ShapeNet｜ModelNet"
+    ],
+    "translation_html": "<p>合成数据集</p><p>物体集合：不带抓取标注。</p><p>ShapeNet｜ModelNet</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 8,
+    "title": "物体数据集",
+    "translated_title": "物体数据集",
+    "translation": [
+      "Objaverse-XL：1000万以上三维物体。"
+    ],
+    "translation_html": "<p>Objaverse-XL：1000万以上三维物体。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 9,
+    "title": "抓取数据集",
+    "translated_title": "抓取数据集",
+    "translation": [
+      "合成数据集",
+      "ACRONYM：带抓取标注。",
+      "C. Eppner、A. Mousavian、D. Fox：《ACRONYM：基于仿真的大规模抓取数据集》，ICRA 2021。"
+    ],
+    "translation_html": "<p>合成数据集</p><p>ACRONYM：带抓取标注。</p><p>C. Eppner、A. Mousavian、D. Fox：《ACRONYM：基于仿真的大规模抓取数据集》，ICRA 2021。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 10,
+    "title": "抓取数据集",
+    "translated_title": "抓取数据集",
+    "translation": [
+      "真实数据集",
+      "GraspNet-1Billion：带抓取标注。",
+      "物体模型；视角1、视角2；多视角；Kinect4A、RealSense；多相机；RGB彩色图；深度；点云；6D位姿；6自由度抓取位姿；实例掩码；基于矩形的抓取位姿。",
+      "H.-S. Fang、C. Wang、M. Gou、C. Lu：《GraspNet-1Billion：通用物体抓取的大规模基准》，CVPR 2020。"
+    ],
+    "translation_html": "<h3>真实数据集</h3><ul><li>GraspNet-1Billion：带抓取标注。</li></ul><p>物体模型；视角1、视角2；多视角；Kinect4A、RealSense；多相机；RGB彩色图；深度；点云；6D位姿；6自由度抓取位姿；实例掩码；基于矩形的抓取位姿。</p><p class=\"source\">H.-S. Fang、C. Wang、M. Gou、C. Lu：《GraspNet-1Billion：通用物体抓取的大规模基准》，CVPR 2020。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 11,
+    "title": "GraspNet-1Billion：抓取标注如何生成？",
+    "translated_title": "GraspNet-1Billion：抓取标注如何生成？",
+    "translation": [
+      "抓取位姿标注管线",
+      "首先从点云采样抓取点。",
+      "随后采样并评估抓取视角、平面内旋转和夹爪深入距离。最后利用每个物体的6D位姿，将抓取投影到场景中。",
+      "还进行碰撞检测，以避免抓取与背景或其他物体碰撞。",
+      "抓取点采样 → 抓取生成与标注 → 抓取投影 / 碰撞检测。",
+      "抓取视角采样｜平面内旋转采样｜夹爪深入距离采样。"
+    ],
+    "translation_html": "<h3>抓取位姿标注管线</h3><ul><li>首先从点云采样抓取点。</li><li>随后采样并评估抓取视角、平面内旋转和夹爪深入距离。最后利用每个物体的6D位姿，将抓取投影到场景中。</li><li>还进行碰撞检测，以避免抓取与背景或其他物体碰撞。</li></ul><p>抓取点采样 → 抓取生成与标注 → 抓取投影 / 碰撞检测。</p><p>抓取视角采样｜平面内旋转采样｜夹爪深入距离采样。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 12,
+    "title": "抓取检测",
+    "translated_title": "抓取检测",
+    "translation": [],
+    "translation_html": "",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 13,
+    "title": "抓取检测",
+    "translated_title": "抓取检测",
+    "translation": [
+      "由于抓取分布具有多峰性，将抓取表述为检测问题。"
+    ],
+    "translation_html": "<p>由于抓取分布具有多峰性，将抓取表述为检测问题。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 14,
+    "title": "视觉输入表示",
+    "translated_title": "视觉输入表示",
+    "translation": [
+      "体素网格",
+      "体素表示规则三维网格中的一个值。体素网格类似三维空间中的图像：体素类似像素，但位于三维网格而非二维图像。",
+      "网络：VGN。",
+      "显式几何；受体积分辨率限制。",
+      "TSDF截断符号距离场｜质量｜朝向｜宽度｜检测到的抓取。",
+      "M. Breyer、J. J. Chung、L. Ott、R. Siegwart、J. Nieto：《体积抓取网络：杂乱场景中的实时6自由度抓取检测》，CoRL 2020。"
+    ],
+    "translation_html": "<h3>体素网格</h3><ul><li>体素表示规则三维网格中的一个值。体素网格类似三维空间中的图像：体素类似像素，但位于三维网格而非二维图像。</li><li>网络：VGN。</li><li>显式几何；受体积分辨率限制。</li></ul><p>TSDF截断符号距离场｜质量｜朝向｜宽度｜检测到的抓取。</p><p class=\"source\">M. Breyer、J. J. Chung、L. Ott、R. Siegwart、J. Nieto：《体积抓取网络：杂乱场景中的实时6自由度抓取检测》，CoRL 2020。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 15,
+    "title": "视觉输入表示",
+    "translated_title": "视觉输入表示",
+    "translation": [
+      "点云",
+      "骨干网络：PointNet、PointNet++。",
+      "网络：GraspNet-baseline。",
+      "显式几何；传感器噪声、深度误差（镜面反射/透明）。",
+      "PointNet",
+      "分类网络：输入点 n×3 → 输入变换 → 多层感知机(64,64)，共享 → 特征变换 → 多层感知机(64,128,1024)，共享 → 最大池化 → 1024维全局特征 → 多层感知机(512,256,k) → 输出分数 k。T-Net：3×3变换、64×64变换；矩阵乘法。",
+      "分割网络：点特征；n×1088 → 多层感知机(512,256,128)，共享 → n×128 → 多层感知机(128,m)，共享 → 输出分数 n×m。",
+      "PointNet++",
+      "分层点集特征学习：采样与分组 → PointNet → 集合抽象；采样与分组 → PointNet → 集合抽象。分割：插值 → 单位PointNet → 插值 → 单位PointNet → 逐点分数；跳跃链接拼接。分类：PointNet → 全连接层 → 类别分数。",
+      "GraspNet-baseline",
+      "输入：N个点 → 点编码器 / 点解码器 → M个样本及其特征 → 接近方向网络ApproachNet → 接近方向分数 → 分组与对齐 → K个分组簇 → 操作网络OperationNet / 容错网络ToleranceNet → 筛选 → 输出K′个抓取。物体性、V个接近向量、操作参数、抓取亲和场。维度：N×3、M×(3+C)、M×(2+V)、nᵢ×(3+C)、K×(12×R)、K×R×2。"
+    ],
+    "translation_html": "<h3>点云</h3><ul><li>骨干网络：PointNet、PointNet++。</li><li>网络：GraspNet-baseline。</li><li>显式几何；传感器噪声、深度误差（镜面反射/透明）。</li></ul><h3>PointNet</h3><p>分类网络：输入点 n×3 → 输入变换 → 多层感知机(64,64)，共享 → 特征变换 → 多层感知机(64,128,1024)，共享 → 最大池化 → 1024维全局特征 → 多层感知机(512,256,k) → 输出分数 k。T-Net：3×3变换、64×64变换；矩阵乘法。</p><p>分割网络：点特征；n×1088 → 多层感知机(512,256,128)，共享 → n×128 → 多层感知机(128,m)，共享 → 输出分数 n×m。</p><h3>PointNet++</h3><p>分层点集特征学习：采样与分组 → PointNet → 集合抽象；采样与分组 → PointNet → 集合抽象。分割：插值 → 单位PointNet → 插值 → 单位PointNet → 逐点分数；跳跃链接拼接。分类：PointNet → 全连接层 → 类别分数。</p><h3>GraspNet-baseline</h3><p>输入：N个点 → 点编码器 / 点解码器 → M个样本及其特征 → 接近方向网络ApproachNet → 接近方向分数 → 分组与对齐 → K个分组簇 → 操作网络OperationNet / 容错网络ToleranceNet → 筛选 → 输出K′个抓取。物体性、V个接近向量、操作参数、抓取亲和场。维度：N×3、M×(3+C)、M×(2+V)、nᵢ×(3+C)、K×(12×R)、K×R×2。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 16,
+    "title": "视觉输入表示",
+    "translated_title": "视觉输入表示",
+    "translation": [
+      "图像",
+      "仅RGB：MonoGraspNet。",
+      "多视角RGB：GraspNeRF。",
+      "隐式几何。",
+      "MonoGraspNet",
+      "RGB输入；关键点网络；法线网络；裁剪；热图＋RGB图；二维关键点；ROI对齐；CNN骨干；深度、角度、宽度；表面法线；三维关键点；三维视图、二维视图。",
+      "GraspNeRF",
+      "稀疏多视角RGB输入（6个视角）；编码器；场景表示构建模块 F_scene：图像特征体 Vᵢ → 多视角特征聚合网络 → 聚合特征体 V_A → TSDF预测网络 → TSDF V_TSDF。体积抓取检测模块 F_grasp：抓取检测网络 → q、R、w；抓取损失、几何损失、颜色损失。体渲染：TSDF转密度 → σ；颜色预测网络 → c；射线距离。",
+      "Zhai G、Huang D、Wu S C等：《MonoGraspNet：利用单张RGB图像进行6自由度抓取》，arXiv:2209.13036，2022。",
+      "Dai Q.、Zhu Y.、Geng Y.、Ruan C.、Zhang J.、Wang H.：《GraspNeRF：利用可泛化NeRF，基于多视角检测透明与镜面物体的6自由度抓取》，arXiv:2210.06575。"
+    ],
+    "translation_html": "<h3>图像</h3><ul><li>仅RGB：MonoGraspNet。</li><li>多视角RGB：GraspNeRF。</li><li>隐式几何。</li></ul><h3>MonoGraspNet</h3><p>RGB输入；关键点网络；法线网络；裁剪；热图＋RGB图；二维关键点；ROI对齐；CNN骨干；深度、角度、宽度；表面法线；三维关键点；三维视图、二维视图。</p><h3>GraspNeRF</h3><p>稀疏多视角RGB输入（6个视角）；编码器；场景表示构建模块 F_scene：图像特征体 Vᵢ → 多视角特征聚合网络 → 聚合特征体 V_A → TSDF预测网络 → TSDF V_TSDF。体积抓取检测模块 F_grasp：抓取检测网络 → q、R、w；抓取损失、几何损失、颜色损失。体渲染：TSDF转密度 → σ；颜色预测网络 → c；射线距离。</p><p class=\"source\">Zhai G、Huang D、Wu S C等：《MonoGraspNet：利用单张RGB图像进行6自由度抓取》，arXiv:2209.13036，2022。</p><p class=\"source\">Dai Q.、Zhu Y.、Geng Y.、Ruan C.、Zhang J.、Wang H.：《GraspNeRF：利用可泛化NeRF，基于多视角检测透明与镜面物体的6自由度抓取》，arXiv:2210.06575。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 17,
+    "title": "指标",
+    "translated_title": "指标",
+    "translation": [
+      "成功率",
+      "成功执行抓取的比例。",
+      "清理率",
+      "每轮移除物体的百分比。",
+      "规划时间",
+      "从接收输入到返回抓取的时间。"
+    ],
+    "translation_html": "<ul><li>成功率<ul><li>成功执行抓取的比例。</li></ul></li><li>清理率<ul><li>每轮移除物体的百分比。</li></ul></li><li>规划时间<ul><li>从接收输入到返回抓取的时间。</li></ul></li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 18,
+    "title": "体积抓取网络：杂乱场景中的实时6自由度抓取检测（VGN）",
+    "translated_title": "体积抓取网络：杂乱场景中的实时6自由度抓取检测（VGN）",
+    "translation": [
+      "深度传感器｜TSDF截断符号距离场｜质量｜朝向｜宽度｜检测到的抓取。",
+      "M. Breyer、J. J. Chung、L. Ott、R. Siegwart、J. Nieto：《体积抓取网络：杂乱场景中的实时6自由度抓取检测》，CoRL 2020。"
+    ],
+    "translation_html": "<p>深度传感器｜TSDF截断符号距离场｜质量｜朝向｜宽度｜检测到的抓取。</p><p>M. Breyer、J. J. Chung、L. Ott、R. Siegwart、J. Nieto：《体积抓取网络：杂乱场景中的实时6自由度抓取检测》，CoRL 2020。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 19,
+    "title": "VGN",
+    "translated_title": "VGN",
+    "translation": [
+      "如何定义抓取？",
+      "用以下量定义抓取g：",
+      "位置t（体积中的索引）。",
+      "朝向r（四元数）。",
+      "夹爪张开宽度w。",
+      "每个位姿关联标量q∈[0,1]，表示抓取成功概率。",
+      "体积边界对应抓取工作空间的边界。",
+      "张开宽度｜手指深入距离。"
+    ],
+    "translation_html": "<h3>如何定义抓取？</h3><ul><li>用以下量定义抓取g：<ul><li>位置t（体积中的索引）。</li><li>朝向r（四元数）。</li><li>夹爪张开宽度w。</li></ul></li><li>每个位姿关联标量q∈[0,1]，表示抓取成功概率。</li><li>体积边界对应抓取工作空间的边界。</li></ul><p>张开宽度｜手指深入距离。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 20,
+    "title": "VGN",
+    "translated_title": "VGN",
+    "translation": [
+      "检测网络",
+      "输入表示为由多视角深度图融合得到的TSDF体积。",
+      "输出是三个体积，各体素分别包含质量、朝向、宽度。",
+      "采用三维全卷积网络编码器—解码器架构。",
+      "训练损失与S4G类似。"
+    ],
+    "translation_html": "<h3>检测网络</h3><ul><li>输入表示为由多视角深度图融合得到的TSDF体积。</li><li>输出是三个体积，各体素分别包含质量、朝向、宽度。</li><li>采用三维全卷积网络编码器—解码器架构。</li><li>训练损失与S4G类似。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 21,
+    "title": "VGN",
+    "translated_title": "VGN",
+    "translation": [
+      "后处理",
+      "用三维高斯核平滑抓取质量张量，使高抓取质量区域的抓取更受偏好。",
+      "掩蔽距最近表面小于手指深入距离的体素。",
+      "应用非极大值抑制。"
+    ],
+    "translation_html": "<h3>后处理</h3><ul><li>用三维高斯核平滑抓取质量张量，使高抓取质量区域的抓取更受偏好。</li><li>掩蔽距最近表面小于手指深入距离的体素。</li><li>应用非极大值抑制。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 22,
+    "title": "VGN",
+    "translated_title": "VGN",
+    "translation": [
+      "合成数据生成",
+      "使用PyBullet模拟器，以“堆叠”和“紧密排列”两种策略创建用于仿真抓取试验的虚拟场景。",
+      "从真值点云中采样一个点及其法线。",
+      "围绕法线测试6种抓取朝向：在给定位姿生成夹爪。",
+      "导致与环境碰撞的位姿标为负例。",
+      "堆叠｜紧密排列。"
+    ],
+    "translation_html": "<h3>合成数据生成</h3><ul><li>使用PyBullet模拟器，以“堆叠”和“紧密排列”两种策略创建用于仿真抓取试验的虚拟场景。</li><li>从真值点云中采样一个点及其法线。</li><li>围绕法线测试6种抓取朝向：在给定位姿生成夹爪。</li><li>导致与环境碰撞的位姿标为负例。</li></ul><p>堆叠｜紧密排列。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 23,
+    "title": "VGN",
+    "translated_title": "VGN",
+    "translation": [
+      "真实演示。"
+    ],
+    "translation_html": "<p>真实演示。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 24,
+    "title": "VGN",
+    "translated_title": "VGN",
+    "translation": [
+      "由于多视角观测，对遮挡更鲁棒。",
+      "受预定义工作空间限制。",
+      "受体积分辨率限制。"
+    ],
+    "translation_html": "<ul><li>由于多视角观测，对遮挡更鲁棒。</li><li>受预定义工作空间限制。</li><li>受体积分辨率限制。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 25,
+    "title": "GS-Net",
+    "translated_title": "GS-Net",
+    "translation": [
+      "为快速准确的抓取检测发现杂乱场景中的可抓取性（ICCV 2021）。"
+    ],
+    "translation_html": "<p>为快速准确的抓取检测发现杂乱场景中的可抓取性（ICCV 2021）。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 26,
+    "title": "GS-Net",
+    "translated_title": "GS-Net",
+    "translation": [
+      "自然场景中的抓取位姿检测，可视为两阶段问题。",
+      "在哪里抓：具有高可抓取性的位置。",
+      "怎样抓：确定抓取参数，例如平面内旋转、接近深度、抓取分数和夹爪宽度。"
+    ],
+    "translation_html": "<ul><li>自然场景中的抓取位姿检测，可视为两阶段问题。</li><li>在哪里抓：具有高可抓取性的位置。</li><li>怎样抓：确定抓取参数，例如平面内旋转、接近深度、抓取分数和夹爪宽度。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 27,
+    "title": "可抓取性发现",
+    "translated_title": "可抓取性发现",
+    "translation": [
+      "一种新的几何质量指标——可抓取性，用于区分杂乱场景中的可抓区域。",
+      "对于点集P，V个接近方向均匀分布在球面空间。",
+      "逐点可抓取性分数：$S^p=\\{s_i^p\\mid s_i^p\\subset[0,1],i=1,\\ldots,N\\}$。",
+      "逐视图可抓取性分数：$S^v=\\{s_i^v\\mid s_i^v\\subset[0,1]^V,i=1,\\ldots,N\\}$。"
+    ],
+    "translation_html": "<ul><li>一种新的几何质量指标——可抓取性，用于区分杂乱场景中的可抓区域。</li><li>对于点集P，V个接近方向均匀分布在球面空间。</li><li>逐点可抓取性分数：$S^p=\\{s_i^p\\mid s_i^p\\subset[0,1],i=1,\\ldots,N\\}$。</li><li>逐视图可抓取性分数：$S^v=\\{s_i^v\\mid s_i^v\\subset[0,1]^V,i=1,\\ldots,N\\}$。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 28,
+    "title": "可抓取性度量",
+    "translated_title": "可抓取性度量",
+    "translation": [
+      "单物体可抓取性。",
+      "$\\tilde s_i^p=\\frac{\\sum_{j=1}^V\\sum_{g\\in\\mathbf G_{i,j}}\\mathbf1(g)}{\\sum_{j=1}^V|\\mathbf G_{i,j}|},\\ i=1,\\ldots,N.$",
+      "$\\tilde s_i^v=\\{\\frac{\\sum_{g\\in\\mathbf G_{i,j}}\\mathbf1(g)}{|\\mathbf G_{i,j}|}\\mid1\\le j\\le V\\},\\ i=1,\\ldots,N.$",
+      "对每个抓取，利用力分析模型计算抓取质量分数。",
+      "$\\tilde s_i^p=\\frac{\\sum_{j=1}^V\\sum_{k=1}^L\\mathbf1(q_k^{i,j}>c)}{\\sum_{j=1}^V|\\mathcal G_{i,j}|},\\ i=1,\\ldots,N.$",
+      "$\\tilde s_i^v=\\{\\frac{\\sum_{k=1}^L\\mathbf1(q_k^{i,j}>c)}{|\\mathcal G_{i,j}|}\\mid1\\le j\\le V\\},\\ i=1,\\ldots,N.$"
+    ],
+    "translation_html": "<ul><li>单物体可抓取性。</li></ul><p>$\\tilde s_i^p=\\frac{\\sum_{j=1}^V\\sum_{g\\in\\mathbf G_{i,j}}\\mathbf1(g)}{\\sum_{j=1}^V|\\mathbf G_{i,j}|},\\ i=1,\\ldots,N.$</p><p>$\\tilde s_i^v=\\{\\frac{\\sum_{g\\in\\mathbf G_{i,j}}\\mathbf1(g)}{|\\mathbf G_{i,j}|}\\mid1\\le j\\le V\\},\\ i=1,\\ldots,N.$</p><ul><li>对每个抓取，利用力分析模型计算抓取质量分数。</li></ul><p>$\\tilde s_i^p=\\frac{\\sum_{j=1}^V\\sum_{k=1}^L\\mathbf1(q_k^{i,j}>c)}{\\sum_{j=1}^V|\\mathcal G_{i,j}|},\\ i=1,\\ldots,N.$</p><p>$\\tilde s_i^v=\\{\\frac{\\sum_{k=1}^L\\mathbf1(q_k^{i,j}>c)}{|\\mathcal G_{i,j}|}\\mid1\\le j\\le V\\},\\ i=1,\\ldots,N.$</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 29,
+    "title": "可抓取性度量",
+    "translated_title": "可抓取性度量",
+    "translation": [
+      "场景级可抓取性。",
+      "通过碰撞检查评估每个抓取，并赋予碰撞标签。",
+      "$\\tilde s_i^p=\\frac{\\sum_{j=1}^V\\sum_{k=1}^L\\mathbf1(q_k^{i,j}>c)\\cdot\\mathbf1(c_k^{i,j})}{\\sum_{j=1}^V|\\mathcal G_{i,j}|},\\ i=1,\\ldots,N.$",
+      "$\\tilde s_i^v=\\{\\frac{\\sum_{k=1}^L\\mathbf1(q_k^{i,j}>c)\\cdot\\mathbf1(c_k^{i,j})}{|\\mathcal G_{i,j}|}\\mid1\\le j\\le V\\},\\ i=1,\\ldots,N.$",
+      "根据物体6D位姿将物体点投影到场景中。",
+      "对场景中的每个点，关联最近的投影物体点。"
+    ],
+    "translation_html": "<ul><li>场景级可抓取性。</li><li>通过碰撞检查评估每个抓取，并赋予碰撞标签。</li></ul><p>$\\tilde s_i^p=\\frac{\\sum_{j=1}^V\\sum_{k=1}^L\\mathbf1(q_k^{i,j}>c)\\cdot\\mathbf1(c_k^{i,j})}{\\sum_{j=1}^V|\\mathcal G_{i,j}|},\\ i=1,\\ldots,N.$</p><p>$\\tilde s_i^v=\\{\\frac{\\sum_{k=1}^L\\mathbf1(q_k^{i,j}>c)\\cdot\\mathbf1(c_k^{i,j})}{|\\mathcal G_{i,j}|}\\mid1\\le j\\le V\\},\\ i=1,\\ldots,N.$</p><ul><li>根据物体6D位姿将物体点投影到场景中。</li><li>对场景中的每个点，关联最近的投影物体点。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 30,
+    "title": "GSNet架构",
+    "translated_title": "GSNet架构",
+    "translation": [
+      "骨干网络",
+      "ResUNet14基于MinkowskiEngine构建。",
+      "含残差块的U形架构。",
+      "对于N×3点云，提取C通道特征，输出大小为N×(3+C)的点集。",
+      "点编码器｜点解码器｜输入点云｜输出逐点特征。"
+    ],
+    "translation_html": "<h3>骨干网络</h3><ul><li>ResUNet14基于MinkowskiEngine构建。</li><li>含残差块的U形架构。</li><li>对于N×3点云，提取C通道特征，输出大小为N×(3+C)的点集。</li></ul><p>点编码器｜点解码器｜输入点云｜输出逐点特征。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 31,
+    "title": "稀疏卷积",
+    "translated_title": "稀疏卷积",
+    "translation": [
+      "三维点云中的大多数体素为空，因此三维体素中的点云数据通常是稀疏信号。",
+      "高效地在稀疏数据上计算卷积，而不是扫描所有图像像素或空间体素。",
+      "只有当卷积核覆盖一个活跃输入位置时才计算卷积输出。",
+      "输入｜输出｜稀疏卷积｜卷积核。"
+    ],
+    "translation_html": "<ul><li>三维点云中的大多数体素为空，因此三维体素中的点云数据通常是稀疏信号。</li><li>高效地在稀疏数据上计算卷积，而不是扫描所有图像像素或空间体素。</li><li>只有当卷积核覆盖一个活跃输入位置时才计算卷积输出。</li></ul><p>输入｜输出｜稀疏卷积｜卷积核。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 32,
+    "title": "GSNet架构",
+    "translated_title": "GSNet架构",
+    "translation": [
+      "可抓点最远点采样",
+      "一个多层感知机生成逐点可抓取性分布，输出：",
+      "可抓取性分布（N×1）。",
+      "二分类物体性分数（N×2）。",
+      "选择可抓取性分数高于阈值的点，采用最远点采样，使采样点间距离最大化。",
+      "采样M个种子点，每点带(3+C)维特征。",
+      "点云｜逐点可抓取性分布｜可抓点最远点采样｜种子点；N×(3+C)、M×(3+C)。"
+    ],
+    "translation_html": "<h3>可抓点最远点采样</h3><ul><li>一个多层感知机生成逐点可抓取性分布，输出：<ul><li>可抓取性分布（N×1）。</li><li>二分类物体性分数（N×2）。</li></ul></li><li>选择可抓取性分数高于阈值的点，采用最远点采样，使采样点间距离最大化。</li><li>采样M个种子点，每点带(3+C)维特征。</li></ul><p>点云｜逐点可抓取性分布｜可抓点最远点采样｜种子点；N×(3+C)、M×(3+C)。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 33,
+    "title": "GSNet架构",
+    "translated_title": "GSNet架构",
+    "translation": [
+      "可抓取性概率化视图选择",
+      "利用斐波那契网格从单位球面采样V个视图。",
+      "一个多层感知机输出M×V向量作为逐视图可抓取性分布，并输出M×C残差特征用于抓取生成。",
+      "将所有视图的可抓取性分数归一化到(0,1)作为概率分数，利用概率化视图选择（PVS）获得最佳视图。",
+      "种子点｜逐视图可抓取性分布｜概率化视图选择｜选定视图；M×(3+C)、M×V、M×C。"
+    ],
+    "translation_html": "<h3>可抓取性概率化视图选择</h3><ul><li>利用斐波那契网格从单位球面采样V个视图。</li><li>一个多层感知机输出M×V向量作为逐视图可抓取性分布，并输出M×C残差特征用于抓取生成。</li><li>将所有视图的可抓取性分数归一化到(0,1)作为概率分数，利用概率化视图选择（PVS）获得最佳视图。</li></ul><p>种子点｜逐视图可抓取性分布｜概率化视图选择｜选定视图；M×(3+C)、M×V、M×C。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 34,
+    "title": "GSNet架构",
+    "translated_title": "GSNet架构",
+    "translation": [
+      "从种子点进行圆柱分组",
+      "对于M个点—视图对中的每一对，利用固定高度和半径的圆柱分组并采样K个点。",
+      "抓取候选大小：M×K×(3+C)。",
+      "以圆柱半径归一化点坐标。",
+      "特征向量。",
+      "圆柱分组｜抓取候选｜选定视图。"
+    ],
+    "translation_html": "<h3>从种子点进行圆柱分组</h3><ul><li>对于M个点—视图对中的每一对，利用固定高度和半径的圆柱分组并采样K个点。</li><li>抓取候选大小：M×K×(3+C)。<ul><li>以圆柱半径归一化点坐标。</li><li>特征向量。</li></ul></li></ul><p>圆柱分组｜抓取候选｜选定视图。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 35,
+    "title": "GSNet架构",
+    "translated_title": "GSNet架构",
+    "translation": [
+      "从候选生成抓取",
+      "利用多层感知机与最大池化层处理抓取候选。",
+      "用多层感知机输出不同（平面内旋转）—（接近深度）组合的分数与宽度。",
+      "输出大小M×(A×D×2)，其中A为平面内转角数量，D为夹爪深入距离数量，2表示分数与宽度。",
+      "角度—深度搜索｜输出抓取位姿｜多层感知机｜最大池化。"
+    ],
+    "translation_html": "<h3>从候选生成抓取</h3><ul><li>利用多层感知机与最大池化层处理抓取候选。</li><li>用多层感知机输出不同（平面内旋转）—（接近深度）组合的分数与宽度。</li><li>输出大小M×(A×D×2)，其中A为平面内转角数量，D为夹爪深入距离数量，2表示分数与宽度。</li></ul><p>角度—深度搜索｜输出抓取位姿｜多层感知机｜最大池化。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 36,
+    "title": "GSNet",
+    "translated_title": "GSNet",
+    "translation": [
+      "GSNet定性结果",
+      "真实抓取实验",
+      "编号",
+      "物体数",
+      "尝试数",
+      "成功率",
+      "4,10,22,32,36,57",
+      "6",
+      "6",
+      "100%",
+      "2,38,58,59,61,69",
+      "6",
+      "7",
+      "85.7%",
+      "34,37,64,66,68,72,77",
+      "7",
+      "9",
+      "77.8%",
+      "0,2,23,29,39,56,62",
+      "7",
+      "7",
+      "100%",
+      "1,10,40,41,44,48,65,69",
+      "8",
+      "8",
+      "100%",
+      "3,9,10,23,33,42,63,68",
+      "8",
+      "9",
+      "88.9%",
+      "总计",
+      "42",
+      "46",
+      "91.3%",
+      "表7：杂乱场景抓取结果。#Objects表示物体数量，#Attempts同样表示尝试数量。"
+    ],
+    "translation_html": "<h3>GSNet定性结果</h3><h3>真实抓取实验</h3><table><thead><tr><th>编号</th><th>物体数</th><th>尝试数</th><th>成功率</th></tr></thead><tbody><tr><td>4,10,22,32,36,57</td><td>6</td><td>6</td><td>100%</td></tr><tr><td>2,38,58,59,61,69</td><td>6</td><td>7</td><td>85.7%</td></tr><tr><td>34,37,64,66,68,72,77</td><td>7</td><td>9</td><td>77.8%</td></tr><tr><td>0,2,23,29,39,56,62</td><td>7</td><td>7</td><td>100%</td></tr><tr><td>1,10,40,41,44,48,65,69</td><td>8</td><td>8</td><td>100%</td></tr><tr><td>3,9,10,23,33,42,63,68</td><td>8</td><td>9</td><td>88.9%</td></tr><tr><td>总计</td><td>42</td><td>46</td><td>91.3%</td></tr></tbody></table><p>表7：杂乱场景抓取结果。#Objects表示物体数量，#Attempts同样表示尝试数量。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 37,
+    "title": "GSNet",
+    "translated_title": "GSNet",
+    "translation": [
+      "分布类型",
+      "分布",
+      "平均精度AP",
+      "物体级",
+      "55.33",
+      "场景级",
+      "59.70",
+      "视图可抓取性类型",
+      "视图可抓取性",
+      "平均精度AP",
+      "平均分",
+      "50.62",
+      "最高分",
+      "56.95",
+      "可行比例",
+      "59.70",
+      "GraspNet-1Billion上的推理速度。“CGM”为级联可抓取性模型，“GOM”为抓取操作模型。",
+      "相机",
+      "CGM",
+      "GOM",
+      "总计",
+      "RealSense",
+      "0.08秒",
+      "0.02秒",
+      "0.10秒",
+      "Kinect",
+      "0.10秒",
+      "0.02秒",
+      "0.12秒"
+    ],
+    "translation_html": "<h3>分布类型</h3><table><thead><tr><th>分布</th><th>平均精度AP</th></tr></thead><tbody><tr><td>物体级</td><td>55.33</td></tr><tr><td>场景级</td><td>59.70</td></tr></tbody></table><h3>视图可抓取性类型</h3><table><thead><tr><th>视图可抓取性</th><th>平均精度AP</th></tr></thead><tbody><tr><td>平均分</td><td>50.62</td></tr><tr><td>最高分</td><td>56.95</td></tr><tr><td>可行比例</td><td>59.70</td></tr></tbody></table><p>GraspNet-1Billion上的推理速度。“CGM”为级联可抓取性模型，“GOM”为抓取操作模型。</p><table><thead><tr><th>相机</th><th>CGM</th><th>GOM</th><th>总计</th></tr></thead><tbody><tr><td>RealSense</td><td>0.08秒</td><td>0.02秒</td><td>0.10秒</td></tr><tr><td>Kinect</td><td>0.10秒</td><td>0.02秒</td><td>0.12秒</td></tr></tbody></table>",
+    "layout": "columns"
+  },
+  {
+    "lecture": 7,
+    "page": 38,
+    "title": "GSNet",
+    "translated_title": "GSNet",
+    "translation": [
+      "结论",
+      "一种新的几何质量指标，称为可抓取性。",
+      "采用向前看搜索方法度量可抓取性。",
+      "开发端到端网络，将可抓取性融入抓取位姿检测问题。",
+      "独立模型学习可抓取性分布。"
+    ],
+    "translation_html": "<h3>结论</h3><ul><li>一种新的几何质量指标，称为可抓取性。</li><li>采用向前看搜索方法度量可抓取性。</li><li>开发端到端网络，将可抓取性融入抓取位姿检测问题。</li><li>独立模型学习可抓取性分布。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 39,
+    "title": "条件抓取生成模型",
+    "translated_title": "条件抓取生成模型",
+    "translation": [],
+    "translation_html": "",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 40,
+    "title": "数据：DexGraspNet 2.0",
+    "translated_title": "数据：DexGraspNet 2.0",
+    "translation": [
+      "DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取",
+      "我们提出DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取。",
+      "投稿中。"
+    ],
+    "translation_html": "<p>DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取</p><p>我们提出DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取。</p><p>投稿中。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 41,
+    "title": "基于扩散的灵巧手位姿生成",
+    "translated_title": "基于扩散的灵巧手位姿生成",
+    "translation": [
+      "推理",
+      "种子点提议：点云P（N×3）→ ResUNet14编码器 / 解码器 → 局部特征N×C → 可抓取性多层感知机 → 可抓取性GS（N×1）与物体性O（N×2）；可抓取性前1%、最远点采样；种子特征f_s（M×C）。",
+      "抓取位姿生成：条件生成；扩散；g_E¹ → v_θ → g_E⁰；GS_E：12维，R：3×3，奇异值分解SVD；关节多层感知机 → θ：16维 → 抓取位姿g_r。",
+      "训练",
+      "真值可抓取性GS^gt、物体性O^gt、抓取g(T,R,θ)^gt；点云P（N×3）→ ResUNet14编码器 / 解码器 → 可抓取性多层感知机；对应点P_correspond；扩散的时间t、g_Eᵗ、g_E⁰及预测v_θ和真值v_gt；关节多层感知机。",
+      "总损失：$L=\\lambda_oL_o+\\lambda_gL_g+\\lambda_dL_d+\\lambda_\\theta L_\\theta$。"
+    ],
+    "translation_html": "<h3>推理</h3><p>种子点提议：点云P（N×3）→ ResUNet14编码器 / 解码器 → 局部特征N×C → 可抓取性多层感知机 → 可抓取性GS（N×1）与物体性O（N×2）；可抓取性前1%、最远点采样；种子特征f_s（M×C）。</p><p>抓取位姿生成：条件生成；扩散；g_E¹ → v_θ → g_E⁰；GS_E：12维，R：3×3，奇异值分解SVD；关节多层感知机 → θ：16维 → 抓取位姿g_r。</p><h3>训练</h3><p>真值可抓取性GS^gt、物体性O^gt、抓取g(T,R,θ)^gt；点云P（N×3）→ ResUNet14编码器 / 解码器 → 可抓取性多层感知机；对应点P_correspond；扩散的时间t、g_Eᵗ、g_E⁰及预测v_θ和真值v_gt；关节多层感知机。</p><p>总损失：$L=\\lambda_oL_o+\\lambda_gL_g+\\lambda_dL_d+\\lambda_\\theta L_\\theta$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 42,
+    "title": "方法",
+    "translated_title": "方法",
+    "translation": [
+      "阶段1：在哪里抓",
+      "使用稀疏卷积获得局部特征。",
+      "预测可抓取性与物体性分数。",
+      "物体性：是否为物体上的点。",
+      "可抓取性：是否可能成为种子点。",
+      "由邻近真值种子点累积得到。",
+      "推理",
+      "种子点提议：点云P（N×3）→ ResUNet14编码器 / 解码器 → 局部特征N×C → 可抓取性多层感知机 → 可抓取性GS（N×1）与物体性O（N×2）；可抓取性前1%、最远点采样；种子特征f_s（M×C）。",
+      "抓取位姿生成：条件生成；扩散；g_E¹ → v_θ → g_E⁰；GS_E：12维，R：3×3，奇异值分解SVD；关节多层感知机 → θ：16维 → 抓取位姿g_r。",
+      "训练",
+      "真值可抓取性GS^gt、物体性O^gt、抓取g(T,R,θ)^gt；点云P（N×3）→ ResUNet14编码器 / 解码器 → 可抓取性多层感知机；对应点P_correspond；扩散的时间t、g_Eᵗ、g_E⁰及预测v_θ和真值v_gt；关节多层感知机。",
+      "总损失：$L=\\lambda_oL_o+\\lambda_gL_g+\\lambda_dL_d+\\lambda_\\theta L_\\theta$。"
+    ],
+    "translation_html": "<h3>阶段1：在哪里抓</h3><ul><li>使用稀疏卷积获得局部特征。</li><li>预测可抓取性与物体性分数。</li><li>物体性：是否为物体上的点。</li><li>可抓取性：是否可能成为种子点。<ul><li>由邻近真值种子点累积得到。</li></ul></li></ul><h3>推理</h3><p>种子点提议：点云P（N×3）→ ResUNet14编码器 / 解码器 → 局部特征N×C → 可抓取性多层感知机 → 可抓取性GS（N×1）与物体性O（N×2）；可抓取性前1%、最远点采样；种子特征f_s（M×C）。</p><p>抓取位姿生成：条件生成；扩散；g_E¹ → v_θ → g_E⁰；GS_E：12维，R：3×3，奇异值分解SVD；关节多层感知机 → θ：16维 → 抓取位姿g_r。</p><h3>训练</h3><p>真值可抓取性GS^gt、物体性O^gt、抓取g(T,R,θ)^gt；点云P（N×3）→ ResUNet14编码器 / 解码器 → 可抓取性多层感知机；对应点P_correspond；扩散的时间t、g_Eᵗ、g_E⁰及预测v_θ和真值v_gt；关节多层感知机。</p><p>总损失：$L=\\lambda_oL_o+\\lambda_gL_g+\\lambda_dL_d+\\lambda_\\theta L_\\theta$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 43,
+    "title": "方法",
+    "translated_title": "方法",
+    "translation": [
+      "阶段2：怎样抓",
+      "仅使用阶段1的局部特征。",
+      "预测残差位置T、旋转R与手指关节角θ。",
+      "为处理多峰抓取位姿分布，使用扩散模型生成T和R。",
+      "随后直接预测θ。",
+      "推理",
+      "种子点提议：点云P（N×3）→ ResUNet14编码器 / 解码器 → 局部特征N×C → 可抓取性多层感知机 → 可抓取性GS（N×1）与物体性O（N×2）；可抓取性前1%、最远点采样；种子特征f_s（M×C）。",
+      "抓取位姿生成：条件生成；扩散；g_E¹ → v_θ → g_E⁰；GS_E：12维，R：3×3，奇异值分解SVD；关节多层感知机 → θ：16维 → 抓取位姿g_r。",
+      "训练",
+      "真值可抓取性GS^gt、物体性O^gt、抓取g(T,R,θ)^gt；点云P（N×3）→ ResUNet14编码器 / 解码器 → 可抓取性多层感知机；对应点P_correspond；扩散的时间t、g_Eᵗ、g_E⁰及预测v_θ和真值v_gt；关节多层感知机。",
+      "总损失：$L=\\lambda_oL_o+\\lambda_gL_g+\\lambda_dL_d+\\lambda_\\theta L_\\theta$。"
+    ],
+    "translation_html": "<h3>阶段2：怎样抓</h3><ul><li>仅使用阶段1的局部特征。</li><li>预测残差位置T、旋转R与手指关节角θ。</li><li>为处理多峰抓取位姿分布，使用扩散模型生成T和R。</li><li>随后直接预测θ。</li></ul><h3>推理</h3><p>种子点提议：点云P（N×3）→ ResUNet14编码器 / 解码器 → 局部特征N×C → 可抓取性多层感知机 → 可抓取性GS（N×1）与物体性O（N×2）；可抓取性前1%、最远点采样；种子特征f_s（M×C）。</p><p>抓取位姿生成：条件生成；扩散；g_E¹ → v_θ → g_E⁰；GS_E：12维，R：3×3，奇异值分解SVD；关节多层感知机 → θ：16维 → 抓取位姿g_r。</p><h3>训练</h3><p>真值可抓取性GS^gt、物体性O^gt、抓取g(T,R,θ)^gt；点云P（N×3）→ ResUNet14编码器 / 解码器 → 可抓取性多层感知机；对应点P_correspond；扩散的时间t、g_Eᵗ、g_E⁰及预测v_θ和真值v_gt；关节多层感知机。</p><p>总损失：$L=\\lambda_oL_o+\\lambda_gL_g+\\lambda_dL_d+\\lambda_\\theta L_\\theta$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 44,
+    "title": "灵巧抓取位姿扩散模型",
+    "translated_title": "灵巧抓取位姿扩散模型",
+    "translation": [
+      "DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取",
+      "我们提出DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取。"
+    ],
+    "translation_html": "<p>DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取</p><p>我们提出DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 45,
+    "title": "实验",
+    "translated_title": "实验",
+    "translation": [
+      "在DexGraspNet 2.0基准达到最先进水平。",
+      "组别",
+      "方法",
+      "GraspNet密集",
+      "GraspNet随机",
+      "GraspNet疏松",
+      "ShapeNet密集",
+      "ShapeNet随机",
+      "ShapeNet疏松",
+      "基线",
+      "HGC-Net [8]",
+      "46.0",
+      "37.8",
+      "26.7",
+      "46.4",
+      "44.8",
+      "30.4",
+      "基线",
+      "GraspTTA† [11]",
+      "62.5",
+      "54.1",
+      "42.8",
+      "56.6",
+      "57.8",
+      "46.4",
+      "基线",
+      "ISAGrasp† [5]",
+      "63.4",
+      "60.7",
+      "51.4",
+      "64.0",
+      "56.3",
+      "52.7",
+      "消融",
+      "局部特征",
+      "16.8",
+      "10.9",
+      "4.8",
+      "21.3",
+      "17.6",
+      "10.9",
+      "消融",
+      "分解模型",
+      "84.2",
+      "80.7",
+      "71.3",
+      "74.9",
+      "72.5",
+      "66.4",
+      "消融",
+      "随机场景",
+      "90.0",
+      "84.1",
+      "68.2",
+      "78.9",
+      "78.8",
+      "71.3",
+      "本文",
+      "本文方法",
+      "90.6",
+      "83.7",
+      "73.2",
+      "81.0",
+      "85.4",
+      "74.2",
+      "表1：灵巧抓取的基线与消融研究。†表示修改过的基线。消融研究围绕表格下半部分的三个方面进行。每个密集场景含8—11个物体；每个随机场景含1—10个物体，通过从密集场景删除物体获得；每个疏松场景含1—2个物体。"
+    ],
+    "translation_html": "<ul><li>在DexGraspNet 2.0基准达到最先进水平。</li></ul><table><thead><tr><th>组别</th><th>方法</th><th>GraspNet密集</th><th>GraspNet随机</th><th>GraspNet疏松</th><th>ShapeNet密集</th><th>ShapeNet随机</th><th>ShapeNet疏松</th></tr></thead><tbody><tr><td>基线</td><td>HGC-Net [8]</td><td>46.0</td><td>37.8</td><td>26.7</td><td>46.4</td><td>44.8</td><td>30.4</td></tr><tr><td>基线</td><td>GraspTTA† [11]</td><td>62.5</td><td>54.1</td><td>42.8</td><td>56.6</td><td>57.8</td><td>46.4</td></tr><tr><td>基线</td><td>ISAGrasp† [5]</td><td>63.4</td><td>60.7</td><td>51.4</td><td>64.0</td><td>56.3</td><td>52.7</td></tr><tr><td>消融</td><td>局部特征</td><td>16.8</td><td>10.9</td><td>4.8</td><td>21.3</td><td>17.6</td><td>10.9</td></tr><tr><td>消融</td><td>分解模型</td><td>84.2</td><td>80.7</td><td>71.3</td><td>74.9</td><td>72.5</td><td>66.4</td></tr><tr><td>消融</td><td>随机场景</td><td>90.0</td><td>84.1</td><td>68.2</td><td>78.9</td><td>78.8</td><td>71.3</td></tr><tr><td>本文</td><td>本文方法</td><td>90.6</td><td>83.7</td><td>73.2</td><td>81.0</td><td>85.4</td><td>74.2</td></tr></tbody></table><p>表1：灵巧抓取的基线与消融研究。†表示修改过的基线。消融研究围绕表格下半部分的三个方面进行。每个密集场景含8—11个物体；每个随机场景含1—10个物体，通过从密集场景删除物体获得；每个疏松场景含1—2个物体。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 46,
+    "title": "抓取数据的规模规律",
+    "translated_title": "抓取数据的规模规律",
+    "translation": [
+      "探索扩大抓取位姿数量和场景数量的影响。",
+      "使用更少位姿/场景时，性能显著下降。",
+      "使用的总场景比例：成功率（%）",
+      "比例",
+      "本文方法",
+      "ISAGrasp＋局部特征",
+      "1/128",
+      "52.8",
+      "41.1",
+      "1/64",
+      "68.1",
+      "52.7",
+      "1/32",
+      "76.8",
+      "60.0",
+      "1/16",
+      "79.9",
+      "63.5",
+      "1/8",
+      "81.4",
+      "63.6",
+      "1/4",
+      "83.5",
+      "65.3",
+      "1/2",
+      "84.8",
+      "65.4",
+      "1",
+      "85.8",
+      "66.1",
+      "使用的总抓取比例：成功率（%）",
+      "比例",
+      "本文方法",
+      "ISAGrasp＋局部特征",
+      "1/10000",
+      "58.1",
+      "56.5",
+      "1/1000",
+      "74.5",
+      "61.3",
+      "1/100",
+      "83.5",
+      "64.1",
+      "1/10",
+      "84.6",
+      "65.5",
+      "1",
+      "85.8",
+      "66.1"
+    ],
+    "translation_html": "<ul><li>探索扩大抓取位姿数量和场景数量的影响。</li><li>使用更少位姿/场景时，性能显著下降。</li></ul><h3>使用的总场景比例：成功率（%）</h3><table><thead><tr><th>比例</th><th>本文方法</th><th>ISAGrasp＋局部特征</th></tr></thead><tbody><tr><td>1/128</td><td>52.8</td><td>41.1</td></tr><tr><td>1/64</td><td>68.1</td><td>52.7</td></tr><tr><td>1/32</td><td>76.8</td><td>60.0</td></tr><tr><td>1/16</td><td>79.9</td><td>63.5</td></tr><tr><td>1/8</td><td>81.4</td><td>63.6</td></tr><tr><td>1/4</td><td>83.5</td><td>65.3</td></tr><tr><td>1/2</td><td>84.8</td><td>65.4</td></tr><tr><td>1</td><td>85.8</td><td>66.1</td></tr></tbody></table><h3>使用的总抓取比例：成功率（%）</h3><table><thead><tr><th>比例</th><th>本文方法</th><th>ISAGrasp＋局部特征</th></tr></thead><tbody><tr><td>1/10000</td><td>58.1</td><td>56.5</td></tr><tr><td>1/1000</td><td>74.5</td><td>61.3</td></tr><tr><td>1/100</td><td>83.5</td><td>64.1</td></tr><tr><td>1/10</td><td>84.6</td><td>65.5</td></tr><tr><td>1</td><td>85.8</td><td>66.1</td></tr></tbody></table>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 47,
+    "title": "实验",
+    "translated_title": "实验",
+    "translation": [
+      "我们的方法可用于具有不同形态的机器人。",
+      "对于平行夹爪，我们的方法能够达到与GSNet相近的性能，并优于其他方法。",
+      "方法",
+      "已见物体AP",
+      "相似物体AP",
+      "新物体AP",
+      "GG-CNN [31]",
+      "15.5/16.9",
+      "13.3/15.1",
+      "5.5/7.4",
+      "Chu等[32]",
+      "16.0/17.6",
+      "15.4/17.4",
+      "7.6/8.0",
+      "GPD [33]",
+      "22.9/24.4",
+      "21.3/23.2",
+      "8.2/9.6",
+      "PointGPD [34]",
+      "26.0/27.6",
+      "22.7/24.4",
+      "9.2/10.7",
+      "GraspNet1B [15]",
+      "27.6/29.9",
+      "26.1/27.8",
+      "10.6/11.5",
+      "GSNet [13]",
+      "67.1/63.5",
+      "54.8/49.2",
+      "24.3/19.8",
+      "GSNet [13]*",
+      "68.7",
+      "59.8",
+      "24.6",
+      "本文方法",
+      "56.0",
+      "53.2",
+      "23.2",
+      "本文方法 # *",
+      "66.6/61.5",
+      "61.7/53.3",
+      "27.4/23.2",
+      "GSNet（渲染）*",
+      "78.4",
+      "69.7",
+      "36.7",
+      "本文方法（渲染）# *",
+      "77.4",
+      "72.5",
+      "39.1",
+      "表2：GraspNet-1Billion实验结果。*表示采用分数大于0.9的抓取；#表示采用精化位姿；“渲染”表示使用渲染深度图。表中统计采用RealSense/Kinect格式，单个数字的结果使用RealSense设置。"
+    ],
+    "translation_html": "<ul><li>我们的方法可用于具有不同形态的机器人。</li><li>对于平行夹爪，我们的方法能够达到与GSNet相近的性能，并优于其他方法。</li></ul><table><thead><tr><th>方法</th><th>已见物体AP</th><th>相似物体AP</th><th>新物体AP</th></tr></thead><tbody><tr><td>GG-CNN [31]</td><td>15.5/16.9</td><td>13.3/15.1</td><td>5.5/7.4</td></tr><tr><td>Chu等[32]</td><td>16.0/17.6</td><td>15.4/17.4</td><td>7.6/8.0</td></tr><tr><td>GPD [33]</td><td>22.9/24.4</td><td>21.3/23.2</td><td>8.2/9.6</td></tr><tr><td>PointGPD [34]</td><td>26.0/27.6</td><td>22.7/24.4</td><td>9.2/10.7</td></tr><tr><td>GraspNet1B [15]</td><td>27.6/29.9</td><td>26.1/27.8</td><td>10.6/11.5</td></tr><tr><td>GSNet [13]</td><td>67.1/63.5</td><td>54.8/49.2</td><td>24.3/19.8</td></tr><tr><td>GSNet [13]*</td><td>68.7</td><td>59.8</td><td>24.6</td></tr><tr><td>本文方法</td><td>56.0</td><td>53.2</td><td>23.2</td></tr><tr><td>本文方法 # *</td><td>66.6/61.5</td><td>61.7/53.3</td><td>27.4/23.2</td></tr><tr><td>GSNet（渲染）*</td><td>78.4</td><td>69.7</td><td>36.7</td></tr><tr><td>本文方法（渲染）# *</td><td>77.4</td><td>72.5</td><td>39.1</td></tr></tbody></table><p>表2：GraspNet-1Billion实验结果。*表示采用分数大于0.9的抓取；#表示采用精化位姿；“渲染”表示使用渲染深度图。表中统计采用RealSense/Kinect格式，单个数字的结果使用RealSense设置。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 48,
+    "title": "真实实验",
+    "translated_title": "真实实验",
+    "translation": [
+      "DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取",
+      "我们提出DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取。"
+    ],
+    "translation_html": "<p>DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取</p><p>我们提出DexGraspNet 2.0：在大规模合成杂乱场景中学习生成式灵巧抓取。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 49,
+    "title": "真实实验",
+    "translated_title": "真实实验",
+    "translation": [
+      "与夹爪比较",
+      "灵巧手有更强的包裹能力。",
+      "末端执行器",
+      "普通",
+      "大型",
+      "平行夹爪",
+      "92.4",
+      "0.0",
+      "灵巧手",
+      "81.5",
+      "100.0"
+    ],
+    "translation_html": "<h3>与夹爪比较</h3><p>灵巧手有更强的包裹能力。</p><table><thead><tr><th>末端执行器</th><th>普通</th><th>大型</th></tr></thead><tbody><tr><td>平行夹爪</td><td>92.4</td><td>0.0</td></tr><tr><td>灵巧手</td><td>81.5</td><td>100.0</td></tr></tbody></table>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 50,
+    "title": "小结",
+    "translated_title": "小结",
+    "translation": [
+      "主要贡献",
+      "杂乱场景灵巧抓取的大规模基准：7500个合成训练场景与670个测试场景。",
+      "提出端到端生成式抓取预测管线。",
+      "通过扩散模型生成手腕6D位姿。",
+      "在手腕位姿条件下回归手关节姿态。",
+      "局限",
+      "限于力量型/包裹式抓取。",
+      "数据仅覆盖力闭合情况。"
+    ],
+    "translation_html": "<h3>主要贡献</h3><ul><li>杂乱场景灵巧抓取的大规模基准：7500个合成训练场景与670个测试场景。</li><li>提出端到端生成式抓取预测管线。<ul><li>通过扩散模型生成手腕6D位姿。</li><li>在手腕位姿条件下回归手关节姿态。</li></ul></li></ul><h3>局限</h3><ul><li>限于力量型/包裹式抓取。</li><li>数据仅覆盖力闭合情况。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 51,
+    "title": "漫反射物体的可泛化抓取",
+    "translated_title": "漫反射物体的可泛化抓取",
+    "translation": [
+      "Fang, Hao-Shu等：《GraspNet-1Billion：通用物体抓取的大规模基准》，IEEE/CVF计算机视觉与模式识别会议论文集，2020。"
+    ],
+    "translation_html": "<p>Fang, Hao-Shu等：《GraspNet-1Billion：通用物体抓取的大规模基准》，IEEE/CVF计算机视觉与模式识别会议论文集，2020。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 52,
+    "title": "深度感知问题",
+    "translated_title": "深度感知问题",
+    "translation": [
+      "RGB彩色图｜深度｜点云｜镜面反射。"
+    ],
+    "translation_html": "<p>RGB彩色图｜深度｜点云｜镜面反射。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 53,
+    "title": "演示：机器人抓取",
+    "translated_title": "演示：机器人抓取",
+    "translation": [
+      "仅GraspNet-baseline。"
+    ],
+    "translation_html": "<p>仅GraspNet-baseline。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 54,
+    "title": "演示：机器人抓取",
+    "translated_title": "演示：机器人抓取",
+    "translation": [
+      "精化点云＋GraspNet-baseline。"
+    ],
+    "translation_html": "<p>精化点云＋GraspNet-baseline。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 55,
+    "title": "数据生成（STD-GraspNet）",
+    "translated_title": "数据生成（STD-GraspNet）",
+    "translation": [],
+    "translation_html": "",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 56,
+    "title": "DREDS：域随机化",
+    "translated_title": "DREDS：域随机化",
+    "translation": [
+      "物体布局随机化：物体实例、排列。"
+    ],
+    "translation_html": "<p>物体布局随机化：物体实例、排列。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 57,
+    "title": "DREDS：域随机化",
+    "translated_title": "DREDS：域随机化",
+    "translation": [
+      "物体材质随机化：BSDF（双向散射分布函数）。"
+    ],
+    "translation_html": "<p>物体材质随机化：BSDF（双向散射分布函数）。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 58,
+    "title": "DREDS：域随机化",
+    "translated_title": "DREDS：域随机化",
+    "translation": [
+      "背景随机化。"
+    ],
+    "translation_html": "<p>背景随机化。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 59,
+    "title": "DREDS：域随机化",
+    "translated_title": "DREDS：域随机化",
+    "translation": [
+      "光照随机化。"
+    ],
+    "translation_html": "<p>光照随机化。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 60,
+    "title": "DREDS：域随机化",
+    "translated_title": "DREDS：域随机化",
+    "translation": [
+      "相机视角随机化。"
+    ],
+    "translation_html": "<p>相机视角随机化。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 61,
+    "title": "ASGrasp：利用RGB-D主动立体相机进行可泛化透明物体重建与6自由度抓取检测",
+    "translated_title": "ASGrasp：利用RGB-D主动立体相机进行可泛化透明物体重建与6自由度抓取检测",
+    "translation": [
+      "Jun Shi¹、Yong A¹、Yixiang Jin¹、Dingzhe Li¹、Haoyu Niu¹、Zhezhu Jin¹、He Wang†²˒³˒⁴",
+      "¹ 三星中国研究院，北京（SRC-B）",
+      "² 北京大学计算机学院前沿计算研究中心（CFCS）｜³ Galbot",
+      "⁴ 北京智源人工智能研究院（BAAI）",
+      "†：通讯作者。"
+    ],
+    "translation_html": "<p>Jun Shi¹、Yong A¹、Yixiang Jin¹、Dingzhe Li¹、Haoyu Niu¹、Zhezhu Jin¹、He Wang†²˒³˒⁴</p><p>¹ 三星中国研究院，北京（SRC-B）</p><p>² 北京大学计算机学院前沿计算研究中心（CFCS）｜³ Galbot</p><p>⁴ 北京智源人工智能研究院（BAAI）</p><p>†：通讯作者。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 62,
+    "title": "ASGrasp管线",
+    "translated_title": "ASGrasp管线",
+    "translation": [
+      "场景重建模块F₁",
+      "RGB彩色图I_c → 编码器 → 上下文F_c。左红外图I_ir_l → 编码器 → 特征F_ir_l；右红外图I_ir_r → 编码器 → 特征F_ir_r。相关金字塔C₁…C_n…C₀；Δ₁、Δ₂；几何损失L_geo。第一层深度图D₁ → 可见点云P_visible；第二层深度图D₂ → 不可见点云P_invisible；完整点云P_comp。",
+      "抓取检测模块F₂",
+      "GSNet F_gsnet → 抓取位姿g；抓取损失L_grasp；内积〈·,·〉。"
+    ],
+    "translation_html": "<h3>场景重建模块F₁</h3><p>RGB彩色图I_c → 编码器 → 上下文F_c。左红外图I_ir_l → 编码器 → 特征F_ir_l；右红外图I_ir_r → 编码器 → 特征F_ir_r。相关金字塔C₁…C_n…C₀；Δ₁、Δ₂；几何损失L_geo。第一层深度图D₁ → 可见点云P_visible；第二层深度图D₂ → 不可见点云P_invisible；完整点云P_comp。</p><h3>抓取检测模块F₂</h3><p>GSNet F_gsnet → 抓取位姿g；抓取损失L_grasp；内积〈·,·〉。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 63,
+    "title": "真实世界实验",
+    "translated_title": "真实世界实验",
+    "translation": [
+      "全球首个材料无关抓取方法。",
+      "成功率＞95%。"
+    ],
+    "translation_html": "<p>全球首个材料无关抓取方法。</p><p>成功率＞95%。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 64,
+    "title": "",
+    "translated_title": "",
+    "translation": [
+      "十倍速｜抓取位姿｜RViz可视化。"
+    ],
+    "translation_html": "<p>十倍速｜抓取位姿｜RViz可视化。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 65,
+    "title": "",
+    "translated_title": "",
+    "translation": [],
+    "translation_html": "",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 66,
+    "title": "D³RoMa：用于材料无关机器人操作的视差扩散深度感知",
+    "translated_title": "D³RoMa：用于材料无关机器人操作的视差扩散深度感知",
+    "translation": [
+      "CoRL 2024",
+      "方法：几何引导的视差扩散",
+      "$x_T\\sim\\mathcal N(0,I)$；$\\tilde D,I_l,I_r$；去噪网络；$-\\frac1{\\sqrt{1-\\bar\\alpha_t}}\\epsilon^*$；立体匹配；$\\nabla_{x_t}\\mathcal L_{sm}$；$\\nabla_{x_t}\\log p(x_t\\mid I_l,I_r,\\tilde D)$；反向采样；循环t；$t\\leftarrow t-1$；最终预测$x_0$。"
+    ],
+    "translation_html": "<p>CoRL 2024</p><h3>方法：几何引导的视差扩散</h3><p>$x_T\\sim\\mathcal N(0,I)$；$\\tilde D,I_l,I_r$；去噪网络；$-\\frac1{\\sqrt{1-\\bar\\alpha_t}}\\epsilon^*$；立体匹配；$\\nabla_{x_t}\\mathcal L_{sm}$；$\\nabla_{x_t}\\log p(x_t\\mid I_l,I_r,\\tilde D)$；反向采样；循环t；$t\\leftarrow t-1$；最终预测$x_0$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 67,
+    "title": "仿真到真实实验",
+    "translated_title": "仿真到真实实验",
+    "translation": [
+      "（a）RealSense D415；（b）RealSense D435。",
+      "RGB彩色图｜原始深度｜D³RoMa（本文方法）｜DepthAnything｜Marigold｜ZoeDepth。"
+    ],
+    "translation_html": "<p>（a）RealSense D415；（b）RealSense D435。</p><p>RGB彩色图｜原始深度｜D³RoMa（本文方法）｜DepthAnything｜Marigold｜ZoeDepth。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 68,
+    "title": "结果可视化",
+    "translated_title": "结果可视化",
+    "translation": [
+      "原始深度｜D3RoMA。",
+      "* 使用RealSense D415采集。"
+    ],
+    "translation_html": "<p>原始深度｜D3RoMA。</p><p>* 使用RealSense D415采集。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 7,
+    "page": 69,
+    "title": "具身智能导论",
+    "translated_title": "具身智能导论",
+    "translation": [
+      "下周：第7讲，视觉与抓取 III。",
+      "具身感知与交互实验室｜2025年春季"
+    ],
+    "translation_html": "<p>下周：第7讲，视觉与抓取 III。</p><p>具身感知与交互实验室｜2025年春季</p>",
+    "layout": "single"
+  }
+]

@@ -1,0 +1,145 @@
+[
+  {
+    "lecture": 1,
+    "filename": "Lecture01_02_17.pdf",
+    "local": "lecture01.pdf",
+    "pages": 89,
+    "size": 23320329,
+    "sha256": "f4bc19cf79a67bbb305bf774d58a9cb31b41472e6497fd4df6cf7825b18bec7d",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "url": "https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture01_02_17.pdf",
+    "fetched": "2026-10-04 Asia/Shanghai"
+  },
+  {
+    "lecture": 2,
+    "filename": "Lecture02_02_24.pdf",
+    "local": "lecture02.pdf",
+    "pages": 73,
+    "size": 7643022,
+    "sha256": "9fdf788caf151f6c0c9f765d91341c5dbd682725c8958b883e791d6875fbbf01",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "url": "https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture02_02_24.pdf",
+    "fetched": "2026-10-04 Asia/Shanghai"
+  },
+  {
+    "lecture": 3,
+    "filename": "Lecture03_03_03.pdf",
+    "local": "lecture03.pdf",
+    "pages": 44,
+    "size": 2856516,
+    "sha256": "0f1c4ff7b07d4dc3a6252ba85d69d49d11df0b0f0dd2213936386b221d5b1a94",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "url": "https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture03_03_03.pdf",
+    "fetched": "2026-10-04 Asia/Shanghai"
+  },
+  {
+    "lecture": 4,
+    "filename": "Lecture04_03_10.pdf",
+    "local": "lecture04.pdf",
+    "pages": 61,
+    "size": 5956352,
+    "sha256": "466f657f8c4e1cb1e5db9d440a28c1a3a046e7cd8d7b30aaf4d9940473fcb2d9",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "url": "https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture04_03_10.pdf",
+    "fetched": "2026-10-04 Asia/Shanghai"
+  },
+  {
+    "lecture": 5,
+    "filename": "Lecture05_03_17.pdf",
+    "local": "lecture05.pdf",
+    "pages": 71,
+    "size": 7387503,
+    "sha256": "00d6aacfd447161b3c26d3886b6d7ba538927c07d92e37835d2816d884e96d5d",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "url": "https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture05_03_17.pdf",
+    "fetched": "2026-10-04 Asia/Shanghai"
+  },
+  {
+    "lecture": 6,
+    "filename": "Lecture06_03_24.pdf",
+    "local": "lecture06.pdf",
+    "pages": 66,
+    "size": 15732391,
+    "sha256": "d17b9db9540657fb797979fc0eeba1dda4bd07107a6c64fdadae7cd120da370a",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "url": "https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture06_03_24.pdf",
+    "fetched": "2026-10-04 Asia/Shanghai"
+  },
+  {
+    "lecture": 7,
+    "filename": "Lecture07_03_31.pdf",
+    "local": "lecture07.pdf",
+    "pages": 69,
+    "size": 15266071,
+    "sha256": "dc0646208ad83128e4113fcc8d58b1e1fe7fb1940e555cbd2df169a5f570284b",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "url": "https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture07_03_31.pdf",
+    "fetched": "2026-10-04 Asia/Shanghai"
+  },
+  {
+    "lecture": 8,
+    "filename": "Lecture08_04_07.pdf",
+    "local": "lecture08.pdf",
+    "pages": 105,
+    "size": 70127786,
+    "sha256": "26f14aaf76070b70044ceab9887efc67331387b45692e894b6f3e34074595851",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "url": "https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture08_04_07.pdf",
+    "fetched": "2026-10-04 Asia/Shanghai"
+  },
+  {
+    "lecture": 9,
+    "filename": "Lecture09_04_14.pdf",
+    "local": "lecture09.pdf",
+    "pages": 87,
+    "size": 13945069,
+    "sha256": "813002eb05f55a37b99f7fd71288a877c48bb88e372b57d09fc5dbd4c5ea8d26",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "url": "https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture09_04_14.pdf",
+    "fetched": "2026-10-04 Asia/Shanghai"
+  },
+  {
+    "lecture": 10,
+    "filename": "Lecture10_04_21.pdf",
+    "local": "lecture10.pdf",
+    "pages": 43,
+    "size": 7789165,
+    "sha256": "5b2a2802fe2df64d898415558d5e2f9dc654a40259fb501150f736b11028a219",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "url": "https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture10_04_21.pdf",
+    "fetched": "2026-10-04 Asia/Shanghai"
+  },
+  {
+    "lecture": 11,
+    "filename": "Lecture11_04_28.pdf",
+    "local": "lecture11.pdf",
+    "pages": 87,
+    "size": 15735982,
+    "sha256": "61c528228030ae09d308f4fc9edc35fb12e60c9c1ea699d755dd157ba8fa9c72",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "url": "https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture11_04_28.pdf",
+    "fetched": "2026-10-04 Asia/Shanghai"
+  },
+  {
+    "lecture": 12,
+    "filename": "Lecture12_05_12.pdf",
+    "local": "lecture12.pdf",
+    "pages": 84,
+    "size": 16336005,
+    "sha256": "729d75c4ae208bc539ed1fa18c3b80ff7d12bb43b633aef7249ea9bfc667a942",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "url": "https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture12_05_12.pdf",
+    "fetched": "2026-10-04 Asia/Shanghai"
+  },
+  {
+    "lecture": 13,
+    "filename": "Lecture13_05_19.pdf",
+    "local": "lecture13.pdf",
+    "pages": 67,
+    "size": 12496796,
+    "sha256": "09685985e0b6d1bb6d16bac2d4258245091c46dcfed780b60aa952e907753f4c",
+    "upstream_commit": "0d6658dd1e87efd52cf505f5b8cb291b22a962a8",
+    "url": "https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture13_05_19.pdf",
+    "fetched": "2026-10-04 Asia/Shanghai"
+  }
+]

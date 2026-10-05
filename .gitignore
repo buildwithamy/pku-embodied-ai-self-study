@@ -1,0 +1,12 @@
+# Local environments and generated files
+**/__pycache__/
+**/.pytest_cache/
+**/.venv/
+**/venv/
+**/node_modules/
+**/.env
+**/.env.*
+**/*.pyc
+**/*.pyo
+**/Thumbs.db
+**/.DS_Store

@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第 6 章 视觉与抓取 II：ICP 配准与抓取稳定性</title>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script async="" src="../vendor/mathjax/tex-svg.js"></script>
+<style>
+:root {
+  --ink: #1c2430;
+  --ink-soft: #4a5568;
+  --accent: #2563eb;
+  --accent-soft: #eef4ff;
+  --bg: #faf9f6;
+  --card: #ffffff;
+  --line: #e5e2db;
+  --green-bg: #f0f9f1;
+  --green-bd: #7cc98c;
+  --yellow-bg: #fffbeb;
+  --yellow-bd: #e8c766;
+  --red-bg: #fdf1f1;
+  --red-bd: #e8a1a1;
+  --update-bg: #fffaeb;
+  --update-bd: #e8a23d;
+  --update-ink: #8a4b08;
+  --code-bg: #101826;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-size: 16.5px;
+  line-height: 1.85;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.hero {
+  background: linear-gradient(135deg, #0e2a4a 0%, #15406e 55%, #1c5a94 100%);
+  color: #fff;
+  padding: 72px 24px 56px;
+  text-align: center;
+}
+.hero .course-tag {
+  display: inline-block;
+  font-size: 13px;
+  letter-spacing: 2px;
+  border: 1px solid rgba(255,255,255,.4);
+  border-radius: 999px;
+  padding: 4px 16px;
+  margin-bottom: 22px;
+  opacity: .9;
+}
+.hero h1 {
+  margin: 0 auto 14px;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  max-width: 760px;
+  line-height: 1.5;
+}
+.hero .sub {
+  font-size: 15.5px;
+  opacity: .82;
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+.hero .meta {
+  margin-top: 26px;
+  font-size: 13px;
+  opacity: .7;
+}
+.hero .ver-note {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 12.5px;
+  border: 1px dashed rgba(255,210,120,.7);
+  color: #ffd27a;
+  border-radius: 999px;
+  padding: 3px 14px;
+}
+.badge-2026 {
+  display: inline-block;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 2px 9px;
+  letter-spacing: .5px;
+  vertical-align: 2px;
+  margin-right: 6px;
+  box-shadow: 0 1px 4px rgba(217,119,6,.35);
+}
+.update-box {
+  margin: 18px 0;
+  padding: 14px 20px 12px;
+  border: 2px solid var(--update-bd);
+  background: var(--update-bg);
+  border-radius: 10px;
+  font-size: 15.5px;
+  box-shadow: 0 2px 8px rgba(232,162,61,.12);
+}
+.update-box .bt { color: var(--update-ink); font-weight: 700; display: block; margin-bottom: 4px; }
+.update-box p { margin: 5px 0; }
+.update-box ul { margin: 4px 0 4px; }
+.update-box li { margin: 3px 0; }
+.up-text {
+  background: #fef3c7;
+  border-bottom: 2px solid #f59e0b;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+.goals {
+  max-width: 880px;
+  margin: -28px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 28px;
+  box-shadow: 0 6px 24px rgba(16, 42, 74, .08);
+  position: relative;
+}
+.goals h2 { margin: 0 0 10px; font-size: 17px; color: var(--accent); }
+.goals ul { margin: 0; padding-left: 20px; }
+.goals li { margin: 4px 0; font-size: 15px; color: var(--ink-soft); }
+.goals li b { color: var(--ink); }
+.about {
+  max-width: 880px;
+  margin: 36px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px 34px;
+  box-shadow: 0 4px 16px rgba(16, 42, 74, .06);
+}
+.about h2 {
+  margin: 0 0 14px;
+  font-size: 20px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.about h3 { margin: 20px 0 8px; font-size: 16.5px; color: var(--accent); }
+.about p, .about li { font-size: 15px; color: var(--ink-soft); }
+.about .src-badge {
+  display: inline-block;
+  background: #eef4ff;
+  border: 1px solid #b9d0f8;
+  color: #2456b8;
+  font-size: 13px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin: 2px 4px 2px 0;
+}
+.about .license-note {
+  margin: 18px 0 0;
+  padding: 14px 18px;
+  background: var(--red-bg);
+  border: 1px solid var(--red-bd);
+  border-radius: 10px;
+  font-size: 14.5px;
+  line-height: 1.8;
+}
+.about .license-note b { color: #b04848; }
+.layout {
+  display: flex;
+  max-width: 1240px;
+  margin: 40px auto 80px;
+  padding: 0 24px;
+  gap: 36px;
+  align-items: flex-start;
+}
+.toc {
+  position: sticky;
+  top: 24px;
+  width: 240px;
+  flex-shrink: 0;
+  font-size: 13.5px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+}
+.toc .toc-title { font-weight: 700; color: var(--ink-soft); margin-bottom: 8px; letter-spacing: 1px; }
+.toc a {
+  display: block;
+  color: var(--ink-soft);
+  padding: 4px 10px;
+  border-left: 2px solid var(--line);
+  margin: 1px 0;
+  line-height: 1.5;
+}
+.toc a:hover { color: var(--accent); border-left-color: var(--accent); text-decoration: none; background: var(--accent-soft); border-radius: 0 6px 6px 0; }
+main { flex: 1; min-width: 0; }
+section { margin-bottom: 56px; }
+h2.sec {
+  font-size: 25px;
+  margin: 0 0 6px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--ink);
+  letter-spacing: .5px;
+}
+h2.sec .no {
+  display: inline-block;
+  background: var(--ink);
+  color: #fff;
+  font-size: 15px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin-right: 10px;
+  vertical-align: 3px;
+}
+h3 { font-size: 19px; margin: 34px 0 10px; }
+h4 { font-size: 16.5px; margin: 26px 0 8px; }
+p { margin: 10px 0; }
+strong { color: #0f2c4c; }
+em.term {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--accent);
+  border-bottom: 1px dashed var(--accent);
+  cursor: help;
+}
+ul, ol { padding-left: 26px; }
+li { margin: 5px 0; }
+code {
+  background: #eef1f5;
+  border: 1px solid #e0e5ec;
+  border-radius: 5px;
+  padding: 1px 6px;
+  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: 14.5px;
+  color: #0d3d75;
+}
+blockquote {
+  margin: 16px 0;
+  padding: 12px 20px;
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  color: var(--ink-soft);
+  font-size: 15.5px;
+}
+blockquote p { margin: 4px 0; }
+figure { margin: 22px 0; text-align: center; }
+figure img {
+  max-width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 18px rgba(16, 42, 74, .10);
+  background: #fff;
+}
+figcaption {
+  font-size: 13.5px;
+  color: #7a8290;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+figcaption .src { opacity: .75; font-size: 12.5px; }
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+.gallery figure { margin: 0; }
+.gallery img { width: 100%; }
+.gallery figcaption { font-size: 12.5px; margin-top: 6px; }
+.box {
+  margin: 18px 0;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 15.5px;
+}
+.box .bt { font-weight: 700; display: block; margin-bottom: 4px; }
+.box.green { background: var(--green-bg); border: 1px solid var(--green-bd); }
+.box.green .bt { color: #2e7d43; }
+.box.yellow { background: var(--yellow-bg); border: 1px solid var(--yellow-bd); }
+.box.yellow .bt { color: #9a7414; }
+.box.red { background: var(--red-bg); border: 1px solid var(--red-bd); }
+.box.red .bt { color: #b04848; }
+.box.blue { background: var(--accent-soft); border: 1px solid #a9c3f5; }
+.box.blue .bt { color: #2456b8; }
+.box p { margin: 4px 0; }
+.box ul { margin: 4px 0 4px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 18px 0;
+  font-size: 15px;
+  background: var(--card);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+th {
+  background: #17335c;
+  color: #fff;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 14.5px;
+}
+td { padding: 9px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+tr:nth-child(even) td { background: #f7f6f2; }
+.page-index { font-size: 13.5px; }
+.page-index th { font-size: 13.5px; padding: 8px 10px; }
+.page-index td { padding: 6px 10px; line-height: 1.6; }
+.page-index td.pg { font-family: Consolas, monospace; font-weight: 700; white-space: nowrap; color: var(--accent); }
+pre {
+  background: var(--code-bg);
+  color: #e6edf6;
+  border-radius: 10px;
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-size: 13.8px;
+  line-height: 1.65;
+  margin: 16px 0;
+}
+pre code {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+pre .cm { color: #7d8aa0; }
+pre .kw { color: #7fb3ff; }
+pre .st { color: #a5d6a7; }
+pre .fn { color: #ffd479; }
+.term-table td:first-child { font-weight: 700; white-space: nowrap; }
+footer {
+  max-width: 880px;
+  margin: 0 auto 60px;
+  padding: 20px 28px;
+  border-top: 1px solid var(--line);
+  font-size: 12.8px;
+  color: #8a91a0;
+  line-height: 1.8;
+}
+@media (max-width: 960px) {
+  .toc { display: none; }
+  .hero h1 { font-size: 26px; }
+  .layout { padding: 0 16px; }
+  .gallery { grid-template-columns: 1fr; }
+}
+/* 2026-10-04: offline chapters and bounded content scrolling */
+.layout, main, section { min-width:0; }
+main { max-width:100%; }
+img, video { max-width:100%; height:auto; }
+p, li, td, th, a { overflow-wrap:anywhere; }
+.table-scroll { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; margin:18px 0; }
+.table-scroll table { margin:0; min-width:640px; }
+pre { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; }
+mjx-container[display="true"] { max-width:100%; overflow-x:auto; overflow-y:hidden; padding:6px 0; text-align:left !important; }
+mjx-container:not([display="true"]) { display:inline-block; max-width:100%; vertical-align:middle; overflow-x:auto; overflow-y:hidden; }
+.mobile-toc { display:none; }
+.chapter-nav { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; }
+@media(max-width:960px) {
+  .layout { flex-direction:column; gap:16px; }
+  main { width:100%; }
+  .mobile-toc { display:block; width:100%; margin:0; padding:12px 16px; background:var(--card); border:1px solid var(--line); border-radius:10px; }
+  .mobile-toc summary { cursor:pointer; font-weight:700; }
+  .mobile-toc a { display:block; padding:4px 0; }
+}
+</style>
+<link href="../shared.css" rel="stylesheet"/>
+</head>
+<body><nav class="reader-nav"><a class="brand" href="../index.html">北京大学《具身智能导论》自学教程</a><a href="../学习与运行说明.html">学习指南</a><a href="课件中文译解.html">本章课件翻译</a><a href="../术语与符号.html">术语与符号</a><a href="../来源与许可.html">来源</a></nav>
+<!-- ============ 封面 ============ -->
+<div class="hero">
+<span class="course-tag">具身智能自学教程 · 第 6 章</span>
+<h1>视觉与抓取 II：ICP 配准与抓取稳定性</h1>
+<p class="sub">本章学习两条几何路线：用 ICP 精修已有位姿估计，用 NOCS 估计类别内新物体的位姿与尺寸。随后把位姿接到接触力学上，分析抓取怎样抵抗外部扰动。</p>
+<p class="meta">改编自北京大学《具身智能导论》(Introduction to Embodied AI) 2025 春季课程 · 授课：王鹤 老师</p>
+<span class="ver-note">公式、图片与课件中文翻译可离线阅读</span>
+<div class="chapter-toolbar" id="chapter-resources"><a href="课件中文译解.html">英文原课件与逐页中文翻译 →</a><a href="../技术动态_20261004.html">本章相关技术进展 →</a><a href="../术语与符号.html">英文缩写与符号速查 →</a></div></div>
+<!-- ============ 学习目标 ============ -->
+<div class="goals">
+<h2>🎯 本章学习目标</h2>
+<ul>
+<li>能说明 <b>ICP 算法</b>的完整流程：当前坐标下最近邻匹配 → 对应点中心化 → Procrustes → 更新迭代，区分目标不增与正确配准保证</li>
+<li>理解位姿误差与抓取结果的关系：结合物体尺寸、接触区域和夹爪策略分析允许误差</li>
+<li>能说明 <b>NOCS 类别级位姿估计</b>：三步归一化、完整推理流程、与 ICP 的本质区别</li>
+<li>理解 <b>Sim2Real Gap</b> 与合成数据的应对：CAMERA 混合现实数据、Co-Training、FoundationPose</li>
+<li>了解机器人技术「五代演进」的宏观图景，以及<b>回归 vs 生成</b>的抓取建模之争</li>
+<li>能说明 <b>Force Closure 与 Form Closure</b>：抓取稳定性的两个判据</li>
+<li>动手实践：用 numpy 实现 ICP 与 Umeyama 配准</li>
+</ul>
+</div>
+<!-- ============ 关于本教程 ============ -->
+<div class="about" id="about">
+<h2>📖 关于本教程</h2>
+<h3>内容来源</h3>
+<p>本教程的课程知识主线来自 <b>北京大学 2025 年春季学期《具身智能导论》</b>（Introduction to Embodied AI）课程，由 <b>王鹤</b> 老师主讲。</p>
+<p>
+<span class="src-badge">📝 课堂笔记 × 9 章</span>
+<span class="src-badge">🎞 授课课件 × 13 讲</span>
+<span class="src-badge">💻 课程作业 × 4 次</span>
+</p>
+<p>以上资料由课程同学整理并开源在 GitHub 仓库 <a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU" target="_blank">zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU</a>（<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/LICENSE" target="_blank">GPL-3.0 许可证</a>），课程官网为 <a href="https://pku-epic.github.io/Intro2EAI_2025/" target="_blank">pku-epic.github.io/Intro2EAI_2025</a>。</p>
+<h3>阅读方式</h3>
+<ul>
+<li><b>三源整合：</b>把每一讲的「课堂笔记 + 授课课件 + 配套作业」融合进同一章，笔记提供知识骨架，课件图提供直观理解，作业提供动手实践；</li>
+<li><b>概念与例子：</b>按「概念 → 直觉 → 数学条件 → 应用」阅读，先理解问题，再学习公式与算法；学习目标与术语表可用于检查理解；</li>
+<li><b>图文并茂：</b>从课件中精选示意图插入正文，全部标注来源页码，方便对照原课件；</li>
+<li><b>补充说明：</b>橙色框提供适用条件与工程接口说明；具体模型、数据和评分以对应一手资料为准；</li>
+<li><b>作业适配自学：</b>保留原版作业的难度与考点，补充环境搭建、解题提示与自测标准，并提供参考答案链接（先自己做，再对照）。</li>
+</ul>
+<h3>教程目的</h3>
+<p>让没有北大课堂环境的自学者，也能按课程原有的知识体系，系统地学完具身智能入门：从机器人学基础，到视觉与抓取，再到策略学习——最终具备读懂前沿论文、跑通基础实验的能力。</p>
+<div class="license-note">
+<b>📜 版权与使用声明</b><br/>
+    原课程资料（笔记、课件、作业）均为开源免费资源，版权归原作者（王鹤老师及课程组、笔记整理者）所有；本教程的改编内容（扩写讲解、中文翻译、编排结构）同样免费公开。<br/>
+    本教程<b>仅用于个人自学</b>，请勿用于任何商业用途（包括付费课程、付费资料包、机构培训等）。教程中所有引用均已标注来源；如内容使用有任何不当之处，请联系相关权利人，我们会及时处理。
+  </div>
+</div>
+<section class="learning-guide"><h2>开始前：对应关系、尺度与接触模型</h2><p>本章沿用第5章的刚体拟合。先确认源点、目标点和变换方向，再读ICP；对NOCS先问“规范坐标有没有米这样的长度单位”，对抓取先问“接触是否有摩擦、能否传递力矩”。</p><p><b>贯穿全章的例子：</b>相机看到一个新杯子，网络为像素预测规范坐标，深度提供米制坐标，几何拟合求尺度和位姿；候选抓取还要通过运动规划与接触力学检查。检验这个流程时，依次记录感知误差、规划可行性和抓取结果，观察误差怎样影响后续步骤。</p><p><a href="课件中文译解.html">阅读全部66页原课件与中文翻译</a> · <a href="../sources/lecture06.pdf">原始PDF</a></p></section>
+<!-- ============ 正文 ============ -->
+<div class="layout">
+<nav class="toc">
+<div class="toc-title">本章目录</div>
+<a href="#about">关于本教程（来源 · 声明）</a>
+<a href="#s1">1. ICP：给位姿「精修」</a>
+<a href="#s2">2. ICP 算法详解</a>
+<a href="#s3">3. 类别级位姿估计：NOCS</a>
+<a href="#s4">4. 合成数据：打破标注瓶颈</a>
+<a href="#s5">5. 机器人技术的五代演进</a>
+<a href="#s6">6. 抓取稳定性：Force 与 Form Closure</a>
+<a href="#s7">7. 本章小结</a>
+<a href="#s8">8. 动手实践</a>
+<a href="#apA">附录 A：术语表</a>
+<a href="#apB">附录 B：课件 66 页完整索引</a>
+<a href="#apC">附录 C：参考资源</a>
+</nav>
+<details class="mobile-toc"><summary>本章目录</summary><a href="#about">关于本教程（来源 · 声明）</a><a href="#s1">1. ICP：给位姿「精修」</a><a href="#s2">2. ICP 算法详解</a><a href="#s3">3. 类别级位姿估计：NOCS</a><a href="#s4">4. 合成数据：打破标注瓶颈</a><a href="#s5">5. 机器人技术的五代演进</a><a href="#s6">6. 抓取稳定性：Force 与 Form Closure</a><a href="#s7">7. 本章小结</a><a href="#s8">8. 动手实践</a><a href="#apA">附录 A：术语表</a><a href="#apB">附录 B：课件 66 页完整索引</a><a href="#apC">附录 C：参考资源</a></details>
+<main>
+<!-- ============ 1 ============ -->
+<section id="s1">
+<h2 class="sec"><span class="no">1</span>ICP：给位姿「精修」</h2>
+<p>第 5 章的位姿估计仍可能存在误差，抓取对这些误差的敏感性取决于物体尺寸、接触位置和夹爪策略。可以先理解为：对细长物体或较窄的可抓取区域，较小的平移误差也可能使抓取偏离目标。</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>场景</th><th>位姿误差的影响</th></tr>
+<tr><td>可抓取区域较窄、平移偏离目标</td><td>可能错过接触区域；阈值取决于具体实验</td></tr>
+<tr><td>细长物体（粉笔、剪刀）</td><td>需结合物体与夹爪尺寸判断允许误差</td></tr>
+<tr><td>旋转误差（如绕 z 轴 30°）</td><td>是否宽容取决于形状、对称性与抓取方向</td></tr>
+</table></div></div>
+<p>敏感性的三个来源：① 机械臂运动误差——特定方向的平移误差可能<b>推翻物体</b>；② 夹爪闭合策略——开合宽度必须与物体尺寸<b>精确匹配</b>；③ 旋转容错性取决于物体与抓取方向。</p>
+<figure>
+<img alt="笔记配图：PoseCNN 加不加 ICP 的结果对比" loading="lazy" src="assets/posecnn_with_without_icp.png"/>
+<figcaption>ICP 的价值：左图对比精修前后的平移误差准确率曲线，右图显示旋转误差分布。<span class="src">（来源：笔记 06）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><h3>全部21个物体</h3><p>纵轴：准确率，刻度0、0.1、0.2、0.3、0.4、0.5、0.6、0.7、0.8、0.9、1。</p><p>横轴：平移阈值（米），刻度0、0.02、0.04、0.06、0.08、0.1。</p><p>90%；32%；2厘米。</p><p>绿色：PoseCNN；红色：PoseCNN＋ICP。</p><h3>三维平移误差分析</h3></div><div><h3>PoseCNN</h3><p>纵轴：数量，刻度0、1000、2000、3000、4000、5000、6000、7000、8000。</p><p>横轴：旋转角误差，刻度0、50、100、150。</p><h3>三维旋转误差分析</h3></div></div></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>All 21 objects＝全部21个物体；accuracy＝准确率；Translation threshold in meter＝平移误差阈值（米）；左图比较PoseCNN与PoseCNN+ICP；3D Translation Error Analysis＝三维平移误差分析；右图count＝计数，Rotation angle error＝旋转角误差。2cm处的32%和90%属于该实验设置。</p></div>
+<p>结论：<b>初始估计 + 精修（refinement）</b>是位姿估计的一种常见设计，ICP 就是最经典的「精修」工具。</p>
+</section>
+<!-- ============ 2 ============ -->
+<section id="s2">
+<h2 class="sec"><span class="no">2</span>ICP 算法详解</h2>
+<p><b>迭代最近点（Iterative Closest Point, ICP）</b>：输入两个点云，通过交替匹配与刚体拟合，估计使源点云对齐目标点云的 $(R,t)$；通常只能保证局部结果（课件 p10）：</p>
+<p style="text-align:center">$$ E(R,t)=\sum_i\min_j\|q_j-(Rp_i+t)\|^2 $$</p>
+<p>这里 $p_i$ 为源点、$q_j$ 为目标点，$R,t$把源变到目标，单向目标中每个源点只与一个当前最近目标点配对；点数可不同。对于固定对应，才可写成矩阵平方误差。</p><p>ICP 在第 5 章的 Procrustes 拟合外加入最近邻匹配，并交替执行这两个步骤。标准点到点实现可以写成以下四步循环：</p>
+<h3>步骤 1：在当前位姿下查找对应</h3>
+<p>把源点云用当前估计变换到目标坐标系，对每个源点 $p_i$ 查找最近目标点 $q_{j_i}$。初值来自已有估计；教学例子的初值可取单位变换。匹配时使用当前变换后的坐标；获得对应点后，再计算配对点集的质心。这样可保留部分重叠点云在当前坐标系中的位置关系。</p>
+<h3>步骤 2：中心化已经配对的两组点</h3>
+<p>令 $Q_{corr}$ 的第 $i$ 列为对应目标点 $q_{j_i}$。计算 $\tilde P=P-\bar P$ 与 $\tilde Q_{corr}=Q_{corr}-\bar Q_{corr}$，均值来自<b>当前匹配点对</b>。最近邻查询的暴力复杂度是 $O(|P|\,|Q|)$，KD-tree（KD树）可加速。这里用的是单向最近邻目标；Chamfer距离另有双向定义。</p>
+<h3>步骤 3：Procrustes 求位姿</h3>
+<p>第 5 章的内容直接复用：协方差矩阵 $K = \tilde Q_{corr}\tilde P^\top$ → SVD → $\hat{R} = U\,\mathrm{diag}(1,1,\det(UV^\top))\,V^\top$ → $\hat t = \bar Q_{corr} - \hat R\bar P$。</p>
+<figure>
+<img alt="课程课件：ICP 中的 Procrustes 求解步骤" loading="lazy" src="assets/s_p13.jpg"/>
+<figcaption>ICP 的位姿求解：正是第 5 章的带约束正交 Procrustes。<span class="src">（来源：Lecture 6 课件 p13）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">迭代最近点（ICP）</div><div class="translation-body"><ul><li>问题变为 \(\hat R=\operatorname*{argmin}_{R\in\mathrm{SO}(3)}\|\tilde P_{\mathrm{corr}}-R\tilde P\|_F^2\)。</li><li>利用带约束的正交 Procrustes 求得 \(\hat R\)。</li><li>再由残差得到 T。</li><li>更新 P。</li></ul><p>\[U,D,V^{\mathsf T}=\operatorname{SVD}(\tilde P_{\mathrm{corr}}\tilde P^{\mathsf T})\]</p><p>\[\hat R=U\operatorname{diag}(1,1,\det(UV^{\mathsf T}))V^{\mathsf T}\]</p><p>\[\hat T=\bar Q-\hat R\bar P\]</p><p>\[P_{\mathrm{new}}=\hat RP+\hat T\]</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l06-p13">对照原课件第13页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>把已配对点的拟合转成带约束正交Procrustes问题</p><p>用SVD求R，并用残差求T</p><p>更新P_new=R P+T</p><p>页面给出R=U diag(1,1,det(UVᵀ)) Vᵀ。</p><p><b>读图提示：</b>目标对应矩阵与源矩阵交叉乘积决定SVD方向。求平移时使用当前匹配目标点的均值；课件写全Q均值的示例只适合对应及均值假设成立的情况。</p><p><a href="课件中文译解.html#l06-p13">对照本页完整译解</a></p></div>
+<h3>步骤 4：更新与迭代</h3>
+<p>$P_{new} = \hat{R}P + \hat{t}\mathbf{1}^\top$，作为下一轮输入。终止条件三选一（课件 p15）：相对旋转角与平移增量足够小 / 损失变化小于阈值 / 达到最大迭代次数；迭代停止后，用残差、重叠区域和位姿误差评价配准结果。</p>
+<figure>
+<img alt="课程课件：ICP 精修后的 PoseCNN 结果可视化" loading="lazy" src="assets/s_p18.jpg"/>
+<figcaption>ICP 精修后的 PoseCNN 结果：叠加的 CAD 模型与实际物体几乎重合。<span class="src">（来源：Lecture 6 课件 p18）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">PoseCNN：结果可视化</div><div class="translation-body">@05:62</div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l06-p18">对照原课件第18页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>RGB＝彩色图像</p><p>Depth＝深度</p><p>Groundtruth Labels＝真实标签</p><p>PoseCNN (RGB only)＝仅RGB输入的PoseCNN</p><p>PoseCNN+ICP＝加ICP精修</p><p>Predicted Labels＝预测标签</p><p>图源Yu Xiang。</p><p><b>读图提示：</b>对照叠加模型和物体轮廓；先检验目标分割与深度，再判断精修是否真正改善。</p><p><a href="课件中文译解.html#l06-p18">对照本页完整译解</a></p></div>
+<h3>2.1 ICP 不保证全局正确配准</h3>
+<div class="box red">
+<span class="bt">⚠️ 一个本质缺陷</span>
+<p>对应点匹配可能产生<b>非一一映射</b>——好几个源点离同一个目标点最近。此时不存在完美变换（刚体变换不可能把两个不同源点精确合并成同一个目标点），ICP <b>可能卡在局部最优</b>。标准点到点 ICP 在最近邻匹配与刚体子问题精确求解时使目标单调不增，但不保证全局最优或正确配准；初始位姿接近真实值时，可用它做局部精修。</p>
+</div>
+<h3>2.2 优缺点与变体</h3>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>优点</th><th>缺点</th></tr>
+<tr><td>核心算法简单，不强制使用特征；物体场景常仍需目标区域选择或离群点剔除</td><td>最近邻计算贵（可下采样/小样本加速）</td></tr>
+<tr><td>初始估计较好时精度与收敛性都不错</td><td>迭代次数多、耗时（后来有加速算法）</td></tr>
+<tr><td>—</td><td>只考虑点对点距离，未利用点云结构</td></tr>
+<tr><td>—</td><td><b>高度依赖初始估计</b></td></tr>
+</table></div></div>
+<p>变体（课件 p17）：<b>Point-to-Plane ICP</b> 用源点到目标点局部平面的距离，考虑了局部结构；<b>Plane-to-Plane ICP</b> 同时考虑源点云的局部结构，可改善特定几何与噪声条件下的收敛表现，但仍需检查初值与法向估计。</p>
+</section>
+<!-- ============ 3 ============ -->
+<section id="s3">
+<h2 class="sec"><span class="no">3</span>类别级位姿估计：NOCS</h2>
+<p>实例级方法（PoseCNN 等）要求知道每个物体的完整 CAD 模型——经典实例特定设定难以直接用于未见物体。类别级方法（王鹤老师 CVPR 2019 Oral，NOCS）换了个思路：<b>为整个类别建立一个统一的参考系</b>，通过三步归一化定义<b>标准化物体空间（Normalized Object Coordinate Space）</b>：</p>
+<ol>
+<li><b>旋转对齐（Rotation Alignment）</b>：用先验把物体朝向对齐（如茶杯手柄统一朝某轴正方向）；</li>
+<li><b>平移归一化（Translation Normalization）</b>：包围盒中心移到原点；</li>
+<li><b>尺寸归一化（Scale Normalization）</b>：用同一个比例缩放各轴，使包围盒对角线长度为1并装入标准立方体，保留长宽高比例。</li>
+</ol>
+<div class="gallery">
+<figure>
+<img alt="笔记配图：NOCS 归一化步骤一" loading="lazy" src="assets/nocs_1.png"/>
+<figcaption>步骤一：旋转对齐</figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">步骤1（旋转归一化）</div><div class="translation-body"><p>对齐物体朝向。</p></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Step 1 (rotation normalization): align object orientations＝第一步（旋转归一化）：统一物体朝向。杯子与相机分别按类别的规范方向排列；这定义坐标约定，不表示测试时已知真实朝向。</p></div>
+<figure>
+<img alt="笔记配图：NOCS 归一化步骤二" loading="lazy" src="assets/nocs_2.png"/>
+<figcaption>步骤二：平移归一化</figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">步骤2（平移归一化）</div><div class="translation-body"><p>把物体置于以零为中心的位置。</p></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Step 2 (translation normalization): zero-center the objects＝第二步（平移归一化）：使物体以零为中心。规范原点与相机空间中的实际位置是两回事。</p></div>
+<figure>
+<img alt="笔记配图：NOCS 归一化步骤三" loading="lazy" src="assets/nocs_3.png"/>
+<figcaption>步骤三：尺寸归一化</figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">步骤3（尺度归一化）</div><div class="translation-body"><p>统一归一化物体尺度。</p><p>顶点坐标：(0.5,0.5,0.5)、(－0.5,0.5,0.5)、(0.5,0.5,－0.5)、(－0.5,0.5,－0.5)、(－0.5,－0.5,－0.5)、(0.5,－0.5,－0.5)。</p></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Step 3 (scale normalization): uniformly normalize the scales＝第三步（尺度归一化）：使用同一比例缩放各轴。图中坐标以−0.5到0.5示意中心化规范空间；实现若改用[0,1]，需先统一坐标再拟合。</p></div>
+</div>
+<div class="box blue"><span class="bt">尺度和坐标约定</span><p>NOCS点 $p_N$ 没有米这样的度量单位，深度点 $p_C$ 通常有长度单位；拟合 $p_C=sRp_N+t$ 时，$s$恢复尺度，$R$恢复朝向，$t$恢复位置。原课件图示中心化的 $[-0.5,0.5]^3$空间，工程也可采用 $[0,1]^3$编码；若两者混用，会把原点偏移错误地计入平移。三条物体尺寸由规范点包围盒的轴向范围乘尺度得到。归一化时，各轴使用同一缩放比例，保留物体的长宽高比例。</p></div><p>拿茶杯举例：① 手柄方向统一 → 对齐 $R$；② 物体轴对齐包围盒中心放到 $(0,0,0)$ → 对齐 $t$；③ 归一化包围盒大小 → 对齐 size。</p>
+<h3>3.1 完整推理流程</h3>
+<figure>
+<img alt="课程课件：从图像到 NOCS map 到位姿的完整流程" loading="lazy" src="assets/s_p31.jpg"/>
+<figcaption>NOCS 推理流程：RGB 逐像素预测 NOCS 坐标 → 深度反投影 → 配准拟合位姿。<span class="src">（来源：Lecture 6 课件 p31）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">从图像到 NOCS 图再到位姿</div><div class="translation-body"><p>RGB 图像 → 逐像素预测 → NOCS 图 → NOCS 到点的转换 → NOCS 点。</p><p>深度 → 反投影 → 深度点。</p><p>使用 RANSAC 拟合位姿。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l06-p31">对照原课件第31页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Per-pixel predict＝逐像素预测</p><p>RGB Image＝彩色图</p><p>NOCS map＝规范坐标图</p><p>NOCS to point＝将规范坐标图取成点集</p><p>Depth＝深度</p><p>Backproject＝反投影</p><p>Depth pts＝深度点</p><p>Pose fitting w/ RANSAC＝结合RANSAC拟合位姿。</p><p><b>读图提示：</b>同一物体像素给出一对坐标：预测的规范三维坐标与由深度反投影得到的相机三维坐标。反投影的是像素深度，不是NOCS坐标。</p><p><a href="课件中文译解.html#l06-p31">对照本页完整译解</a></p></div>
+<ol>
+<li>输入 RGBD，<b>Mask R-CNN</b> 检测分割物体（ROI）；</li>
+<li>对物体每个像素预测其 <b>NOCS 坐标 $(x,y,z)$</b>，得到 NOCS Map；</li>
+<li>用每个像素的深度与相机内参<b>反投影</b>出相机坐标中的三维点，与该像素预测的NOCS三维坐标配成点对；</li>
+<li>用 <b>Umeyama 算法 + RANSAC</b> 拟合 7 DoF 相似变换（缩放 $s$ + 旋转 $R$ + 平移 $t$）：$sR\mathbf{p}_i + t = \mathbf{q}_i$。</li>
+</ol>
+<figure>
+<img alt="笔记配图：NOCS 网络架构" loading="lazy" src="assets/nocs_arch.png"/>
+<figcaption>NOCS 的网络架构：Mask R-CNN 检测 + 分支预测 NOCS 坐标。<span class="src">（来源：笔记 06）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>RGB图像 → 感兴趣区域对齐（ROI Align）。</p><ul><li>类别标签。</li><li>卷积（conv）→ 卷积 → 实例掩码。</li><li>卷积 → NOCS图。</li></ul><p>深度、实例掩码、NOCS图 → 位姿拟合。</p><ul><li>网络：基于Mask R-CNN的检测器。</li><li>输出：9自由度的完整物体边界框（包含遮挡部分；amodal bounding boxes）。</li></ul></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Network: a Mask-RCNN-based detector＝基于Mask R-CNN的检测器；Class Label＝类别标签；ROI Align＝区域对齐；Instance Mask＝实例掩码；NOCS Map＝规范坐标图；Depth＝深度；Pose Fitting＝位姿拟合；Outputs: 9 DoF amodal bounding boxes＝输出9自由度完整包围盒，包括位姿和三条尺寸。</p></div>
+<figure>
+<img alt="笔记配图：NOCS 网络架构细节" loading="lazy" src="assets/nocs_arch_2.png"/>
+<figcaption>NOCS 架构细节：NOCS Map 与深度图反投影点云的配准。<span class="src">（来源：笔记 06）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="stacked"><div><p>RGB图像 —逐像素预测→ NOCS图 —NOCS转为点→ NOCS点。</p></div><div><p>深度 —反投影→ 深度点。</p></div></div><p>NOCS点、深度点 → 使用RANSAC进行位姿拟合。</p></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Per-pixel predict＝逐像素预测；RGB Image＝彩色图像；NOCS map／pts＝规范坐标图／点集；NOCS to point＝从规范坐标图取出点集；Depth＝深度；Backproject＝反投影；Depth pts＝深度点；Pose fitting w/ RANSAC＝结合RANSAC拟合位姿。同一像素把两种坐标配成一对。</p></div>
+<h3>3.2 NOCS 与 ICP 的本质区别</h3>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th></th><th>ICP</th><th>NOCS</th></tr>
+<tr><td><b>先验</b></td><td>需要待配准的两组点云；用于物体精修时常使用CAD采样云</td><td>弱：类别级粗几何先验（NOCS 空间）</td></tr>
+<tr><td><b>对应关系</b></td><td>迭代最近邻匹配（不保证全局正确配准、需迭代）</td><td>同一像素建立预测规范坐标与深度三维点的配对；预测本身仍可能有误</td></tr>
+<tr><td><b>输出</b></td><td>6 DoF $(R,t)$</td><td>7 DoF $(s,R,t)$ + 尺寸</td></tr>
+<tr><td><b>求解</b></td><td>迭代 Procrustes</td><td>给定内点对应后Umeyama闭式求解；RANSAC还需多次假设检验</td></tr>
+</table></div></div>
+<h3>3.3 为什么不直接回归 6D 位姿？</h3>
+<p>笔记给出三条理由：① 课件的特定消融实验中，NOCS优于该直接回归基线；② 直观上，回归是 3D→6D 的直接映射，而 NOCS 先建 2D→3D 对应、再把位姿变成几何优化问题，更符合直觉；③ <b>NOCS 充分利用形状/几何先验</b>——规范空间强制同类物体共享几何分布，网络学习类别级形状规律时有协同效应（Synergy），可以利用类别内共享规律，泛化能力需按测试实例验证。</p>
+<figure>
+<img alt="课程课件：NOCS 与直接位姿回归的消融实验对比" loading="lazy" src="assets/s_p46.jpg"/>
+<figcaption>消融实验：NOCS（拟合）vs 直接位姿回归，5°/10° 精度下 NOCS 全面占优。<span class="src">（来源：Lecture 6 课件 p46）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">消融实验：NOCS 与位姿回归</div><div class="translation-body"><h3>5 度准确率</h3><div class="table-wrap"><table><thead><tr><th>类别</th><th>回归</th><th>NOCS</th></tr></thead><tbody><tr><td>相机</td><td>2</td><td>34.2</td></tr><tr><td>笔记本电脑</td><td>2.3</td><td>28.5</td></tr><tr><td>马克杯</td><td>3.3</td><td>4.8</td></tr><tr><td>瓶子</td><td>24.9</td><td>80.4</td></tr><tr><td>碗</td><td>25</td><td>59</td></tr><tr><td>罐子</td><td>28.9</td><td>57.4</td></tr></tbody></table></div><h3>10 度准确率</h3><div class="table-wrap"><table><thead><tr><th>类别</th><th>回归</th><th>NOCS</th></tr></thead><tbody><tr><td>相机</td><td>21.9</td><td>54.9</td></tr><tr><td>笔记本电脑</td><td>30</td><td>74.2</td></tr><tr><td>马克杯</td><td>20.8</td><td>26.3</td></tr><tr><td>瓶子</td><td>78.3</td><td>95</td></tr><tr><td>碗</td><td>83.8</td><td>92.2</td></tr><tr><td>罐子</td><td>81.7</td><td>95.9</td></tr></tbody></table></div><p>越高越好。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l06-p46">对照原课件第46页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Ablation Study＝消融实验</p><p>5 degree acc.＝5度阈值下准确率，10 degree acc.＝10度阈值下准确率</p><p>Regression＝直接回归，NOCS＝规范坐标拟合</p><p>The higher, the better＝越高越好</p><p>横轴包含camera、laptop、mug、bottle、bowl、can。</p><p><b>读图提示：</b>柱状图显示此设置下的比较。评估还需按原论文处理对称物体，不能把5度阈值推广为所有操作任务要求。</p><p><a href="课件中文译解.html#l06-p46">对照本页完整译解</a></p></div>
+</section>
+<!-- ============ 4 ============ -->
+<section id="s4">
+<h2 class="sec"><span class="no">4</span>合成数据：打破标注瓶颈</h2>
+<p>NOCS 模型的训练需要「逐像素 NOCS 标注」——真实数据标注成本极高、类别泛化不足。解法回到第 1 章的预言：<b>合成数据</b>。但合成与真实之间的分布差异（<b>Sim2Real Gap</b>）会让模型在真实数据上性能暴跌。</p>
+<p>王鹤老师的解法是 <b>Mixed Reality Data（CAMERA 混合现实）</b>：<b>背景是真实的，前景是合成的</b>——合成前景自带精确 NOCS 监督信号，轻易获得几十万量级数据：</p>
+<figure>
+<img alt="笔记配图：混合现实数据——真实背景加合成前景" loading="lazy" src="assets/mixed_reality_data.png"/>
+<figcaption>混合现实数据：真实背景 + 合成前景，渲染流程可自动生成几何监督，仍需检查资产与渲染质量。<span class="src">（来源：笔记 06）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">混合现实数据生成流程</div><div class="translation-body"><div class="table-wrap"><table><thead><tr><th>真实桌面场景</th><th>检测到的平面</th><th>合成RGB图像</th><th>真值NOCS图</th></tr></thead><tbody><tr><td>ShapeNetCore<br/>室内照明</td><td>合成物体</td><td>真值深度</td><td>真值掩码</td></tr></tbody></table></div></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Real Tabletop Scenes＝真实桌面场景；Detected Planes＝检测平面；Indoor Lighting＝室内光照；Synthetic Objects＝合成物体；Composited RGB＝合成彩色图；Ground Truth NOCS Map、Depth、Mask＝真实规范坐标图、深度、掩码；Mixed-reality data generation pipeline＝混合现实数据生成流水线。图中真实背景加渲染物体，自动产生监督标注。</p></div>
+<figure>
+<img alt="课程课件：混合现实数据示例" loading="lazy" src="assets/s_p38.jpg"/>
+<figcaption>CAMERA 数据集示例：300K 图像、31 个 IKEA 场景、1085 个 ShapeNet 模型。<span class="src">（来源：Lecture 6 课件 p38）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">混合现实数据</div><div class="translation-body"></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l06-p38">对照原课件第38页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Mixed Reality Data＝混合现实数据</p><p>多幅图像展示真实桌面背景上的合成物体及不同布局。</p><p><b>读图提示：</b>关注背景、物体位置、光照与遮挡变化；外观自然程度仍影响合成到真实的迁移。</p><p><a href="课件中文译解.html#l06-p38">对照本页完整译解</a></p></div>
+<p>实践中发现简单混合仍有 Gap——<b>合成前景与真实背景的分界太明显</b>，分割网络学到的经验难迁移。解法：<b>Co-Training</b>——用真实分割数据集（COCO）+ 合成数据<b>混合训练 Mask R-CNN</b>（真实数据只监督分割，不参与 NOCS 映射训练）。</p>
+<blockquote>
+<p>课程强调合成数据的重要性：真实数据获取昂贵，合成数据能提供可扩展的几何监督。理解这一思路时，也应比较真实、合成与混合数据在具体任务上的表现。</p>
+</blockquote>
+<figure>
+<img alt="课程课件：FoundationPose 位姿估计基础模型" loading="lazy" src="assets/s_p56.jpg"/>
+<figcaption>FoundationPose（Wen et al., CVPR 2024）：位姿估计的基础模型——笔记记录王老师的评价「目前 Pose Estimation 领域最 work 的模型，纯合成数据训练，但合成过程更精细」。<span class="src">（来源：Lecture 6 课件 p56）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">6D 位姿估计的基础模型</div><div class="translation-body"><h3>语言辅助的大规模合成数据生成（§3.1）</h3><p>Objaverse；标签〈保温瓶〉；原模型；噪声纹理；形状；扩散模型；大型语言模型（LLM）；重复；增强后的模型；物理引擎；路径追踪。</p><p>“这里有一个〈保温瓶〉。请描述它可能的外观，包括颜色和样式。”</p><p>“这个保温瓶是现代的哑光灰色，带有橙色和白色的几何图案。”</p><h3>神经物体建模（§3.2，无模型设置）</h3><p>参考图像 → 神经物体场：几何网络 \(f^g\)、外观网络 \(f^c\) → 神经 RGB-D 渲染。</p><h3>位姿假设生成（§3.3）</h3><p>全局位姿采样；粗位姿下的渲染；以位姿为条件的输入裁剪；编码器（共享权重）；\(H\times W\times C\)；卷积残差块；图像块；位置嵌入；Transformer 编码器；线性层；旋转更新；平移更新；精化位姿。</p><h3>位姿选择（§3.4）</h3><p>K 个假设；假设 0；以位姿为条件的渲染；以位姿为条件的输入裁剪；位姿排序编码器；编码器（共享权重）；\(H\times W\times128\)；卷积残差块；图像块；位置嵌入；多头自注意力；\(P\times512\)；平均池化；\(F\in\mathbb R^{512}\)；多头自注意力；\(K\times512\)；线性层；排序；排名 0、排名 1、排名 \(K-1\)。</p><p>FoundationPose 是统一的 6D 物体位姿估计与跟踪基础模型，同时支持基于模型和无模型设置。</p><p>Bowen Wen 等，《FoundationPose：新物体的统一 6D 位姿估计与跟踪》，IEEE 计算机视觉与模式识别会议论文集，2024。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l06-p56">对照原课件第56页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>FoundationPose是统一的六维物体位姿估计与跟踪基础模型，支持model-based（有模型）与model-free（无CAD模型）设定</p><p>图含Language-aided Synthetic Data Generation at Scale（语言辅助的大规模合成数据生成）、Neural Object Modeling（神经物体建模）、Pose Hypothesis Generation（位姿假设生成）、Pose Selection（位姿选择）</p><p>引用Wen等CVPR 2024。</p><p><b>读图提示：</b>无CAD模型并非完全无先验，仍需相应参考观测来建立对象表示；不要混同于只输入任意一张图即可。</p><p><a href="课件中文译解.html#l06-p56">对照本页完整译解</a></p></div>
+<figure>
+<img alt="笔记配图：FoundationPose 的语言辅助合成数据流程" loading="lazy" src="assets/sota_pose_estimator.png"/>
+<figcaption>FoundationPose 的合成数据流程：语言与扩散模型辅助生成多样化训练场景。<span class="src">（来源：笔记 06）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">语言辅助的大规模合成数据生成（§3.1）</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><p>Objaverse</p><p>标签：&lt;保温瓶&gt;。</p><p>原始模型 → 形状。</p><p>带噪声的纹理。</p></div><div><p>“这里有一个保温瓶。请描述它可能的外观，包括颜色和风格。” → 大语言模型（LLM）→ 重复。</p><p>“这个保温瓶呈现代哑光灰色，带有橙色和白色的几何图案。”</p></div></div><p>形状、带噪声的纹理、外观描述 → 扩散模型 → 增强后的模型 → 物理引擎 → 路径追踪。</p></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Language-aided Synthetic Data Generation at Scale＝语言辅助的大规模合成数据生成；Objaverse＝三维资产库；LLM＝大语言模型；Diffusion model＝扩散模型；Physics engine＝物理引擎；Path tracing＝路径追踪；Shape／Appearance＝形状／外观。图展示FoundationPose的合成数据流水线，未展示位姿误差评估结果。</p></div>
+<div class="update-box">
+<span class="bt">进一步理解：感知精修与合成数据</span>
+<p>评价位姿方法时，可以沿着任务流程检查：ICP精修受遮挡、对称性与初值影响；合成数据的收益需在真实任务上验证。类别级与部件级方法使用不同层次的几何先验，选择时结合目标物体、接触区域和任务要求。</p>
+</div>
+</section>
+<!-- ============ 5 ============ -->
+<section id="s5">
+<h2 class="sec"><span class="no">5</span>机器人技术的五代演进</h2>
+<p>课程笔记将机器人操作技术概括为五个阶段，帮助比较各类系统如何组织感知与动作。这是一种教学分类（核心链条：$\text{pose} \to \text{grasp} \to \text{motion planning} \to \text{control}$）：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>代际</th><th>技术</th><th>特点</th></tr>
+<tr><td><b>一代</b></td><td>工业机器人</td><td>经典示教／轨迹重放，可配合具体工程中的传感与反馈（第 1 章的「复读机」）</td></tr>
+<tr><td><b>二代</b></td><td>位姿预测</td><td>物体预先定义，轨迹由预测位姿规划得出（第 5 章）</td></tr>
+<tr><td><b>三代</b></td><td>抓取预测</td><td>直接预测抓取位姿（第 7 章）</td></tr>
+<tr><td><b>四代</b></td><td>动作规划预测</td><td>端到端输出动作轨迹，可闭环纠错</td></tr>
+<tr><td><b>五代</b></td><td>完全闭环 + 语义推理</td><td>视觉、语言与动作模型结合语义信息与执行反馈；闭环能力仍需具体系统实现</td></tr>
+</table></div></div>
+<p>判断闭环时，可以检查一点：<b>如果执行过程中根据新估计不断调整动作，整个任务层系统就形成反馈闭环</b>。估计速度描述计算效率，闭环则要求观测参与后续动作修正。</p>
+</section>
+<!-- ============ 6 ============ -->
+<section id="s6">
+<h2 class="sec"><span class="no">6</span>抓取稳定性：Force 与 Form Closure</h2>
+<p>位姿知道了，抓取位姿也有了，最后一个问题：<b>这个抓取稳不稳？</b>两个判据（课件 p63-64）：</p>
+<figure>
+<img alt="课程课件：抓取合成与力闭合的定义" loading="lazy" src="assets/s_p63.jpg"/>
+<figcaption>抓取合成回顾与 Force Closure 定义。<span class="src">（来源：Lecture 6 课件 p63）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">抓取</div><div class="translation-body"><ul><li>抓取位姿：抓手的位置与朝向。<ul><li>4 自由度抓取：3 个位置自由度和 1 个朝向自由度。</li><li>6 自由度抓取：3 个位置自由度和 3 个朝向自由度。</li></ul></li><li>力封闭：能够抵消作用于物体的任意外部力旋量。</li></ul><p>从上向下抓取；6 自由度抓取；灵巧手；平行夹爪。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l06-p63">对照原课件第63页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Grasp Pose＝手的位置与朝向</p><p>4-DoF抓取＝三维位置加沿重力方向对齐后的一个旋转自由度</p><p>6-DoF＝三维位置加三维朝向</p><p>Force Closure＝接触允许施加的力足以补偿物体受到的任意external wrench（外部力螺旋）。</p><p><b>读图提示：</b>wrench包含力与力矩，不能只译成外力。定义一般不限制力大小，实际电机和材料限制要另行检验。</p><p><a href="课件中文译解.html#l06-p63">对照本页完整译解</a></p></div>
+<div class="box blue">
+<span class="bt">🔑 两种闭合条件</span>
+<p><b>力闭合（Force Closure）</b>：在给定接触位置、法向与摩擦模型下，允许的接触力可合成用于抵抗任意方向<b>外部力螺旋</b>的力螺旋。力螺旋（wrench）同时包含力与力矩；理论定义通常不限制接触力大小。王老师原话：「以某一组力在某一组接触点抓起来后，物体需要任意方向的加速度都可以提供。」<br/>
+<b>形闭合（Form Closure）</b>：仅靠<b>几何约束</b>完全锁死刚体（不依赖摩擦力）。</p>
+</div>
+<p>物理定义更精确（课件 p64）：力闭合 = 接触力螺旋锥（wrench cones）的正张成（positive span）是整个力螺旋空间；形闭合 = 一组刚性固定装置完全固定刚体。<b>在一阶刚性接触模型下，无摩擦力闭合与一阶形闭合等价</b>；有摩擦时可用较少接触抵抗扰动。力闭合是稳健抓取的常用设计条件。对于有限载荷任务，也可能存在稳定但未达到完整力闭合的抓取；评价时应结合实际外载、关节输出力、摩擦系数和物体承载能力。</p>
+<figure>
+<img alt="课程课件：2D 简化的力闭合问题" loading="lazy" src="assets/s_p65.jpg"/>
+<figcaption>2D 简化问题：三个无摩擦接触（左）vs 一个有摩擦+一个无摩擦（右）——判断力向量能否正张成整个力空间。<span class="src">（来源：Lecture 6 课件 p65）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">力封闭</div><div class="translation-body"><ul><li>一个简化的二维问题。</li></ul><h3>具有无摩擦接触的二维抓取</h3><p>\(f_1\)、\(f_2\)、\(f_3\)；\(f_x\)、\(f_y\)。</p><ul><li>√ 3 个可能的力向量，其中 2 个线性无关。</li><li>× 在每个接触点均施加非零力时，可以产生合力为零的结果。</li><li>× 原点位于可能施加的力所构成的空间内部。</li></ul><h3>由一个有摩擦接触与一个无摩擦接触组成的二维抓取</h3><p>\(f_1\)、\(f_{2,1}\)、\(f_{2,2}\)；\(f_x\)、\(f_y\)。</p><ul><li>√ 3 个可能的力向量，其中 2 个线性无关。</li><li>√ 在每个接触点均施加非零力时，可以产生合力为零的结果。</li><li>√ 原点位于可能施加的力所构成的空间内部。</li></ul><p>观看：https://www.youtube.com/watch?v=6RWFFMtD5k8</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l06-p65">对照原课件第65页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>A simplified 2D problem＝二维简化问题</p><p>上例为无摩擦接触：有3个力方向且两方向线性无关，但无法用各接触非零正力合成零力，原点不在可行力空间内部</p><p>下例为一个有摩擦、一个无摩擦接触：满足这些条件</p><p>原页给出Modern Robotics视频链接。</p><p><b>读图提示：</b>图只把力向量画在二维平面。完整平面刚体还需转矩，w=(f_x,f_y,τ)，应在三维力螺旋空间判断；光看二维力的凸包不足以证明完整力闭合。</p><p><a href="课件中文译解.html#l06-p65">对照本页完整译解</a></p></div>
+<p>2D 简化版的理解：若干接触点的可行力向量（受摩擦锥约束）如果<b>正张成整个平面</b>（即原点在力向量的凸包内部），任意外力都能被平衡。这个二维例子只检查平移力；完整平面刚体的判据还需包含转矩。</p>
+<div class="box blue"><span class="bt">力与力矩要一起检查</span><p>接触点 $r$ 处的力 $f$ 产生力矩 $r\times f$，空间力螺旋可写为 $w=(f,r\times f)$。完整平面刚体为 $w=(f_x,f_y,\tau_z)$，是3维；完整空间刚体是6维。摩擦锥限制力方向，映射到物体坐标后才得到接触力螺旋锥。判定完整力闭合时，既要检查各方向的平移力，也要检查绕轴转矩。参见<a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/12-2-3-force-closure/">Modern Robotics：力闭合</a>。</p></div><h3>回归 vs 生成：抓取建模的选择</h3>
+<p>一种简单的抓取学习设定是<b>单输出回归</b>：预测一个抓取位姿。但遮挡和对称性使一个物体通常有<b>多个可行抓取（多峰分布）</b>——在平方误差监督下，单输出回归可能趋向条件均值，落在两个峰之间。因此，<b>把抓取建模为生成问题</b>（预测一个分布，采样多个候选）更合适。这是第 7 章（GraspNet、条件生成模型）的主线。</p>
+</section>
+<!-- ============ 7 ============ -->
+<section id="s7">
+<h2 class="sec"><span class="no">7</span>本章小结</h2>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>核心概念</th><th>一句话解释</th></tr>
+<tr><td><b>ICP</b></td><td>最近邻对应 + Procrustes 的迭代精修；标准点到点目标单调不增，但不保证全局正确配准</td></tr>
+<tr><td><b>位姿精度 vs 抓取</b></td><td>容错阈值依赖物体、接触区域和夹爪策略</td></tr>
+<tr><td><b>NOCS</b></td><td>类别级统一参考系（旋转对齐+平移/尺寸归一化），同像素构成规范坐标与深度坐标点对；给定内点对应后Umeyama闭式求解；RANSAC还需多次假设检验</td></tr>
+<tr><td><b>Sim2Real Gap</b></td><td>合成与真实分布差异；混合现实 + Co-Training 是经典解法</td></tr>
+<tr><td><b>五代技术</b></td><td>重放 → 位姿 → 抓取 → 端到端动作 → LLM 语义闭环</td></tr>
+<tr><td><b>Force / Form Closure</b></td><td>摩擦力平衡任意外力 / 纯几何锁死；给定模型下抵抗任意方向外部力螺旋的设计条件，仍需检验有限力与任务载荷</td></tr>
+<tr><td><b>回归 vs 生成</b></td><td>抓取多峰分布 → 生成式建模（下一章主角）</td></tr>
+</table></div></div>
+<div class="box green">
+<span class="bt">💡 下一章预告</span>
+<p>第 7 章直击三代技术：<b>抓取检测</b>——GraspNet 系列如何用神经网络从点云直接生成抓取，摩擦锥、条件生成模型与大规模合成数据全线登场。</p>
+</div>
+</section>
+<!-- ============ 8 ============ -->
+<section id="s8">
+<h2 class="sec"><span class="no">8</span>动手实践</h2>
+<p>作业 2 已在第 5 章介绍。本章另设 ICP 与 Umeyama 练习：亲手实现最近邻匹配、刚体拟合和尺度求解，巩固位姿估计中的几何计算。</p>
+<h3>练习 1：numpy 实现 ICP（30 分钟）</h3>
+<pre><code><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">def</span> <span class="fn">icp</span>(P, Q, max_iter=50, tol=1e-6):
+    <span class="st">"""点云配准：P (3,n) 源点云 → 对齐 Q (3,m) 目标点云，返回 (R, t, P_aligned)"""</span>
+    P = P.copy()
+    R_total, t_total = np.eye(3), np.zeros(3)
+    <span class="kw">for</span> it <span class="kw">in</span> <span class="fn">range</span>(max_iter):
+        <span class="cm"># 1. 找最近邻对应（暴力版即可，点少）</span>
+        corr = []
+        <span class="kw">for</span> p <span class="kw">in</span> P.T:
+            j = np.argmin(np.linalg.norm(Q.T - p, axis=1))
+            corr.append(Q[:, j])
+        Q_corr = np.array(corr).T
+
+        <span class="cm"># 2. 中心化</span>
+        cP, cQ = P - P.mean(1, keepdims=True), Q_corr - Q_corr.mean(1, keepdims=True)
+
+        <span class="cm"># 3. 带约束 Procrustes（第 5 章公式）</span>
+        U, _, Vt = np.linalg.svd(cQ @ cP.T)
+        D = np.diag([1, 1, np.linalg.det(U @ Vt)])
+        R = U @ D @ Vt
+        t = Q_corr.mean(1) - R @ P.mean(1)
+
+        <span class="cm"># 4. 更新并检查收敛</span>
+        P_new = R @ P + t[:, None]
+        movement = np.linalg.norm(P_new - P)
+        R_total, t_total = R @ R_total, R @ t_total + t
+        P = P_new
+        <span class="kw">if</span> movement &lt; tol: <span class="kw">break</span>
+    <span class="kw">return</span> R_total, t_total, P
+
+<span class="cm"># 生成测试：非对称点云与较小位姿扰动，验证局部精修</span>
+np.random.seed(0)
+Q = np.random.randn(3, 300) * np.array([[1.0], [0.7], [0.3]])
+angle = 0.03
+R_true = np.array([[np.cos(angle), -np.sin(angle), 0], [np.sin(angle), np.cos(angle), 0], [0, 0, 1]])
+t_true = np.array([0.01, -0.02, 0.01])
+P = R_true @ Q + t_true[:, None]
+R, t, P_align = icp(P, Q)
+<span class="fn">print</span>(<span class="st">"旋转误差:"</span>, np.round(np.linalg.norm(R - R_true.T), 6))
+<span class="fn">print</span>(<span class="st">"平移误差:"</span>, np.round(np.linalg.norm(t + R_true.T @ t_true), 6))   <span class="cm"># 应接近 0</span></code></pre>
+<p><b>自测：</b>上面的变换方向是P→Q，因此构造P=R_true Q+t_true后，正确输出应为 $R_{true}^\top$ 与 $-R_{true}^\top t_{true}$。把初始角度改大、删去一半目标点或加入离群点，记录是否失配；把这些结果与完全重合点云的测试对照，可以观察ICP对初值、重叠范围和离群点的敏感性。</p><h3>练习 2：Umeyama 相似变换（20 分钟）</h3>
+<p>在练习 1 基础上加一个缩放系数 $s$（NOCS 的 7 DoF 拟合）：</p>
+<pre><code><span class="kw">def</span> <span class="fn">umeyama</span>(P, Q):
+    <span class="st">"""7DoF 相似变换：s*R*p + t = q（P、Q 已一一对应）"""</span>
+    cP, cQ = P - P.mean(1, keepdims=True), Q - Q.mean(1, keepdims=True)
+    <span class="cm"># 对应点最小二乘尺度；无噪声时也等于 RMS 比</span>
+    U, singular_values, Vt = np.linalg.svd(cQ @ cP.T)
+    D = np.diag([1, 1, np.linalg.det(U @ Vt)])
+    R = U @ D @ Vt
+    s = np.sum(singular_values * np.diag(D)) / np.sum(cP**2)
+    t = Q.mean(1) - s * R @ P.mean(1)
+    <span class="kw">return</span> s, R, t
+
+<span class="cm"># 测试：随机 3D 点云 + 随机相似变换</span>
+P0 = np.random.rand(3, 100)
+s_t, R_t, t_t = 1.5, np.eye(3), np.array([1., -2., 3.])
+s, R, t = umeyama(P0, s_t * R_t @ P0 + t_t[:, None])
+<span class="fn">assert</span> np.allclose(s, s_t, atol=1e-9) <span class="kw">and</span> np.allclose(R, R_t, atol=1e-9) <span class="kw">and</span> np.allclose(t, t_t, atol=1e-9)
+<span class="fn">print</span>(<span class="st">"✓ Umeyama 恢复的 (s, R, t) 与真值一致"</span>)</code></pre>
+<h3>练习 3：仅二维平移力平衡判断（15 分钟，选做）</h3>
+<p>给定 3 个接触点的法向力方向（2D），忽略力矩，只判断这些力方向能否正张成整个平面，即原点是否严格位于满维凸包内部：</p>
+<pre><code><span class="kw">def</span> <span class="fn">force_closure_2d</span>(normals):
+    <span class="st">"""normals: (C,2) 法向力；仅平移，原点严格在满维凸包内部"""</span>
+    <span class="kw">from</span> scipy.spatial <span class="kw">import</span> ConvexHull
+    <span class="kw">if</span> len(normals) &lt; 3 <span class="kw">or</span> np.linalg.matrix_rank(normals - normals.mean(0)) &lt; 2:
+        <span class="kw">return</span> False
+    hull = ConvexHull(normals)
+    <span class="cm"># 半空间 n·x+b ≤ 0：x=0 严格在内部要求所有 b &lt; 0</span>
+    <span class="kw">return</span> bool(np.all(hull.equations[:, -1] &lt; -1e-10))
+
+<span class="fn">print</span>(<span class="fn">force_closure_2d</span>(np.array([[1,0],[-0.5,0.866],[-0.5,-0.866]])))  <span class="cm"># 120°分布 → True</span>
+<span class="fn">print</span>(<span class="fn">force_closure_2d</span>(np.array([[1,0],[1,0.1],[-0.5,0.2]])))    <span class="cm"># 集中在同一侧 → False</span></code></pre>
+<div class="box green">
+<span class="bt">💡 自学路线建议</span>
+<p>三个练习共约 65 分钟，只需 numpy（练习 3 加 scipy）。做完练习 1 建议把 ICP 接到第 5 章作业 2 的位姿估计输出上试试，比较精修前后的位姿误差与抓取结果。</p>
+</div>
+</section>
+<!-- ============ 附录 A ============ -->
+<section id="apA">
+<h2 class="sec"><span class="no">附A</span>术语表</h2>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table class="term-table">
+<tr><th>术语</th><th>解释</th></tr>
+<tr><td>ICP</td><td>迭代最近点：最近邻对应 + Procrustes 的迭代点云配准算法</td></tr>
+<tr><td>Chamfer 距离</td><td>点云间最近邻距离之和，ICP 的对应搜索目标</td></tr>
+<tr><td>KD-tree</td><td>空间划分数据结构，加速最近邻搜索</td></tr>
+<tr><td>Point-to-Plane ICP</td><td>考虑目标点局部平面结构的 ICP 变体，收敛更快</td></tr>
+<tr><td>NOCS</td><td>归一化物体坐标空间：类别级统一参考系（王鹤 CVPR 2019 Oral）</td></tr>
+<tr><td>Umeyama 算法</td><td>求解 7 DoF 相似变换（缩放+旋转+平移）的解析方法</td></tr>
+<tr><td>9 DoF amodal bounding box</td><td>含位姿（6D）+ 尺寸（3D）的完整包围盒（含被遮挡部分）</td></tr>
+<tr><td>Sim2Real Gap</td><td>合成数据与真实数据的分布差异导致的性能落差</td></tr>
+<tr><td>Mixed Reality Data</td><td>真实背景 + 合成前景的数据合成方式（CAMERA 数据集）</td></tr>
+<tr><td>Co-Training</td><td>真实数据（只监督分割）+ 合成数据混合训练</td></tr>
+<tr><td>min-of-N loss</td><td>对称物体位姿估计的损失：N 个等价位姿中取最小误差</td></tr>
+<tr><td>力闭合（Force Closure）</td><td>允许接触力产生的力螺旋正张成整个力螺旋空间；须包含力矩且另检验执行器限制</td></tr>
+<tr><td>形闭合（Form Closure）</td><td>纯几何约束完全固定刚体，不依赖摩擦</td></tr>
+<tr><td>摩擦锥（Friction Cone）</td><td>接触点可行力的集合，由摩擦系数决定</td></tr>
+</table></div></div>
+</section>
+<!-- ============ 附录 B ============ -->
+<section id="apB">
+<h2 class="sec"><span class="no">附B</span>课件 66 页完整索引</h2>
+<p>原版 Lecture 6 课件共 66 页（<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture06_03_24.pdf" target="_blank">GitHub 原文件</a>）。下表逐页列出内容及在本教程中的位置：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><p><a href="课件中文译解.html">逐页原图与中文翻译</a> · <a href="../sources/lecture06.pdf">本地原始课件PDF</a></p><div class="table-wrap"><table class="page-index">
+<tr><th>页码</th><th>页面内容</th><th>在教程中的位置</th></tr>
+<tr><td class="pg">p1</td><td>封面：Lecture 6 - Vision and Grasping II</td><td>封面区</td></tr>
+<tr><td class="pg">p2</td><td>主题页：实例级 6D 位姿估计</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p3</td><td>实例级定义回顾（PoseCNN）</td><td>§1（回顾第 5 章）</td></tr>
+<tr><td class="pg">p4-8</td><td>PoseCNN 结构与结果回顾（图源 Yu Xiang）</td><td>§1（回顾第 5 章 §8.1）</td></tr>
+<tr><td class="pg">p9</td><td>主题页：ICP</td><td>§2 开头</td></tr>
+<tr><td class="pg">p10</td><td>ICP 定义：点云配准，最小化 $\|Q-(RP+T)\|_F$</td><td>§2</td></tr>
+<tr><td class="pg">p11</td><td>步骤一：中心化</td><td>§2（步骤 1）</td></tr>
+<tr><td class="pg">p12</td><td>步骤二：Chamfer 距离对应（$O(|P||Q|)$，KD-tree 加速）</td><td>§2（步骤 2）</td></tr>
+<tr><td class="pg">p13</td><td>步骤三：约束 Procrustes 求 $\hat{R}$、残差求 $\hat{T}$、更新 P</td><td>§2（步骤 3-4）</td></tr>
+<tr><td class="pg">p14</td><td>迭代流程总结（五步）</td><td>§2</td></tr>
+<tr><td class="pg">p15</td><td>终止条件（三种）</td><td>§2（步骤 4）</td></tr>
+<tr><td class="pg">p16</td><td>ICP 优缺点</td><td>§2.2</td></tr>
+<tr><td class="pg">p17</td><td>ICP 变体：Point-to-Plane、Plane-to-Plane</td><td>§2.2</td></tr>
+<tr><td class="pg">p18</td><td>PoseCNN + ICP 结果可视化</td><td>§2</td></tr>
+<tr><td class="pg">p19</td><td>LINEMOD 数据集（回顾）</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p20</td><td>实例级局限（回顾）</td><td>§3（动机）</td></tr>
+<tr><td class="pg">p21</td><td>主题页：类别级 6D 位姿估计</td><td>§3 开头</td></tr>
+<tr><td class="pg">p22</td><td>（无文字配图页）</td><td>§3</td></tr>
+<tr><td class="pg">p23</td><td>NOCS（王鹤 et al., CVPR 2019 Oral）</td><td>§3</td></tr>
+<tr><td class="pg">p24</td><td>类别级目标：无需 CAD 模型估位姿与尺寸</td><td>§3</td></tr>
+<tr><td class="pg">p25</td><td>挑战：类别内形状差异</td><td>§3</td></tr>
+<tr><td class="pg">p26</td><td>表示：NOCS</td><td>§3</td></tr>
+<tr><td class="pg">p27</td><td>步骤 1：旋转归一化</td><td>§3（三步归一化）</td></tr>
+<tr><td class="pg">p28</td><td>步骤 2：平移归一化（中心化）</td><td>§3（三步归一化）</td></tr>
+<tr><td class="pg">p29</td><td>步骤 3：尺寸归一化</td><td>§3（三步归一化）</td></tr>
+<tr><td class="pg">p30</td><td>类别级位姿定义：NOCS → 相机空间的变换</td><td>§3</td></tr>
+<tr><td class="pg">p31</td><td>流程：图像 → NOCS map → 反投影 → RANSAC 拟合</td><td>§3.1</td></tr>
+<tr><td class="pg">p32</td><td>网络：Mask R-CNN 检测器，输出 9 DoF amodal bbox</td><td>§3.1</td></tr>
+<tr><td class="pg">p33-35</td><td>挑战：形状差异、数据与标注</td><td>§4（动机）</td></tr>
+<tr><td class="pg">p36</td><td>CAMERA：混合现实数据生成流水线</td><td>§4</td></tr>
+<tr><td class="pg">p37</td><td>数据统计：300K 图像、31 场景、1085 模型</td><td>§4</td></tr>
+<tr><td class="pg">p38</td><td>混合现实数据示例</td><td>§4</td></tr>
+<tr><td class="pg">p39</td><td>真实世界数据集</td><td>§4</td></tr>
+<tr><td class="pg">p40</td><td>真实数据统计：8K RGB-D、18 场景、42 实例、6 类别</td><td>§4</td></tr>
+<tr><td class="pg">p41</td><td>位姿拟合：Umeyama 7D + RANSAC</td><td>§3.1（步骤 4）</td></tr>
+<tr><td class="pg">p42-43</td><td>Umeyama 细节与尺寸估计（Read by Yourself）</td><td>§3.1</td></tr>
+<tr><td class="pg">p44</td><td>对称处理：min-of-N loss</td><td>附录 A（术语）</td></tr>
+<tr><td class="pg">p45</td><td>结果可视化</td><td>§3.3</td></tr>
+<tr><td class="pg">p46</td><td>消融：NOCS vs 直接回归（5°/10° 精度）</td><td>§3.3</td></tr>
+<tr><td class="pg">p47</td><td>应用：TransNet 透明物体（ECCV 2022 Workshop）</td><td>§4 更新框</td></tr>
+<tr><td class="pg">p48</td><td>应用：6-PACK 类别级跟踪（ICRA 2020）</td><td>§4 更新框</td></tr>
+<tr><td class="pg">p49</td><td>应用：CAPTRA 关节物体跟踪（ICCV 2021 Oral）</td><td>§4 更新框</td></tr>
+<tr><td class="pg">p50</td><td>GAPartNet：可泛化可操作部件（CVPR 2023 Highlight）</td><td>§4 更新框</td></tr>
+<tr><td class="pg">p51</td><td>GAPartNet 数据统计（PartNet-Mobility 对比）</td><td>§4 更新框</td></tr>
+<tr><td class="pg">p52-54</td><td>GAPartNet 输入输出与真机实验</td><td>§4 更新框</td></tr>
+<tr><td class="pg">p55</td><td>主题页：位姿估计基础模型</td><td>§4（FoundationPose）</td></tr>
+<tr><td class="pg">p56</td><td>FoundationPose（Wen et al., CVPR 2024）</td><td>§4</td></tr>
+<tr><td class="pg">p57</td><td>合成数据瓶颈与 LLM/扩散模型增强的合成 pipeline</td><td>§4</td></tr>
+<tr><td class="pg">p58</td><td>位姿初始化（检测 → 平移初始化 → 旋转采样）</td><td>§4</td></tr>
+<tr><td class="pg">p59</td><td>位姿条件裁剪（crop 精修）</td><td>§4</td></tr>
+<tr><td class="pg">p60</td><td>机器人应用与 YCB-Video 结果</td><td>§4</td></tr>
+<tr><td class="pg">p61</td><td>主题页：物体抓取</td><td>§6 开头</td></tr>
+<tr><td class="pg">p62</td><td>抓取与抓取合成定义（Newbury 综述）</td><td>§6（回顾第 5 章）</td></tr>
+<tr><td class="pg">p63</td><td>抓取位姿回顾 + Force Closure 定义</td><td>§6</td></tr>
+<tr><td class="pg">p64</td><td>物理定义：摩擦锥正张成 vs 刚性固定</td><td>§6</td></tr>
+<tr><td class="pg">p65</td><td>2D 简化力闭合例子（附视频链接）</td><td>§6</td></tr>
+<tr><td class="pg">p66</td><td>结尾页：下集预告 Vision and Grasping III</td><td>页脚（下一章预告）</td></tr>
+</table></div></div>
+</section>
+<!-- ============ 附录 C ============ -->
+<section id="apC">
+<h2 class="sec"><span class="no">附C</span>参考资源</h2>
+<ul>
+<li>课程官网：<a href="https://pku-epic.github.io/Intro2EAI_2025/" target="_blank">pku-epic.github.io/Intro2EAI_2025</a></li>
+<li>本教程素材来源仓库：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU" target="_blank">zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU</a></li>
+<li>本章课件：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture06_03_24.pdf" target="_blank"><code>Slides/Lecture06_03_24.pdf</code></a>（66 页）</li>
+<li>本章笔记原文：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Notes/06-Vision-and-Grasping-II.md" target="_blank"><code>Notes/06-Vision-and-Grasping-II.md</code></a></li>
+</ul>
+<p>ICP实现和评价参见<a href="https://www.open3d.org/docs/release/tutorial/pipelines/icp_registration.html">Open3D官方ICP教程</a>；接触条件参见<a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/12-1-7-form-closure/">Modern Robotics：形闭合</a>。</p><h3>延伸阅读</h3>
+<ul>
+<li>Wang et al., <em>NOCS</em>, CVPR 2019 Oral（<a href="https://arxiv.org/abs/1901.02970" target="_blank">arXiv</a>）：类别级位姿估计原始论文</li>
+<li>Wen et al., <em>FoundationPose</em>, CVPR 2024：位姿估计基础模型</li>
+<li>Umeyama 算法参考：<a href="https://zpl.fi/aligning-point-patterns-with-kabsch-umeyama-algorithm/" target="_blank">zpl.fi 的 Kabsch-Umeyama 教程</a></li>
+<li>力闭合 2D 示例视频：YouTube 搜索「6RWFFMtD5k8」（课件 p65 推荐）</li>
+<li>Newbury et al., <em>Deep Learning Approaches to Grasp Synthesis</em>（综述）</li>
+</ul>
+</section>
+<section class="self-check"><h2>自测：逐步验证完整流程</h2><ol><li>ICP停止更新，能否说明得到真实位姿？</li><li>NOCS图与深度图中相同像素分别表示什么坐标？</li><li>一个尺度系数如何恢复长、宽、高三个尺寸？</li><li>为何二维力方向包围原点还不足以证明平面刚体力闭合？</li></ol><details><summary>参考思路</summary><p>停止可能是错误局部解；前者是规范物体坐标，后者经反投影为度量相机坐标；尺度要乘规范包围盒三轴范围；平面刚体还具有旋转自由度，必须同时检查转矩。</p></details></section></main>
+</div>
+<!-- ============ 页脚 ============ -->
+<aside class="recent" id="current-research"><h3>2026年10月技术与政策动态 · 从几何误差走向系统评价</h3><p>2026年的具身智能基准测试方法强调对感知、决策和执行链路进行评价。ICP配准误差只是其中一环，还要检验它怎样影响真实任务结果。</p><p class="source-note">资料截至2026-10-04 · <a href="../技术动态_20261004.html#benchmark2026">一手来源、发布日期与适用范围</a></p></aside><footer>
+<nav aria-label="章节导航" class="chapter-nav"><a href="../ch05/index.html">← 第5章</a><a href="../index.html">教程目录</a><a href="../ch07/index.html">第7章 →</a></nav>
+<p><b>关于本教程：</b>本教程基于北京大学 2025 春季《具身智能导论》课程的公开资料（王鹤 老师主讲）整理改编，面向零基础自学者，免费开源、仅限个人自学使用。来源、改编方式与使用声明的完整说明见<a href="#about">篇首「关于本教程」</a>；笔记、课件、作业版权归原作者及课程组所有。</p>
+<p><b>阅读说明：</b>课程知识主线与原始课件保持对应；中文翻译和理解提示帮助辨认术语、公式与适用条件。实验设置与课程题目可通过原始资料逐项对照。</p>
+<p><b>下一章预告：</b>第 7 章《视觉与抓取 III：抓取检测》（课件 p66 预告）——GraspNet 系列、条件生成模型与合成数据规模化。</p>
+</footer>
+<script src="../reader.js"></script>
+</body>
+</html>

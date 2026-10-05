@@ -1,0 +1,847 @@
+[
+  {
+    "lecture": 5,
+    "page": 1,
+    "title": "具身智能导论",
+    "translation": [
+      "第 5 讲：视觉与抓取 I",
+      "王鹤教授（He Wang）",
+      "北大具身感知与交互实验室（EPIC Lab）",
+      "2025 年春季"
+    ],
+    "translated_title": "具身智能导论",
+    "translation_html": "<p>第 5 讲：视觉与抓取 I</p><p>王鹤教授（He Wang）</p><p>北大具身感知与交互实验室（EPIC Lab）</p><p>2025 年春季</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 2,
+    "title": "课程安排",
+    "translation": [],
+    "translated_title": "课程安排",
+    "translation_html": ""
+  },
+  {
+    "lecture": 5,
+    "page": 3,
+    "title": "课程安排",
+    "translation": [
+      "作业 1： 截止时间：03/22，北京时间晚上 11:59，即本周六晚上。"
+    ],
+    "translated_title": "课程安排",
+    "translation_html": "<ul><li>作业 1：<ul><li>截止时间：03/22，北京时间晚上 11:59，即本周六晚上。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 5,
+    "page": 4,
+    "title": "抓取",
+    "translation": [],
+    "translated_title": "抓取",
+    "translation_html": ""
+  },
+  {
+    "lecture": 5,
+    "page": 5,
+    "title": "从机器人学基础到轨迹生成",
+    "translation": [
+      "运动学：笛卡尔空间与关节空间之间的转换。 运动规划：获得一条几何上有效的路径。 控制：确保运动沿着规划的轨迹进行。 如果我们能够给出要移动到哪里，即笛卡尔空间中的末端执行器位姿，这就已经形成了一套流程。"
+    ],
+    "translated_title": "从机器人学基础到轨迹生成",
+    "translation_html": "<ul><li>运动学：笛卡尔空间与关节空间之间的转换。</li><li>运动规划：获得一条几何上有效的路径。</li><li>控制：确保运动沿着规划的轨迹进行。</li><li>如果我们能够给出要移动到哪里，即笛卡尔空间中的末端执行器位姿，这就已经形成了一套流程。</li></ul>"
+  },
+  {
+    "lecture": 5,
+    "page": 6,
+    "title": "什么是抓取？",
+    "translation": [
+      "抓取：在一组接触点施加力和力矩，以期望的方式约束物体运动的过程。 抓取合成：寻找抓手位姿或关节构型的高维搜索或优化问题。",
+      "抓取前 → 抓取 → 抓取后。",
+      "抓取合成 → 接近物体 → 物理交互 → 抬起 → 放下／使用（可选）。",
+      "来源：R. Newbury、M. Gu、L. Chumbley、A. Mousavian、C. Eppner、J. Leitner、J. Bohg、A. Morales、T. Asfour、D. Kragic、D. Fox、A. Cosgun，《深度学习抓取合成方法综述》，arXiv:2207.02556。"
+    ],
+    "translated_title": "什么是抓取？",
+    "translation_html": "<ul><li>抓取：在一组接触点施加力和力矩，以期望的方式约束物体运动的过程。</li><li>抓取合成：寻找抓手位姿或关节构型的高维搜索或优化问题。</li></ul><p>抓取前 → 抓取 → 抓取后。</p><p>抓取合成 → 接近物体 → 物理交互 → 抬起 → 放下／使用（可选）。</p><p>来源：R. Newbury、M. Gu、L. Chumbley、A. Mousavian、C. Eppner、J. Leitner、J. Bohg、A. Morales、T. Asfour、D. Kragic、D. Fox、A. Cosgun，《深度学习抓取合成方法综述》，arXiv:2207.02556。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 7,
+    "title": "抓取术语",
+    "translation": [
+      "抓取位姿：抓手的位置、朝向及关节构型。",
+      "4 自由度抓取：3 个位置自由度，以及 1 个朝向自由度；沿重力方向从上向下抓取。",
+      "6 自由度抓取：3 个位置自由度和 3 个朝向自由度。",
+      "关节构型：手指的自由度；平行夹爪通常为 1 个，灵巧手可多达 21 个。",
+      "图中：从上向下抓取；6 自由度抓取；灵巧手；平行夹爪。"
+    ],
+    "translated_title": "抓取术语",
+    "translation_html": "<ul><li>抓取位姿：抓手的位置、朝向及关节构型。</li><li>4 自由度抓取：3 个位置自由度，以及 1 个朝向自由度；沿重力方向从上向下抓取。</li><li>6 自由度抓取：3 个位置自由度和 3 个朝向自由度。</li><li>关节构型：手指的自由度；平行夹爪通常为 1 个，灵巧手可多达 21 个。</li></ul><p>图中：从上向下抓取；6 自由度抓取；灵巧手；平行夹爪。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 8,
+    "title": "开环抓取",
+    "translation": [
+      "桌面抓取",
+      "D³RoMA，CoRL 2024。"
+    ],
+    "translated_title": "开环抓取",
+    "translation_html": "<p>桌面抓取</p><p>D³RoMA，CoRL 2024。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 9,
+    "title": "闭环抓取",
+    "translation": [
+      "GraspVLA，投稿中。"
+    ],
+    "translated_title": "闭环抓取",
+    "translation_html": "<p>GraspVLA，投稿中。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 10,
+    "title": "闭环抓取",
+    "translation": [],
+    "translated_title": "闭环抓取",
+    "translation_html": ""
+  },
+  {
+    "lecture": 5,
+    "page": 11,
+    "title": "开环抓取的两条路径",
+    "translation": [
+      "对于已知物体： 位姿估计会有帮助。 对于未知与一般物体： 直接预测抓取位姿。"
+    ],
+    "translated_title": "开环抓取的两条路径",
+    "translation_html": "<ul><li>对于已知物体：<ul><li>位姿估计会有帮助。</li></ul></li><li>对于未知与一般物体：<ul><li>直接预测抓取位姿。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 5,
+    "page": 12,
+    "title": "6D 位姿估计",
+    "translation": [],
+    "translated_title": "6D 位姿估计",
+    "translation_html": ""
+  },
+  {
+    "lecture": 5,
+    "page": 13,
+    "title": "6D 物体位姿",
+    "translation": [
+      "定义：将物体坐标系变换到相机坐标系的刚体变换，包括 3 个平移自由度和 3 个旋转自由度。",
+      "X′ = RX + T。",
+      "相机坐标系；物体坐标系；X、Y、Z 轴；平移 T = (Tₓ, Tᵧ, T_z)ᵀ；图像中心 c = (cₓ, cᵧ)ᵀ。",
+      "来源：Yu Xiang 等，《PoseCNN：一种用于杂乱场景中 6D 物体位姿估计的卷积神经网络》，RSS 2018。"
+    ],
+    "translated_title": "6D 物体位姿",
+    "translation_html": "<ul><li>定义：将物体坐标系变换到相机坐标系的刚体变换，包括 3 个平移自由度和 3 个旋转自由度。</li></ul><p>\\[X^{\\prime}=RX+T\\]。</p><p>相机坐标系；物体坐标系；X、Y、Z 轴；平移 \\(T=\\begin{bmatrix}T_x\\\\T_y\\\\T_z\\end{bmatrix}\\)；图像中心 \\(c=\\begin{bmatrix}c_x\\\\c_y\\end{bmatrix}\\)。</p><p>来源：Yu Xiang 等，《PoseCNN：一种用于杂乱场景中 6D 物体位姿估计的卷积神经网络》，RSS 2018。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 14,
+    "title": "应用：用于机器人操作的 6D 位姿",
+    "translation": [
+      "将 CAD 模型上的抓取点标注变换到相机坐标系。 通过位姿跟踪，实现基于视觉的闭环控制。",
+      "物体定位 → 位姿估计 → 运动规划；抓取点。"
+    ],
+    "translated_title": "应用：用于机器人操作的 6D 位姿",
+    "translation_html": "<ul><li>将 CAD 模型上的抓取点标注变换到相机坐标系。</li><li>通过位姿跟踪，实现基于视觉的闭环控制。</li></ul><p>物体定位 → 位姿估计 → 运动规划；抓取点。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 15,
+    "title": "基于物体位姿的抓取",
+    "translation": [
+      "《用于家庭物体语义机器人抓取的深度物体位姿估计》，CoRL 2018。"
+    ],
+    "translated_title": "基于物体位姿的抓取",
+    "translation_html": "<p>《用于家庭物体语义机器人抓取的深度物体位姿估计》，CoRL 2018。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 16,
+    "title": "应用：用于人与物体交互的 6D 位姿",
+    "translation": [
+      "视觉：感知并理解人与物体之间的交互。 机器人学：提取物体的位姿轨迹，用于模仿学习。",
+      "来源：Shreyas Hampali 等，《HOnnotate：手与物体的 3D 标注方法》，CVPR 2020。",
+      "来源：Bardia Doosti 等，《HOPE-Net：一种用于手与物体位姿估计的基于图的模型》，CVPR 2020。"
+    ],
+    "translated_title": "应用：用于人与物体交互的 6D 位姿",
+    "translation_html": "<ul><li>视觉：感知并理解人与物体之间的交互。</li><li>机器人学：提取物体的位姿轨迹，用于模仿学习。</li></ul><p>来源：Shreyas Hampali 等，《HOnnotate：手与物体的 3D 标注方法》，CVPR 2020。</p><p>来源：Bardia Doosti 等，《HOPE-Net：一种用于手与物体位姿估计的基于图的模型》，CVPR 2020。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 17,
+    "title": "应用：增强现实",
+    "translation": [
+      "通过增强现实（AR），创造沉浸式元宇宙体验。 用于电子学习的视觉引导。 用于娱乐的移动应用。",
+      "计算机视觉；增强现实。",
+      "来源：Eric Marchand、Hideaki Uchiyama、Fabien Spindler，《增强现实中的位姿估计：实践综述》，IEEE Transactions on Visualization and Computer Graphics 22(12)，2016，2633–2651。"
+    ],
+    "translated_title": "应用：增强现实",
+    "translation_html": "<ul><li>通过增强现实（AR），创造沉浸式元宇宙体验。</li><li>用于电子学习的视觉引导。</li><li>用于娱乐的移动应用。</li></ul><p>计算机视觉；增强现实。</p><p>来源：Eric Marchand、Hideaki Uchiyama、Fabien Spindler，《增强现实中的位姿估计：实践综述》，IEEE Transactions on Visualization and Computer Graphics 22(12)，2016，2633–2651。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 18,
+    "title": "6D 物体位姿",
+    "translation": [
+      "定义：将物体坐标系变换到相机坐标系的刚体变换，包括 3 个平移自由度和 3 个旋转自由度。",
+      "如何预测旋转？",
+      "相机坐标系；物体坐标系；X、Y、Z；T = (Tₓ, Tᵧ, T_z)ᵀ；c = (cₓ, cᵧ)ᵀ。",
+      "来源：Yu Xiang 等，《PoseCNN：一种用于杂乱场景中 6D 物体位姿估计的卷积神经网络》，RSS 2018。"
+    ],
+    "translated_title": "6D 物体位姿",
+    "translation_html": "<ul><li>定义：将物体坐标系变换到相机坐标系的刚体变换，包括 3 个平移自由度和 3 个旋转自由度。</li><li>如何预测旋转？</li></ul><p>相机坐标系；物体坐标系；X、Y、Z；\\(T=\\begin{bmatrix}T_x\\\\T_y\\\\T_z\\end{bmatrix}\\)；\\(c=\\begin{bmatrix}c_x\\\\c_y\\end{bmatrix}\\)。</p><p>来源：Yu Xiang 等，《PoseCNN：一种用于杂乱场景中 6D 物体位姿估计的卷积神经网络》，RSS 2018。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 19,
+    "title": "旋转回归",
+    "translation": [],
+    "translated_title": "旋转回归",
+    "translation_html": ""
+  },
+  {
+    "lecture": 5,
+    "page": 20,
+    "title": "旋转",
+    "translation": [
+      "旋转矩阵 R ∈ ℝ³ˣ³，满足 RᵀR = I、det(R) = +1。",
+      "构成特殊正交群 SO(3)。",
+      "二维旋转：1 个自由度；三维旋转：3 个自由度。"
+    ],
+    "translated_title": "旋转",
+    "translation_html": "<ul><li>旋转矩阵 \\(R\\in\\mathbb R^{3\\times3}\\)，满足 \\(R^{\\mathsf T}R=I\\)、\\(\\det(R)=+1\\)。</li><li>构成特殊正交群 SO(3)。</li></ul><p>二维旋转：1 个自由度；三维旋转：3 个自由度。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 21,
+    "title": "旋转的表示",
+    "translation": [
+      "三维旋转只有 3 个自由度，但旋转矩阵包含 9 个元素。",
+      "直接由神经网络预测一个旋转矩阵很困难。",
+      "是否有其他表示方式？",
+      "欧拉角：3 个参数。",
+      "轴角：3 个参数。",
+      "四元数：4 个参数。"
+    ],
+    "translated_title": "旋转的表示",
+    "translation_html": "<ul><li>三维旋转只有 3 个自由度，但旋转矩阵包含 9 个元素。</li><li>直接由神经网络预测一个旋转矩阵很困难。</li><li>是否有其他表示方式？</li><li>欧拉角：3 个参数。</li><li>轴角：3 个参数。</li><li>四元数：4 个参数。</li></ul>"
+  },
+  {
+    "lecture": 5,
+    "page": 22,
+    "title": "欧拉角",
+    "translation": [
+      "绕三个主坐标轴进行旋转。",
+      "Rₓ(α) = [[1,0,0],[0,cosα,−sinα],[0,sinα,cosα]]。",
+      "Rᵧ(β) = [[cosβ,0,sinβ],[0,1,0],[−sinβ,0,cosβ]]。",
+      "R_z(γ) = [[cosγ,−sinγ,0],[sinγ,cosγ,0],[0,0,1]]。",
+      "R = Rₓ(α)Rᵧ(β)R_z(γ)。",
+      "幻灯片来源：Hao Su。欧拉角约定：https://en.wikipedia.org/wiki/Euler_angles。"
+    ],
+    "translated_title": "欧拉角",
+    "translation_html": "<ul><li>绕三个主坐标轴进行旋转。</li></ul><p>\\[R_x(\\alpha)=\\begin{bmatrix}1&amp;0&amp;0\\\\0&amp;\\cos\\alpha&amp;-\\sin\\alpha\\\\0&amp;\\sin\\alpha&amp;\\cos\\alpha\\end{bmatrix}\\]。</p><p>\\[R_y(\\beta)=\\begin{bmatrix}\\cos\\beta&amp;0&amp;\\sin\\beta\\\\0&amp;1&amp;0\\\\-\\sin\\beta&amp;0&amp;\\cos\\beta\\end{bmatrix}\\]。</p><p>\\[R_z(\\gamma)=\\begin{bmatrix}\\cos\\gamma&amp;-\\sin\\gamma&amp;0\\\\\\sin\\gamma&amp;\\cos\\gamma&amp;0\\\\0&amp;0&amp;1\\end{bmatrix}\\]。</p><p>\\[R=R_x(\\alpha)R_y(\\beta)R_z(\\gamma)\\]。</p><p>幻灯片来源：Hao Su。欧拉角约定：https://en.wikipedia.org/wiki/Euler_angles。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 23,
+    "title": "轴角",
+    "translation": [
+      "（旋转轴，旋转角）= ([eₓ,eᵧ,e_z]ᵀ, θ)。",
+      "旋转向量：θ⃗ = θe。",
+      "利用罗德里格斯旋转公式，将轴角转换为旋转矩阵：R = I + sinθ K + (1−cosθ)K²。",
+      "K = [[0,−e_z,eᵧ],[e_z,0,−eₓ],[−eᵧ,eₓ,0]]。"
+    ],
+    "translated_title": "轴角",
+    "translation_html": "<p>（旋转轴，旋转角）= \\(\\left(\\begin{bmatrix}e_x\\\\e_y\\\\e_z\\end{bmatrix},\\theta\\right)\\)。</p><p>旋转向量：\\(\\vec\\theta=\\theta e\\)。</p><p>利用罗德里格斯旋转公式，将轴角转换为旋转矩阵：\\(R=I+\\sin\\theta K+(1-\\cos\\theta)K^2\\)。</p><p>\\[K=\\begin{bmatrix}0&amp;-e_z&amp;e_y\\\\e_z&amp;0&amp;-e_x\\\\-e_y&amp;e_x&amp;0\\end{bmatrix}\\]。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 24,
+    "title": "四元数",
+    "translation": [
+      "回忆复数：a + bi。",
+      "四元数：q = w + xi + yj + zk。",
+      "w 是实部，v = (x,y,z) 是虚部。",
+      "i² = j² = k² = ijk = −1。",
+      "乘法不可交换：ij = k = −ji；jk = i = −kj；ki = j = −ik。",
+      "幻灯片来源：Hao Su。"
+    ],
+    "translated_title": "四元数",
+    "translation_html": "<ul><li>回忆复数：\\(a+bi\\)。</li><li>四元数：\\(q=w+xi+yj+zk\\)。</li><li>w 是实部，\\(v=(x,y,z)\\) 是虚部。</li><li>\\(i^2=j^2=k^2=ijk=-1\\)。</li><li>乘法不可交换：\\(ij=k=-ji\\)；\\(jk=i=-kj\\)；\\(ki=j=-ik\\)。</li></ul><p>幻灯片来源：Hao Su。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 25,
+    "title": "如何用神经网络估计旋转？",
+    "translation": [
+      "方法 1：回归旋转表示。",
+      "输入信号 → 神经网络 → 表示空间 R → 映射 f → 原空间 X（9 维）；反向映射 g。"
+    ],
+    "translated_title": "如何用神经网络估计旋转？",
+    "translation_html": "<p>方法 1：回归旋转表示。</p><p>输入信号 → 神经网络 → 表示空间 R → 映射 f → 原空间 X（9 维）；反向映射 g。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 26,
+    "title": "如何用神经网络估计旋转？",
+    "translation": [
+      "方法 1：使用神经网络回归一种旋转表示。",
+      "输入信号 → 神经网络 → 表示空间 R（6 维）→ 映射 f → 原空间 X（9 维）；反向映射 g。",
+      "四元数曾是很流行的回归表示。该方向仍是活跃的研究领域。",
+      "Yi Zhou 等，《神经网络中旋转表示的连续性》，IEEE/CVF 计算机视觉与模式识别会议论文集，2019。",
+      "Jake Levinson 等，《深度旋转估计中 SVD 的分析》，Advances in Neural Information Processing Systems 33，2020，22554–22565。",
+      "Valentin Peretroukhin 等，《面向含不确定性的深度旋转学习的 SO(3) 上信念的平滑表示》。",
+      "Jiayi Chen 等，《用于深度旋转回归的投影流形梯度层》，IEEE/CVF 计算机视觉与模式识别会议论文集，2022。"
+    ],
+    "translated_title": "如何用神经网络估计旋转？",
+    "translation_html": "<ul><li>方法 1：使用神经网络回归一种旋转表示。</li></ul><p>输入信号 → 神经网络 → 表示空间 R（6 维）→ 映射 f → 原空间 X（9 维）；反向映射 g。</p><p>四元数曾是很流行的回归表示。该方向仍是活跃的研究领域。</p><p>Yi Zhou 等，《神经网络中旋转表示的连续性》，IEEE/CVF 计算机视觉与模式识别会议论文集，2019。</p><p>Jake Levinson 等，《深度旋转估计中 SVD 的分析》，Advances in Neural Information Processing Systems 33，2020，22554–22565。</p><p>Valentin Peretroukhin 等，《面向含不确定性的深度旋转学习的 SO(3) 上信念的平滑表示》。</p><p>Jiayi Chen 等，《用于深度旋转回归的投影流形梯度层》，IEEE/CVF 计算机视觉与模式识别会议论文集，2022。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 27,
+    "title": "奇异性与不连续性",
+    "translation": [
+      "奇异性：在数学中，奇异点是给定数学对象没有定义或表现不良的点，例如存在歧义、不可微等。",
+      "一些旋转表示存在奇异性与不连续性。"
+    ],
+    "translated_title": "奇异性与不连续性",
+    "translation_html": "<p>奇异性：在数学中，奇异点是给定数学对象没有定义或表现不良的点，例如存在歧义、不可微等。</p><p>一些旋转表示存在奇异性与不连续性。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 28,
+    "title": "欧拉角的不连续性",
+    "translation": [
+      "用角度表示 SO(3) 是不连续的。 以一个旋转方向为例，单位旋转处的极限无法确定：0 或 2π。",
+      "表示空间 R；映射 g；原空间 X；0、2π。"
+    ],
+    "translated_title": "欧拉角的不连续性",
+    "translation_html": "<ul><li>用角度表示 SO(3) 是不连续的。</li><li>以一个旋转方向为例，单位旋转处的极限无法确定：0 或 2π。</li></ul><p>表示空间 R；映射 g；原空间 X；0、2π。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 29,
+    "title": "轴角",
+    "translation": [
+      "当 θ ∈ (0,π) 时，表示唯一。",
+      "θ = arccos((tr(R)−1)/2)。",
+      "[ω] = (R−Rᵀ)/(2sinθ)。",
+      "R = I + (sinθ)K + (1−cosθ)K²；K = [e]× = [[0,−e_z,eᵧ],[e_z,0,−eₓ],[−eᵧ,eₓ,0]]。",
+      "θ = 0 时，任意旋转轴均对应单位旋转。 θ = π 时，旋转轴与其相反方向表示同一旋转，导致不连续。"
+    ],
+    "translated_title": "轴角",
+    "translation_html": "<ul><li>当 \\(\\theta\\in(0,\\pi)\\) 时，表示唯一。</li></ul><p>\\[\\theta=\\arccos\\left(\\frac{\\operatorname{tr}(R)-1}{2}\\right)\\]。</p><p>\\[[\\omega]=\\frac{R-R^{\\mathsf T}}{2\\sin\\theta}\\]。</p><p>\\(R=I+(\\sin\\theta)K+(1-\\cos\\theta)K^2\\)；\\[K=[e]_\\times=\\begin{bmatrix}0&amp;-e_z&amp;e_y\\\\e_z&amp;0&amp;-e_x\\\\-e_y&amp;e_x&amp;0\\end{bmatrix}\\]。</p><ul><li>\\(\\theta=0\\) 时，任意旋转轴均对应单位旋转。</li><li>\\(\\theta=\\pi\\) 时，旋转轴与其相反方向表示同一旋转，导致不连续。</li></ul>"
+  },
+  {
+    "lecture": 5,
+    "page": 30,
+    "title": "四元数",
+    "translation": [
+      "四元数是旋转的双覆盖：q 和 −q 表示同一旋转。 若要求一一对应，便会出现不连续性。 可以约束四元数位于上半球。",
+      "起始四元数；目标四元数；可能的路径；最近的路径。"
+    ],
+    "translated_title": "四元数",
+    "translation_html": "<ul><li>四元数是旋转的双覆盖：q 和 −q 表示同一旋转。</li><li>若要求一一对应，便会出现不连续性。</li><li>可以约束四元数位于上半球。</li></ul><p>起始四元数；目标四元数；可能的路径；最近的路径。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 31,
+    "title": "连续的旋转表示：6 维表示",
+    "translation": [
+      "旋转矩阵是 SO(3) 的连续表示，但具有冗余参数。 去掉第三列，得到 6 维表示。 通过 Gram–Schmidt 正交化，将神经网络输出的欧氏空间表示映射到 SO(3)。",
+      "来源：Yi Zhou 等，《神经网络中旋转表示的连续性》，CVPR 2019。"
+    ],
+    "translated_title": "连续的旋转表示：6 维表示",
+    "translation_html": "<ul><li>旋转矩阵是 SO(3) 的连续表示，但具有冗余参数。</li><li>去掉第三列，得到 6 维表示。</li><li>通过 Gram–Schmidt 正交化，将神经网络输出的欧氏空间表示映射到 SO(3)。</li></ul><p>来源：Yi Zhou 等，《神经网络中旋转表示的连续性》，CVPR 2019。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 32,
+    "title": "6 维旋转表示",
+    "translation": [
+      "给定旋转矩阵 A = [a₁ a₂ a₃]。",
+      "取前两列：[a₁ a₂]。"
+    ],
+    "translated_title": "6 维旋转表示",
+    "translation_html": "<p>给定旋转矩阵 \\(A=\\begin{bmatrix}a_1&amp;a_2&amp;a_3\\end{bmatrix}\\)。</p><p>取前两列：\\(\\begin{bmatrix}a_1&amp;a_2\\end{bmatrix}\\)。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 33,
+    "title": "6 维旋转表示",
+    "translation": [
+      "从 6 维表示到旋转矩阵的映射通过 Gram–Schmidt 过程完成。 将第 1 列归一化。 第 2 列只保留垂直于第 1 列的分量，然后归一化。 第 3 列由第 1、2 列的叉积确定。",
+      "f_GS([a₁ a₂]) = [b₁ b₂ b₃]。",
+      "b₁ = N(a₁)；b₂ = N(a₂−(b₁·a₂)b₁)；b₃ = b₁×b₂。"
+    ],
+    "translated_title": "6 维旋转表示",
+    "translation_html": "<ul><li>从 6 维表示到旋转矩阵的映射通过 Gram–Schmidt 过程完成。<ul><li>将第 1 列归一化。</li><li>第 2 列只保留垂直于第 1 列的分量，然后归一化。</li><li>第 3 列由第 1、2 列的叉积确定。</li></ul></li></ul><p>\\[f_{\\mathrm{GS}}\\!\\left(\\begin{bmatrix}a_1&amp;a_2\\end{bmatrix}\\right)=\\begin{bmatrix}b_1&amp;b_2&amp;b_3\\end{bmatrix}\\]。</p><p>\\[\\begin{aligned}b_1&amp;=N(a_1)\\\\b_2&amp;=N\\!\\left(a_2-(b_1\\cdot a_2)b_1\\right)\\\\b_3&amp;=b_1\\times b_2\\end{aligned}\\]。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 34,
+    "title": "连续的旋转表示：9 维表示",
+    "translation": [
+      "9 维表示：预测一个 3×3 矩阵。 通过奇异值分解（SVD）进行正交化，从欧氏空间映射到 SO(3)。",
+      "A = UΣVᵀ。",
+      "R̂ = U diag(1,1,det(UV)) Vᵀ。",
+      "来源：Jake Levinson 等，《旋转估计中 SVD 的分析》，NeurIPS 33，2020，22554–22565。"
+    ],
+    "translated_title": "连续的旋转表示：9 维表示",
+    "translation_html": "<ul><li>9 维表示：预测一个 3×3 矩阵。</li><li>通过奇异值分解（SVD）进行正交化，从欧氏空间映射到 SO(3)。</li></ul><p>\\[A=U\\Sigma V^{\\mathsf T}\\]。</p><p>\\[\\hat R=U\\operatorname{diag}(1,1,\\det(UV))V^{\\mathsf T}\\]。</p><p>来源：Jake Levinson 等，《旋转估计中 SVD 的分析》，NeurIPS 33，2020，22554–22565。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 35,
+    "title": "比较",
+    "translation": [
+      "任务：单幅图像的旋转回归。数据集：ModelNet10-SO(3)。",
+      "方法 平均误差（°） 中位误差（°） 标准差（°） 3D-RCNN 35.50 13.21 46.55 M_G 31.60 16.70 41.86 欧拉角 41.35 27.44 37.73 轴角 32.30 19.74 34.70 四元数 26.92 14.39 32.92 S²-Reg 27.36 15.41 33.17 5D 25.18 13.40 32.10 6D 22.60 11.51 31.24 SVD-Train 21.25 11.14 30.28",
+      "方法 平均误差（°） 中位误差（°） 标准差（°） 3D-RCNN 34.80 7.32 55.73 M_G 31.41 13.93 48.48 欧拉角 49.31 32.03 43.47 轴角 31.82 17.31 37.19 四元数 29.60 14.56 37.00 S²-Reg 25.99 12.11 37.67 5D 26.23 11.52 38.91 6D 20.25 7.84 36.85 SVD-Train 18.01 7.31 33.96",
+      "来源：Jake Levinson 等，《旋转估计中 SVD 的分析》，NeurIPS 2020。"
+    ],
+    "translated_title": "比较",
+    "translation_html": "<p>任务：单幅图像的旋转回归。数据集：ModelNet10-SO(3)。</p><table><thead><tr><th>方法</th><th>平均误差（°）</th><th>中位误差（°）</th><th>标准差（°）</th></tr></thead><tbody><tr><td>3D-RCNN</td><td>35.50</td><td>13.21</td><td>46.55</td></tr><tr><td>M_G</td><td>31.60</td><td>16.70</td><td>41.86</td></tr><tr><td>欧拉角</td><td>41.35</td><td>27.44</td><td>37.73</td></tr><tr><td>轴角</td><td>32.30</td><td>19.74</td><td>34.70</td></tr><tr><td>四元数</td><td>26.92</td><td>14.39</td><td>32.92</td></tr><tr><td>S²-Reg</td><td>27.36</td><td>15.41</td><td>33.17</td></tr><tr><td>5D</td><td>25.18</td><td>13.40</td><td>32.10</td></tr><tr><td>6D</td><td>22.60</td><td>11.51</td><td>31.24</td></tr><tr><td>SVD-Train</td><td>21.25</td><td>11.14</td><td>30.28</td></tr></tbody></table><table><thead><tr><th>方法</th><th>平均误差（°）</th><th>中位误差（°）</th><th>标准差（°）</th></tr></thead><tbody><tr><td>3D-RCNN</td><td>34.80</td><td>7.32</td><td>55.73</td></tr><tr><td>M_G</td><td>31.41</td><td>13.93</td><td>48.48</td></tr><tr><td>欧拉角</td><td>49.31</td><td>32.03</td><td>43.47</td></tr><tr><td>轴角</td><td>31.82</td><td>17.31</td><td>37.19</td></tr><tr><td>四元数</td><td>29.60</td><td>14.56</td><td>37.00</td></tr><tr><td>S²-Reg</td><td>25.99</td><td>12.11</td><td>37.67</td></tr><tr><td>5D</td><td>26.23</td><td>11.52</td><td>38.91</td></tr><tr><td>6D</td><td>20.25</td><td>7.84</td><td>36.85</td></tr><tr><td>SVD-Train</td><td>18.01</td><td>7.31</td><td>33.96</td></tr></tbody></table><p>来源：Jake Levinson 等，《旋转估计中 SVD 的分析》，NeurIPS 2020。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 36,
+    "title": "旋转拟合",
+    "translation": [],
+    "translated_title": "旋转拟合",
+    "translation_html": ""
+  },
+  {
+    "lecture": 5,
+    "page": 37,
+    "title": "如何用神经网络估计旋转？",
+    "translation": [
+      "方法 2：预测物体坐标或点对应关系，再求解旋转。 给定图像，为物体上的每个像素预测它在物体 CAD 模型上的三维坐标，即物体坐标。 这样建立了稠密的 2D–3D 对应关系。如果有深度，就可以得到稠密的 3D–3D 对应关系。",
+      "模型坐标系；相机坐标系；xₘ、yₘ、zₘ；x_c、y_c、z_c。",
+      "Kornel Bertok、Attila Fazekas，《识别复杂的头部运动》，Australian Journal of Intelligent Information Processing Systems 14，2016，3–17。"
+    ],
+    "translated_title": "如何用神经网络估计旋转？",
+    "translation_html": "<ul><li>方法 2：预测物体坐标或点对应关系，再求解旋转。<ul><li>给定图像，为物体上的每个像素预测它在物体 CAD 模型上的三维坐标，即物体坐标。</li><li>这样建立了稠密的 2D–3D 对应关系。如果有深度，就可以得到稠密的 3D–3D 对应关系。</li></ul></li></ul><p>模型坐标系；相机坐标系；\\(x_m\\)、\\(y_m\\)、\\(z_m\\)；\\(x_c\\)、\\(y_c\\)、\\(z_c\\)。</p><p>Kornel Bertok、Attila Fazekas，《识别复杂的头部运动》，Australian Journal of Intelligent Information Processing Systems 14，2016，3–17。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 38,
+    "title": "正交 Procrustes 问题",
+    "translation": [
+      "给定稠密的 3D–3D 对应关系，利用正交 Procrustes 问题求解／拟合 R。",
+      "正交 Procrustes 问题是一个矩阵近似问题，可表述为：对于 M,N ∈ ℝⁿˣ³，求解",
+      "Â = argmin_A∈ℝ³ˣ³ ‖Mᵀ−ANᵀ‖²_F，约束为 AᵀA = I。",
+      "其中 ‖·‖_F 表示 Frobenius 范数：‖X‖_F = √tr(XᵀX) = √Σᵢⱼxᵢⱼ²。"
+    ],
+    "translated_title": "正交 Procrustes 问题",
+    "translation_html": "<ul><li>给定稠密的 3D–3D 对应关系，利用正交 Procrustes 问题求解／拟合 R。</li></ul><p>正交 Procrustes 问题是一个矩阵近似问题，可表述为：对于 \\(M,N\\in\\mathbb R^{n\\times3}\\)，求解</p><p>\\(\\hat A=\\operatorname*{argmin}_{A\\in\\mathbb R^{3\\times3}}\\left\\|M^{\\mathsf T}-AN^{\\mathsf T}\\right\\|_F^2\\)，约束为 \\(A^{\\mathsf T}A=I\\)。</p><p>其中 \\(\\|\\cdot\\|_F\\) 表示 Frobenius 范数：\\(\\|X\\|_F=\\sqrt{\\operatorname{tr}(X^{\\mathsf T}X)}=\\sqrt{\\sum_{i,j}x_{ij}^2}\\)。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 39,
+    "title": "正交 Procrustes 问题的解析解",
+    "translation": [
+      "解可以由一个特定矩阵的 SVD 得到。",
+      "MᵀN = UD Vᵀ。",
+      "Â = UVᵀ。"
+    ],
+    "translated_title": "正交 Procrustes 问题的解析解",
+    "translation_html": "<ul><li>解可以由一个特定矩阵的 SVD 得到。</li></ul><p>\\(M^{\\mathsf T}N=UDV^{\\mathsf T}\\)。</p><p>\\[\\hat A=UV^{\\mathsf T}\\]。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 40,
+    "title": "证明",
+    "translation": [
+      "请自行阅读。",
+      "‖Mᵀ−ANᵀ‖²_F = ‖M−NAᵀ‖²_F",
+      "= tr(MᵀM)−2tr(MᵀNAᵀ)+tr(ANᵀNAᵀ)",
+      "= tr(MᵀM)−2tr(MᵀNAᵀ)+tr(AᵀANᵀN)",
+      "= tr(MᵀM)−2tr(MᵀNAᵀ)+tr(NᵀN)。",
+      "只有第二项依赖于 A，因此需要最大化 tr(MᵀNAᵀ)。",
+      "对 MᵀN = UDVᵀ 进行 SVD：",
+      "tr(MᵀNAᵀ) = tr(UDVᵀAᵀ) = tr(UD(AV)ᵀ) = tr((AV)ᵀUD) = Σᵢ₌₁ᵈ[(AV)ᵀU]ᵢᵢdᵢ。"
+    ],
+    "translated_title": "证明",
+    "translation_html": "<p>请自行阅读。</p><p>\\[\\|M^{\\mathsf T}-AN^{\\mathsf T}\\|_F^2=\\|M-NA^{\\mathsf T}\\|_F^2\\]</p><p>\\[=\\operatorname{tr}(M^{\\mathsf T}M)-2\\operatorname{tr}(M^{\\mathsf T}NA^{\\mathsf T})+\\operatorname{tr}(AN^{\\mathsf T}NA^{\\mathsf T})\\]</p><p>\\[=\\operatorname{tr}(M^{\\mathsf T}M)-2\\operatorname{tr}(M^{\\mathsf T}NA^{\\mathsf T})+\\operatorname{tr}(A^{\\mathsf T}AN^{\\mathsf T}N)\\]</p><p>\\[=\\operatorname{tr}(M^{\\mathsf T}M)-2\\operatorname{tr}(M^{\\mathsf T}NA^{\\mathsf T})+\\operatorname{tr}(N^{\\mathsf T}N)\\]。</p><p>只有第二项依赖于 A，因此需要最大化 \\(\\operatorname{tr}(M^{\\mathsf T}NA^{\\mathsf T})\\)。</p><p>对 \\(M^{\\mathsf T}N=UDV^{\\mathsf T}\\) 进行 SVD：</p><p>\\[\\begin{aligned}\\operatorname{tr}(M^{\\mathsf T}NA^{\\mathsf T})&amp;=\\operatorname{tr}(UDV^{\\mathsf T}A^{\\mathsf T})\\\\&amp;=\\operatorname{tr}(UD(AV)^{\\mathsf T})\\\\&amp;=\\operatorname{tr}((AV)^{\\mathsf T}UD)\\\\&amp;=\\sum_{i=1}^d[(AV)^{\\mathsf T}U]_{ii}d_i\\end{aligned}\\]。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 41,
+    "title": "证明（续）",
+    "translation": [
+      "请自行阅读。",
+      "Σᵢ₌₁ᵈ[(AV)ᵀU]ᵢᵢdᵢ 中，dᵢ 是 D 的第 i 个对角元素，d 为非零奇异值的数量；它们也是 MᵀN 的奇异值。",
+      "为了使这一和式最大，应让 (AV)ᵀU 的对角元素尽可能大。",
+      "正交矩阵的元素不能大于 1，否则某行或某列的 L₂ 范数会大于 1。",
+      "所有对角元素都为 1 时，和式达到最大值。这发生在 (AV)ᵀU = I 时。",
+      "AV = U，因此 A = UVᵀ。"
+    ],
+    "translated_title": "证明（续）",
+    "translation_html": "<p>请自行阅读。</p><p>\\(\\sum_{i=1}^d[(AV)^{\\mathsf T}U]_{ii}d_i\\) 中，\\(d_i\\) 是 D 的第 i 个对角元素，d 为非零奇异值的数量；它们也是 \\(M^{\\mathsf T}N\\) 的奇异值。</p><p>为了使这一和式最大，应让 \\((AV)^{\\mathsf T}U\\) 的对角元素尽可能大。</p><p>正交矩阵的元素不能大于 1，否则某行或某列的 \\(L_2\\) 范数会大于 1。</p><p>所有对角元素都为 1 时，和式达到最大值。这发生在 \\((AV)^{\\mathsf T}U=I\\) 时。</p><p>\\(AV=U\\)，因此 \\(A=UV^{\\mathsf T}\\)。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 42,
+    "title": "带约束的正交 Procrustes 问题",
+    "translation": [
+      "要求 A 是旋转矩阵：A ∈ SO(3)，det(A) = +1。",
+      "Â = U diag(1,1,det(UVᵀ)) Vᵀ。"
+    ],
+    "translated_title": "带约束的正交 Procrustes 问题",
+    "translation_html": "<p>要求 A 是旋转矩阵：\\(A\\in\\mathrm{SO}(3)\\)，\\(\\det(A)=+1\\)。</p><p>\\[\\hat A=U\\operatorname{diag}(1,1,\\det(UV^{\\mathsf T}))V^{\\mathsf T}\\]。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 43,
+    "title": "联合求解旋转 R 与平移 T",
+    "translation": [
+      "对于 M,N ∈ ℝⁿˣ³，求解：R̂,T̂ = argmin_R∈SO(3),T∈ℝ¹ˣ³ ‖Mᵀ−RNᵀ−T‖²_F。 第一步：M̃ = M−M̄，Ñ = N−N̄；然后假设 M̃ᵀ ≈ R̂Ñᵀ。 第二步：利用带约束的正交 Procrustes 问题得到 R̂。 第三步：T̂ = M̄ᵀ−R̂N̄ᵀ。"
+    ],
+    "translated_title": "联合求解旋转 R 与平移 T",
+    "translation_html": "<ul><li>对于 \\(M,N\\in\\mathbb R^{n\\times3}\\)，求解：\\(\\hat R,\\hat T=\\operatorname*{argmin}_{\\substack{R\\in\\mathrm{SO}(3)\\\\T\\in\\mathbb R^{1\\times3}}}\\left\\|M^{\\mathsf T}-RN^{\\mathsf T}-T\\right\\|_F^2\\)。</li><li>第一步：\\(\\tilde M=M-\\bar M\\)，\\(\\tilde N=N-\\bar N\\)；然后假设 \\(\\tilde M^{\\mathsf T}\\approx\\hat R\\tilde N^{\\mathsf T}\\)。</li><li>第二步：利用带约束的正交 Procrustes 问题得到 \\(\\hat R\\)。</li><li>第三步：\\(\\hat T=\\bar M^{\\mathsf T}-\\hat R\\bar N^{\\mathsf T}\\)。</li></ul>"
+  },
+  {
+    "lecture": 5,
+    "page": 44,
+    "title": "旋转拟合",
+    "translation": [
+      "SVD 方法对离群点敏感。",
+      "需要 RANSAC。",
+      "生成一个假设需要多少组点对应？",
+      "如何判断一个点对应是内点还是外点？"
+    ],
+    "translated_title": "旋转拟合",
+    "translation_html": "<ul><li>SVD 方法对离群点敏感。</li><li>需要 RANSAC。</li><li>生成一个假设需要多少组点对应？</li><li>如何判断一个点对应是内点还是外点？</li></ul>"
+  },
+  {
+    "lecture": 5,
+    "page": 45,
+    "title": "随机采样一致性（RANSAC）",
+    "translation": [
+      "请自行阅读。",
+      "基本思想：寻找支持点（内点）最多的直线。",
+      "容许误差阈值：δ。",
+      "来源：Fischler 与 Bolles，1981。"
+    ],
+    "translated_title": "随机采样一致性（RANSAC）",
+    "translation_html": "<p>请自行阅读。</p><p>基本思想：寻找支持点（内点）最多的直线。</p><p>容许误差阈值：δ。</p><p>来源：Fischler 与 Bolles，1981。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 46,
+    "title": "RANSAC 直线拟合",
+    "translation": [
+      "请自行阅读。",
+      "任务：估计最好的直线。",
+      "需要多少个点？"
+    ],
+    "translated_title": "RANSAC 直线拟合",
+    "translation_html": "<p>请自行阅读。</p><p>任务：估计最好的直线。</p><p>需要多少个点？</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 47,
+    "title": "RANSAC 直线拟合",
+    "translation": [
+      "请自行阅读。",
+      "任务：估计最好的直线。",
+      "用这些点拟合一条直线。"
+    ],
+    "translated_title": "RANSAC 直线拟合",
+    "translation_html": "<p>请自行阅读。</p><p>任务：估计最好的直线。</p><p>用这些点拟合一条直线。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 48,
+    "title": "RANSAC 直线拟合",
+    "translation": [
+      "请自行阅读。",
+      "任务：估计最好的直线。",
+      "统计距直线小于阈值的点的总数。"
+    ],
+    "translated_title": "RANSAC 直线拟合",
+    "translation_html": "<p>请自行阅读。</p><p>任务：估计最好的直线。</p><p>统计距直线小于阈值的点的总数。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 49,
+    "title": "RANSAC 直线拟合",
+    "translation": [
+      "请自行阅读。",
+      "任务：估计最好的直线。",
+      "统计距直线小于阈值的点的总数。",
+      "7 个内点。",
+      "幻灯片来源：Andrew Ng。"
+    ],
+    "translated_title": "RANSAC 直线拟合",
+    "translation_html": "<p>请自行阅读。</p><p>任务：估计最好的直线。</p><p>统计距直线小于阈值的点的总数。</p><p>7 个内点。</p><p>幻灯片来源：Andrew Ng。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 50,
+    "title": "RANSAC 直线拟合",
+    "translation": [
+      "请自行阅读。",
+      "任务：估计最好的直线。",
+      "重复这一过程，直到得到较好的结果。"
+    ],
+    "translated_title": "RANSAC 直线拟合",
+    "translation_html": "<p>请自行阅读。</p><p>任务：估计最好的直线。</p><p>重复这一过程，直到得到较好的结果。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 51,
+    "title": "RANSAC 直线拟合",
+    "translation": [
+      "请自行阅读。",
+      "任务：估计最好的直线。",
+      "重复这一过程，直到得到较好的结果。",
+      "11 个内点。"
+    ],
+    "translated_title": "RANSAC 直线拟合",
+    "translation_html": "<p>请自行阅读。</p><p>任务：估计最好的直线。</p><p>重复这一过程，直到得到较好的结果。</p><p>11 个内点。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 52,
+    "title": "RANSAC 直线拟合",
+    "translation": [
+      "请自行阅读。",
+      "循环执行：",
+      "随机选择一个种子点集合。 计算由这些点确定的模型。 找到满足该模型的所有内点。 若有足够多内点，则用所有内点通过最小二乘重新计算模型。",
+      "保留内点数量最多的模型。"
+    ],
+    "translated_title": "RANSAC 直线拟合",
+    "translation_html": "<p>请自行阅读。</p><p>循环执行：</p><ul><li>随机选择一个种子点集合。</li><li>计算由这些点确定的模型。</li><li>找到满足该模型的所有内点。</li><li>若有足够多内点，则用所有内点通过最小二乘重新计算模型。</li></ul><p>保留内点数量最多的模型。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 53,
+    "title": "透视 n 点（PnP）算法",
+    "translation": [
+      "请自行阅读。",
+      "已知相机内参 K，通过 2D–3D 点对应求解 R 和 T。",
+      "sp_c = K[R∣T]p_w。",
+      "p_c 和 p_w 分别为图像坐标和世界坐标的齐次表示；s 为尺度因子。",
+      "s[u,v,1]ᵀ = [[fₓ,γ,u₀],[0,fᵧ,v₀],[0,0,1]] × [[r₁₁,r₁₂,r₁₃,t₁],[r₂₁,r₂₂,r₂₃,t₂],[r₃₁,r₃₂,r₃₃,t₃]] × [x,y,z,1]ᵀ。"
+    ],
+    "translated_title": "透视 n 点（PnP）算法",
+    "translation_html": "<p>请自行阅读。</p><p>已知相机内参 K，通过 2D–3D 点对应求解 R 和 T。</p><p>\\[sp_c=K\\left[R\\mid T\\right]p_w\\]。</p><p>\\(p_c\\) 和 \\(p_w\\) 分别为图像坐标和世界坐标的齐次表示；s 为尺度因子。</p><p>\\[s\\begin{bmatrix}u\\\\v\\\\1\\end{bmatrix}=\\begin{bmatrix}f_x&amp;\\gamma&amp;u_0\\\\0&amp;f_y&amp;v_0\\\\0&amp;0&amp;1\\end{bmatrix}\\times\\begin{bmatrix}r_{11}&amp;r_{12}&amp;r_{13}&amp;t_1\\\\r_{21}&amp;r_{22}&amp;r_{23}&amp;t_2\\\\r_{31}&amp;r_{32}&amp;r_{33}&amp;t_3\\end{bmatrix}\\times\\begin{bmatrix}x\\\\y\\\\z\\\\1\\end{bmatrix}\\]。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 54,
+    "title": "实例级 6D 物体位姿估计",
+    "translation": [],
+    "translated_title": "实例级 6D 物体位姿估计",
+    "translation_html": ""
+  },
+  {
+    "lecture": 5,
+    "page": 55,
+    "title": "实例级 6D 物体位姿估计",
+    "translation": [
+      "对一个已知的小规模物体集合进行位姿估计。 根据每个实例的 CAD 模型定义其位姿。 输入：RGB 图像或 RGB-D 图像。 输出：一个物体或所有已知物体的位姿。",
+      "相机坐标系；物体坐标系；X、Y、Z；T = (Tₓ,Tᵧ,T_z)ᵀ；c = (cₓ,cᵧ)ᵀ。",
+      "来源：Yu Xiang 等，PoseCNN，RSS 2018。"
+    ],
+    "translated_title": "实例级 6D 物体位姿估计",
+    "translation_html": "<ul><li>对一个已知的小规模物体集合进行位姿估计。</li><li>根据每个实例的 CAD 模型定义其位姿。</li><li>输入：RGB 图像或 RGB-D 图像。</li><li>输出：一个物体或所有已知物体的位姿。</li></ul><p>相机坐标系；物体坐标系；X、Y、Z；\\(T=\\begin{bmatrix}T_x\\\\T_y\\\\T_z\\end{bmatrix}\\)；\\(c=\\begin{bmatrix}c_x\\\\c_y\\end{bmatrix}\\)。</p><p>来源：Yu Xiang 等，PoseCNN，RSS 2018。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 56,
+    "title": "PoseCNN",
+    "translation": [
+      "无纹理物体；对称物体；遮挡。",
+      "幻灯片来源：Yu Xiang。"
+    ],
+    "translated_title": "PoseCNN",
+    "translation_html": "<p>无纹理物体；对称物体；遮挡。</p><p>幻灯片来源：Yu Xiang。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 57,
+    "title": "PoseCNN",
+    "translation": [
+      "3D 平移 T → 二维中心 c 与距离 T_z → 二维中心定位。",
+      "3D 旋转 R → 三维旋转回归。",
+      "相机坐标系；物体坐标系；X、Y、Z；T = (Tₓ,Tᵧ,T_z)ᵀ；c = (cₓ,cᵧ)ᵀ。",
+      "幻灯片来源：Yu Xiang。"
+    ],
+    "translated_title": "PoseCNN",
+    "translation_html": "<p>3D 平移 T → 二维中心 c 与距离 \\(T_z\\) → 二维中心定位。</p><p>3D 旋转 R → 三维旋转回归。</p><p>相机坐标系；物体坐标系；X、Y、Z；\\(T=\\begin{bmatrix}T_x\\\\T_y\\\\T_z\\end{bmatrix}\\)；\\(c=\\begin{bmatrix}c_x\\\\c_y\\end{bmatrix}\\)。</p><p>幻灯片来源：Yu Xiang。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 58,
+    "title": "PoseCNN：平移估计",
+    "translation": [
+      "图中点：p₁、p₂、p₃、p₄、p₅、p₆；中心 c。",
+      "标签：类别数；中心方向：X、Y；中心距离；3 × 类别数。",
+      "Hough 投票层。",
+      "幻灯片来源：Yu Xiang。"
+    ],
+    "translated_title": "PoseCNN：平移估计",
+    "translation_html": "<p>图中点：\\(p_1\\)、\\(p_2\\)、\\(p_3\\)、\\(p_4\\)、\\(p_5\\)、\\(p_6\\)；中心 c。</p><p>标签：类别数；中心方向：X、Y；中心距离；3 × 类别数。</p><p>Hough 投票层。</p><p>幻灯片来源：Yu Xiang。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 59,
+    "title": "PoseCNN：旋转估计",
+    "translation": [
+      "标签：类别数；中心方向：X、Y；中心距离；3 × 类别数；Hough 投票层。",
+      "感兴趣区域（RoI）；RoI 池化；针对每个 RoI；4 × 类别数。",
+      "回归四元数；6D 位姿。",
+      "幻灯片来源：Yu Xiang。"
+    ],
+    "translated_title": "PoseCNN：旋转估计",
+    "translation_html": "<p>标签：类别数；中心方向：X、Y；中心距离；3 × 类别数；Hough 投票层。</p><p>感兴趣区域（RoI）；RoI 池化；针对每个 RoI；4 × 类别数。</p><p>回归四元数；6D 位姿。</p><p>幻灯片来源：Yu Xiang。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 60,
+    "title": "PoseCNN 结果",
+    "translation": [
+      "我们的 YCB-Video 数据集：",
+      "21 个物体。",
+      "92 段视频。",
+      "133,827 帧。",
+      "幻灯片来源：Yu Xiang。"
+    ],
+    "translated_title": "PoseCNN 结果",
+    "translation_html": "<p>我们的 YCB-Video 数据集：</p><ul><li>21 个物体。</li><li>92 段视频。</li><li>133,827 帧。</li></ul><p>幻灯片来源：Yu Xiang。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 61,
+    "title": "PoseCNN 结果",
+    "translation": [
+      "三维平移误差分析：全部 21 个物体；纵轴：准确率，0、0.1、0.2、0.3、0.4、0.5、0.6、0.7、0.8、0.9、1；横轴：平移阈值（米），0、0.02、0.04、0.06、0.08、0.1。",
+      "PoseCNN；PoseCNN + ICP；2 厘米；32%；90%。",
+      "三维旋转误差分析：PoseCNN；纵轴：数量，0、1000、2000、3000、4000、5000、6000、7000、8000；横轴：旋转角误差，0、50、100、150。",
+      "幻灯片来源：Yu Xiang。"
+    ],
+    "translated_title": "PoseCNN 结果",
+    "translation_html": "<p>三维平移误差分析：全部 21 个物体；纵轴：准确率，0、0.1、0.2、0.3、0.4、0.5、0.6、0.7、0.8、0.9、1；横轴：平移阈值（米），0、0.02、0.04、0.06、0.08、0.1。</p><p>PoseCNN；PoseCNN + ICP；2 厘米；32%；90%。</p><p>三维旋转误差分析：PoseCNN；纵轴：数量，0、1000、2000、3000、4000、5000、6000、7000、8000；横轴：旋转角误差，0、50、100、150。</p><p>幻灯片来源：Yu Xiang。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 62,
+    "title": "PoseCNN：结果可视化",
+    "translation": [
+      "RGB；深度；真实标签。",
+      "PoseCNN（仅 RGB）；PoseCNN + ICP；预测标签。",
+      "幻灯片来源：Yu Xiang。"
+    ],
+    "translated_title": "PoseCNN：结果可视化",
+    "translation_html": "<p>RGB；深度；真实标签。</p><p>PoseCNN（仅 RGB）；PoseCNN + ICP；预测标签。</p><p>幻灯片来源：Yu Xiang。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 63,
+    "title": "实例级 6D 物体位姿估计",
+    "translation": [
+      "已知的小规模物体集合。",
+      "已知真实 CAD 模型。",
+      "适用于受控环境。",
+      "LINEMOD。",
+      "来源：Stefan Hinterstoisser 等，《用于杂乱场景中无纹理三维物体检测与位姿估计的基于模型的训练》，ACCV 2012，Springer。"
+    ],
+    "translated_title": "实例级 6D 物体位姿估计",
+    "translation_html": "<ul><li>已知的小规模物体集合。</li><li>已知真实 CAD 模型。</li><li>适用于受控环境。</li></ul><p>LINEMOD。</p><p>来源：Stefan Hinterstoisser 等，《用于杂乱场景中无纹理三维物体检测与位姿估计的基于模型的训练》，ACCV 2012，Springer。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 64,
+    "title": "实例级 6D 物体位姿估计的局限",
+    "translation": [
+      "每个实例需要专用模型，不能直接泛化到新物体。",
+      "需要已知 CAD 模型。",
+      "LINEMOD。",
+      "来源：Stefan Hinterstoisser 等，《用于杂乱场景中无纹理三维物体检测与位姿估计的基于模型的训练》，ACCV 2012，Springer。"
+    ],
+    "translated_title": "实例级 6D 物体位姿估计的局限",
+    "translation_html": "<ul><li>每个实例需要专用模型，不能直接泛化到新物体。</li><li>需要已知 CAD 模型。</li></ul><p>LINEMOD。</p><p>来源：Stefan Hinterstoisser 等，《用于杂乱场景中无纹理三维物体检测与位姿估计的基于模型的训练》，ACCV 2012，Springer。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 65,
+    "title": "类别级 6D 物体位姿估计",
+    "translation": [],
+    "translated_title": "类别级 6D 物体位姿估计",
+    "translation_html": ""
+  },
+  {
+    "lecture": 5,
+    "page": 66,
+    "title": "类别级 6D 位姿",
+    "translation": [
+      "目标：泛化到此前未见过的新物体。 输入 3D 观测，输出完整 6D 位姿。 不需要物体的 CAD 模型。",
+      "来源：Angel X. Chang 等，《ShapeNet：一个信息丰富的三维模型库》，arXiv:1512.03012，2015。"
+    ],
+    "translated_title": "类别级 6D 位姿",
+    "translation_html": "<ul><li>目标：泛化到此前未见过的新物体。</li><li>输入 3D 观测，输出完整 6D 位姿。</li><li>不需要物体的 CAD 模型。</li></ul><p>来源：Angel X. Chang 等，《ShapeNet：一个信息丰富的三维模型库》，arXiv:1512.03012，2015。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 67,
+    "title": "归一化物体坐标空间：类别级 6D 物体位姿与尺寸估计",
+    "translation": [
+      "He Wang、Srinath Sridhar、Jingwei Huang、Julien Valentin、Shuran Song、Leonidas Guibas。",
+      "CVPR，2019 年 6 月 16–20 日，美国加州长滩；口头报告。",
+      "NOCS 图。",
+      "坐标：(0.5,0.5,0.5)、(−0.5,0.5,0.5)、(−0.5,0.5,−0.5)、(0.5,0.5,−0.5)、(−0.5,−0.5,−0.5)、(0.5,−0.5,−0.5)。"
+    ],
+    "translated_title": "归一化物体坐标空间：类别级 6D 物体位姿与尺寸估计",
+    "translation_html": "<p>He Wang、Srinath Sridhar、Jingwei Huang、Julien Valentin、Shuran Song、Leonidas Guibas。</p><p>CVPR，2019 年 6 月 16–20 日，美国加州长滩；口头报告。</p><p>NOCS 图。</p><p>坐标：(0.5,0.5,0.5)、(−0.5,0.5,0.5)、(−0.5,0.5,−0.5)、(0.5,0.5,−0.5)、(−0.5,−0.5,−0.5)、(0.5,−0.5,−0.5)。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 68,
+    "title": "类别级物体位姿与尺寸估计",
+    "translation": [
+      "从 RGB-D 图像中，检测特定类别中此前未见过的物体，并估计其 6D 位姿与三维尺寸。",
+      "不需要已知 CAD 模型。",
+      "RGB；深度；三维尺寸（大小）；6D 位姿：三维平移与旋转。"
+    ],
+    "translated_title": "类别级物体位姿与尺寸估计",
+    "translation_html": "<p>从 RGB-D 图像中，检测特定类别中此前未见过的物体，并估计其 6D 位姿与三维尺寸。</p><p>不需要已知 CAD 模型。</p><p>RGB；深度；三维尺寸（大小）；6D 位姿：三维平移与旋转。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 69,
+    "title": "挑战",
+    "translation": [
+      "类别内形状差异。"
+    ],
+    "translated_title": "挑战",
+    "translation_html": "<ul><li>类别内形状差异。</li></ul>"
+  },
+  {
+    "lecture": 5,
+    "page": 70,
+    "title": "表示：归一化物体坐标空间（NOCS）",
+    "translation": [
+      "RGB 颜色编码 X、Y、Z 坐标。",
+      "NOCS 图。",
+      "坐标：(0.5,0.5,0.5)、(−0.5,0.5,0.5)、(−0.5,0.5,−0.5)、(0.5,0.5,−0.5)、(−0.5,−0.5,−0.5)、(0.5,−0.5,−0.5)。"
+    ],
+    "translated_title": "表示：归一化物体坐标空间（NOCS）",
+    "translation_html": "<p>RGB 颜色编码 X、Y、Z 坐标。</p><p>NOCS 图。</p><p>坐标：(0.5,0.5,0.5)、(−0.5,0.5,0.5)、(−0.5,0.5,−0.5)、(0.5,0.5,−0.5)、(−0.5,−0.5,−0.5)、(0.5,−0.5,−0.5)。</p>"
+  },
+  {
+    "lecture": 5,
+    "page": 71,
+    "title": "具身智能导论",
+    "translation": [
+      "下周：第 6 讲，视觉与抓取 II。",
+      "具身感知与交互实验室；2025 年春季。"
+    ],
+    "translated_title": "具身智能导论",
+    "translation_html": "<p>下周：第 6 讲，视觉与抓取 II。</p><p>具身感知与交互实验室；2025 年春季。</p>"
+  }
+]

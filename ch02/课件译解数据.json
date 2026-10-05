@@ -1,0 +1,917 @@
+[
+  {
+    "lecture": 2,
+    "page": 1,
+    "title": "具身智能导论",
+    "translated_title": "具身智能导论",
+    "translation": [
+      "第2讲：机器人学 I",
+      "王鹤教授",
+      "北京大学（1898年）",
+      "具身感知与交互实验室（EPIC）",
+      "2025年秋季"
+    ],
+    "translation_html": "<p>第2讲：机器人学 I</p><p>王鹤教授</p><p>北京大学（1898年）</p><p>具身感知与交互实验室（EPIC）</p><p>2025年秋季</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 2,
+    "title": "课程安排：机器人学部分",
+    "translated_title": "课程安排：机器人学部分",
+    "translation": [
+      "授课：2025年2月24日星期一15:10；机器人学基础 I；刚体和关节物体的运动学。",
+      "授课：2025年3月3日星期一15:10；机器人学基础 II；运动规划。",
+      "授课：2025年3月10日星期一15:10；机器人学基础 III；控制算法（PD、PID）。",
+      "（暂定安排）",
+      "完整且最新的安排见 https://pku-epic.github.io/Intro2EAI_2025/schedule/ 。"
+    ],
+    "translation_html": "<div class=\"table-wrap\"><table><thead><tr><th>活动</th><th>日期与时间</th><th>主题</th><th>内容</th></tr></thead><tbody><tr><td>授课</td><td>2025年2月24日 星期一15:10</td><td>机器人学基础 I</td><td>刚体和关节物体的运动学</td></tr><tr><td>授课</td><td>2025年3月3日 星期一15:10</td><td>机器人学基础 II</td><td>运动规划</td></tr><tr><td>授课</td><td>2025年3月10日 星期一15:10</td><td>机器人学基础 III</td><td>控制算法（PD、PID）</td></tr></tbody></table></div><p>（暂定安排）</p><p>完整且最新的安排见 <a href=\"https://pku-epic.github.io/Intro2EAI_2025/schedule/\">https://pku-epic.github.io/Intro2EAI_2025/schedule/</a>。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 3,
+    "title": "机器人学基础",
+    "translated_title": "机器人学基础",
+    "translation": [
+      "• 运动学（今天的主题）。",
+      "  • 刚体。",
+      "  • 关节物体。",
+      "• 动力学。"
+    ],
+    "translation_html": "<ul><li>运动学（今天的主题）。<ul><li>刚体。</li><li>关节物体。</li></ul></li><li>动力学。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 4,
+    "title": "典型的机器人学导论教学大纲",
+    "translated_title": "典型的机器人学导论教学大纲",
+    "translation": [
+      "• 机器人学是工程学的一个分支，涉及机器人的构思、设计、制造和运行。",
+      "机器人学导论，CS223A，斯坦福大学工程学院。",
+      "内容包括：",
+      "• 空间描述。",
+      "• 运动学。",
+      "• 雅可比矩阵。",
+      "• 静力学。",
+      "• 动力学。",
+      "• 运动规划与控制。",
+      "• 轨迹生成。"
+    ],
+    "translation_html": "<ul><li>机器人学是工程学的一个分支，涉及机器人的构思、设计、制造和运行。</li></ul><p>机器人学导论，CS223A，斯坦福大学工程学院。</p><p>内容包括：</p><ul><li>空间描述。</li><li>运动学。</li><li>雅可比矩阵。</li><li>静力学。</li><li>动力学。</li><li>运动规划与控制。</li><li>轨迹生成。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 5,
+    "title": "运动学与动力学",
+    "translated_title": "运动学与动力学",
+    "translation": [
+      "• 运动学：描述物体的运动（位置、线速度/角速度、线加速度/角加速度等）。",
+      "• 运动学不考虑如何通过力来实现运动。",
+      "• 与此相反，动力学建立从力和力矩到运动的完整模型。"
+    ],
+    "translation_html": "<ul><li>运动学：描述物体的运动（位置、线速度/角速度、线加速度/角加速度等）。</li><li>运动学不考虑如何通过力来实现运动。</li><li>与此相反，动力学建立从力和力矩到运动的完整模型。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 6,
+    "title": "刚体变换",
+    "translated_title": "刚体变换",
+    "translation": [
+      "幻灯片主要借用自加州大学圣迭戈分校 UCSD CS291-E00。"
+    ],
+    "translation_html": "<p>幻灯片主要借用自加州大学圣迭戈分校 UCSD CS291-E00。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 7,
+    "title": "连杆与关节",
+    "translated_title": "连杆与关节",
+    "translation": [
+      "连杆：",
+      "• 连杆是按顺序连接的刚体。",
+      "关节：",
+      "• 关节是连杆之间的连接器。",
+      "自由度：",
+      "• 一个机械系统的自由度（DoF）是定义其配置所需的独立参数的数量。"
+    ],
+    "translation_html": "<p>连杆：</p><ul><li>连杆是按顺序连接的刚体。</li></ul><p>关节：</p><ul><li>关节是连杆之间的连接器。</li></ul><p>自由度：</p><ul><li>一个机械系统的自由度（DoF）是定义其配置所需的独立参数的数量。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 8,
+    "title": "本讲内容",
+    "translated_title": "本讲内容",
+    "translation": [
+      "• 刚体变换。",
+      "  • 用于坐标变换的 (R_{s→b}, t_{s→b})。",
+      "  • 将 (R_{s→b}, t_{s→b}) 表示为线性变换。"
+    ],
+    "translation_html": "<ul><li>刚体变换。<ul><li>用于坐标变换的 \\((R_{s\\to b}, t_{s\\to b})\\)。</li><li>将 \\((R_{s\\to b}, t_{s\\to b})\\) 表示为线性变换。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 9,
+    "title": "符号约定",
+    "translated_title": "符号约定",
+    "translation": [
+      "• 观察者使用坐标系 F_s 记录空间中任意点的位置。",
+      "• 使用普通字母表示点（例如 p），用粗体字母表示向量（例如 v）。",
+      "• 写方程时，用上标表示记录坐标的坐标系，例如 o_bˢ = o_sˢ + t_{s→b}ˢ。",
+      "图中：F_s；原点 o_s、o_b；坐标轴 x_s、y_s、z_s。"
+    ],
+    "translation_html": "<ul><li>观察者使用坐标系 \\(F_s\\) 记录空间中任意点的位置。</li><li>使用普通字母表示点（例如 p），用粗体字母表示向量（例如 v）。</li><li>写方程时，用上标表示记录坐标的坐标系，例如 \\(o_b^{s} = o_s^{s} + t_{s\\to b}^{s}\\)。</li></ul><p>图中：\\(F_s\\)；原点 \\(o_s\\)、\\(o_b\\)；坐标轴 \\(x_s\\)、\\(y_s\\)、\\(z_s\\)。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 10,
+    "title": "刚体变换",
+    "translated_title": "刚体变换",
+    "translation": [
+      "• 给定一个刚体，将坐标系 F_b（物体坐标系）与之牢固绑定，使 F_b 随物体一起移动。",
+      "图中：F_s、F_b；原点 o_s、o_b；坐标轴 x_s、y_s、z_s 与 x_b、y_b、z_b。"
+    ],
+    "translation_html": "<ul><li>给定一个刚体，将坐标系 \\(F_b\\)（物体坐标系）与之牢固绑定，使 \\(F_b\\) 随物体一起移动。</li></ul><p>图中：\\(F_s\\)、\\(F_b\\)；原点 \\(o_s\\)、\\(o_b\\)；坐标轴 \\(x_s\\)、\\(y_s\\)、\\(z_s\\) 与 \\(x_b\\)、\\(y_b\\)、\\(z_b\\)。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 11,
+    "title": "刚体变换",
+    "translated_title": "刚体变换",
+    "translation": [
+      "• 谈论刚体位姿时，我们问：",
+      "怎样变换 F_s，才能使它与 F_b 重合？",
+      "图中：F_s、F_b；原点 o_s、o_b；坐标轴 x_s、y_s、z_s 与 x_b、y_b、z_b。"
+    ],
+    "translation_html": "<ul><li>谈论刚体位姿时，我们问：</li></ul><p>怎样变换 \\(F_s\\)，才能使它与 \\(F_b\\) 重合？</p><p>图中：\\(F_s\\)、\\(F_b\\)；原点 \\(o_s\\)、\\(o_b\\)；坐标轴 \\(x_s\\)、\\(y_s\\)、\\(z_s\\) 与 \\(x_b\\)、\\(y_b\\)、\\(z_b\\)。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 12,
+    "title": "刚体变换",
+    "translated_title": "刚体变换",
+    "translation": [
+      "• 先用 R_{s→b} 旋转，使各轴 {x_i, y_i, z_i} 对齐（i = s 或 b）。",
+      "• 再将 F_s 平移 t_{s→b}，使 o_s 和 o_b 对齐。"
+    ],
+    "translation_html": "<ul><li>先用 \\(R_{s\\to b}\\) 旋转，使各轴 \\(\\{x_i, y_i, z_i\\}\\) 对齐（\\(i = s\\) 或 b）。</li><li>再将 \\(F_s\\) 平移 \\(t_{s\\to b}\\)，使 \\(o_s\\) 和 \\(o_b\\) 对齐。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 13,
+    "title": "刚体变换",
+    "translated_title": "刚体变换",
+    "translation": [
+      "• 形式上，",
+      "  • o_bˢ = o_sˢ + t_{s→b}ˢ。",
+      "  • [x_bˢ, y_bˢ, z_bˢ] = R_{s→b}ˢ[x_sˢ, y_sˢ, z_sˢ]。",
+      "• 因为观察者使用 F_s 记录一切，",
+      "  • o_sˢ = 0。",
+      "  • [x_sˢ, y_sˢ, z_sˢ] = I₃ₓ₃。",
+      "• 因此，",
+      "  • t_{s→b}ˢ = o_bˢ。",
+      "  • R_{s→b}ˢ = [x_bˢ, y_bˢ, z_bˢ] ∈ ℝ³ˣ³。"
+    ],
+    "translation_html": "<ul><li>形式上，<ul><li>\\[o_b^{s} = o_s^{s} + t_{s\\to b}^{s}\\]。</li><li>\\[[x_b^{s}, y_b^{s}, z_b^{s}] = R_{s\\to b}^{s}[x_s^{s}, y_s^{s}, z_s^{s}]\\]。</li></ul></li><li>因为观察者使用 \\(F_s\\) 记录一切，<ul><li>\\[o_s^{s} = 0\\]。</li><li>\\[[x_s^{s}, y_s^{s}, z_s^{s}] = I_{3\\times 3}\\]。</li></ul></li><li>因此，<ul><li>\\[t_{s\\to b}^{s} = o_b^{s}\\]。</li><li>\\[R_{s\\to b}^{s} = [x_b^{s}, y_b^{s}, z_b^{s}] \\in  \\mathbb{R}^{3\\times 3}\\]。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 14,
+    "title": "刚体变换",
+    "translated_title": "刚体变换",
+    "translation": [
+      "用于坐标变换的 (R_{s→b}, t_{s→b})。"
+    ],
+    "translation_html": "<p>用于坐标变换的 \\((R_{s\\to b}, t_{s\\to b})\\)。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 15,
+    "title": "用坐标变换联系不同坐标系中的坐标",
+    "translated_title": "用坐标变换联系不同坐标系中的坐标",
+    "translation": [
+      "• 假设第二位观察者使用 F_b 记录坐标。",
+      "• 假设物体上有一点 p。由于 F_b 随物体移动，p 在 F_b 中记录的坐标（记为 pᵇ）应当始终不变。"
+    ],
+    "translation_html": "<ul><li>假设第二位观察者使用 \\(F_b\\) 记录坐标。</li><li>假设物体上有一点 p。由于 \\(F_b\\) 随物体移动，p 在 \\(F_b\\) 中记录的坐标（记为 \\(p^{b}\\)）应当始终不变。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 16,
+    "title": "用于坐标变换的 (R_{s→b}, t_{s→b})",
+    "translated_title": "用于坐标变换的 (R_{s→b}, t_{s→b})",
+    "translation": [
+      "• 想象这样一个过程：F_b 从 F_s 移动到当前位置。我们以此定义 (R_{s→b}ˢ, t_{s→b}ˢ)。",
+      "• 因为 p 随 F_b 一起移动，它从初始位置 pˢ = pᵇ 移动到当前位置：",
+      "pˢ = R_{s→b}ˢpᵇ + t_{s→b}ˢ。"
+    ],
+    "translation_html": "<ul><li>想象这样一个过程：\\(F_b\\) 从 \\(F_s\\) 移动到当前位置。我们以此定义 \\((R_{s\\to b}^{s}, t_{s\\to b}^{s})\\)。</li><li>因为 p 随 \\(F_b\\) 一起移动，它从初始位置 \\(p^{s} = p^{b}\\) 移动到当前位置：</li></ul><p>\\[p^{s} = R_{s\\to b}^{s}p^{b} + t_{s\\to b}^{s}\\]。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 17,
+    "title": "用于坐标变换的 (R_{s→b}, t_{s→b})",
+    "translated_title": "用于坐标变换的 (R_{s→b}, t_{s→b})",
+    "translation": [
+      "• (R_{s→b}, t_{s→b}) 通过下面的方程变换整个空间中的任意点：",
+      "x′ˢ = R_{s→b}ˢxˢ + t_{s→b}ˢ。"
+    ],
+    "translation_html": "<ul><li>\\((R_{s\\to b}, t_{s\\to b})\\) 通过下面的方程变换整个空间中的任意点：</li></ul><p>\\[x'^{s} = R_{s\\to b}^{s}x^{s} + t_{s\\to b}^{s}\\]。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 18,
+    "title": "线性变换",
+    "translated_title": "线性变换",
+    "translation": [
+      "• 两个向量空间 V 与 W 之间的线性变换是满足下列条件的映射 T: V → W：",
+      "• 对所有 v₁, v₂ ∈ V，T(v₁ + v₂) = T(v₁) + T(v₂)。",
+      "• T(αv) = αT(v)。",
+      "• 我们知道，可以用矩阵描述这样的线性变换，并使用矩阵乘法执行这些线性运算。"
+    ],
+    "translation_html": "<ul><li>两个向量空间 V 与 W 之间的线性变换是满足下列条件的映射 T: V → W：</li><li>对所有 \\(v_{1}, v_{2} \\in  V\\text{，}T(v_{1} + v_{2}) = T(v_{1}) + T(v_{2})\\)。</li><li>\\[T(\\alpha v) = \\alpha T(v)\\]。</li><li>我们知道，可以用矩阵描述这样的线性变换，并使用矩阵乘法执行这些线性运算。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 19,
+    "title": "(R_{s→b}, t_{s→b}) 不是线性变换",
+    "translated_title": "(R_{s→b}, t_{s→b}) 不是线性变换",
+    "translation": [
+      "• p₁ˢ = R_{s→b}ˢp₁ᵇ + t_{s→b}ˢ。",
+      "• p₂ˢ = R_{s→b}ˢp₂ᵇ + t_{s→b}ˢ。",
+      "• 当 t_{s→b}ˢ ≠ 0 时，p₁ˢ + p₂ˢ ≠ R_{s→b}ˢ(p₁ᵇ + p₂ᵇ) + t_{s→b}ˢ。",
+      "• 类似地，当 t_{s→b}ˢ ≠ 0 时，αp₁ˢ ≠ R_{s→b}ˢ(αp₁ᵇ) + t_{s→b}ˢ。",
+      "• 能将这个变换表示为线性运算吗？"
+    ],
+    "translation_html": "<ul><li>\\[p_{1}^{s} = R_{s\\to b}^{s}p_{1}^{b} + t_{s\\to b}^{s}\\]。</li><li>\\[p_{2}^{s} = R_{s\\to b}^{s}p_{2}^{b} + t_{s\\to b}^{s}\\]。</li><li>当 \\(t_{s\\to b}^{s} \\ne  0\\) 时，\\(p_{1}^{s} + p_{2}^{s} \\ne  R_{s\\to b}^{s}(p_{1}^{b} + p_{2}^{b}) + t_{s\\to b}^{s}\\)。</li><li>类似地，当 \\(t_{s\\to b}^{s} \\ne  0\\) 时，\\(\\alpha p_{1}^{s} \\ne  R_{s\\to b}^{s}(\\alpha p_{1}^{b}) + t_{s\\to b}^{s}\\)。</li><li>能将这个变换表示为线性运算吗？</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 20,
+    "title": "齐次坐标",
+    "translated_title": "齐次坐标",
+    "translation": [
+      "• 三维空间的齐次坐标：x̃ := [x; 1] ∈ ℝ⁴。",
+      "• 齐次变换矩阵：T_{s→b}ˢ = [[R_{s→b}ˢ, t_{s→b}ˢ], [0, 1]]。",
+      "• 线性形式的坐标变换：x̃ˢ = T_{s→b}ˢx̃ᵇ。",
+      "• 后面为简洁起见省略符号“~”。"
+    ],
+    "translation_html": "<ul><li>三维空间的齐次坐标：\\(\\tilde{x} := \\begin{bmatrix}x \\\\ 1\\end{bmatrix} \\in  \\mathbb{R}^{4}\\)。</li><li>齐次变换矩阵：\\(T_{s\\to b}^{s} = \\begin{bmatrix}R_{s\\to b}^{s} &amp; t_{s\\to b}^{s} \\\\ 0 &amp; 1\\end{bmatrix}\\)。</li><li>线性形式的坐标变换：\\(\\tilde{x}^{s} = T_{s\\to b}^{s}\\tilde{x}^{b}\\)。</li><li>后面为简洁起见省略符号“~”。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 21,
+    "title": "齐次坐标",
+    "translated_title": "齐次坐标",
+    "translation": [
+      "• 对任意选择的 F_s 和 F_b，坐标变换都成立。",
+      "• 一般规则为：x¹ = T_{1→2}¹x²。"
+    ],
+    "translation_html": "<ul><li>对任意选择的 \\(F_s\\) 和 \\(F_b\\)，坐标变换都成立。</li><li>一般规则为：\\(x^{1} = T_{1\\to 2}^{1}x^{2}\\)。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 22,
+    "title": "齐次坐标变换的一些规则",
+    "translated_title": "齐次坐标变换的一些规则",
+    "translation": [
+      "由 x¹ = T_{1→2}¹x²，得 x² = T_{2→1}²x¹ 和 x³ = T_{3→2}³x²。",
+      "因此，x³ = T_{3→2}³T_{2→1}²x¹。但 x³ = T_{3→1}³x¹。",
+      "• 复合规则：T_{3→1}³ = T_{3→2}³T_{2→1}²。",
+      "由 x¹ = T_{1→2}¹x²，得 x² = (T_{1→2}¹)⁻¹x¹。",
+      "• 改变观察者坐标系：T_{2→1}² = (T_{1→2}¹)⁻¹。"
+    ],
+    "translation_html": "<p>由 \\(x^{1} = T_{1\\to 2}^{1}x^{2}\\)，得 \\(x^{2} = T_{2\\to 1}^{2}x^{1}\\) 和 \\(x^{3} = T_{3\\to 2}^{3}x^{2}\\)。</p><p>因此，\\(x^{3} = T_{3\\to 2}^{3}T_{2\\to 1}^{2}x^{1}\\)。但 \\(x^{3} = T_{3\\to 1}^{3}x^{1}\\)。</p><ul><li>复合规则：\\(T_{3\\to 1}^{3} = T_{3\\to 2}^{3}T_{2\\to 1}^{2}\\)。</li></ul><p>由 \\(x^{1} = T_{1\\to 2}^{1}x^{2}\\)，得 \\(x^{2} = (T_{1\\to 2}^{1})^{-1}x^{1}\\)。</p><ul><li>改变观察者坐标系：\\(T_{2\\to 1}^{2} = (T_{1\\to 2}^{1})^{-1}\\)。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 23,
+    "title": "多连杆刚体几何",
+    "translated_title": "多连杆刚体几何",
+    "translation": [],
+    "translation_html": ""
+  },
+  {
+    "lecture": 2,
+    "page": 24,
+    "title": "连杆与关节",
+    "translated_title": "连杆与关节",
+    "translation": [
+      "连杆：",
+      "• 连杆是按顺序连接的刚体。",
+      "关节：",
+      "• 关节是连杆之间的连接器。"
+    ],
+    "translation_html": "<p>连杆：</p><ul><li>连杆是按顺序连接的刚体。</li></ul><p>关节：</p><ul><li>关节是连杆之间的连接器。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 25,
+    "title": "关节",
+    "translated_title": "关节",
+    "translation": [
+      "关节限位：",
+      "• 下限和上限（旋转关节用弧度，移动关节用米）。",
+      "自由度：",
+      "• 一个机械系统的自由度（DoF）是定义其配置所需的独立参数的数量。"
+    ],
+    "translation_html": "<p>关节限位：</p><ul><li>下限和上限（旋转关节用弧度，移动关节用米）。</li></ul><p>自由度：</p><ul><li>一个机械系统的自由度（DoF）是定义其配置所需的独立参数的数量。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 26,
+    "title": "两种常见的关节类型",
+    "translated_title": "两种常见的关节类型",
+    "translation": [
+      "• 旋转关节/铰链关节/转动关节。",
+      "• 移动关节/平移关节。",
+      "旋转关节（R）：1个自由度。",
+      "移动关节（P）：1个自由度。"
+    ],
+    "translation_html": "<ul><li>旋转关节/铰链关节/转动关节。</li><li>移动关节/平移关节。</li></ul><p>旋转关节（R）：1个自由度。</p><p>移动关节（P）：1个自由度。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 27,
+    "title": "其他关节类型",
+    "translated_title": "其他关节类型",
+    "translation": [
+      "• 螺旋关节。",
+      "• 球面关节/球窝关节。",
+      "螺旋关节（H）：1个自由度。",
+      "球面关节（S，球体嵌入球形窝中）：3个自由度。"
+    ],
+    "translation_html": "<ul><li>螺旋关节。</li><li>球面关节/球窝关节。</li></ul><p>螺旋关节（H）：1个自由度。</p><p>球面关节（S，球体嵌入球形窝中）：3个自由度。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 28,
+    "title": "基座连杆",
+    "translated_title": "基座连杆",
+    "translation": [
+      "• 基座连杆/根连杆：",
+      "  • 机器人的第0个连杆。",
+      "  • 视为“固定”的参考。",
+      "  • 空间坐标系 F_s 固定在其上。"
+    ],
+    "translation_html": "<ul><li>基座连杆/根连杆：<ul><li>机器人的第0个连杆。</li><li>视为“固定”的参考。</li><li>空间坐标系 \\(F_s\\) 固定在其上。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 29,
+    "title": "例子",
+    "translated_title": "例子",
+    "translation": [
+      "一个简单的2自由度机械臂。"
+    ],
+    "translation_html": "<p>一个简单的2自由度机械臂。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 30,
+    "title": "基座连杆与末端执行器连杆",
+    "translated_title": "基座连杆与末端执行器连杆",
+    "translation": [
+      "• 基座连杆/根连杆：",
+      "  • 机器人的第0个连杆。",
+      "  • 视为“固定”的参考。",
+      "  • 空间坐标系 F_s 固定在其上。",
+      "• 末端执行器连杆：",
+      "  • 最后一个连杆。",
+      "  • 例如夹爪。",
+      "  • 坐标系 F_e 固定在其上。"
+    ],
+    "translation_html": "<ul><li>基座连杆/根连杆：<ul><li>机器人的第0个连杆。</li><li>视为“固定”的参考。</li><li>空间坐标系 \\(F_s\\) 固定在其上。</li></ul></li><li>末端执行器连杆：<ul><li>最后一个连杆。</li><li>例如夹爪。</li><li>坐标系 \\(F_e\\) 固定在其上。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 31,
+    "title": "例子",
+    "translated_title": "例子",
+    "translation": [
+      "基座 → 连杆1 → 连杆2 → 末端执行器。"
+    ],
+    "translation_html": "<p>基座 → 连杆1 → 连杆2 → 末端执行器。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 32,
+    "title": "例子",
+    "translated_title": "例子",
+    "translation": [
+      "一个简单的2自由度机械臂。",
+      "旋转关节（θ₁）；移动关节（θ₂）。"
+    ],
+    "translation_html": "<p>一个简单的2自由度机械臂。</p><p>旋转关节（\\(\\theta _{1}\\)）；移动关节（\\(\\theta _{2}\\)）。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 33,
+    "title": "旋转矩阵",
+    "translated_title": "旋转矩阵",
+    "translation": [
+      "• 绕 z 轴的旋转表示为：",
+      "R_z(γ) := [[cos γ, −sin γ, 0], [sin γ, cos γ, 0], [0, 0, 1]]。"
+    ],
+    "translation_html": "<ul><li>绕 z 轴的旋转表示为：</li></ul><p>\\[R_z(\\gamma ) := \\begin{bmatrix}\\cos \\gamma  &amp; -\\sin \\gamma  &amp; 0 \\\\ \\sin \\gamma  &amp; \\cos \\gamma  &amp; 0 \\\\ 0 &amp; 0 &amp; 1\\end{bmatrix}\\]。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 34,
+    "title": "例子",
+    "translated_title": "例子",
+    "translation": [
+      "基座 → 连杆1；旋转关节（θ₁）。",
+      "T_{0→1}⁰ = [[cos θ₁, −sin θ₁, 0, −l₂ sin θ₁], [sin θ₁, cos θ₁, 0, l₂ cos θ₁], [0, 0, 1, l₁], [0, 0, 0, 1]]。"
+    ],
+    "translation_html": "<p>基座 → 连杆1；旋转关节（\\(\\theta _{1}\\)）。</p><p>\\[T_{0\\to 1}^{0} = \\begin{bmatrix}\\cos \\theta _{1} &amp; -\\sin \\theta _{1} &amp; 0 &amp; -l_{2} \\sin \\theta _{1} \\\\ \\sin \\theta _{1} &amp; \\cos \\theta _{1} &amp; 0 &amp; l_{2} \\cos \\theta _{1} \\\\ 0 &amp; 0 &amp; 1 &amp; l_{1} \\\\ 0 &amp; 0 &amp; 0 &amp; 1\\end{bmatrix}\\]。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 35,
+    "title": "例子",
+    "translated_title": "例子",
+    "translation": [
+      "连杆1 → 连杆2；移动关节（θ₂）。",
+      "T_{1→2}¹ = [[1, 0, 0, 0], [0, 1, 0, l₃], [0, 0, 1, θ₂], [0, 0, 0, 1]]。"
+    ],
+    "translation_html": "<p>连杆1 → 连杆2；移动关节（\\(\\theta _{2}\\)）。</p><p>\\[T_{1\\to 2}^{1} = \\begin{bmatrix}1 &amp; 0 &amp; 0 &amp; 0 \\\\ 0 &amp; 1 &amp; 0 &amp; l_{3} \\\\ 0 &amp; 0 &amp; 1 &amp; \\theta _{2} \\\\ 0 &amp; 0 &amp; 0 &amp; 1\\end{bmatrix}\\]。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 36,
+    "title": "例子",
+    "translated_title": "例子",
+    "translation": [
+      "连杆2 → 末端执行器。",
+      "T_{2→3}² = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, −l₄], [0, 0, 0, 1]]。"
+    ],
+    "translation_html": "<p>连杆2 → 末端执行器。</p><p>\\[T_{2\\to 3}^{2} = \\begin{bmatrix}1 &amp; 0 &amp; 0 &amp; 0 \\\\ 0 &amp; 1 &amp; 0 &amp; 0 \\\\ 0 &amp; 0 &amp; 1 &amp; -l_{4} \\\\ 0 &amp; 0 &amp; 0 &amp; 1\\end{bmatrix}\\]。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 37,
+    "title": "运动学方程",
+    "translated_title": "运动学方程",
+    "translation": [
+      "基座 → 末端执行器。",
+      "T_{0→3}⁰ = T_{0→1}⁰T_{1→2}¹T_{2→3}²",
+      "= [[cos θ₁, −sin θ₁, 0, −sin θ₁(l₂+l₃)], [sin θ₁, cos θ₁, 0, cos θ₁(l₂+l₃)], [0, 0, 1, l₁−l₄+θ₂], [0, 0, 0, 1]]",
+      "= [[R_{s→e}ˢ, t_{s→e}ˢ], [0, 1]]。"
+    ],
+    "translation_html": "<p>基座 → 末端执行器。</p><p>\\[T_{0\\to 3}^{0} = T_{0\\to 1}^{0}T_{1\\to 2}^{1}T_{2\\to 3}^{2}\\]</p><p>\\[= \\begin{bmatrix}\\cos \\theta _{1} &amp; -\\sin \\theta _{1} &amp; 0 &amp; -\\sin \\theta _{1}(l_{2}+l_{3}) \\\\ \\sin \\theta _{1} &amp; \\cos \\theta _{1} &amp; 0 &amp; \\cos \\theta _{1}(l_{2}+l_{3}) \\\\ 0 &amp; 0 &amp; 1 &amp; l_{1}-l_{4}+\\theta _{2} \\\\ 0 &amp; 0 &amp; 0 &amp; 1\\end{bmatrix}\\]</p><p>\\[= \\begin{bmatrix}R_{s\\to e}^{s} &amp; t_{s\\to e}^{s} \\\\ 0 &amp; 1\\end{bmatrix}\\]。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 38,
+    "title": "运动学配置",
+    "translated_title": "运动学配置",
+    "translation": [
+      "• 假设为每个连杆分配了坐标系，就能参数化每个关节的位姿。",
+      "  • 使用相邻坐标系之间的相对角度和平移。",
+      "• 末端执行器位姿有两种表示：",
+      "  • 关节空间：每个坐标都是关节位姿向量（绕关节轴的角度）的空间。",
+      "  • 笛卡尔空间：末端执行器的刚体变换 (R_{s→e}, t_{s→e}) 所构成的空间，其中 F_e 是末端执行器坐标系。"
+    ],
+    "translation_html": "<ul><li>假设为每个连杆分配了坐标系，就能参数化每个关节的位姿。<ul><li>使用相邻坐标系之间的相对角度和平移。</li></ul></li><li>末端执行器位姿有两种表示：<ul><li>关节空间：每个坐标都是关节位姿向量（绕关节轴的角度）的空间。</li><li>笛卡尔空间：末端执行器的刚体变换 \\((R_{s\\to e}, t_{s\\to e})\\) 所构成的空间，其中 \\(F_e\\) 是末端执行器坐标系。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 39,
+    "title": "正向运动学",
+    "translated_title": "正向运动学",
+    "translation": [
+      "• 将关节空间坐标 θ ∈ ℝⁿ 映射到变换矩阵 T：T_{s→e} = f(θ)。",
+      "• 通过复合运动链上各个变换来计算。",
+      "图中：第1轴、第2轴、第3轴、第4轴、第5轴、第6轴；正向运动学（FK）解；逆向运动学（IK）解；KUKA。"
+    ],
+    "translation_html": "<ul><li>将关节空间坐标 \\(\\theta  \\in  \\mathbb{R}^{n}\\) 映射到变换矩阵 T：\\(T_{s\\to e} = f(\\theta )\\)。</li><li>通过复合运动链上各个变换来计算。</li></ul><p>图中：第1轴、第2轴、第3轴、第4轴、第5轴、第6轴；正向运动学（FK）解；逆向运动学（IK）解；KUKA。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 40,
+    "title": "逆向运动学",
+    "translated_title": "逆向运动学",
+    "translation": [
+      "• 给定正向运动学 T_{s→e}(θ) 和目标位姿 T_target = SE(3)，寻找满足 T_{s→e}(θ) = T_target 的解 θ。",
+      "图中：第1轴、第2轴、第3轴、第4轴、第5轴、第6轴；正向运动学（FK）解；逆向运动学（IK）解；KUKA。"
+    ],
+    "translation_html": "<ul><li>给定正向运动学 \\(T_{s\\to e}(\\theta )\\) 和目标位姿 \\(T_{\\mathrm{target}} = \\mathrm{SE}(3)\\)，寻找满足 \\(T_{s\\to e}(\\theta ) = T_{\\mathrm{target}}\\) 的解 \\(\\theta\\)。</li></ul><p>图中：第1轴、第2轴、第3轴、第4轴、第5轴、第6轴；正向运动学（FK）解；逆向运动学（IK）解；KUKA。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 41,
+    "title": "逆向运动学的问题",
+    "translated_title": "逆向运动学的问题",
+    "translation": [
+      "• 逆向运动学具有挑战性：T_{s→e}(θ) 的求值可能比较容易，但 T⁻¹ 通常并不容易求。",
+      "• 对于 T_target，T⁻¹ 可能有多个解，也可能无解。",
+      "• 即使存在解，寻找它也可能需要复杂且代价高昂的计算。",
+      "• 因此，求解逆向运动学问题有许多不同的方法。",
+      "为什么使用6自由度或7自由度机械臂？"
+    ],
+    "translation_html": "<ul><li>逆向运动学具有挑战性：\\(T_{s\\to e}(\\theta )\\) 的求值可能比较容易，但 \\(T^{-1}\\) 通常并不容易求。</li><li>对于 \\(T_{\\mathrm{target}}\\text{，}T^{-1}\\) 可能有多个解，也可能无解。</li><li>即使存在解，寻找它也可能需要复杂且代价高昂的计算。</li><li>因此，求解逆向运动学问题有许多不同的方法。</li></ul><p>为什么使用6自由度或7自由度机械臂？</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 42,
+    "title": "逆向运动学的解析方法与数值方法",
+    "translated_title": "逆向运动学的解析方法与数值方法",
+    "translation": [
+      "• 对逆向运动学解的一种主要分类，是分为解析方法与数值方法。",
+      "• 解析方法尝试直接反解正向运动学方程，从数学上求出精确解。这只对相对简单的运动链可行。"
+    ],
+    "translation_html": "<ul><li>对逆向运动学解的一种主要分类，是分为解析方法与数值方法。</li><li>解析方法尝试直接反解正向运动学方程，从数学上求出精确解。这只对相对简单的运动链可行。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 43,
+    "title": "Pieper 判据",
+    "translated_title": "Pieper 判据",
+    "translation": [
+      "• Pieper 判据用于判断6自由度机械臂是否存在闭式逆向运动学解。",
+      "• 具体来说，满足以下任意一个条件时，6自由度运动学结构存在闭式逆解：",
+      "  • 三个连续旋转关节的轴交于一点。",
+      "  • 三个连续旋转关节的轴相互平行。",
+      "• 注意：这只是充分条件，不是必要条件。"
+    ],
+    "translation_html": "<ul><li>Pieper 判据用于判断6自由度机械臂是否存在闭式逆向运动学解。</li><li>具体来说，满足以下任意一个条件时，6自由度运动学结构存在闭式逆解：<ul><li>三个连续旋转关节的轴交于一点。</li><li>三个连续旋转关节的轴相互平行。</li></ul></li><li>注意：这只是充分条件，不是必要条件。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 44,
+    "title": "例子：UR5",
+    "translated_title": "例子：UR5",
+    "translation": [
+      "• 第2、3、4个关节的轴相互平行。",
+      "• 因此满足 Pieper 判据。",
+      "• 存在逆向运动学的闭式解。",
+      "• 可以在几微秒内找到解。",
+      "关节编号：1、2、3、4、5、6。"
+    ],
+    "translation_html": "<ul><li>第2、3、4个关节的轴相互平行。</li><li>因此满足 Pieper 判据。</li><li>存在逆向运动学的闭式解。</li><li>可以在几微秒内找到解。</li></ul><p>关节编号：1、2、3、4、5、6。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 45,
+    "title": "逆向运动学的数值方法",
+    "translated_title": "逆向运动学的数值方法",
+    "translation": [
+      "• 数值方法通过近似和迭代收敛到解。它们往往成本更高（通常需要毫秒量级时间），但通用性强得多。",
+      "• 关于基于雅可比矩阵的数值逆向运动学方法，可参考：",
+      "https://cseweb.ucsd.edu/classes/wi17/cse169-a/slides/CSE169_08.pdf",
+      "https://cseweb.ucsd.edu/classes/wi17/cse169-a/slides/CSE169_09.pdf"
+    ],
+    "translation_html": "<ul><li>数值方法通过近似和迭代收敛到解。它们往往成本更高（通常需要毫秒量级时间），但通用性强得多。</li><li>关于基于雅可比矩阵的数值逆向运动学方法，可参考：</li></ul><p>https://cseweb.ucsd.edu/classes/wi17/cse169-a/slides/CSE169_08.pdf</p><p>https://cseweb.ucsd.edu/classes/wi17/cse169-a/slides/CSE169_09.pdf</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 46,
+    "title": "逆向运动学的数值方法",
+    "translated_title": "逆向运动学的数值方法",
+    "translation": [
+      "• NVIDIA 的 cuRobo 和 cuMotion 软件包实现了无碰撞逆向运动学求解器。https://youtu.be/Ux9tFBRLR-A",
+      "• 在 GPU 上使用多个不同种子（初始 θ）并行求解。",
+      "cuRobo：并行化的无碰撞最小加加速度机器人运动生成。",
+      "NVIDIA。",
+      "Balakumar Sundaralingam*、Siva Kumar Sastry Hari*、Adam Fishman、Caelan Garrett、Karl Van Wyk、Valts Blukis、Alexander Millane、Helen Oleynikova、Ankur Handa、Fabio Ramos、Nathan Ratliff、Dieter Fox。"
+    ],
+    "translation_html": "<ul><li>NVIDIA 的 cuRobo 和 cuMotion 软件包实现了无碰撞逆向运动学求解器。https://youtu.be/Ux9tFBRLR-A</li><li>在 GPU 上使用多个不同种子（初始 \\(\\theta\\)）并行求解。</li></ul><p>cuRobo：并行化的无碰撞最小加加速度机器人运动生成。</p><p>NVIDIA。</p><p>Balakumar Sundaralingam*、Siva Kumar Sastry Hari*、Adam Fishman、Caelan Garrett、Karl Van Wyk、Valts Blukis、Alexander Millane、Helen Oleynikova、Ankur Handa、Fabio Ramos、Nathan Ratliff、Dieter Fox。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 47,
+    "title": "如何联系关节空间与笛卡尔空间中的运动？",
+    "translated_title": "如何联系关节空间与笛卡尔空间中的运动？",
+    "translation": [
+      "• 问题1：如果机器人在关节空间中移动 Δθ，它在笛卡尔空间中会移动多少？（正向运动学）",
+      "• 问题2：如果机器人要让末端执行器在笛卡尔空间中移动 Δx，应如何改变关节位姿？（逆向运动学）"
+    ],
+    "translation_html": "<ul><li>问题1：如果机器人在关节空间中移动 \\(\\Delta \\theta\\)，它在笛卡尔空间中会移动多少？（正向运动学）</li><li>问题2：如果机器人要让末端执行器在笛卡尔空间中移动 \\(\\Delta x\\)，应如何改变关节位姿？（逆向运动学）</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 48,
+    "title": "SO(3) 与 SE(3)",
+    "translated_title": "SO(3) 与 SE(3)",
+    "translation": [],
+    "translation_html": ""
+  },
+  {
+    "lecture": 2,
+    "page": 49,
+    "title": "ℝ³ 中的旋转",
+    "translated_title": "ℝ³ 中的旋转",
+    "translation": [],
+    "translation_html": ""
+  },
+  {
+    "lecture": 2,
+    "page": 50,
+    "title": "SO(3)：旋转的空间",
+    "translated_title": "SO(3)：旋转的空间",
+    "translation": [
+      "• SO(n) = {R ∈ ℝⁿˣⁿ : det(R) = 1，RRᵀ = I}。",
+      "• SO(n)：“特殊正交群”。",
+      "• “群”：粗略地说，对矩阵乘法封闭。",
+      "• “正交”：RRᵀ = I。",
+      "• “特殊”：det(R) = 1。",
+      "• SO(2)：二维旋转，1个自由度。",
+      "• SO(3)：三维旋转，3个自由度。"
+    ],
+    "translation_html": "<ul><li>\\[\\mathrm{SO}(n) = \\{R \\in  \\mathbb{R}^{n\\times n} : \\operatorname{det}(R) = 1\\text{，}RR^{T} = I\\}\\]。</li><li>\\(\\mathrm{SO}(n)\\)：“特殊正交群”。</li><li>“群”：粗略地说，对矩阵乘法封闭。</li><li>“正交”：\\(RR^{T} = I\\)。</li><li>“特殊”：\\(\\operatorname{det}(R) = 1\\)。</li><li>\\(\\mathrm{SO}(2)\\)：二维旋转，1个自由度。</li><li>\\(\\mathrm{SO}(3)\\)：三维旋转，3个自由度。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 51,
+    "title": "SE(3)：刚体变换的空间",
+    "translated_title": "SE(3)：刚体变换的空间",
+    "translation": [
+      "• SE(3) := {T = [[R, t], [0, 1]]，R ∈ SO(3)，t ∈ ℝ³}。",
+      "• SE(3)：“特殊欧氏群”。",
+      "• “群”：粗略地说，对矩阵乘法封闭。",
+      "• “欧氏”：R 和 t。",
+      "• “特殊”：det(R) = 1。",
+      "• 6个自由度。"
+    ],
+    "translation_html": "<ul><li>\\[\\mathrm{SE}(3) := \\{T = \\begin{bmatrix}R &amp; t \\\\ 0 &amp; 1\\end{bmatrix}\\text{，}R \\in  \\mathrm{SO}(3)\\text{，}t \\in  \\mathbb{R}^{3}\\}\\]。</li><li>\\(\\mathrm{SE}(3)\\)：“特殊欧氏群”。</li><li>“群”：粗略地说，对矩阵乘法封闭。</li><li>“欧氏”：R 和 t。</li><li>“特殊”：\\(\\operatorname{det}(R) = 1\\)。</li><li>6个自由度。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 52,
+    "title": "SO(3) 与 SE(3)",
+    "translated_title": "SO(3) 与 SE(3)",
+    "translation": [
+      "• 我们需要对 SO(3) 和 SE(3) 有一些理论理解。",
+      "  • 参数化。"
+    ],
+    "translation_html": "<ul><li>我们需要对 \\(\\mathrm{SO}(3)\\) 和 \\(\\mathrm{SE}(3)\\) 有一些理论理解。<ul><li>参数化。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 53,
+    "title": "参数化",
+    "translated_title": "参数化",
+    "translation": [
+      "• 用实数记录 R ∈ SO(3)。",
+      "• 换句话说，寻找 ℝᵈ 与 SO(3) 之间的映射：f(θ) = R_θ。"
+    ],
+    "translation_html": "<ul><li>用实数记录 \\(R \\in  \\mathrm{SO}(3)\\)。</li><li>换句话说，寻找 \\(\\mathbb{R}ᵈ\\) 与 \\(\\mathrm{SO}(3)\\) 之间的映射：\\(f(\\theta ) = R_\\theta\\)。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 54,
+    "title": "欧拉角",
+    "translated_title": "欧拉角",
+    "translation": [],
+    "translation_html": ""
+  },
+  {
+    "lecture": 2,
+    "page": 55,
+    "title": "欧拉角非常直观",
+    "translated_title": "欧拉角非常直观",
+    "translation": [
+      "坐标轴：x、y、z。"
+    ],
+    "translation_html": "<p>坐标轴：x、y、z。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 56,
+    "title": "欧拉角",
+    "translated_title": "欧拉角",
+    "translation": [
+      "横滚（Roll）；偏航（Yaw）；俯仰（Pitch）。",
+      "https://blog.csdn.net/sandalphon4869"
+    ],
+    "translation_html": "<p>横滚（Roll）；偏航（Yaw）；俯仰（Pitch）。</p><p>https://blog.csdn.net/sandalphon4869</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 57,
+    "title": "从欧拉角到旋转矩阵",
+    "translated_title": "从欧拉角到旋转矩阵",
+    "translation": [
+      "• 绕主轴的旋转表示为：",
+      "R_x(α) := [[1, 0, 0], [0, cos α, −sin α], [0, sin α, cos α]]。",
+      "R_y(β) := [[cos β, 0, sin β], [0, 1, 0], [−sin β, 0, cos β]]。",
+      "R_z(γ) := [[cos γ, −sin γ, 0], [sin γ, cos γ, 0], [0, 0, 1]]。",
+      "• 任意旋转可写为 R = R_z(α)R_y(β)R_x(γ)。"
+    ],
+    "translation_html": "<ul><li>绕主轴的旋转表示为：</li></ul><p>\\[R_x(\\alpha ) := \\begin{bmatrix}1 &amp; 0 &amp; 0 \\\\ 0 &amp; \\cos \\alpha  &amp; -\\sin \\alpha  \\\\ 0 &amp; \\sin \\alpha  &amp; \\cos \\alpha \\end{bmatrix}\\]。</p><p>\\[R_y(\\beta ) := \\begin{bmatrix}\\cos \\beta  &amp; 0 &amp; \\sin \\beta  \\\\ 0 &amp; 1 &amp; 0 \\\\ -\\sin \\beta  &amp; 0 &amp; \\cos \\beta \\end{bmatrix}\\]。</p><p>\\[R_z(\\gamma ) := \\begin{bmatrix}\\cos \\gamma  &amp; -\\sin \\gamma  &amp; 0 \\\\ \\sin \\gamma  &amp; \\cos \\gamma  &amp; 0 \\\\ 0 &amp; 0 &amp; 1\\end{bmatrix}\\]。</p><ul><li>任意旋转可写为 \\(R = R_z(\\alpha )R_y(\\beta )R_x(\\gamma )\\)。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 58,
+    "title": "观察",
+    "translated_title": "观察",
+    "translation": [
+      "• 对某些旋转，欧拉角不唯一。",
+      "• 例如，R_z(45°)R_y(90°)R_x(45°) = R_z(90°)R_y(90°)R_x(90°)",
+      "= [[0, 0, 1], [0, 1, 0], [−1, 0, 0]]。"
+    ],
+    "translation_html": "<ul><li>对某些旋转，欧拉角不唯一。</li><li>例如，\\(R_z(45°)R_y(90°)R_x(45°) = R_z(90°)R_y(90°)R_x(90°)\\)</li></ul><p>\\[= \\begin{bmatrix}0 &amp; 0 &amp; 1 \\\\ 0 &amp; 1 &amp; 0 \\\\ -1 &amp; 0 &amp; 0\\end{bmatrix}\\]。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 59,
+    "title": "万向节锁",
+    "translated_title": "万向节锁",
+    "translation": [
+      "• 例如，当 β = π/2 时，",
+      "R = R_z(α)R_y(π/2)R_x(γ)",
+      "= [[0, 0, 1], [sin(α+γ), cos(α+γ), 0], [−cos(α+γ), sin(α+γ), 0]]。",
+      "因为改变 α 和 γ 会产生相同的效果，所以一个自由度消失了！"
+    ],
+    "translation_html": "<ul><li>例如，当 \\(\\beta  = \\frac{\\pi}{2}\\) 时，</li></ul><p>\\[R = R_z(\\alpha )R_y(\\frac{\\pi}{2})R_x(\\gamma )\\]</p><p>\\[= \\begin{bmatrix}0 &amp; 0 &amp; 1 \\\\ \\sin(\\alpha +\\gamma ) &amp; \\cos(\\alpha +\\gamma ) &amp; 0 \\\\ -\\cos(\\alpha +\\gamma ) &amp; \\sin(\\alpha +\\gamma ) &amp; 0\\end{bmatrix}\\]。</p><p>因为改变 \\(\\alpha\\) 和 \\(\\gamma\\) 会产生相同的效果，所以一个自由度消失了！</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 60,
+    "title": "总结",
+    "translated_title": "总结",
+    "translation": [
+      "• 欧拉角可以参数化任意旋转，而且解释性好。",
+      "• 在某些点，它不是唯一表示。",
+      "• 在某些点，并非目标空间（旋转）中的每个变化都能由源空间（欧拉角）中的变化实现。"
+    ],
+    "translation_html": "<ul><li>欧拉角可以参数化任意旋转，而且解释性好。</li><li>在某些点，它不是唯一表示。</li><li>在某些点，并非目标空间（旋转）中的每个变化都能由源空间（欧拉角）中的变化实现。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 61,
+    "title": "旋转的轴角参数化",
+    "translated_title": "旋转的轴角参数化",
+    "translation": [],
+    "translation_html": ""
+  },
+  {
+    "lecture": 2,
+    "page": 62,
+    "title": "欧拉定理",
+    "translated_title": "欧拉定理",
+    "translation": [
+      "• 任意旋转都等价于绕一条固定轴 ω̂ ∈ ℝ³（‖ω̂‖ = 1）转过正角度 θ。",
+      "• ω̂：旋转轴的单位向量。",
+      "• θ：旋转角度。",
+      "• R ∈ SO(3) := Rot(ω̂, θ)。",
+      "图中：ω = θω̂。",
+      "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？"
+    ],
+    "translation_html": "<ul><li>任意旋转都等价于绕一条固定轴 \\(\\hat{\\omega } \\in  \\mathbb{R}^{3}\\)（\\(\\lVert \\hat{\\omega }\\rVert  = 1\\)）转过正角度 \\(\\theta\\)。</li><li>\\(\\hat{\\omega }\\)：旋转轴的单位向量。</li><li>\\(\\theta\\)：旋转角度。</li><li>\\[R \\in  \\mathrm{SO}(3) := \\operatorname{Rot}(\\hat{\\omega }, \\theta )\\]。</li></ul><p>图中：\\(\\omega  = \\theta \\hat{\\omega }\\)。</p><p>给定 \\(\\hat{\\omega }\\) 和 \\(\\theta\\text{，}R \\in  \\mathrm{SO}(3)\\) 是什么？</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 63,
+    "title": "反对称矩阵",
+    "translated_title": "反对称矩阵",
+    "translation": [
+      "• A 是反对称矩阵：A = −Aᵀ。",
+      "• 反对称矩阵算子：",
+      "a = [a₁; a₂; a₃]，[a] := [[0, −a₃, a₂], [a₃, 0, −a₁], [−a₂, a₁, 0]]。",
+      "• 叉积可以是线性变换。",
+      "  • a × b = [a]b。"
+    ],
+    "translation_html": "<ul><li>A 是反对称矩阵：\\(A = -A^{T}\\)。</li><li>反对称矩阵算子：</li></ul><p>\\[a = \\begin{bmatrix}a_{1} \\\\ a_{2} \\\\ a_{3}\\end{bmatrix}\\text{，}[a] := \\begin{bmatrix}0 &amp; -a_{3} &amp; a_{2} \\\\ a_{3} &amp; 0 &amp; -a_{1} \\\\ -a_{2} &amp; a_{1} &amp; 0\\end{bmatrix}\\]。</p><ul><li>叉积可以是线性变换。<ul><li>\\[a \\times  b = [a]b\\]。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 64,
+    "title": "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？",
+    "translated_title": "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？",
+    "translation": [
+      "• 可以证明，对任意 x ∈ ℝ³，",
+      "Rot(ω̂, θ)x = x + (sin θ)ω̂ × x + (1 − cos θ)ω̂ × (ω̂ × x)",
+      "= {I + [ω̂]sin θ + [ω̂]²(1 − cos θ)}x。（1）"
+    ],
+    "translation_html": "<ul><li>可以证明，对任意 \\(x \\in  \\mathbb{R}^{3}\\)，</li></ul><p>\\[\\operatorname{Rot}(\\hat{\\omega }, \\theta )x = x + (\\sin \\theta )\\hat{\\omega } \\times  x + (1 - \\cos \\theta )\\hat{\\omega } \\times  (\\hat{\\omega } \\times  x)\\]</p><p>\\[= \\{I + [\\hat{\\omega }]\\sin \\theta  + [\\hat{\\omega }]^{2}(1 - \\cos \\theta )\\}x\\]。（1）</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 65,
+    "title": "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？",
+    "translated_title": "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？",
+    "translation": [
+      "• 可以证明，对任意 x ∈ ℝ³，",
+      "Rot(ω̂, θ)x = x + (sin θ)ω̂ × x + (1 − cos θ)ω̂ × (ω̂ × x)",
+      "= {I + [ω̂]sin θ + [ω̂]²(1 − cos θ)}x。（1）",
+      "• 利用 sin、cos 的泰勒展开、[ω̂]³ = −[ω̂] 以及上式，",
+      "Rot(ω̂, θ)x = (I + θ[ω̂] + (θ²/2!)[ω̂]² + (θ³/3!)[ω̂]³ + ⋯)x。"
+    ],
+    "translation_html": "<ul><li>可以证明，对任意 \\(x \\in  \\mathbb{R}^{3}\\)，</li></ul><p>\\[\\operatorname{Rot}(\\hat{\\omega }, \\theta )x = x + (\\sin \\theta )\\hat{\\omega } \\times  x + (1 - \\cos \\theta )\\hat{\\omega } \\times  (\\hat{\\omega } \\times  x)\\]</p><p>\\[= \\{I + [\\hat{\\omega }]\\sin \\theta  + [\\hat{\\omega }]^{2}(1 - \\cos \\theta )\\}x\\]。（1）</p><ul><li>利用 \\(\\sin\\)、\\(\\cos\\) 的泰勒展开、\\([\\hat{\\omega }]^{3} = -[\\hat{\\omega }]\\) 以及上式，</li></ul><p>\\[\\operatorname{Rot}(\\hat{\\omega }, \\theta )x = (I + \\theta [\\hat{\\omega }] + (\\frac{\\theta ^{2}}{2!})[\\hat{\\omega }]^{2} + (\\frac{\\theta ^{3}}{3!})[\\hat{\\omega }]^{3} + \\cdots)x\\]。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 66,
+    "title": "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？",
+    "translated_title": "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？",
+    "translation": [
+      "• 可以证明，对任意 x ∈ ℝ³，",
+      "Rot(ω̂, θ)x = x + (sin θ)ω̂ × x + (1 − cos θ)ω̂ × (ω̂ × x)",
+      "= {I + [ω̂]sin θ + [ω̂]²(1 − cos θ)}x。（1）",
+      "• 利用 sin、cos 的泰勒展开、[ω̂]³ = −[ω̂] 以及上式，",
+      "Rot(ω̂, θ)x = (I + θ[ω̂] + (θ²/2!)[ω̂]² + (θ³/3!)[ω̂]³ + ⋯)x。",
+      "• 回顾指数函数的泰勒展开：eˣ = 1 + x + x²/2! + x³/3! + ⋯。"
+    ],
+    "translation_html": "<ul><li>可以证明，对任意 \\(x \\in  \\mathbb{R}^{3}\\)，</li></ul><p>\\[\\operatorname{Rot}(\\hat{\\omega }, \\theta )x = x + (\\sin \\theta )\\hat{\\omega } \\times  x + (1 - \\cos \\theta )\\hat{\\omega } \\times  (\\hat{\\omega } \\times  x)\\]</p><p>\\[= \\{I + [\\hat{\\omega }]\\sin \\theta  + [\\hat{\\omega }]^{2}(1 - \\cos \\theta )\\}x\\]。（1）</p><ul><li>利用 \\(\\sin\\)、\\(\\cos\\) 的泰勒展开、\\([\\hat{\\omega }]^{3} = -[\\hat{\\omega }]\\) 以及上式，</li></ul><p>\\[\\operatorname{Rot}(\\hat{\\omega }, \\theta )x = (I + \\theta [\\hat{\\omega }] + (\\frac{\\theta ^{2}}{2!})[\\hat{\\omega }]^{2} + (\\frac{\\theta ^{3}}{3!})[\\hat{\\omega }]^{3} + \\cdots)x\\]。</p><ul><li>回顾指数函数的泰勒展开：\\(e^{x} = 1 + x + \\frac{x^{2}}{2!} + \\frac{x^{3}}{3!} + \\cdots\\)。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 67,
+    "title": "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？",
+    "translated_title": "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？",
+    "translation": [
+      "• 可以证明，对任意 x ∈ ℝ³，",
+      "Rot(ω̂, θ)x = x + (sin θ)ω̂ × x + (1 − cos θ)ω̂ × (ω̂ × x)",
+      "= {I + [ω̂]sin θ + [ω̂]²(1 − cos θ)}x。（1）",
+      "• 利用 sin、cos 的泰勒展开、[ω̂]³ = −[ω̂] 以及上式，",
+      "Rot(ω̂, θ)x = (I + θ[ω̂] + (θ²/2!)[ω̂]² + (θ³/3!)[ω̂]³ + ⋯)x。",
+      "• 回顾指数函数的泰勒展开：eˣ = 1 + x + x²/2! + x³/3! + ⋯。",
+      "• 形式上，有 Rot(ω̂, θ)x = exp(θ[ω̂]) x，对所有 x ∈ ℝ³。"
+    ],
+    "translation_html": "<ul><li>可以证明，对任意 \\(x \\in  \\mathbb{R}^{3}\\)，</li></ul><p>\\[\\operatorname{Rot}(\\hat{\\omega }, \\theta )x = x + (\\sin \\theta )\\hat{\\omega } \\times  x + (1 - \\cos \\theta )\\hat{\\omega } \\times  (\\hat{\\omega } \\times  x)\\]</p><p>\\[= \\{I + [\\hat{\\omega }]\\sin \\theta  + [\\hat{\\omega }]^{2}(1 - \\cos \\theta )\\}x\\]。（1）</p><ul><li>利用 \\(\\sin\\)、\\(\\cos\\) 的泰勒展开、\\([\\hat{\\omega }]^{3} = -[\\hat{\\omega }]\\) 以及上式，</li></ul><p>\\[\\operatorname{Rot}(\\hat{\\omega }, \\theta )x = (I + \\theta [\\hat{\\omega }] + (\\frac{\\theta ^{2}}{2!})[\\hat{\\omega }]^{2} + (\\frac{\\theta ^{3}}{3!})[\\hat{\\omega }]^{3} + \\cdots)x\\]。</p><ul><li>回顾指数函数的泰勒展开：\\(e^{x} = 1 + x + \\frac{x^{2}}{2!} + \\frac{x^{3}}{3!} + \\cdots\\)。</li><li>形式上，有 \\(\\operatorname{Rot}(\\hat{\\omega }, \\theta )x = \\exp(\\theta [\\hat{\\omega }]) x\\)，对所有 \\(x \\in  \\mathbb{R}^{3}\\)。</li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 68,
+    "title": "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？",
+    "translated_title": "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？",
+    "translation": [
+      "• 由 Rot(ω̂, θ)x = exp(θ[ω̂]) x，对所有 x ∈ ℝ³，得 Rot(ω̂, θ) ≡ exp(θ[ω̂])。",
+      "• 这里采用如下矩阵指数定义：",
+      "exp(θ[ω̂]) = I + θ[ω̂] + (θ²/2!)[ω̂]² + (θ³/3!)[ω̂]³ + ⋯。",
+      "• 根据上一张幻灯片的式(1)，得到 Rodrigues 公式：",
+      "exp(θ[ω̂]) = I + [ω̂]sin θ + [ω̂]²(1 − cos θ)。"
+    ],
+    "translation_html": "<ul><li>由 \\(\\operatorname{Rot}(\\hat{\\omega }, \\theta )x = \\exp(\\theta [\\hat{\\omega }]) x\\)，对所有 \\(x \\in  \\mathbb{R}^{3}\\)，得 \\(\\operatorname{Rot}(\\hat{\\omega }, \\theta ) \\equiv  \\exp(\\theta [\\hat{\\omega }])\\)。</li><li>这里采用如下矩阵指数定义：</li></ul><p>\\[\\exp(\\theta [\\hat{\\omega }]) = I + \\theta [\\hat{\\omega }] + (\\frac{\\theta ^{2}}{2!})[\\hat{\\omega }]^{2} + (\\frac{\\theta ^{3}}{3!})[\\hat{\\omega }]^{3} + \\cdots\\]。</p><ul><li>根据上一张幻灯片的式(1)，得到 Rodrigues 公式：</li></ul><p>\\[\\exp(\\theta [\\hat{\\omega }]) = I + [\\hat{\\omega }]\\sin \\theta  + [\\hat{\\omega }]^{2}(1 - \\cos \\theta )\\]。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 69,
+    "title": "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？",
+    "translated_title": "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？",
+    "translation": [
+      "• 在轴角表示 Rot(ω̂, θ) = exp(θ[ω̂]) 中，",
+      "  • θ⃗ = ω̂θ 也称为旋转向量，或指数坐标。"
+    ],
+    "translation_html": "<ul><li>在轴角表示 \\(\\operatorname{Rot}(\\hat{\\omega }, \\theta ) = \\exp(\\theta [\\hat{\\omega }])\\) 中，<ul><li>\\(\\vec{\\theta } = \\hat{\\omega }\\theta\\) 也称为旋转向量，或指数坐标。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 70,
+    "title": "Rodrigues 公式",
+    "translated_title": "Rodrigues 公式",
+    "translation": [
+      "• 矩阵指数的定义：",
+      "exp(θ[ω̂]) = I + θ[ω̂] + (θ²/2!)[ω̂]² + (θ³/3!)[ω̂]³ + ⋯。",
+      "• 无穷级数求和？Rodrigues 公式。",
+      "  • 可以证明 [ω̂]³ = −[ω̂]。",
+      "  • 再使用 sin 和 cos 的泰勒展开。",
+      "  • exp(θ[ω̂]) = I + [ω̂]sin θ + [ω̂]²(1 − cos θ)。"
+    ],
+    "translation_html": "<ul><li>矩阵指数的定义：</li></ul><p>\\[\\exp(\\theta [\\hat{\\omega }]) = I + \\theta [\\hat{\\omega }] + (\\frac{\\theta ^{2}}{2!})[\\hat{\\omega }]^{2} + (\\frac{\\theta ^{3}}{3!})[\\hat{\\omega }]^{3} + \\cdots\\]。</p><ul><li>无穷级数求和？Rodrigues 公式。<ul><li>可以证明 \\([\\hat{\\omega }]^{3} = -[\\hat{\\omega }]\\)。</li><li>再使用 \\(\\sin\\) 和 \\(\\cos\\) 的泰勒展开。</li><li>\\[\\exp(\\theta [\\hat{\\omega }]) = I + [\\hat{\\omega }]\\sin \\theta  + [\\hat{\\omega }]^{2}(1 - \\cos \\theta )\\]。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 71,
+    "title": "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？",
+    "translated_title": "给定 ω̂ 和 θ，R ∈ SO(3) 是什么？",
+    "translation": [
+      "• 第一个问题：存在唯一的参数化吗？",
+      "  • 不存在：",
+      "  1. (ω̂, θ) 与 (−ω̂, −θ) 给出相同的旋转。",
+      "  2. 当 R = I 时，θ = 0，ω̂ 可以任取。",
+      "  3. (ω̂, π) 与 (−ω̂, π) 给出相同的旋转（tr(R) = −1）。",
+      "• 如果限定 θ ∈ (0, π)，则存在唯一的参数化：",
+      "  • θ = arccos((tr(R) − 1)/2)，[ω̂] = (R − Rᵀ)/(2 sin θ)。"
+    ],
+    "translation_html": "<ul><li>第一个问题：存在唯一的参数化吗？<ul><li>不存在：</li></ul></li></ul><p style=\"margin-left:1.5em\">1. \\((\\hat{\\omega }, \\theta )\\) 与 \\((-\\hat{\\omega }, -\\theta )\\) 给出相同的旋转。</p><p style=\"margin-left:1.5em\">2. 当 \\(R = I\\) 时，\\(\\theta  = 0\\text{，}\\hat{\\omega }\\) 可以任取。</p><p style=\"margin-left:1.5em\">3. \\((\\hat{\\omega }, \\pi )\\) 与 \\((-\\hat{\\omega }, \\pi )\\) 给出相同的旋转（\\(\\operatorname{tr}(R) = -1\\)）。</p><ul><li>如果限定 \\(\\theta  \\in  (0, \\pi )\\)，则存在唯一的参数化：<ul><li>\\[\\theta  = \\arccos(\\frac{\\operatorname{tr}(R)-1}{2})\\text{，}[\\hat{\\omega }] = \\frac{R-R^{T}}{2\\sin \\theta }\\]。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 2,
+    "page": 72,
+    "title": "旋转之间的距离",
+    "translated_title": "旋转之间的距离",
+    "translation": [
+      "• 如何度量旋转 (R₁, R₂) 之间的距离？",
+      "• 一种自然的观点，是度量将刚体从 R₁ 位姿旋转到 R₂ 位姿所需的（最小）努力：",
+      "因为 (R₂R₁ᵀ)R₁ = R₂，",
+      "所以 dist(R₁, R₂) = θ(R₂R₁ᵀ) = arccos((tr(R₂R₁ᵀ) − 1)/2)。",
+      "图中坐标轴：X、Y、Z；两个朝向：R₁、R₂。"
+    ],
+    "translation_html": "<ul><li>如何度量旋转 \\((R_{1}, R_{2})\\) 之间的距离？</li><li>一种自然的观点，是度量将刚体从 \\(R_{1}\\) 位姿旋转到 \\(R_{2}\\) 位姿所需的（最小）努力：</li></ul><p>因为 \\((R_{2}R_{1}^{T})R_{1} = R_{2}\\)，</p><p>所以 \\(\\operatorname{dist}(R_{1}, R_{2}) = \\theta (R_{2}R_{1}^{T}) = \\arccos(\\frac{\\operatorname{tr}(R_{2}R_{1}^{T})-1}{2})\\)。</p><p>图中坐标轴：X、Y、Z；两个朝向：\\(R_{1}\\)、\\(R_{2}\\)。</p>"
+  },
+  {
+    "lecture": 2,
+    "page": 73,
+    "title": "机器人视觉与学习——从具身智能的视角出发",
+    "translated_title": "机器人视觉与学习——从具身智能的视角出发",
+    "translation": [
+      "下周：第3讲，机器人学 II。",
+      "北京大学（1898年）",
+      "具身感知与交互实验室（EPIC）",
+      "2025年秋季"
+    ],
+    "translation_html": "<p>下周：第3讲，机器人学 II。</p><p>北京大学（1898年）</p><p>具身感知与交互实验室（EPIC）</p><p>2025年秋季</p>"
+  }
+]

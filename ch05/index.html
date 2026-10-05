@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第 5 章 视觉与抓取 I：抓取原理与旋转回归</title>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script async="" src="../vendor/mathjax/tex-svg.js"></script>
+<style>
+:root {
+  --ink: #1c2430;
+  --ink-soft: #4a5568;
+  --accent: #2563eb;
+  --accent-soft: #eef4ff;
+  --bg: #faf9f6;
+  --card: #ffffff;
+  --line: #e5e2db;
+  --green-bg: #f0f9f1;
+  --green-bd: #7cc98c;
+  --yellow-bg: #fffbeb;
+  --yellow-bd: #e8c766;
+  --red-bg: #fdf1f1;
+  --red-bd: #e8a1a1;
+  --update-bg: #fffaeb;
+  --update-bd: #e8a23d;
+  --update-ink: #8a4b08;
+  --code-bg: #101826;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-size: 16.5px;
+  line-height: 1.85;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.hero {
+  background: linear-gradient(135deg, #0e2a4a 0%, #15406e 55%, #1c5a94 100%);
+  color: #fff;
+  padding: 72px 24px 56px;
+  text-align: center;
+}
+.hero .course-tag {
+  display: inline-block;
+  font-size: 13px;
+  letter-spacing: 2px;
+  border: 1px solid rgba(255,255,255,.4);
+  border-radius: 999px;
+  padding: 4px 16px;
+  margin-bottom: 22px;
+  opacity: .9;
+}
+.hero h1 {
+  margin: 0 auto 14px;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  max-width: 760px;
+  line-height: 1.5;
+}
+.hero .sub {
+  font-size: 15.5px;
+  opacity: .82;
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+.hero .meta {
+  margin-top: 26px;
+  font-size: 13px;
+  opacity: .7;
+}
+.hero .ver-note {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 12.5px;
+  border: 1px dashed rgba(255,210,120,.7);
+  color: #ffd27a;
+  border-radius: 999px;
+  padding: 3px 14px;
+}
+.badge-2026 {
+  display: inline-block;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 2px 9px;
+  letter-spacing: .5px;
+  vertical-align: 2px;
+  margin-right: 6px;
+  box-shadow: 0 1px 4px rgba(217,119,6,.35);
+}
+.update-box {
+  margin: 18px 0;
+  padding: 14px 20px 12px;
+  border: 2px solid var(--update-bd);
+  background: var(--update-bg);
+  border-radius: 10px;
+  font-size: 15.5px;
+  box-shadow: 0 2px 8px rgba(232,162,61,.12);
+}
+.update-box .bt { color: var(--update-ink); font-weight: 700; display: block; margin-bottom: 4px; }
+.update-box p { margin: 5px 0; }
+.update-box ul { margin: 4px 0 4px; }
+.update-box li { margin: 3px 0; }
+.up-text {
+  background: #fef3c7;
+  border-bottom: 2px solid #f59e0b;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+.goals {
+  max-width: 880px;
+  margin: -28px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 28px;
+  box-shadow: 0 6px 24px rgba(16, 42, 74, .08);
+  position: relative;
+}
+.goals h2 { margin: 0 0 10px; font-size: 17px; color: var(--accent); }
+.goals ul { margin: 0; padding-left: 20px; }
+.goals li { margin: 4px 0; font-size: 15px; color: var(--ink-soft); }
+.goals li b { color: var(--ink); }
+.about {
+  max-width: 880px;
+  margin: 36px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px 34px;
+  box-shadow: 0 4px 16px rgba(16, 42, 74, .06);
+}
+.about h2 {
+  margin: 0 0 14px;
+  font-size: 20px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.about h3 { margin: 20px 0 8px; font-size: 16.5px; color: var(--accent); }
+.about p, .about li { font-size: 15px; color: var(--ink-soft); }
+.about .src-badge {
+  display: inline-block;
+  background: #eef4ff;
+  border: 1px solid #b9d0f8;
+  color: #2456b8;
+  font-size: 13px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin: 2px 4px 2px 0;
+}
+.about .license-note {
+  margin: 18px 0 0;
+  padding: 14px 18px;
+  background: var(--red-bg);
+  border: 1px solid var(--red-bd);
+  border-radius: 10px;
+  font-size: 14.5px;
+  line-height: 1.8;
+}
+.about .license-note b { color: #b04848; }
+.layout {
+  display: flex;
+  max-width: 1240px;
+  margin: 40px auto 80px;
+  padding: 0 24px;
+  gap: 36px;
+  align-items: flex-start;
+}
+.toc {
+  position: sticky;
+  top: 24px;
+  width: 240px;
+  flex-shrink: 0;
+  font-size: 13.5px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+}
+.toc .toc-title { font-weight: 700; color: var(--ink-soft); margin-bottom: 8px; letter-spacing: 1px; }
+.toc a {
+  display: block;
+  color: var(--ink-soft);
+  padding: 4px 10px;
+  border-left: 2px solid var(--line);
+  margin: 1px 0;
+  line-height: 1.5;
+}
+.toc a:hover { color: var(--accent); border-left-color: var(--accent); text-decoration: none; background: var(--accent-soft); border-radius: 0 6px 6px 0; }
+main { flex: 1; min-width: 0; }
+section { margin-bottom: 56px; }
+h2.sec {
+  font-size: 25px;
+  margin: 0 0 6px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--ink);
+  letter-spacing: .5px;
+}
+h2.sec .no {
+  display: inline-block;
+  background: var(--ink);
+  color: #fff;
+  font-size: 15px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin-right: 10px;
+  vertical-align: 3px;
+}
+h3 { font-size: 19px; margin: 34px 0 10px; }
+h4 { font-size: 16.5px; margin: 26px 0 8px; }
+p { margin: 10px 0; }
+strong { color: #0f2c4c; }
+em.term {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--accent);
+  border-bottom: 1px dashed var(--accent);
+  cursor: help;
+}
+ul, ol { padding-left: 26px; }
+li { margin: 5px 0; }
+code {
+  background: #eef1f5;
+  border: 1px solid #e0e5ec;
+  border-radius: 5px;
+  padding: 1px 6px;
+  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: 14.5px;
+  color: #0d3d75;
+}
+blockquote {
+  margin: 16px 0;
+  padding: 12px 20px;
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  color: var(--ink-soft);
+  font-size: 15.5px;
+}
+blockquote p { margin: 4px 0; }
+figure { margin: 22px 0; text-align: center; }
+figure img {
+  max-width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 18px rgba(16, 42, 74, .10);
+  background: #fff;
+}
+figcaption {
+  font-size: 13.5px;
+  color: #7a8290;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+figcaption .src { opacity: .75; font-size: 12.5px; }
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+.gallery figure { margin: 0; }
+.gallery img { width: 100%; }
+.gallery figcaption { font-size: 12.5px; margin-top: 6px; }
+.box {
+  margin: 18px 0;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 15.5px;
+}
+.box .bt { font-weight: 700; display: block; margin-bottom: 4px; }
+.box.green { background: var(--green-bg); border: 1px solid var(--green-bd); }
+.box.green .bt { color: #2e7d43; }
+.box.yellow { background: var(--yellow-bg); border: 1px solid var(--yellow-bd); }
+.box.yellow .bt { color: #9a7414; }
+.box.red { background: var(--red-bg); border: 1px solid var(--red-bd); }
+.box.red .bt { color: #b04848; }
+.box.blue { background: var(--accent-soft); border: 1px solid #a9c3f5; }
+.box.blue .bt { color: #2456b8; }
+.box p { margin: 4px 0; }
+.box ul { margin: 4px 0 4px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 18px 0;
+  font-size: 15px;
+  background: var(--card);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+th {
+  background: #17335c;
+  color: #fff;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 14.5px;
+}
+td { padding: 9px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+tr:nth-child(even) td { background: #f7f6f2; }
+.page-index { font-size: 13.5px; }
+.page-index th { font-size: 13.5px; padding: 8px 10px; }
+.page-index td { padding: 6px 10px; line-height: 1.6; }
+.page-index td.pg { font-family: Consolas, monospace; font-weight: 700; white-space: nowrap; color: var(--accent); }
+pre {
+  background: var(--code-bg);
+  color: #e6edf6;
+  border-radius: 10px;
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-size: 13.8px;
+  line-height: 1.65;
+  margin: 16px 0;
+}
+pre code {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+pre .cm { color: #7d8aa0; }
+pre .kw { color: #7fb3ff; }
+pre .st { color: #a5d6a7; }
+pre .fn { color: #ffd479; }
+.term-table td:first-child { font-weight: 700; white-space: nowrap; }
+footer {
+  max-width: 880px;
+  margin: 0 auto 60px;
+  padding: 20px 28px;
+  border-top: 1px solid var(--line);
+  font-size: 12.8px;
+  color: #8a91a0;
+  line-height: 1.8;
+}
+@media (max-width: 960px) {
+  .toc { display: none; }
+  .hero h1 { font-size: 26px; }
+  .layout { padding: 0 16px; }
+  .gallery { grid-template-columns: 1fr; }
+}
+/* 2026-10-04: offline chapters and bounded content scrolling */
+.layout, main, section { min-width:0; }
+main { max-width:100%; }
+img, video { max-width:100%; height:auto; }
+p, li, td, th, a { overflow-wrap:anywhere; }
+.table-scroll { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; margin:18px 0; }
+.table-scroll table { margin:0; min-width:640px; }
+pre { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; }
+mjx-container[display="true"] { max-width:100%; overflow-x:auto; overflow-y:hidden; padding:6px 0; text-align:left !important; }
+mjx-container:not([display="true"]) { display:inline-block; max-width:100%; vertical-align:middle; overflow-x:auto; overflow-y:hidden; }
+.mobile-toc { display:none; }
+.chapter-nav { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; }
+@media(max-width:960px) {
+  .layout { flex-direction:column; gap:16px; }
+  main { width:100%; }
+  .mobile-toc { display:block; width:100%; margin:0; padding:12px 16px; background:var(--card); border:1px solid var(--line); border-radius:10px; }
+  .mobile-toc summary { cursor:pointer; font-weight:700; }
+  .mobile-toc a { display:block; padding:4px 0; }
+}
+</style>
+<link href="../shared.css" rel="stylesheet"/>
+</head>
+<body><nav class="reader-nav"><a class="brand" href="../index.html">北京大学《具身智能导论》自学教程</a><a href="../学习与运行说明.html">学习指南</a><a href="课件中文译解.html">本章课件翻译</a><a href="../术语与符号.html">术语与符号</a><a href="../来源与许可.html">来源</a></nav>
+<!-- ============ 封面 ============ -->
+<div class="hero">
+<span class="course-tag">具身智能自学教程 · 第 5 章</span>
+<h1>视觉与抓取 I：抓取原理与旋转回归</h1>
+<p class="sub">视觉为机器人提供物体的位置与朝向。本章从抓取的定义出发，学习 6D 位姿估计和神经网络的旋转预测，并将第 2-3 章的旋转与坐标变换用于抓取。</p>
+<p class="meta">改编自北京大学《具身智能导论》(Introduction to Embodied AI) 2025 春季课程 · 授课：王鹤 老师</p>
+<span class="ver-note">公式、图片与课件中文翻译可离线阅读</span>
+<div class="chapter-toolbar" id="chapter-resources"><a href="课件中文译解.html">英文原课件与逐页中文翻译 →</a><a href="../技术动态_20261004.html">本章相关技术进展 →</a><a href="../术语与符号.html">英文缩写与符号速查 →</a></div></div>
+<!-- ============ 学习目标 ============ -->
+<div class="goals">
+<h2>🎯 本章学习目标</h2>
+<ul>
+<li>理解<b>抓取</b>的定义与抓取合成问题，区分抓握式与非抓握式操作</li>
+<li>能说明 <b>4-DoF / 6-DoF 抓取位姿</b>与手指自由度的概念，理解开环 vs 闭环抓取的取舍</li>
+<li>理解<b>旋转回归</b>的核心矛盾：旋转空间的几何约束，以及欧拉角、轴角和四元数编码的全局连续性问题</li>
+<li>能说明 <b>6D / 9D 连续表示</b>（Gram-Schmidt / SVD 正交化）的原理</li>
+<li>能说明 <b>正交 Procrustes 问题</b>的完整推导（SVD 解析解 + det 修正），以及 RANSAC 抗离群点</li>
+<li>了解 Instance-Level（PoseCNN/LINEMOD）与 Category-Level（NOCS）位姿估计的差别</li>
+<li>通过<b>作业 2</b>完整实践：PointNet 位姿估计 → 物体坐标拟合 → 抓取位姿变换</li>
+</ul>
+</div>
+<!-- ============ 关于本教程 ============ -->
+<div class="about" id="about">
+<h2>📖 关于本教程</h2>
+<h3>内容来源</h3>
+<p>本教程的课程知识主线来自 <b>北京大学 2025 年春季学期《具身智能导论》</b>（Introduction to Embodied AI）课程，由 <b>王鹤</b> 老师主讲。</p>
+<p>
+<span class="src-badge">📝 课堂笔记 × 9 章</span>
+<span class="src-badge">🎞 授课课件 × 13 讲</span>
+<span class="src-badge">💻 课程作业 × 4 次</span>
+</p>
+<p>以上资料由课程同学整理并开源在 GitHub 仓库 <a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU" target="_blank">zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU</a>（<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/LICENSE" target="_blank">GPL-3.0 许可证</a>），课程官网为 <a href="https://pku-epic.github.io/Intro2EAI_2025/" target="_blank">pku-epic.github.io/Intro2EAI_2025</a>。</p>
+<h3>阅读方式</h3>
+<ul>
+<li><b>三源整合：</b>把每一讲的「课堂笔记 + 授课课件 + 配套作业」融合进同一章，笔记提供知识骨架，课件图提供直观理解，作业提供动手实践；</li>
+<li><b>概念与例子：</b>按「概念 → 直觉 → 数学条件 → 应用」阅读，先理解问题，再学习公式与算法；学习目标与术语表可用于检查理解；</li>
+<li><b>图文并茂：</b>从课件中精选示意图插入正文，全部标注来源页码，方便对照原课件；</li>
+<li><b>补充说明：</b>橙色框提供适用条件与工程接口说明；具体模型、数据和评分以对应一手资料为准；</li>
+<li><b>作业适配自学：</b>保留原版作业的难度与考点，补充环境搭建、解题提示与自测标准，并提供参考答案链接（先自己做，再对照）。</li>
+</ul>
+<h3>教程目的</h3>
+<p>让没有北大课堂环境的自学者，也能按课程原有的知识体系，系统地学完具身智能入门：从机器人学基础，到视觉与抓取，再到策略学习——最终具备读懂前沿论文、跑通基础实验的能力。</p>
+<div class="license-note">
+<b>📜 版权与使用声明</b><br/>
+    原课程资料（笔记、课件、作业）均为开源免费资源，版权归原作者（王鹤老师及课程组、笔记整理者）所有；本教程的改编内容（扩写讲解、中文翻译、编排结构）同样免费公开。<br/>
+    本教程<b>仅用于个人自学</b>，请勿用于任何商业用途（包括付费课程、付费资料包、机构培训等）。教程中所有引用均已标注来源；如内容使用有任何不当之处，请联系相关权利人，我们会及时处理。
+  </div>
+</div>
+<section class="learning-guide"><h2>开始前：统一坐标和维数</h2><p>先修内容是旋转矩阵、四元数与齐次变换；进入SVD证明前，需知道矩阵乘法、转置、迹与最小二乘。可先读几何直觉，再回看证明，逐步理解每个公式的用途。</p><p><b>两个“6D”要分清：</b>六维物体位姿是3个平移加3个旋转自由度；六维旋转表示则用6个数编码朝向。全文采用列向量左乘约定：$p_C=Rp_O+t$，即物体坐标变到相机坐标。<b>符号自检：</b>$R^\top R=I$、$\det R=1$，且正向与逆向变换应能相互还原。</p><p><a href="课件中文译解.html">阅读全部71页原课件与中文翻译</a> · <a href="../sources/lecture05.pdf">原始PDF</a></p></section>
+<!-- ============ 正文 ============ -->
+<div class="layout">
+<nav class="toc">
+<div class="toc-title">本章目录</div>
+<a href="#about">关于本教程（来源 · 声明）</a>
+<a href="#s1">1. 抓取的本质</a>
+<a href="#s2">2. 抓取位姿的自由度</a>
+<a href="#s3">3. 开环抓取与闭环抓取</a>
+<a href="#s4">4. 6D 位姿估计：机器人的「认物」</a>
+<a href="#s5">5. 旋转回归：方法一</a>
+<a href="#s6">6. 6D 与 9D：连续编码与旋转投影</a>
+<a href="#s7">7. Rotation Fitting：方法二</a>
+<a href="#s8">8. Instance-Level 与 Category-Level</a>
+<a href="#s9">9. 本章小结</a>
+<a href="#s10">10. 动手实践：作业 2</a>
+<a href="#apA">附录 A：术语表</a>
+<a href="#apB">附录 B：课件 71 页完整索引</a>
+<a href="#apC">附录 C：参考资源</a>
+</nav>
+<details class="mobile-toc"><summary>本章目录</summary><a href="#about">关于本教程（来源 · 声明）</a><a href="#s1">1. 抓取的本质</a><a href="#s2">2. 抓取位姿的自由度</a><a href="#s3">3. 开环抓取与闭环抓取</a><a href="#s4">4. 6D 位姿估计：机器人的「认物」</a><a href="#s5">5. 旋转回归：方法一</a><a href="#s6">6. 6D 与 9D：连续编码与旋转投影</a><a href="#s7">7. Rotation Fitting：方法二</a><a href="#s8">8. Instance-Level 与 Category-Level</a><a href="#s9">9. 本章小结</a><a href="#s10">10. 动手实践：作业 2</a><a href="#apA">附录 A：术语表</a><a href="#apB">附录 B：课件 71 页完整索引</a><a href="#apC">附录 C：参考资源</a></details>
+<main>
+<!-- ============ 1 ============ -->
+<section id="s1">
+<h2 class="sec"><span class="no">1</span>抓取的本质</h2>
+<p>我们已有运动学、规划与控制三类基础工具，但都缺一个输入：<b>「末端该去哪？」</b>——答案藏在「抓取」里。课件的定义（p6）：</p>
+<blockquote>
+<p><b>抓取（Grasping）</b>：通过在一组接触点上施加力和扭矩，以期望的方式<b>约束物体运动</b>的过程。<br/>
+<b>抓取合成（Grasp Synthesis）</b>：对夹爪位姿或关节配置的高维<b>搜索/优化</b>问题。</p>
+</blockquote>
+<figure>
+<img alt="笔记配图：机器人视觉抓取序列——感知、定位、抓取" loading="lazy" src="assets/vision_grasping_robot_sequence.png"/>
+<figcaption>视觉抓取的完整序列：感知 → 定位 → 规划 → 抓取。<span class="src">（来源：笔记 05）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="table-wrap"><table><thead><tr><th>抓取前</th><th>抓取</th><th>抓取后</th></tr></thead><tbody><tr><td>抓取生成 → 接近</td><td>物理交互</td><td>提起 → 放下／使用（可选）</td></tr></tbody></table></div></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Pre-Grasp＝抓取前；Grasping＝抓取中；Post-Grasp＝抓取后。Grasp Synthesis＝抓取合成；Approaching＝接近；Physical Interaction＝物理交互；Lifting＝抬起；Drop/Use (Optional)＝放下／使用（可选）。从左向右阅读完整抓取序列。</p></div>
+<p>两种操作模式（笔记）：</p>
+<ul>
+<li><b>抓握式操作（Prehensile）</b>：通过完全约束物体自由度实现精确控制——「拿起来」；</li>
+<li><b>非抓握式操作（Non-prehensile）</b>：利用推、滑等接触力学调整物体状态——适合薄片物体或预处理场景。<b>推与滑也可以完成物体操作。</b></li>
+</ul>
+<p>有了抓取，加上第 2-4 章的 IK（把笛卡尔位姿变关节角）、运动规划（找无碰撞路径）、控制（执行），就形成了完整闭环（课件 p5）：<b>视觉给末端位姿 → IK → 规划 → 控制</b>。剩下的核心问题就是：<b>位姿怎么来？</b></p>
+</section>
+<!-- ============ 2 ============ -->
+<section id="s2">
+<h2 class="sec"><span class="no">2</span>抓取位姿的自由度</h2>
+<p><b>抓取姿势（Grasp Pose）</b>定义手的位置、方向与关节状态（课件 p7）。按自由度分档：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>档位</th><th>参数</th><th>适用场景</th></tr>
+<tr><td><b>4-DoF 抓取</b></td><td>$(x, y, z, \theta_z)$：位置 + 绕重力轴旋转</td><td>结构化环境、固定位置（流水线分拣）——「自上而下抓」</td></tr>
+<tr><td><b>6-DoF 抓取</b></td><td>$(x, y, z, \theta_x, \theta_y, \theta_z)$：任意方向接近</td><td>非结构化场景（杂乱堆叠）</td></tr>
+<tr><td><b>手指自由度</b></td><td>平行夹爪 1 DoF（开合宽度）；灵巧手示例最多 21 DoF（依结构而定）</td><td>与位姿自由度正交的维度</td></tr>
+</table></div></div>
+<figure>
+<img alt="笔记配图：rpy 旋转参数示意" loading="lazy" src="assets/rpy.png"/>
+<figcaption>4-DoF 抓取的旋转部分：只绕重力轴（z 轴）旋转一个 yaw 角。<span class="src">（来源：笔记 05）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>俯仰轴：Y。</p><p>滚转轴：X。</p><p>偏航轴：Z。</p></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Roll Axis＝滚转轴（图中x轴）；Pitch Axis＝俯仰轴（y轴）；Yaw Axis＝偏航轴（z轴）。这是三个轴的完整示意；4自由度自上而下抓取固定滚转与俯仰，只保留偏航角。</p></div>
+<figure data-no-visible-text="true">
+<img alt="yaw 旋转动画" loading="lazy" src="assets/yaw.gif"/>
+<figcaption>Yaw：绕 z 轴旋转——4-DoF 抓取唯一的旋转自由度。<span class="src">（来源：笔记 05）</span></figcaption>
+</figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Yaw＝偏航，示例绕图中z轴旋转。动画帮助观察朝向变化；使用欧拉角时仍需明确坐标系与旋转约定。</p></div>
+<div class="box green">
+<span class="bt">💡 直觉：自由度是「付费项」</span>
+<p>4-DoF 将搜索空间从 6 维降到 4 维，在适合自上而下抓取的流水线中，可以简化搜索与规划。<b>抓取自由度应与场景中的接近方向相匹配</b>：桌面杯子允许自上而下接近时可采用4-DoF；狭窄环境或侧向接近通常需要更灵活的6-DoF候选。</p>
+</div>
+</section>
+<!-- ============ 3 ============ -->
+<section id="s3">
+<h2 class="sec"><span class="no">3</span>开环抓取与闭环抓取</h2>
+<p>回到第 4 章的开环/闭环概念，抓取也有两个版本：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th></th><th>开环抓取</th><th>闭环抓取</th></tr>
+<tr><td><b>流程</b></td><td>位姿估计 → 抓取 → 结束（视觉只用一次）</td><td>执行中持续用视觉、触觉等反馈调整动作，必要时重试</td></tr>
+<tr><td><b>比喻</b></td><td>观察一次后按计划执行</td><td>边观察边调整，能否改善取决于反馈质量与控制设计</td></tr>
+<tr><td><b>代表工作</b></td><td>D³RoMA（CoRL 2024）</td><td>GraspVLA（课件时为 in submission）</td></tr>
+</table></div></div>
+<figure>
+<img alt="课程课件：闭环抓取 GraspVLA" loading="lazy" src="assets/s_p9.jpg"/>
+<figcaption>闭环抓取的范例：GraspVLA（原页标注投稿状态，保留作为历史资料）。<span class="src">（来源：Lecture 5 课件 p9）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">闭环抓取</div><div class="translation-body"><p>GraspVLA，投稿中。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l05-p9">对照原课件第9页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Closed-Loop Grasping＝闭环抓取</p><p>示例是GraspVLA</p><p>In submission＝原课件制作时处于投稿中。</p><p><b>读图提示：</b>投稿状态是原课程当时的标注。闭环的关键是后续观测会影响动作，不能只凭图片判断算法实现。</p><p><a href="课件中文译解.html#l05-p9">对照本页完整译解</a></p></div>
+<p>开环抓取系统的标准流水线（课件 p11）：<b>视觉感知 → 位姿估计 → 运动规划 → 控制执行</b>。其中「位姿估计」又分两条路线：</p>
+<ul>
+<li><b>已知物体</b>：先估物体位姿，再把物体坐标系下标注的抓取位姿变换过去；</li>
+<li><b>未知/通用物体</b>：直接预测抓取位姿。</li>
+</ul>
+<div class="update-box">
+<span class="bt">历史研究实例：GraspVLA与开环、闭环（2025年）</span>
+<p>GraspVLA 的首次 arXiv 提交日期为 2025-05-06（来源记录见第 1 章）。开环与闭环描述执行时是否继续使用反馈；视觉伺服与重试可用于纠正误差。评价这些反馈方法时，结合具体任务、传感器与控制条件，记录它们对结果的影响。</p>
+</div>
+<p>对已知物体，位姿估计可以先检查几项观测条件（笔记）：如果 RGB 图像满足① 相机内参已知、② 物体大小已知（消除尺度歧义）、③ 物体无对称性，则<b>有助于消除尺度与对称性歧义</b>；RGB 或点云仍需足够的可见几何信息，遮挡可能使不同位姿难以区分。</p>
+<figure data-no-visible-text="true">
+<img alt="笔记配图：为什么鸽子这么大——尺度歧义问题" loading="lazy" src="assets/why_pigeon_so_big.png"/>
+<figcaption>「道理我都懂，但是这个鸽子怎么这么大？」——不知道物体大小，近的小物体与远的大物体在图像上无法区分，这就是尺度歧义。<span class="src">（来源：笔记 05）</span></figcaption>
+</figure>
+<div class="translation"><b>图中英文与中文释义</b><p>这幅照片是透视／尺度歧义的直观例子，没有需要翻译的技术英文。单张图像中的表观大小同时受真实尺寸和相机距离影响。</p></div>
+</section>
+<!-- ============ 4 ============ -->
+<section id="s4">
+<h2 class="sec"><span class="no">4</span>6D 位姿估计：机器人的「认物」</h2>
+<p><b>6D 物体位姿</b>：物体坐标系到相机坐标系的 6D 变换——3 DoF 平移 + 3 DoF 旋转（课件 p13，引用 PoseCNN / RSS 2018）：</p>
+<p style="text-align:center">$$ \begin{bmatrix} X_C \\ Y_C \\ Z_C \end{bmatrix} = R \begin{bmatrix} X_O \\ Y_O \\ Z_O \end{bmatrix} + t $$</p>
+<figure>
+<img alt="课程课件：6D 物体位姿定义" loading="lazy" src="assets/s_p13.jpg"/>
+<figcaption>6D 物体位姿：物体 → 相机的 6 自由度变换。<span class="src">（来源：Lecture 5 课件 p13）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">6D 物体位姿</div><div class="translation-body"><ul><li>定义：将物体坐标系变换到相机坐标系的刚体变换，包括 3 个平移自由度和 3 个旋转自由度。</li></ul><p>\[X^{\prime}=RX+T\]</p><p>相机坐标系；物体坐标系；X、Y、Z 轴；平移 \(T=\begin{bmatrix}T_x\\T_y\\T_z\end{bmatrix}\)；图像中心 \(c=\begin{bmatrix}c_x\\c_y\end{bmatrix}\)。</p><p>来源：Yu Xiang 等，《PoseCNN：一种用于杂乱场景中 6D 物体位姿估计的卷积神经网络》，RSS 2018。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l05-p13">对照原课件第13页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>6D Object Pose＝六维物体位姿</p><p>定义：从object space（物体坐标空间）到camera space（相机坐标空间）的刚体变换，含3DoF translation（三维平移）与3DoF rotation（三维旋转）</p><p>p_C=R p_O+T</p><p>图中的camera coordinate＝相机坐标系，object coordinate＝物体坐标系</p><p>引用PoseCNN，RSS 2018。</p><p><b>读图提示：</b>R把物体系方向转换到相机系，T是物体原点在相机系的位置；一定先明确变换方向，再做矩阵乘法。</p><p><a href="课件中文译解.html#l05-p13">对照本页完整译解</a></p></div>
+<p>它的应用远超抓取（课件 p14-17）：</p>
+<ul>
+<li><b>机器人操作</b>：把 CAD 模型上的标注（如抓取点）转移到相机空间的物体上；位姿追踪提供视觉闭环控制；</li>
+<li><b>人机交互理解</b>：感知人与物的交互（HOnnotate）；从人的操作中提取位姿轨迹供模仿学习；</li>
+<li><b>增强现实（AR）</b>：视觉引导、E-learning、移动应用娱乐。</li>
+</ul>
+<p>课件接着抛出核心问题（p18）：<b>「How to predict a rotation?」</b>——平移可用3个数回归，但也受观测歧义影响；旋转还需要处理其结构约束与表示问题。接下来的两节就是答案的两条路线。</p>
+</section>
+<!-- ============ 5 ============ -->
+<section id="s5">
+<h2 class="sec"><span class="no">5</span>旋转回归：方法一</h2>
+<p><b>旋转回归（Rotation Regression）</b>：对输入信号，用神经网络估计连续旋转变量（笔记）。</p>
+<figure>
+<img alt="课程课件：方法一——用神经网络回归旋转表示" loading="lazy" src="assets/s_p25.jpg"/>
+<figcaption>方法一：用神经网络直接回归一种旋转表示。<span class="src">（来源：Lecture 5 课件 p25）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">如何用神经网络估计旋转？</div><div class="translation-body"><p>方法 1：回归旋转表示。</p><p>输入信号 → 神经网络 → 表示空间 R → 映射 f → 原空间 X（9 维）；反向映射 g。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l05-p25">对照原课件第25页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>方法一：用神经网络regress a rotation representation（回归一种旋转表示）</p><p>Input signal＝输入信号，Neural Network＝神经网络，Representation Space＝表示空间，Original Space＝原旋转空间</p><p>Mapping f与Mapping g＝两个空间之间的映射。</p><p><b>读图提示：</b>网络输出参数后要通过解码转换成有效旋转；表示与旋转本身不一定一一对应。</p><p><a href="课件中文译解.html#l05-p25">对照本页完整译解</a></p></div>
+<figure>
+<img alt="笔记配图：旋转回归神经网络结构" loading="lazy" src="assets/rotation_regression_neural_network.png"/>
+<figcaption>旋转回归：网络输出一种旋转表示（四元数/欧拉角/矩阵…），监督信号是真实旋转。<span class="src">（来源：笔记 05）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>输入信号 → 神经网络 → 表示空间R。</p><p>表示空间R —映射f→ 原始空间X。</p><p>原始空间X —映射g→ 表示空间R。</p></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Input signal＝输入信号；Neural Network＝神经网络；Representation Space＝表示空间；Original Space＝原旋转空间；Mapping f/g＝两个空间之间的映射。网络输出参数，再由解码映射得到有效旋转。</p></div>
+<p>为什么这比普通回归难？因为<b>旋转空间是非线性的非欧空间</b>：SO(3) 是一个弯曲的流形，而神经网络输出的是欧几里得空间。直接对编码使用 MSE 时，需要留意标签的连续性：</p>
+<blockquote>
+<p><b>连续性原则：</b>CNN 应当具有连续性——输入微小变动，输出不应巨变。但如果旋转表示存在「监督信号跳变」（奇点），网络需要拟合相邻输入对应的相距很远的标签，可能出现较大权重或数值不稳定。<b>选定标签的全局不连续性来自表示的拓扑结构。</b>选择表示时先检查这一性质，再用合适的损失与训练方法缓解跳变的影响；全局连续编码需要从表示设计入手。</p>
+</blockquote>
+<p>理想的旋转表示应满足：① 能准确表达旋转；② <b>旋转的编码连续</b>。预测向量的解码不必一一对应，且要注明非退化输入条件。逐个检视四种候选：</p>
+<h3>欧拉角：天然不连续</h3>
+<p>2D 情形最直观：绕轴转 $0$ 和 $2\pi$ 是同一个旋转，但角度表示差了 $2\pi$——在 SO(2) 上连续的一圈，在角度表示上「断了」：</p>
+<figure>
+<img alt="笔记配图：欧拉角表示的不连续性" loading="lazy" src="assets/euler_angle_rotation_discontinuity.png"/>
+<figcaption>欧拉角的不连续性：绕轴转一圈回来，角度从 $2\pi$ 跳回 $0$。<span class="src">（来源：笔记 05）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><h3>表示空间</h3><p>0；\(2\pi\)。</p><p>\([0,2\pi]\)内不连通的角度表示集合。</p></div><div><h3>原始空间</h3><p>\(S^1\)中连通的旋转集合。</p></div></div><p>映射g：原始空间 → 表示空间。</p></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Representation Space＝表示空间；Original Space＝原空间；Disconnected Set of Angular Representations in [0,2π]＝首尾端点分离的角度区间表示；Connected Set of Rotations in S¹＝首尾相连的圆周旋转集合；Mapping g＝映射。图强调主值编码端点分离，而真实旋转连续。</p></div>
+<p>解法思路：<b>引入冗余维度</b>，把低维的不连续提升到高维的连续（如 $\theta \to (x,y)$）——这正是后面 6D/9D 表示的思想源头。</p>
+<h3>轴角：边界奇异</h3>
+<p>$\theta = 0$ 时任意轴都表示单位旋转（不唯一）；$\theta = \pi$ 时 $(\mathbf{e}, \pi)$ 与 $(-\mathbf{e}, \pi)$ 相同——同样不连续。</p>
+<h3>四元数：双重覆盖的两难</h3>
+<p>$q$ 与 $-q$ 表示同一旋转（第 3 章讲过）。用作监督信号时，网络面对「同一个旋转两个标签」的矛盾。即使约束 $w \geq 0$（上半球），新问题又来了（笔记）：</p>
+<figure>
+<img alt="笔记配图：四元数双重覆盖" loading="lazy" src="assets/double_coverage.png"/>
+<figcaption>四元数的双重覆盖：$q$ 与 $-q$（球面对跖点）对应同一旋转。<span class="src">（来源：笔记 05）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>\(\mathbf u\)、\(-\mathbf u\)；\(\mathbf v\)、\(\mathbf v'\)；\(\theta\)、\(2\pi-\theta\)。</p></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>u是旋转轴，v、v′是旋转前后向量；θ与绕相反轴的2π−θ产生同一旋转。对应到单位四元数时，q与−q表示同一朝向。图中主要是数学符号。</p></div>
+<figure>
+<img alt="笔记配图：约束四元数到上半球引入的不连续" loading="lazy" src="assets/quaternion_double_coverage_fix_issue.png"/>
+<figcaption>约束到上半球：临近赤道大圆处出现不连续。<span class="src">（来源：笔记 05）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>起始四元数 —可行路径→ 目标四元数。</p><p>起始四元数 —最近路径→ 目标四元数。</p></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>starting quaternion＝起始四元数；target quaternion＝目标四元数；nearest path＝最近路径；plausible path＝另一可选路径。强制选上半球会在边界附近把接近的旋转编码成距离较远的标签。</p></div>
+<p>赤道附近：一个微小旋转可能让 $q$ 从 $w&gt;0$ 跳到 $w&lt;0$，在约束表示上就是跳变。双重覆盖的本质矛盾：<b>要么二义，要么断裂</b>。</p>
+<figure data-no-visible-text="true">
+<img alt="笔记配图：四元数半球约束在大圆上的不连续性" loading="lazy" src="assets/quaternion_issue.svg"/>
+<figcaption>大圆上的两难：直径两端只能选一个切点（否则双重覆盖），但这一点附近仍有跳变。<span class="src">（来源：笔记 05）</span></figcaption>
+</figure>
+<div class="translation"><b>图中英文与中文释义</b><p>圆周示意用于说明四元数单值选择的边界问题：两个等价标签只选一个时，跨越边界的连续旋转可能产生标签跳变。图中的数学标记不表示新增自由度。</p></div>
+<figure>
+<img alt="课程课件：各种旋转表示的对比实验——ModelNet10-SO3 上的旋转回归" loading="lazy" src="assets/s_p35.jpg"/>
+<figcaption>对比实验（ModelNet10-SO3 数据集）：不同表示的旋转回归性能差异明显，连续表示（6D/9D）显著优于欧拉角/四元数。<span class="src">（来源：Lecture 5 课件 p35）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">比较</div><div class="translation-body"><p>任务：单幅图像的旋转回归。数据集：ModelNet10-SO(3)。</p><div class="table-wrap"><table><thead><tr><th>方法</th><th>平均误差（°）</th><th>中位误差（°）</th><th>标准差（°）</th></tr></thead><tbody><tr><td>3D-RCNN</td><td>35.50</td><td>13.21</td><td>46.55</td></tr><tr><td>M_G</td><td>31.60</td><td>16.70</td><td>41.86</td></tr><tr><td>欧拉角</td><td>41.35</td><td>27.44</td><td>37.73</td></tr><tr><td>轴角</td><td>32.30</td><td>19.74</td><td>34.70</td></tr><tr><td>四元数</td><td>26.92</td><td>14.39</td><td>32.92</td></tr><tr><td>S²-Reg</td><td>27.36</td><td>15.41</td><td>33.17</td></tr><tr><td>5D</td><td>25.18</td><td>13.40</td><td>32.10</td></tr><tr><td>6D</td><td>22.60</td><td>11.51</td><td>31.24</td></tr><tr><td>SVD-Train</td><td>21.25</td><td>11.14</td><td>30.28</td></tr></tbody></table></div><div class="table-wrap"><table><thead><tr><th>方法</th><th>平均误差（°）</th><th>中位误差（°）</th><th>标准差（°）</th></tr></thead><tbody><tr><td>3D-RCNN</td><td>34.80</td><td>7.32</td><td>55.73</td></tr><tr><td>M_G</td><td>31.41</td><td>13.93</td><td>48.48</td></tr><tr><td>欧拉角</td><td>49.31</td><td>32.03</td><td>43.47</td></tr><tr><td>轴角</td><td>31.82</td><td>17.31</td><td>37.19</td></tr><tr><td>四元数</td><td>29.60</td><td>14.56</td><td>37.00</td></tr><tr><td>S²-Reg</td><td>25.99</td><td>12.11</td><td>37.67</td></tr><tr><td>5D</td><td>26.23</td><td>11.52</td><td>38.91</td></tr><tr><td>6D</td><td>20.25</td><td>7.84</td><td>36.85</td></tr><tr><td>SVD-Train</td><td>18.01</td><td>7.31</td><td>33.96</td></tr></tbody></table></div><p>来源：Jake Levinson 等，《旋转估计中 SVD 的分析》，NeurIPS 2020。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l05-p35">对照原课件第35页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Comparisons＝比较</p><p>任务为Single image rotation regression（单张图像旋转回归）</p><p>数据集ModelNet10-SO3</p><p>表中Mean＝平均误差，Med＝中位误差，Std＝标准差</p><p>比较欧拉角、轴角、四元数、5D、6D和SVD等表示。</p><p><b>读图提示：</b>表里的误差越低越好；这是特定任务和设置的实验，不能外推为每个任务上都存在相同排名。图中椅子等物体以不同朝向呈现。</p><p><a href="课件中文译解.html#l05-p35">对照本页完整译解</a></p></div>
+<div class="box blue">
+<span class="bt">🔑 一条重要的例外：增量旋转预测</span>
+<p>如果只预测<b>增量旋转</b>（单位矩阵附近的小旋转），前述所有表示都可用——在选定合适的局部坐标图后，可避开全局标签断点；如旋转向量或靠近单位四元数的编码均可使用。轴与角分开写时，零角度的轴仍不唯一，因此还需检查所选局部编码的定义。训练速度可在相同实验条件下比较。这正是一些跟踪（tracking）或视觉—语言—动作（VLA）模型的做法：每帧只预测小增量。</p>
+</div>
+</section>
+<!-- ============ 6 ============ -->
+<section id="s6">
+<h2 class="sec"><span class="no">6</span>6D 与 9D：连续编码与旋转投影</h2>
+<p>既然低维表示总有奇点，那就<b>回到旋转矩阵本身，但处理掉冗余</b>（课件 p31-34）：</p>
+<h3>6D 表示：两列 + 格拉姆-施密特</h3>
+<p>只取旋转矩阵的<b>前两列</b>（6 个数），映射回 SO(3) 时用 Gram-Schmidt 正交化：</p>
+<p style="text-align:center">$$ f_{GS}\left(\begin{bmatrix} \mathbf{a}_1 &amp; \mathbf{a}_2 \end{bmatrix}\right) = \begin{bmatrix} \mathbf{b}_1 &amp; \mathbf{b}_2 &amp; \mathbf{b}_3 \end{bmatrix}, \qquad \mathbf{b}_1 = N(\mathbf{a}_1),\ \mathbf{b}_2 = N(\mathbf{a}_2 - (\mathbf{b}_1\cdot\mathbf{a}_2)\mathbf{b}_1),\ \mathbf{b}_3 = \mathbf{b}_1 \times \mathbf{b}_2 $$</p>
+<p>① 第一列归一化；② 第二列移除平行于第一列的分量再归一化；③ 第三列叉乘得到。归一化要求第一列非零，且第二列去除投影后仍非零。遇到零向量或两列共线时，先处理退化输入。</p>
+<figure>
+<img alt="课程课件：连续旋转表示——6D 表示的思想" loading="lazy" src="assets/s_p31.jpg"/>
+<figcaption>连续旋转表示：6D 表示取旋转矩阵前两列，用 Gram-Schmidt 映射回 SO(3)。<span class="src">（来源：Lecture 5 课件 p31）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">连续的旋转表示：6 维表示</div><div class="translation-body"><ul><li>旋转矩阵是 SO(3) 的连续表示，但具有冗余参数。</li><li>去掉第三列，得到 6 维表示。</li><li>通过 Gram–Schmidt 正交化，将神经网络输出的欧氏空间表示映射到 SO(3)。</li></ul><p>来源：Yi Zhou 等，《神经网络中旋转表示的连续性》，CVPR 2019。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l05-p31">对照原课件第31页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>旋转矩阵是连续表示但参数冗余</p><p>6D表示删除矩阵最后一列</p><p>用Gram-Schmidt orthogonalization（格拉姆—施密特正交化）将网络欧氏输出转换到SO(3)</p><p>引用Zhou等CVPR 2019。</p><p><b>读图提示：</b>编码是取有效旋转矩阵的前两列；解码只在第一列非零、两列不共线的输入域上定义。</p><p><a href="课件中文译解.html#l05-p31">对照本页完整译解</a></p></div>
+<div class="box red">
+<span class="bt">⚠️ 正交化次序与数值退化</span>
+<p>6D解码对两列依次处理，第一列先归一化、第二列再去掉投影，第三列由叉乘构造；这种结构会影响梯度与数值敏感性。<b>这种顺序结构与L2损失兼容。</b>比较6D与9D时，应使用相同的数据、损失和评价条件。第一列接近零或两列近共线时，需检查退化与训练稳定性。</p>
+</div>
+<h3>9D 表示：完整矩阵 + SVD 正交化</h3>
+<p>直接输出完整 3×3 矩阵，用 SVD 映射到 SO(3)（Levinson et al. 的分析）：</p>
+<p style="text-align:center">$$ \hat{R} = U\begin{bmatrix} 1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; \det(UV^{\top}) \end{bmatrix}V^{\top} $$</p>
+<p>设网络输出 $A=U\Sigma V^\top$，其中 $U,V$ 为正交矩阵，$\Sigma$ 含奇异值。将奇异值替换为1并对可能的反射作行列式修正，得到距离 $A$ 最近的合法旋转。原始奇异值与1相差较大时，也可按这一过程求解。<b>CNN Friendly</b>意为适合神经网络欧氏输出的设计；在最近旋转解唯一的非退化域上投影连续，退化输入可能使解不唯一或梯度不稳定。代价是输出9个数。</p>
+<div class="update-box">
+<span class="bt">进一步理解：旋转表示与位姿估计路线</span>
+<p>6D/9D 为旋转回归提供了两种输出设计。阅读网络时，查看它实际输出的表示及解码步骤；再结合数据和几何先验，比较直接回归与对应点拟合的取舍。旋转表示与 Procrustes 为理解这些设计提供了基础。</p>
+</div>
+</section>
+<!-- ============ 7 ============ -->
+<section id="s7">
+<h2 class="sec"><span class="no">7</span>Rotation Fitting：方法二</h2>
+<p>方法一需要选择旋转表示并处理其几何约束；方法二换个思路：<b>网络不输出旋转，输出「对应关系」，再用解析算法拟合旋转</b>（课件 p37）：</p>
+<figure>
+<img alt="笔记配图：模型坐标到相机坐标的对应关系" loading="lazy" src="assets/model_to_camera_coordinates.png"/>
+<figcaption>Rotation Fitting：网络预测每个像素在物体模型上的 3D 坐标，再解析求解最优变换。<span class="src">（来源：笔记 05）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><h3>模型坐标</h3><p>\(X_M,Y_M,Z_M\)</p><p>\((x_i^M,y_i^M,z_i^M)\)</p></div><div><h3>相机坐标</h3><p>\(X_C,Y_C,Z_C\)</p><p>\((x_i^C,y_i^C,z_i^C)\)</p></div></div></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Model coordinates＝模型坐标；Camera coordinates＝相机坐标；上标M和C分别表示模型系与相机系。红色对应线连接同一表面点的两种坐标，蓝色虚线表示观察几何关系。</p></div>
+<ol>
+<li>对物体表面每个像素，预测其在物体 CAD 模型上的 3D 坐标（object coordinates）；</li>
+<li>基于相机坐标 ↔ 模型坐标的对应关系，拟合旋转矩阵。</li>
+</ol>
+<p>有深度信息且相机内参已知：3D-3D 对应（$(u,v,d) \to (x^M,y^M,z^M)$）；无深度：2D-3D 对应。本节经典方法通常使用已知物体模型和物体坐标监督；2D-3D对应可用PnP求解，3D-3D对应可用刚体拟合求解。选择求解器时，先确认对应点是在二维图像中，还是在三维坐标系中。</p>
+<h3>7.1 正交 Procrustes 问题：3D-3D 拟合的解析解</h3>
+<p>给定两组对应的 3D 点集 $\mathbf{M}$（相机系）与 $\mathbf{N}$（模型系），求最优旋转：</p>
+<p style="text-align:center">$$ \hat{\mathbf{A}} = \arg\min_{\mathbf{A}} \|\mathbf{M} - \mathbf{NA}^{\top}\|_F^2 \quad \text{s.t.} \quad \mathbf{A}^{\top}\mathbf{A} = \mathbf{I} $$</p>
+<p>将 Frobenius 范数展开为迹形式后，$\mathrm{tr}(\mathbf{M}^\top\mathbf{M})$ 与 $\mathrm{tr}(\mathbf{N}^\top\mathbf{N})$ 与 $\mathbf{A}$ 无关，目标等价于<b>最大化 $\mathrm{tr}(\mathbf{M}^\top\mathbf{NA}^\top)$</b>。对 $\mathbf{M}^\top\mathbf{N} = \mathbf{UDV}^\top$ 做 SVD，则迹 = $\sum_i [(\mathbf{AV})^\top\mathbf{U}]_{ii}d_i$；由于 $(\mathbf{AV})^\top\mathbf{U}$ 是正交矩阵，对角元绝对值 ≤ 1，<b>全取 1 时达到最大</b>，即：</p>
+<p style="text-align:center">$$ \hat{\mathbf{A}} = \mathbf{UV}^{\top} $$</p>
+<div class="box red">
+<span class="bt">⚠️ 后处理：det = -1 的反射修正</span>
+<p>正交矩阵可能是反射（$\det = -1$，改变手性）。此时修正为 $\hat{\mathbf{A}} = \mathbf{U}\,\mathrm{diag}(1,1,\det(UV^\top))\,\mathbf{V}^{\top}$——翻转「关联性最弱的方向」（最小奇异值对应方向），对整体对齐的影响最小。</p>
+</div>
+<h3>7.2 联合求解 R 与 t</h3>
+<p>三步走（课件 p43；假定点对已知且几何不退化）：① <b>中心化</b>：两簇点各自减去质心；② 对中心化点集解<b>带约束的 Procrustes</b> 得 $\hat{R}$；③ 平移 $\hat{t} = \overline{\mathbf{M}} - \hat{R}\overline{\mathbf{N}}$。</p>
+<div class="box blue"><span class="bt">公式里的符号与方向</span><p>$M,N\in\mathbb{R}^{n\times3}$每行是一个点，$N$是源（模型）坐标、$M$是目标（相机）坐标；中心化后对 $M_c^\top N_c$ 做SVD。$\|\cdot\|_F$是所有元素平方和的平方根，$\mathrm{tr}$是对角元素之和。计算后用 $M\approx N R^\top+t^\top$逐点核对，确认 $R$和 $R^\top$的变换方向。相同点、共线点或对称几何可能使姿态无法唯一确定。</p></div><h3>7.3 RANSAC：SVD 怕离群点</h3>
+<p>Procrustes 给出固定对应关系下的最小二乘解。<b>离群点（Outlier）</b>会因较大的平方残差影响整体拟合，下面的直线拟合图展示了这一现象：</p>
+<figure>
+<img alt="笔记配图：最小二乘法对离群点敏感" loading="lazy" src="assets/not_roboust_outliner.png"/>
+<figcaption>最小二乘对离群点的脆弱：为了照顾一个离群点，整条直线大幅偏转。<span class="src">（来源：笔记 05）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div></div><div><p>离群点！</p></div></div></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>outlier＝离群点。左图点接近同一直线；右图增加远离主体的点后，最小二乘直线被拉偏；这是平方残差对大误差敏感的示例。</p></div>
+<p>解法是 <b>RANSAC（随机抽样一致）</b>：随机抽最小样本组生成假设（刚体3D-3D对应至少需要3对不共线点）→ 用其余点投票（距离小于阈值算内点）→ 内点最多的假设胜出 → 用全部内点重估。循环可以并行化（所有假设同时提出）。</p>
+<div class="box green">
+<span class="bt">💡 直觉：回归 vs 拟合的本质</span>
+<p>方法一让网络<b>直接输出旋转</b>，结构直接，但需处理编码、损失与物体对称性。方法二让网络输出<b>稠密对应关系</b>，利用局部几何规律，再由解析算法拟合旋转；对称性、遮挡和预测错误仍会影响对应点，因此需要 CAD 模型和 RANSAC 等后处理。比较直接回归与对应拟合时，固定数据、模型先验和误差指标，观察各自的误差来源与后处理成本。</p>
+</div>
+</section>
+<!-- ============ 8 ============ -->
+<section id="s8">
+<h2 class="sec"><span class="no">8</span>Instance-Level 与 Category-Level</h2>
+<h3>8.1 Instance-Level：认「这一个」物体</h3>
+<p><b>实例级位姿估计</b>：小集合的已知实例，每个实例有自己的 CAD 模型（课件 p55，引用 PoseCNN）：</p>
+<figure>
+<img alt="课程课件：PoseCNN 网络结构" loading="lazy" src="assets/s_p56.jpg"/>
+<figcaption>PoseCNN（Xiang et al., RSS 2018）：实例级 6D 位姿估计的经典方法。<span class="src">（来源：Lecture 5 课件 p56）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">PoseCNN</div><div class="translation-body"><p>无纹理物体；对称物体；遮挡。</p><p>幻灯片来源：Yu Xiang。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l05-p56">对照原课件第56页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>PoseCNN把输入图像转换为物体分割与位姿</p><p>Texture-less objects＝无纹理物体，Symmetric objects＝对称物体，Occlusions＝遮挡</p><p>图源Yu Xiang。</p><p><b>读图提示：</b>这些是系统处理的困难类型，并非对任意无纹理或严重遮挡都有无条件保证。</p><p><a href="课件中文译解.html#l05-p56">对照本页完整译解</a></p></div>
+<ul>
+<li><b>平移</b>：预测物体中心 + 距离；<b>旋转</b>：回归四元数（正是方法一）；</li>
+<li><b>数据集</b>：LINEMOD（无纹理物体、杂波场景），有 GT CAD 模型，适合受控环境；</li>
+<li><b>局限</b>：实例特定、不能泛化到新物体、需要 CAD 模型。</li>
+</ul>
+<div class="gallery">
+<figure>
+<img alt="笔记配图：PoseCNN 结果可视化" loading="lazy" src="assets/posecnn_result.png"/>
+<figcaption>PoseCNN 结果：平移准确率曲线与旋转误差直方图。<span class="src">（笔记 05）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><h3>全部21个物体</h3><p>纵轴：准确率，刻度0、0.1、0.2、0.3、0.4、0.5、0.6、0.7、0.8、0.9、1。</p><p>横轴：平移阈值（米），刻度0、0.02、0.04、0.06、0.08、0.1。</p><p>90%；32%；2厘米。</p><p>绿色：PoseCNN；红色：PoseCNN＋ICP。</p><h3>三维平移误差分析</h3></div><div><h3>PoseCNN</h3><p>纵轴：数量，刻度0、1000、2000、3000、4000、5000、6000、7000、8000。</p><p>横轴：旋转角误差，刻度0、50、100、150。</p><h3>三维旋转误差分析</h3></div></div></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>All 21 objects＝全部21个物体；accuracy＝准确率；Translation threshold in meter＝平移误差阈值（米）；3D Translation Error Analysis＝三维平移误差分析；Rotation angle error＝旋转角误差；count＝计数；3D Rotation Error Analysis＝三维旋转误差分析。左图红线PoseCNN+ICP与绿线PoseCNN在2cm阈值处为90%与32%；右图是旋转误差直方图。</p></div>
+<figure>
+<img alt="课程课件：PoseCNN 的 YCB-Video 数据集展示" loading="lazy" src="assets/s_p60.jpg"/>
+<figcaption>PoseCNN 的 YCB-Video 数据集展示。<span class="src">（课件 p60）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">PoseCNN 结果</div><div class="translation-body"><p>我们的 YCB-Video 数据集：</p><ul><li>21 个物体。</li><li>92 段视频。</li><li>133,827 帧。</li></ul><p>幻灯片来源：Yu Xiang。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l05-p60">对照原课件第60页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Our YCB-Video Dataset＝YCB-Video数据集</p><p>21 YCB Objects＝21个YCB物体</p><p>92 Videos, 133,827 frames＝92段视频、133827帧</p><p>图源Yu Xiang。</p><p><b>读图提示：</b>本页展示YCB-Video，不是LINEMOD。数据集名、样本数与评估指标应分别对应原图。</p><p><a href="课件中文译解.html#l05-p60">对照本页完整译解</a></p></div>
+</div>
+<figure>
+<img alt="课程课件：LINEMOD 数据集" loading="lazy" src="assets/s_p63.jpg"/>
+<figcaption>LINEMOD 数据集：无纹理物体 + 杂波场景，实例级位姿估计的标准测试场。<span class="src">（来源：Lecture 5 课件 p63）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">实例级 6D 物体位姿估计</div><div class="translation-body"><ul><li>已知的小规模物体集合。</li><li>已知真实 CAD 模型。</li><li>适用于受控环境。</li></ul><p>LINEMOD。</p><p>来源：Stefan Hinterstoisser 等，《用于杂乱场景中无纹理三维物体检测与位姿估计的基于模型的训练》，ACCV 2012，Springer。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l05-p63">对照原课件第63页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>一小组已知实例</p><p>Ground truth CAD model available＝有真实CAD模型</p><p>Useful in controlled environments＝适用于受控环境</p><p>LINEMOD dataset＝LINEMOD数据集</p><p>引用Hinterstoisser等ACCV 2012。</p><p><b>读图提示：</b>本页才是LINEMOD。CAD模型提供固定实例的几何先验和坐标参考。</p><p><a href="课件中文译解.html#l05-p63">对照本页完整译解</a></p></div>
+<h3>8.2 Category-Level：认「这一类」物体</h3>
+<p><b>类别级位姿估计</b>：同一类别的物体（如各种茶杯）共享几何结构，可对训练类别内的新实例估计位姿。遇到训练之外的类别时，需要另外验证泛化能力。代表性工作是 <b>NOCS</b>（Normalized Object Coordinate Space，CVPR 2019 Oral）——作者正是本课程主讲人王鹤老师：</p>
+<figure>
+<img alt="课程课件：NOCS——类别级 6D 位姿与尺寸估计" loading="lazy" src="assets/s_p67.jpg"/>
+<figcaption>NOCS（王鹤 et al., CVPR 2019 Oral）：无需 CAD 模型，检测未见物体的类别级位姿与尺寸。<span class="src">（来源：Lecture 5 课件 p67）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">归一化物体坐标空间：类别级 6D 物体位姿与尺寸估计</div><div class="translation-body"><p>He Wang、Srinath Sridhar、Jingwei Huang、Julien Valentin、Shuran Song、Leonidas Guibas。</p><p>CVPR，2019 年 6 月 16–20 日，美国加州长滩；口头报告。</p><p>NOCS 图。</p><p>坐标：(0.5,0.5,0.5)、(−0.5,0.5,0.5)、(−0.5,0.5,−0.5)、(0.5,0.5,−0.5)、(−0.5,−0.5,−0.5)、(0.5,−0.5,−0.5)。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l05-p67">对照原课件第67页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation＝用于类别级六维位姿与尺寸估计的归一化物体坐标空间</p><p>作者He Wang、Srinath Sridhar、Jingwei Huang、Julien Valentin、Shuran Song、Leonidas Guibas</p><p>CVPR 2019，Oral Presentation＝口头报告。</p><p><b>读图提示：</b>作者及论文名称保留以便检索。NOCS是统一参考空间，而非具体物体的完整CAD模型。</p><p><a href="课件中文译解.html#l05-p67">对照本页完整译解</a></p></div>
+<p>核心思想是<b>归一化坐标</b>（课件 p70）：同类物体按类别约定统一朝向，以包围盒中心定义原点，再按包围盒对角线做统一比例缩放，装进规范立方体——规范坐标提供类别内可学习的共同参考。这也回答了平移歧义：<b>类别级需要估计尺度；RGB-D 可利用深度同时拟合尺度与位姿</b>，否则还是「鸽子为什么这么大」的问题。</p>
+<figure>
+<img alt="课程课件：NOCS 归一化物体坐标空间表示" loading="lazy" src="assets/s_p70.jpg"/>
+<figcaption>NOCS 表示：同类实例按朝向、中心与统一尺度规范到标准空间，颜色编码对应点。<span class="src">（来源：Lecture 5 课件 p70）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">表示：归一化物体坐标空间（NOCS）</div><div class="translation-body"><p>RGB 颜色编码 X、Y、Z 坐标。</p><p>NOCS 图。</p><p>坐标：(0.5,0.5,0.5)、(−0.5,0.5,0.5)、(−0.5,0.5,−0.5)、(0.5,0.5,−0.5)、(−0.5,−0.5,−0.5)、(0.5,−0.5,−0.5)。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l05-p70">对照原课件第70页与完整中文翻译 →</a></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>Representation: Normalized Object Coordinate Space＝表示：归一化物体坐标空间</p><p>RGB colors represent XYZ coordinates of shape＝红绿蓝颜色分别表示形状的x、y、z坐标</p><p>NOCS Map＝归一化坐标图。</p><p><b>读图提示：</b>颜色是坐标编码，不是物体材质颜色；相同规范位置可在不同实例中使用相同编码。</p><p><a href="课件中文译解.html#l05-p70">对照本页完整译解</a></p></div>
+<figure>
+<img alt="笔记配图：类别级位姿估计的尺度歧义" loading="lazy" src="assets/why_pigeon_so_big_2.png"/>
+<figcaption>类别级同样绕不开尺度：大小不知道，光轴方向就有歧义（大远 vs 小近）。<span class="src">（来源：笔记 05）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>为了帮助网友搞清楚<br/>热心的网友画出了透视图</p><p>鸽子</p><p>人</p></div></div></figure>
+<div class="translation"><b>图中英文与中文释义</b><p>图中的中文透视解释说明相机视线上近小与远大可能产生相似投影；该图没有技术英文。恢复度量尺寸和距离需要额外尺度或深度信息。</p></div>
+</section>
+<!-- ============ 9 ============ -->
+<section id="s9">
+<h2 class="sec"><span class="no">9</span>本章小结</h2>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>核心概念</th><th>一句话解释</th></tr>
+<tr><td><b>抓取合成</b></td><td>在抓取位姿/关节配置的高维空间中搜索可行解</td></tr>
+<tr><td><b>4-DoF vs 6-DoF</b></td><td>结构化场景省两个自由度；杂乱场景需要任意朝向</td></tr>
+<tr><td><b>开环 / 闭环抓取</b></td><td>视觉只用于预先估计 / 执行中根据新观测调整动作</td></tr>
+<tr><td><b>旋转回归的连续性</b></td><td>旋转编码宜连续；解码可多对一，须处理退化输入</td></tr>
+<tr><td><b>6D / 9D 表示</b></td><td>矩阵前两列 + GS 正交化 / 完整矩阵 + SVD 正交化，编码连续，解码需处理退化输入</td></tr>
+<tr><td><b>正交 Procrustes</b></td><td>3D-3D 对应拟合旋转的闭式解 $A=UV^\top$（+ det 修正）</td></tr>
+<tr><td><b>RANSAC</b></td><td>最小样本生成假设 + 内点投票，抵御离群点</td></tr>
+<tr><td><b>Instance / Category</b></td><td>认「这一个」（PoseCNN/LINEMOD）/ 认「这一类」（NOCS）</td></tr>
+</table></div></div>
+<div class="box green">
+<span class="bt">💡 下一章预告</span>
+<p>第 6 章继续深挖：ICP 点云配准、类别级位姿估计的完整方法、以及抓取的力学基础（Force/Form Closure 与摩擦锥）——「位姿有了，怎么抓才稳」。</p>
+</div>
+</section>
+<!-- ============ 10 ============ -->
+<section id="s10">
+<h2 class="sec"><span class="no">10</span>动手实践：作业 2 · 电钻抓取</h2>
+<p>本章配套北大原版<b>作业 2</b>：抓取一个已知物体（电钻 power drill）。给定物体坐标系下的抓取位姿，你的任务是估计物体位姿，把抓取位姿变换到机器人坐标系——<b>本章全部知识点的一次完整实战</b>。</p>
+<h3>10.1 任务总览</h3>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>任务</th><th>自学检查</th><th>内容</th><th>对应本章</th></tr>
+<tr><td><b>Part I</b></td><td>比较平移／旋转误差</td><td>EstPoseNet：PointNet 直接估计平移+旋转</td><td>§5 方法一</td></tr>
+<tr><td><b>Part II</b></td><td>检查对应拟合残差</td><td>预测物体坐标（NOCS），拟合位姿</td><td>§7 方法二</td></tr>
+<tr><td><b>Part III</b></td><td>核对坐标变换</td><td>transform_grasp_pose：位姿变换到机器人系</td><td>第 2 章齐次变换</td></tr>
+<tr><td><b>Bonus</b></td><td>同一验证集对照</td><td>RANSAC（numpy/torch 实现），比较离群点条件下的误差与成功率</td><td>§7.3</td></tr>
+</table></div></div>
+<p>代码位置：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/tree/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Homeworks/02-Pose-Estimation" target="_blank"><code>Homeworks/02-Pose-Estimation/</code></a>（题目 PDF 在 <code>Handout/</code>，公开作者实现位于 <code>Handin/</code>；练习要求与评分以 <code>Handout/</code> 为准）。</p>
+<h3>10.2 环境搭建</h3>
+<pre><code>conda create -n hw2 python=3.10
+conda activate hw2
+conda install conda-forge::roboticstoolbox-python==1.0.3
+# GPU 版（按需改 cuda 版本）
+conda install pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 pytorch-cuda=12.4 -c pytorch -c nvidia
+# CPU 版
+conda install pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 cpuonly -c pytorch
+pip install tqdm h5py wandb plotly pygments ikpy transforms3d pyyaml opencv-python pillow matplotlib trimesh dm_control
+pip install numpy==1.26.4 scipy==1.11.4 sympy==1.13.1</code></pre>
+<div class="box yellow">
+<span class="bt">⚠️ 环境提示</span>
+<p>先用小规模数据检查训练流程，再按GPU、样本量、超参数与停止准则记录训练耗时；纯CPU可用于读代码和小规模检查。<code>mjpython</code> 仅 Mac 需要。数据文件较大（含预训练 checkpoint），建议直接用仓库 <code>Handin/</code> 里的权重作对照。</p>
+</div>
+<h3>10.3 Part I：直接估计</h3>
+<p>完成 <code>src/model/est_pose.py</code> 中的 <code>EstPoseNet</code>（PointNet backbone）：<code>__init__</code> 初始化模块、<code>forward</code> 训练时算 loss、<code>est</code> 输出平移与旋转矩阵。</p>
+<div class="box blue">
+<span class="bt">🔑 设计决策（用本章知识回答）</span>
+<p>题目提示：「考虑用什么旋转表示和损失函数，并在 est 里把表示转成旋转矩阵」。一种可行的设计思路：<b>平移用 MSE 直接回归</b>（欧几里得空间没问题）；<b>旋转用 6D 表示 + Gram-Schmidt</b>（§6）或四元数 + 归一化损失。若选择欧拉角或四元数配合 MSE，结合 §5 检查标签跳变与四元数归一化。</p>
+</div>
+<p>运行 <code>python train.py --model_type=est_pose --exp_name=my_exp</code>（可加 <code>--device=cuda</code>）；测试 <code>python test.py --checkpoint=... --mode=val</code>。<b>自学检查：</b>同时记录平移误差（m）与旋转误差（rad），并与同一验证集的基线比较；课程达标阈值以原题目为准。</p>
+<h3>10.4 Part II：拟合</h3>
+<p>另一种可比较的设计：网络输出<b>每个物体点的物体坐标</b>（NOCS，类似分割分支），再用对应关系<b>拟合</b>位姿——正是 §7 的路线：3D-3D 对应 → 中心化 → 带约束 Procrustes（SVD + det 修正）→ 求 $t$。</p>
+<div class="box green">
+<span class="bt">💡 实现提示</span>
+<p>Procrustes 只需 10 行 numpy/torch：中心化 → <code>U, S, Vh = np.linalg.svd(Mc.T @ Nc)</code> → <code>R = U @ np.diag([1,1,np.linalg.det(U@Vh)]) @ Vh</code> → <code>t = M.mean(0) - R @ N.mean(0)</code>。这里 <code>M,N</code> 均为 <code>(n,3)</code>：<code>N</code> 是源点，<code>M</code> 是对应目标点，<code>Mc,Nc</code> 为各自中心化后的矩阵；验证 <code>M ≈ (R @ N.T).T + t</code>。点云有噪声时拟合会被离群点带偏——这正是 Bonus 里 RANSAC的用武之地。</p>
+</div>
+<h3>10.5 Part III：抓取位姿变换</h3>
+<p>实现 <code>src/utils/transform_grasp_pose</code>：把物体坐标系下的抓取位姿变换到机器人坐标系——<b>第 2 章齐次变换的直接应用</b>：$T_{robot}^{grasp} = T_{robot}^{obj} \cdot T_{obj}^{grasp}$。这里约定 $T_A^B$把B系坐标变到A系；若网络输出物体到相机的变换，还需相机外参：$T_{robot}^{obj}=T_{robot}^{camera}T_{camera}^{obj}$。</p>
+<p>评估：<code>python eval.py --checkpoint=... --mode=val</code>。plotly 显示估计位姿（<code>--vis=1</code>），MuJoCo 显示抓取过程（<code>--headless=0</code>）。<b>自学检查：</b>记录样本数、成功判定和成功率；课程阈值及分值以原题目为准。</p>
+<div class="box green">
+<span class="bt">💡 自学路线建议</span>
+<p>总用时估计 <b>1-2 天</b>：Part I 半天（读代码框架 + 设计旋转表示）、Part II 半天（Procrustes + RANSAC）、Part III 1 小时（矩阵变换）。建议顺序：先跑通 Part III（最简单，验证环境），再 Part I，最后 Part II。遇到 NaN loss，先查四元数/6D 表示的归一化。</p>
+</div>
+</section>
+<!-- ============ 附录 A ============ -->
+<section id="apA">
+<h2 class="sec"><span class="no">附A</span>术语表</h2>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table class="term-table">
+<tr><th>术语</th><th>解释</th></tr>
+<tr><td>抓取（Grasping）</td><td>通过接触点施加力/扭矩约束物体运动的过程</td></tr>
+<tr><td>抓取合成（Grasp Synthesis）</td><td>对夹爪位姿/关节配置的高维搜索或优化问题</td></tr>
+<tr><td>抓握式 / 非抓握式</td><td>完全约束物体自由度 / 用推、滑等接触力学调整物体</td></tr>
+<tr><td>4-DoF / 6-DoF 抓取</td><td>位置+绕重力轴旋转 / 位置+任意朝向</td></tr>
+<tr><td>6D 物体位姿</td><td>物体到相机的 6 自由度变换（3 平移 + 3 旋转）</td></tr>
+<tr><td>旋转回归</td><td>用神经网络估计连续旋转变量的回归任务</td></tr>
+<tr><td>奇点（Singularity）</td><td>表示无定义或行为不佳的点（歧义、不可微）</td></tr>
+<tr><td>6D 表示</td><td>旋转矩阵前两列 + Gram-Schmidt 正交化的连续表示</td></tr>
+<tr><td>9D 表示</td><td>完整 3×3 输出 + SVD 正交化的连续表示</td></tr>
+<tr><td>增量旋转预测</td><td>只预测单位矩阵附近的小旋转，选合适局部坐标后可避开全局标签断点</td></tr>
+<tr><td>正交 Procrustes 问题</td><td>两组对应点间最优旋转的矩阵逼近问题，SVD 解析解 $A=UV^\top$</td></tr>
+<tr><td>RANSAC</td><td>随机抽样一致：最小样本假设 + 内点投票，抗离群点</td></tr>
+<tr><td>PnP</td><td>Perspective-n-Point：2D-3D 对应 + 相机内参求位姿</td></tr>
+<tr><td>Instance-Level</td><td>对已知具体实例（有 CAD 模型）的位姿估计</td></tr>
+<tr><td>Category-Level</td><td>对同类别未见实例的位姿与尺寸估计（如 NOCS）</td></tr>
+<tr><td>NOCS</td><td>归一化物体坐标空间：类别内统一到 1×1×1 box（王鹤 CVPR 2019）</td></tr>
+</table></div></div>
+</section>
+<!-- ============ 附录 B ============ -->
+<section id="apB">
+<h2 class="sec"><span class="no">附B</span>课件 71 页完整索引</h2>
+<p>原版 Lecture 5 课件共 71 页（<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture05_03_17.pdf" target="_blank">GitHub 原文件</a>）。下表逐页列出内容及在本教程中的位置：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><p><a href="课件中文译解.html">逐页原图与中文翻译</a> · <a href="../sources/lecture05.pdf">本地原始课件PDF</a></p><div class="table-wrap"><table class="page-index">
+<tr><th>页码</th><th>页面内容</th><th>在教程中的位置</th></tr>
+<tr><td class="pg">p1</td><td>封面：Lecture 5 - Vision and Grasping I</td><td>封面区</td></tr>
+<tr><td class="pg">p2</td><td>Logistics 页</td><td>§10（作业背景）</td></tr>
+<tr><td class="pg">p3</td><td>作业 1 截止提醒（03/22）</td><td>§10（背景）</td></tr>
+<tr><td class="pg">p4</td><td>主题页：抓取</td><td>§1 开头</td></tr>
+<tr><td class="pg">p5</td><td>从机器人学基础到抓取：流水线闭环</td><td>§1</td></tr>
+<tr><td class="pg">p6</td><td>什么是抓取（定义 + Grasp Synthesis）</td><td>§1</td></tr>
+<tr><td class="pg">p7</td><td>抓取位姿：4-DoF / 6-DoF / 手指自由度</td><td>§2</td></tr>
+<tr><td class="pg">p8</td><td>开环抓取：D³RoMA（CoRL 2024）</td><td>§3</td></tr>
+<tr><td class="pg">p9</td><td>闭环抓取：GraspVLA（in submission）</td><td>§3 + 更新框</td></tr>
+<tr><td class="pg">p10</td><td>闭环抓取（示意图）</td><td>§3</td></tr>
+<tr><td class="pg">p11</td><td>开环抓取的两条路径（已知/未知物体）</td><td>§3</td></tr>
+<tr><td class="pg">p12</td><td>主题页：6D 位姿估计</td><td>§4 开头</td></tr>
+<tr><td class="pg">p13</td><td>6D 物体位姿定义（PoseCNN 引用）</td><td>§4</td></tr>
+<tr><td class="pg">p14</td><td>应用：机器人操作（CAD 标注转移、视觉闭环）</td><td>§4</td></tr>
+<tr><td class="pg">p15</td><td>应用：基于位姿的抓取（CoRL 2018）</td><td>§4</td></tr>
+<tr><td class="pg">p16</td><td>应用：人机交互理解（HOnnotate 2020）</td><td>§4</td></tr>
+<tr><td class="pg">p17</td><td>应用：增强现实（AR 综述 2016）</td><td>§4</td></tr>
+<tr><td class="pg">p18</td><td>6D 位姿定义回顾 + 核心问题「如何预测旋转」</td><td>§4-5 衔接</td></tr>
+<tr><td class="pg">p19</td><td>主题页：旋转回归</td><td>§5 开头</td></tr>
+<tr><td class="pg">p20</td><td>2D/3D 旋转与 SO(3) 定义回顾</td><td>§5</td></tr>
+<tr><td class="pg">p21</td><td>旋转表示盘点：矩阵 9 数 vs 欧拉角/轴角/四元数</td><td>§5</td></tr>
+<tr><td class="pg">p22</td><td>欧拉角（图源 Hao Su）</td><td>§5</td></tr>
+<tr><td class="pg">p23</td><td>轴角与罗德里格斯公式（回顾）</td><td>§5</td></tr>
+<tr><td class="pg">p24</td><td>四元数（图源 Hao Su）</td><td>§5</td></tr>
+<tr><td class="pg">p25</td><td>方法一：回归旋转表示</td><td>§5</td></tr>
+<tr><td class="pg">p26</td><td>四元数回归的历史与现状（CVPR'19 引用）</td><td>§5</td></tr>
+<tr><td class="pg">p27</td><td>奇点与不连续性的数学定义</td><td>§5</td></tr>
+<tr><td class="pg">p28</td><td>欧拉角的不连续性（0 vs 2π）</td><td>§5</td></tr>
+<tr><td class="pg">p29</td><td>轴角的边界问题（θ=0、θ=π）</td><td>§5</td></tr>
+<tr><td class="pg">p30</td><td>四元数双重覆盖与半球的矛盾</td><td>§5</td></tr>
+<tr><td class="pg">p31</td><td>连续表示：6D 表示思想</td><td>§6</td></tr>
+<tr><td class="pg">p32</td><td>6D 表示定义：矩阵前两列</td><td>§6</td></tr>
+<tr><td class="pg">p33</td><td>Gram-Schmidt 映射到旋转矩阵</td><td>§6</td></tr>
+<tr><td class="pg">p34</td><td>9D 表示与 SVD 正交化（Levinson 引用）</td><td>§6</td></tr>
+<tr><td class="pg">p35</td><td>对比实验：ModelNet10-SO3 单图旋转回归</td><td>§5</td></tr>
+<tr><td class="pg">p36</td><td>主题页：Rotation Fitting</td><td>§7 开头</td></tr>
+<tr><td class="pg">p37</td><td>方法二：预测物体坐标再求解旋转</td><td>§7</td></tr>
+<tr><td class="pg">p38</td><td>正交 Procrustes 问题定义</td><td>§7.1</td></tr>
+<tr><td class="pg">p39</td><td>解析解：$A = UV^\top$</td><td>§7.1</td></tr>
+<tr><td class="pg">p40-41</td><td>证明（Read by Yourself）</td><td>§7.1（证明思路）</td></tr>
+<tr><td class="pg">p42</td><td>约束 Procrustes：det 修正</td><td>§7.1（红框）</td></tr>
+<tr><td class="pg">p43</td><td>联合求解 R 与 T：中心化三步法</td><td>§7.2</td></tr>
+<tr><td class="pg">p44</td><td>离群点问题：SVD 敏感，需要 RANSAC</td><td>§7.3</td></tr>
+<tr><td class="pg">p45</td><td>RANSAC 思想（Read by Yourself）</td><td>§7.3</td></tr>
+<tr><td class="pg">p46-52</td><td>RANSAC 直线拟合示例（Read by Yourself）</td><td>§7.3</td></tr>
+<tr><td class="pg">p53</td><td>PnP 算法：2D-3D 对应 + 内参求位姿</td><td>§7（附录 A 术语）</td></tr>
+<tr><td class="pg">p54</td><td>主题页：实例级位姿估计</td><td>§8.1 开头</td></tr>
+<tr><td class="pg">p55</td><td>实例级定义：小集合已知实例（PoseCNN）</td><td>§8.1</td></tr>
+<tr><td class="pg">p56-57</td><td>PoseCNN 网络结构（图源 Yu Xiang）</td><td>§8.1</td></tr>
+<tr><td class="pg">p58</td><td>PoseCNN 平移估计</td><td>§8.1</td></tr>
+<tr><td class="pg">p59</td><td>PoseCNN 旋转估计：回归四元数</td><td>§8.1</td></tr>
+<tr><td class="pg">p60-62</td><td>PoseCNN 结果与可视化</td><td>§8.1</td></tr>
+<tr><td class="pg">p63</td><td>LINEMOD 数据集介绍</td><td>§8.1</td></tr>
+<tr><td class="pg">p64</td><td>实例级方法的局限</td><td>§8.1</td></tr>
+<tr><td class="pg">p65</td><td>主题页：类别级位姿估计</td><td>§8.2 开头</td></tr>
+<tr><td class="pg">p66</td><td>（无文字配图页）</td><td>§8.2</td></tr>
+<tr><td class="pg">p67</td><td>NOCS（王鹤 et al., CVPR 2019 Oral）</td><td>§8.2</td></tr>
+<tr><td class="pg">p68</td><td>类别级位姿与尺寸估计：无需 CAD 模型</td><td>§8.2</td></tr>
+<tr><td class="pg">p69</td><td>挑战：类别内形状差异</td><td>§8.2</td></tr>
+<tr><td class="pg">p70</td><td>表示：归一化物体坐标空间（1×1×1 box）</td><td>§8.2</td></tr>
+<tr><td class="pg">p71</td><td>结尾页：下集预告 Vision and Grasping II</td><td>页脚（下一章预告）</td></tr>
+</table></div></div>
+</section>
+<!-- ============ 附录 C ============ -->
+<section id="apC">
+<h2 class="sec"><span class="no">附C</span>参考资源</h2>
+<ul>
+<li>课程官网：<a href="https://pku-epic.github.io/Intro2EAI_2025/" target="_blank">pku-epic.github.io/Intro2EAI_2025</a></li>
+<li>本教程素材来源仓库：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU" target="_blank">zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU</a></li>
+<li>本章课件：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture05_03_17.pdf" target="_blank"><code>Slides/Lecture05_03_17.pdf</code></a>（71 页）</li>
+<li>本章笔记原文：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Notes/05-Vision-and-Grasping-I.md" target="_blank"><code>Notes/05-Vision-and-Grasping-I.md</code></a></li>
+<li>本章作业：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/tree/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Homeworks/02-Pose-Estimation" target="_blank"><code>Homeworks/02-Pose-Estimation/</code></a>（题目 PDF、代码框架与参考答案）</li>
+</ul>
+<p>连续编码的原始分析参见<a href="https://arxiv.org/abs/1812.07035">Zhou等：旋转表示连续性</a>；SVD投影参见<a href="https://arxiv.org/abs/2006.14616">Levinson等：深度旋转估计中的SVD分析</a>。</p><h3>延伸阅读</h3>
+<ul>
+<li>Xiang et al., <em>PoseCNN</em>, RSS 2018：实例级 6D 位姿估计经典</li>
+<li>Wang et al., <em>NOCS</em>, CVPR 2019 Oral：类别级位姿与尺寸估计（王鹤老师）</li>
+<li>Zhou et al., <em>On the Continuity of Rotation Representations</em>, CVPR 2019：6D 表示原始论文</li>
+<li>Newbury et al., <em>Deep Learning Approaches to Grasp Synthesis</em>（综述）：抓取合成的全景</li>
+<li>FoundationPose（CVPR 2024）与 SAM-6D（CVPR 2024）：相关位姿估计方法；具体输入与实验设置见原论文</li>
+</ul>
+</section>
+<section class="self-check"><h2>自测：检查坐标和旋转</h2><ol><li>六维旋转表示和六维物体位姿为什么不是同一概念？</li><li>网络输出两列几乎平行时，Gram-Schmidt会出现什么问题？</li><li>为什么SVD拟合之后还需要检查det(R)？</li><li>预测物体到相机的位姿后，怎样获得机器人坐标中的抓取目标？</li></ol><details><summary>参考思路</summary><p>前者仅编码朝向，后者含位置；两列近共线使第二列垂直分量近零，归一化敏感；正交矩阵可能是反射；需用相机外参和物体内抓取标注按坐标链相乘。</p></details></section></main>
+</div>
+<!-- ============ 页脚 ============ -->
+<aside class="recent" id="current-research"><h3>2026年10月技术与政策动态 · 评价位姿模型要固定测试条件</h3><p>2026年已实施具身智能基准测试方法行业标准。感知误差、抓取成功率和任务完成率是不同指标；把观测、对象、坐标与评价条件写清。</p><p class="source-note">资料截至2026-10-04 · <a href="../技术动态_20261004.html#benchmark2026">一手来源、发布日期与适用范围</a></p></aside><footer>
+<nav aria-label="章节导航" class="chapter-nav"><a href="../ch04/index.html">← 第4章</a><a href="../index.html">教程目录</a><a href="../ch06/index.html">第6章 →</a></nav>
+<p><b>关于本教程：</b>本教程基于北京大学 2025 春季《具身智能导论》课程的公开资料（王鹤 老师主讲）整理改编，面向零基础自学者，免费开源、仅限个人自学使用。来源、改编方式与使用声明的完整说明见<a href="#about">篇首「关于本教程」</a>；笔记、课件、作业版权归原作者及课程组所有。</p>
+<p><b>阅读说明：</b>课程知识主线与原始课件保持对应；中文翻译和理解提示帮助辨认术语、公式与适用条件。实验设置与课程题目可通过原始资料逐项对照。</p>
+<p><b>下一章预告：</b>第 6 章《视觉与抓取 II：ICP 与抓取稳定性》（课件 p71 预告）——点云配准、类别级位姿估计进阶与抓取的力学基础。</p>
+</footer>
+<script src="../reader.js"></script>
+</body>
+</html>

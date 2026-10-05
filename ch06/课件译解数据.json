@@ -1,0 +1,848 @@
+[
+  {
+    "lecture": 6,
+    "page": 1,
+    "title": "具身智能导论",
+    "translation": [
+      "第 6 讲：视觉与抓取 II",
+      "王鹤教授（He Wang）",
+      "北大具身感知与交互实验室（EPIC Lab）",
+      "2025 年春季"
+    ],
+    "translated_title": "具身智能导论",
+    "translation_html": "<p>第 6 讲：视觉与抓取 II</p><p>王鹤教授（He Wang）</p><p>北大具身感知与交互实验室（EPIC Lab）</p><p>2025 年春季</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 2,
+    "title": "实例级 6D 物体位姿估计",
+    "translation": [],
+    "translated_title": "实例级 6D 物体位姿估计",
+    "translation_html": ""
+  },
+  {
+    "lecture": 6,
+    "page": 3,
+    "title": "实例级 6D 物体位姿估计",
+    "translation": [
+      "@05:55"
+    ],
+    "translated_title": "实例级 6D 物体位姿估计",
+    "translation_html": "@05:55"
+  },
+  {
+    "lecture": 6,
+    "page": 4,
+    "title": "PoseCNN",
+    "translation": [
+      "@05:56"
+    ],
+    "translated_title": "PoseCNN",
+    "translation_html": "@05:56"
+  },
+  {
+    "lecture": 6,
+    "page": 5,
+    "title": "PoseCNN",
+    "translation": [
+      "@05:57"
+    ],
+    "translated_title": "PoseCNN",
+    "translation_html": "@05:57"
+  },
+  {
+    "lecture": 6,
+    "page": 6,
+    "title": "PoseCNN",
+    "translation": [
+      "@05:59"
+    ],
+    "translated_title": "PoseCNN",
+    "translation_html": "@05:59"
+  },
+  {
+    "lecture": 6,
+    "page": 7,
+    "title": "PoseCNN 结果",
+    "translation": [
+      "@05:60"
+    ],
+    "translated_title": "PoseCNN 结果",
+    "translation_html": "@05:60"
+  },
+  {
+    "lecture": 6,
+    "page": 8,
+    "title": "PoseCNN 结果",
+    "translation": [
+      "三维平移误差分析：全部 21 个物体；纵轴：准确率，0、0.1、0.2、0.3、0.4、0.5、0.6、0.7、0.8、0.9、1；横轴：平移阈值（米），0、0.02、0.04、0.06、0.08、0.1。",
+      "PoseCNN；PoseCNN + ICP；2 厘米；32%；90%。",
+      "三维旋转误差分析：PoseCNN；纵轴：数量，0、1000、2000、3000、4000、5000、6000、7000、8000；横轴：旋转角误差，0、50、100、150。",
+      "幻灯片来源：Yu Xiang。"
+    ],
+    "translated_title": "PoseCNN 结果",
+    "translation_html": "<p>三维平移误差分析：全部 21 个物体；纵轴：准确率，0、0.1、0.2、0.3、0.4、0.5、0.6、0.7、0.8、0.9、1；横轴：平移阈值（米），0、0.02、0.04、0.06、0.08、0.1。</p><p>PoseCNN；PoseCNN + ICP；2 厘米；32%；90%。</p><p>三维旋转误差分析：PoseCNN；纵轴：数量，0、1000、2000、3000、4000、5000、6000、7000、8000；横轴：旋转角误差，0、50、100、150。</p><p>幻灯片来源：Yu Xiang。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 9,
+    "title": "迭代最近点",
+    "translation": [],
+    "translated_title": "迭代最近点",
+    "translation_html": ""
+  },
+  {
+    "lecture": 6,
+    "page": 10,
+    "title": "迭代最近点（ICP）",
+    "translation": [
+      "ICP 是一种点云配准方法。它以两个点云为输入，计算 R 与 T 矩阵，将一个点云变换后尽可能与另一个点云对齐。",
+      "R̂,T̂ = argmin_R∈SO(3),T∈ℝ¹ˣ³ ‖Q−(RP+T)‖²_F。",
+      "其中 R ∈ SO(3)，T ∈ ℝ³，Q ∈ ℝ³ˣⁿ，P ∈ ℝ³ˣⁿ。",
+      "P：移动后的数据；Q：真实数据；校正后的 P；Q。",
+      "左图坐标刻度：−10、0、10、20、30、40；−5、0、5、10、15、20、25、30。右图坐标刻度：0、5、10、15、20、25、30；−5.0、−2.5、0.0、2.5、5.0、7.5、10.0。"
+    ],
+    "translated_title": "迭代最近点（ICP）",
+    "translation_html": "<ul><li>ICP 是一种点云配准方法。它以两个点云为输入，计算 R 与 T 矩阵，将一个点云变换后尽可能与另一个点云对齐。</li></ul><p>\\[\\hat R,\\hat T=\\operatorname*{argmin}_{\\substack{R\\in\\mathrm{SO}(3)\\\\T\\in\\mathbb R^{1\\times3}}}\\|Q-(RP+T)\\|_F^2\\]。</p><p>其中 \\(R\\in\\mathrm{SO}(3)\\)，\\(T\\in\\mathbb R^3\\)，\\(Q\\in\\mathbb R^{3\\times n}\\)，\\(P\\in\\mathbb R^{3\\times n}\\)。</p><p>P：移动后的数据；Q：真实数据；校正后的 P；Q。</p><p>左图坐标刻度：−10、0、10、20、30、40；−5、0、5、10、15、20、25、30。右图坐标刻度：0、5、10、15、20、25、30；−5.0、−2.5、0.0、2.5、5.0、7.5、10.0。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 11,
+    "title": "迭代最近点（ICP）",
+    "translation": [
+      "将数据中心化。",
+      "P̃ = P−P̄；Q̃ = Q−Q̄。",
+      "移动后的中心化数据；真实的中心化数据。坐标刻度：−20、−15、−10、−5、0、5、10、15、20；−10、−5、0、5、10、15。"
+    ],
+    "translated_title": "迭代最近点（ICP）",
+    "translation_html": "<ul><li>将数据中心化。</li></ul><p>\\(\\tilde P=P-\\bar P\\)；\\(\\tilde Q=Q-\\bar Q\\)。</p><p>移动后的中心化数据；真实的中心化数据。坐标刻度：−20、−15、−10、−5、0、5、10、15、20；−10、−5、0、5、10、15。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 12,
+    "title": "迭代最近点（ICP）",
+    "translation": [
+      "计算两个点云之间的 Chamfer 距离：对每个 pᵢ，搜索离它最近的 qⱼ，并获得从 P̃ 到 Q̃ 的对应点 P̃_corr。",
+      "p̃ᵢ,corr = argmin_q̃ⱼ∈Q̃ ‖q̃ⱼ−p̃ᵢ‖²₂。",
+      "计算复杂度为 O(∣P∣×∣Q∣)。 使用 KD 树加速搜索。",
+      "中心化的 P；中心化的 Q；对应关系。坐标刻度：−20、−15、−10、−5、0、5、10、15、20；−10、−5、0、5、10、15。"
+    ],
+    "translated_title": "迭代最近点（ICP）",
+    "translation_html": "<ul><li>计算两个点云之间的 Chamfer 距离：对每个 \\(p_i\\)，搜索离它最近的 \\(q_j\\)，并获得从 \\(\\tilde P\\) 到 \\(\\tilde Q\\) 的对应点 \\(\\tilde P_{\\mathrm{corr}}\\)。</li></ul><p>\\[\\tilde p_{i,\\mathrm{corr}}=\\operatorname*{argmin}_{\\tilde q_j\\in\\tilde Q}\\|\\tilde q_j-\\tilde p_i\\|_2^2\\]。</p><ul><li>计算复杂度为 \\(O(|P|\\times|Q|)\\)。</li><li>使用 KD 树加速搜索。</li></ul><p>中心化的 P；中心化的 Q；对应关系。坐标刻度：−20、−15、−10、−5、0、5、10、15、20；−10、−5、0、5、10、15。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 13,
+    "title": "迭代最近点（ICP）",
+    "translation": [
+      "问题变为 R̂ = argmin_R∈SO(3) ‖P̃_corr−RP̃‖²_F。",
+      "利用带约束的正交 Procrustes 求得 R̂。",
+      "再由残差得到 T。",
+      "更新 P。",
+      "U,D,Vᵀ = SVD(P̃_corrP̃ᵀ)。",
+      "R̂ = U diag(1,1,det(UVᵀ)) Vᵀ。",
+      "T̂ = Q̄−R̂P̄。",
+      "P_new = R̂P + T̂。"
+    ],
+    "translated_title": "迭代最近点（ICP）",
+    "translation_html": "<ul><li>问题变为 \\(\\hat R=\\operatorname*{argmin}_{R\\in\\mathrm{SO}(3)}\\|\\tilde P_{\\mathrm{corr}}-R\\tilde P\\|_F^2\\)。</li><li>利用带约束的正交 Procrustes 求得 \\(\\hat R\\)。</li><li>再由残差得到 T。</li><li>更新 P。</li></ul><p>\\[U,D,V^{\\mathsf T}=\\operatorname{SVD}(\\tilde P_{\\mathrm{corr}}\\tilde P^{\\mathsf T})\\]。</p><p>\\[\\hat R=U\\operatorname{diag}(1,1,\\det(UV^{\\mathsf T}))V^{\\mathsf T}\\]。</p><p>\\[\\hat T=\\bar Q-\\hat R\\bar P\\]。</p><p>\\[P_{\\mathrm{new}}=\\hat RP+\\hat T\\]。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 14,
+    "title": "迭代最近点（ICP）",
+    "translation": [
+      "使过程迭代进行：",
+      "1. 减去均值，将数据中心化。",
+      "2. 为 P̃ 中的每个点寻找对应点。",
+      "3. 利用带约束的正交 Procrustes 得到旋转 R̂。",
+      "4. 将 R̂ 作用于 P 的均值向量，得到 T̂。",
+      "5. 用 R̂ 和 T̂ 更新 P。"
+    ],
+    "translated_title": "迭代最近点（ICP）",
+    "translation_html": "<p>使过程迭代进行：</p><ul><li>1. 减去均值，将数据中心化。</li><li>2. 为 \\(\\tilde P\\) 中的每个点寻找对应点。</li><li>3. 利用带约束的正交 Procrustes 得到旋转 \\(\\hat R\\)。</li><li>4. 将 \\(\\hat R\\) 作用于 P 的均值向量，得到 \\(\\hat T\\)。</li><li>5. 用 \\(\\hat R\\) 和 \\(\\hat T\\) 更新 P。</li></ul>"
+  },
+  {
+    "lecture": 6,
+    "page": 15,
+    "title": "迭代最近点（ICP）",
+    "translation": [
+      "迭代终止条件：",
+      "1. R̂、T̂ 小于某个阈值。 2. 损失的变化小于某个阈值。 3. 达到最大迭代次数。",
+      "平方差 P→Q；横轴刻度 0、2、4、6、8；纵轴刻度 0、5、10、15、20、25、30、35。"
+    ],
+    "translated_title": "迭代最近点（ICP）",
+    "translation_html": "<p>迭代终止条件：</p><ul><li>1. \\(\\hat R\\)、\\(\\hat T\\) 小于某个阈值。</li><li>2. 损失的变化小于某个阈值。</li><li>3. 达到最大迭代次数。</li></ul><p>平方差 P→Q；横轴刻度 0、2、4、6、8；纵轴刻度 0、5、10、15、20、25、30、35。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 16,
+    "title": "迭代最近点（ICP）",
+    "translation": [
+      "优点",
+      "简单，不需要点云分割或特征提取。",
+      "初始估计良好时，具有较好的精度和收敛性。",
+      "缺点",
+      "寻找最近对应点的计算开销较高；可以通过对稠密点云进行下采样，或使用小样本匹配加速迭代来降低开销。",
+      "只考虑点到点的距离，没有利用点云的结构信息。",
+      "高度依赖初始估计的准确性。"
+    ],
+    "translated_title": "迭代最近点（ICP）",
+    "translation_html": "<h3>优点</h3><ul><li>简单，不需要点云分割或特征提取。</li><li>初始估计良好时，具有较好的精度和收敛性。</li></ul><h3>缺点</h3><ul><li>寻找最近对应点的计算开销较高；可以通过对稠密点云进行下采样，或使用小样本匹配加速迭代来降低开销。</li><li>只考虑点到点的距离，没有利用点云的结构信息。</li><li>高度依赖初始估计的准确性。</li></ul>"
+  },
+  {
+    "lecture": 6,
+    "page": 17,
+    "title": "迭代最近点（ICP）",
+    "translation": [
+      "ICP 的变体",
+      "点到平面 ICP：考虑源点到目标点所在平面的距离，从而利用点云局部结构。",
+      "平面到平面 ICP：考虑源点云的局部结构，并计算平面到平面的距离。",
+      "快速且鲁棒的 ICP：提高 ICP 的速度与鲁棒性。",
+      "https://arxiv.org/abs/2007.07627",
+      "视频：https://www.youtube.com/watch?v=LcghboLgTiA"
+    ],
+    "translated_title": "迭代最近点（ICP）",
+    "translation_html": "<h3>ICP 的变体</h3><ul><li>点到平面 ICP：考虑源点到目标点所在平面的距离，从而利用点云局部结构。</li><li>平面到平面 ICP：考虑源点云的局部结构，并计算平面到平面的距离。</li><li>快速且鲁棒的 ICP：提高 ICP 的速度与鲁棒性。</li></ul><p>https://arxiv.org/abs/2007.07627</p><p>视频：https://www.youtube.com/watch?v=LcghboLgTiA</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 18,
+    "title": "PoseCNN：结果可视化",
+    "translation": [
+      "@05:62"
+    ],
+    "translated_title": "PoseCNN：结果可视化",
+    "translation_html": "@05:62"
+  },
+  {
+    "lecture": 6,
+    "page": 19,
+    "title": "实例级 6D 位姿估计",
+    "translation": [
+      "@05:63"
+    ],
+    "translated_title": "实例级 6D 位姿估计",
+    "translation_html": "@05:63"
+  },
+  {
+    "lecture": 6,
+    "page": 20,
+    "title": "实例级 6D 位姿估计的局限",
+    "translation": [
+      "@05:64"
+    ],
+    "translated_title": "实例级 6D 位姿估计的局限",
+    "translation_html": "@05:64"
+  },
+  {
+    "lecture": 6,
+    "page": 21,
+    "title": "类别级 6D 物体位姿估计",
+    "translation": [],
+    "translated_title": "类别级 6D 物体位姿估计",
+    "translation_html": ""
+  },
+  {
+    "lecture": 6,
+    "page": 22,
+    "title": "类别级 6D 位姿",
+    "translation": [],
+    "translated_title": "类别级 6D 位姿",
+    "translation_html": "@05:66"
+  },
+  {
+    "lecture": 6,
+    "page": 23,
+    "title": "归一化物体坐标空间：类别级 6D 物体位姿与尺寸估计",
+    "translation": [],
+    "translated_title": "归一化物体坐标空间：类别级 6D 物体位姿与尺寸估计",
+    "translation_html": "@05:67"
+  },
+  {
+    "lecture": 6,
+    "page": 24,
+    "title": "类别级物体位姿与尺寸估计",
+    "translation": [
+      "从 RGB-D 图像中，检测特定类别中此前未见过的物体，并估计其 6D 位姿与三维尺寸。",
+      "不需要已知 CAD 模型。",
+      "RGB；深度；三维尺寸（大小）；6D 位姿：三维平移与旋转。"
+    ],
+    "translated_title": "类别级物体位姿与尺寸估计",
+    "translation_html": "<p>从 RGB-D 图像中，检测特定类别中此前未见过的物体，并估计其 6D 位姿与三维尺寸。</p><p>不需要已知 CAD 模型。</p><p>RGB；深度；三维尺寸（大小）；6D 位姿：三维平移与旋转。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 25,
+    "title": "挑战",
+    "translation": [
+      "类别内形状差异。"
+    ],
+    "translated_title": "挑战",
+    "translation_html": "<ul><li>类别内形状差异。</li></ul>"
+  },
+  {
+    "lecture": 6,
+    "page": 26,
+    "title": "表示：归一化物体坐标空间",
+    "translation": [
+      "@05:70"
+    ],
+    "translated_title": "表示：归一化物体坐标空间",
+    "translation_html": "@05:70"
+  },
+  {
+    "lecture": 6,
+    "page": 27,
+    "title": "表示：归一化物体坐标空间",
+    "translation": [
+      "步骤 1（旋转归一化）：对齐物体朝向。"
+    ],
+    "translated_title": "表示：归一化物体坐标空间",
+    "translation_html": "<p>步骤 1（旋转归一化）：对齐物体朝向。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 28,
+    "title": "表示：归一化物体坐标空间",
+    "translation": [
+      "步骤 2（平移归一化）：将物体中心移至零点。"
+    ],
+    "translated_title": "表示：归一化物体坐标空间",
+    "translation_html": "<p>步骤 2（平移归一化）：将物体中心移至零点。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 29,
+    "title": "表示：归一化物体坐标空间",
+    "translation": [
+      "步骤 3（尺度归一化）：均匀归一化尺度。",
+      "NOCS 图；(0.5,0.5,0.5)、(−0.5,0.5,0.5)、(−0.5,0.5,−0.5)、(0.5,0.5,−0.5)、(−0.5,−0.5,−0.5)、(0.5,−0.5,−0.5)。"
+    ],
+    "translated_title": "表示：归一化物体坐标空间",
+    "translation_html": "<p>步骤 3（尺度归一化）：均匀归一化尺度。</p><p>NOCS 图；(0.5,0.5,0.5)、(−0.5,0.5,0.5)、(−0.5,0.5,−0.5)、(0.5,0.5,−0.5)、(−0.5,−0.5,−0.5)、(0.5,−0.5,−0.5)。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 30,
+    "title": "类别级 6D 位姿的定义",
+    "translation": [
+      "NOCS = 参考坐标系；RGB-D。",
+      "类别级位姿 = 从 NOCS 到相机空间的变换。"
+    ],
+    "translated_title": "类别级 6D 位姿的定义",
+    "translation_html": "<p>NOCS = 参考坐标系；RGB-D。</p><p>类别级位姿 = 从 NOCS 到相机空间的变换。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 31,
+    "title": "从图像到 NOCS 图再到位姿",
+    "translation": [
+      "RGB 图像 → 逐像素预测 → NOCS 图 → NOCS 到点的转换 → NOCS 点。",
+      "深度 → 反投影 → 深度点。",
+      "使用 RANSAC 拟合位姿。"
+    ],
+    "translated_title": "从图像到 NOCS 图再到位姿",
+    "translation_html": "<p>RGB 图像 → 逐像素预测 → NOCS 图 → NOCS 到点的转换 → NOCS 点。</p><p>深度 → 反投影 → 深度点。</p><p>使用 RANSAC 拟合位姿。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 32,
+    "title": "网络",
+    "translation": [
+      "RoI Align；类别标签；卷积；实例掩码；NOCS 图；深度；位姿拟合。",
+      "网络：基于 Mask R-CNN 的检测器。",
+      "输出：9 自由度的完整物体包围盒。"
+    ],
+    "translated_title": "网络",
+    "translation_html": "<p>RoI Align；类别标签；卷积；实例掩码；NOCS 图；深度；位姿拟合。</p><ul><li>网络：基于 Mask R-CNN 的检测器。</li><li>输出：9 自由度的完整物体包围盒。</li></ul>"
+  },
+  {
+    "lecture": 6,
+    "page": 33,
+    "title": "挑战",
+    "translation": [
+      "类别内形状差异。",
+      "数据与标注。"
+    ],
+    "translated_title": "挑战",
+    "translation_html": "<ul><li>类别内形状差异。</li><li>数据与标注。</li></ul>"
+  },
+  {
+    "lecture": 6,
+    "page": 34,
+    "title": "挑战",
+    "translation": [
+      "类别内形状差异。",
+      "数据与标注。"
+    ],
+    "translated_title": "挑战",
+    "translation_html": "<ul><li>类别内形状差异。</li><li>数据与标注。</li></ul>"
+  },
+  {
+    "lecture": 6,
+    "page": 35,
+    "title": "挑战",
+    "translation": [
+      "类别内形状差异。",
+      "数据与标注。",
+      "覆盖不同实例。",
+      "覆盖不同环境。",
+      "准确的 6D 位姿标注。"
+    ],
+    "translated_title": "挑战",
+    "translation_html": "<ul><li>类别内形状差异。</li><li>数据与标注。<ul><li>覆盖不同实例。</li><li>覆盖不同环境。</li><li>准确的 6D 位姿标注。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 6,
+    "page": 36,
+    "title": "上下文感知混合现实（CAMERA）",
+    "translation": [
+      "真实桌面场景；检测到的平面；ShapeNetCore；室内光照；合成物体；合成后的 RGB；真实 NOCS 图；真实深度；真实掩码。",
+      "混合现实数据生成流程。"
+    ],
+    "translated_title": "上下文感知混合现实（CAMERA）",
+    "translation_html": "<p>真实桌面场景；检测到的平面；ShapeNetCore；室内光照；合成物体；合成后的 RGB；真实 NOCS 图；真实深度；真实掩码。</p><p>混合现实数据生成流程。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 37,
+    "title": "数据集统计",
+    "translation": [
+      "上下文感知混合现实。",
+      "300K 张图像（275K／25K）。",
+      "31 个来自 IKEA 的场景。",
+      "1,085 个 ShapeNet 模型。"
+    ],
+    "translated_title": "数据集统计",
+    "translation_html": "<ul><li>上下文感知混合现实。<ul><li>300K 张图像（275K／25K）。</li><li>31 个来自 IKEA 的场景。</li><li>1,085 个 ShapeNet 模型。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 6,
+    "page": 38,
+    "title": "混合现实数据",
+    "translation": [],
+    "translated_title": "混合现实数据",
+    "translation_html": ""
+  },
+  {
+    "lecture": 6,
+    "page": 39,
+    "title": "真实世界数据集",
+    "translation": [
+      "＊这些标记不用于预测。"
+    ],
+    "translated_title": "真实世界数据集",
+    "translation_html": "<p>＊这些标记不用于预测。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 40,
+    "title": "数据集统计",
+    "translation": [
+      "真实数据集（训练／验证／测试）",
+      "8K 幅 RGB-D 图像（4K／0.95K／3.75K）。",
+      "18 个真实场景（6／6／6）。",
+      "42 个不同实例（3／1／3）。",
+      "6 个物体类别",
+      "瓶子、碗、相机、笔记本电脑、马克杯。",
+      "对称物体与非对称物体。"
+    ],
+    "translated_title": "数据集统计",
+    "translation_html": "<h3>真实数据集（训练／验证／测试）</h3><ul><li>8K 幅 RGB-D 图像（4K／0.95K／3.75K）。</li><li>18 个真实场景（6／6／6）。</li><li>42 个不同实例（3／1／3）。</li></ul><h3>6 个物体类别</h3><ul><li>瓶子、碗、相机、笔记本电脑、马克杯。</li><li>对称物体与非对称物体。</li></ul>"
+  },
+  {
+    "lecture": 6,
+    "page": 41,
+    "title": "位姿与尺寸拟合",
+    "translation": [
+      "实例掩码；NOCS 图；深度；位姿拟合。",
+      "利用 Umeyama 算法*估计 7 维相似变换。",
+      "利用 RANSAC 去除离群点。",
+      "https://zpl.fi/aligning-point-patterns-with-kabsch-umeyama-algorithm/"
+    ],
+    "translated_title": "位姿与尺寸拟合",
+    "translation_html": "<p>实例掩码；NOCS 图；深度；位姿拟合。</p><ul><li>利用 Umeyama 算法*估计 7 维相似变换。</li><li>利用 RANSAC 去除离群点。</li></ul><p>https://zpl.fi/aligning-point-patterns-with-kabsch-umeyama-algorithm/</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 42,
+    "title": "位姿与尺寸拟合",
+    "translation": [
+      "请自行阅读。",
+      "实例掩码；NOCS 图；深度；位姿拟合。",
+      "Umeyama 算法。",
+      "RANSAC 去除离群点。",
+      "使用预测 NOCS 的长宽高比例，得到 3 个尺寸。"
+    ],
+    "translated_title": "位姿与尺寸拟合",
+    "translation_html": "<p>请自行阅读。</p><p>实例掩码；NOCS 图；深度；位姿拟合。</p><ul><li>Umeyama 算法。</li><li>RANSAC 去除离群点。</li><li>使用预测 NOCS 的长宽高比例，得到 3 个尺寸。</li></ul>"
+  },
+  {
+    "lecture": 6,
+    "page": 43,
+    "title": "位姿与尺寸拟合",
+    "translation": [
+      "请自行阅读。",
+      "实例掩码；NOCS 图；深度；位姿拟合。",
+      "Umeyama 算法。",
+      "RANSAC 去除离群点。",
+      "根据 NOCS 的长宽高比例得到 3 个尺寸。",
+      "输出：9 自由度的完整物体包围盒。"
+    ],
+    "translated_title": "位姿与尺寸拟合",
+    "translation_html": "<p>请自行阅读。</p><p>实例掩码；NOCS 图；深度；位姿拟合。</p><ul><li>Umeyama 算法。</li><li>RANSAC 去除离群点。</li><li>根据 NOCS 的长宽高比例得到 3 个尺寸。</li><li>输出：9 自由度的完整物体包围盒。</li></ul>"
+  },
+  {
+    "lecture": 6,
+    "page": 44,
+    "title": "处理对称性",
+    "translation": [
+      "对称性感知损失函数：",
+      "L_s = min_i=1,…,∣θ∣ L(ỹᵢ,y*)。",
+      "N 个损失中的最小值。",
+      "请自行阅读。"
+    ],
+    "translated_title": "处理对称性",
+    "translation_html": "<p>对称性感知损失函数：</p><p>\\[L_s=\\min_{i=1,\\ldots,|\\theta|}L(\\tilde y_i,y^*)\\]。</p><p>N 个损失中的最小值。</p><p>请自行阅读。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 45,
+    "title": "结果",
+    "translation": [
+      "真实值；预测结果（我们的方法）。"
+    ],
+    "translated_title": "结果",
+    "translation_html": "<p>真实值；预测结果（我们的方法）。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 46,
+    "title": "消融实验：NOCS 与位姿回归",
+    "translation": [
+      "5 度准确率",
+      "类别",
+      "回归",
+      "NOCS",
+      "相机",
+      "2",
+      "34.2",
+      "笔记本电脑",
+      "2.3",
+      "28.5",
+      "马克杯",
+      "3.3",
+      "4.8",
+      "瓶子",
+      "24.9",
+      "80.4",
+      "碗",
+      "25",
+      "59",
+      "罐子",
+      "28.9",
+      "57.4",
+      "10 度准确率",
+      "类别",
+      "回归",
+      "NOCS",
+      "相机",
+      "21.9",
+      "54.9",
+      "笔记本电脑",
+      "30",
+      "74.2",
+      "马克杯",
+      "20.8",
+      "26.3",
+      "瓶子",
+      "78.3",
+      "95",
+      "碗",
+      "83.8",
+      "92.2",
+      "罐子",
+      "81.7",
+      "95.9",
+      "越高越好。"
+    ],
+    "translated_title": "消融实验：NOCS 与位姿回归",
+    "translation_html": "<h3>5 度准确率</h3><table><thead><tr><th>类别</th><th>回归</th><th>NOCS</th></tr></thead><tbody><tr><td>相机</td><td>2</td><td>34.2</td></tr><tr><td>笔记本电脑</td><td>2.3</td><td>28.5</td></tr><tr><td>马克杯</td><td>3.3</td><td>4.8</td></tr><tr><td>瓶子</td><td>24.9</td><td>80.4</td></tr><tr><td>碗</td><td>25</td><td>59</td></tr><tr><td>罐子</td><td>28.9</td><td>57.4</td></tr></tbody></table><h3>10 度准确率</h3><table><thead><tr><th>类别</th><th>回归</th><th>NOCS</th></tr></thead><tbody><tr><td>相机</td><td>21.9</td><td>54.9</td></tr><tr><td>笔记本电脑</td><td>30</td><td>74.2</td></tr><tr><td>马克杯</td><td>20.8</td><td>26.3</td></tr><tr><td>瓶子</td><td>78.3</td><td>95</td></tr><tr><td>碗</td><td>83.8</td><td>92.2</td></tr><tr><td>罐子</td><td>81.7</td><td>95.9</td></tr></tbody></table><p>越高越好。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 47,
+    "title": "类别级位姿估计的应用",
+    "translation": [
+      "机器人感知透明物体：透明玻璃杯。",
+      "TransNet：通用点云 → Pointformer → 深层特征 → 平移、x 轴、z 轴、尺度。",
+      "类别级透明物体位姿。",
+      "机器人操作透明物体：机器人抓取；机器人倾倒。",
+      "TransNet：类别级透明物体位姿估计，ECCV 2022 研讨会。"
+    ],
+    "translated_title": "类别级位姿估计的应用",
+    "translation_html": "<p>机器人感知透明物体：透明玻璃杯。</p><p>TransNet：通用点云 → Pointformer → 深层特征 → 平移、x 轴、z 轴、尺度。</p><p>类别级透明物体位姿。</p><p>机器人操作透明物体：机器人抓取；机器人倾倒。</p><p>TransNet：类别级透明物体位姿估计，ECCV 2022 研讨会。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 48,
+    "title": "类别级位姿跟踪的应用",
+    "translation": [
+      "机器人视角；对未见物体的实时跟踪；×4。",
+      "6-PACK：基于锚点关键点的类别级 6D 位姿跟踪器，ICRA 2020。"
+    ],
+    "translated_title": "类别级位姿跟踪的应用",
+    "translation_html": "<p>机器人视角；对未见物体的实时跟踪；×4。</p><p>6-PACK：基于锚点关键点的类别级 6D 位姿跟踪器，ICRA 2020。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 49,
+    "title": "刚体物体与关节部件的位姿估计",
+    "translation": [
+      "刚体物体位姿跟踪",
+      "我们的方法；6-PACK；(a) NOCS-REAL275。",
+      "关节物体位姿跟踪",
+      "(b) SAPIEN；(c) BMVC；我们的方法；ANCSH*。",
+      "(d) 机器人交互中的真实世界抽屉。",
+      "CAPTRA：从点云进行刚体和关节物体的类别级位姿跟踪，ICCV 2021，口头报告。"
+    ],
+    "translated_title": "刚体物体与关节部件的位姿估计",
+    "translation_html": "<h3>刚体物体位姿跟踪</h3><p>我们的方法；6-PACK；(a) NOCS-REAL275。</p><h3>关节物体位姿跟踪</h3><p>(b) SAPIEN；(c) BMVC；我们的方法；ANCSH*。</p><p>(d) 机器人交互中的真实世界抽屉。</p><p>CAPTRA：从点云进行刚体和关节物体的类别级位姿跟踪，ICCV 2021，口头报告。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 50,
+    "title": "GAPartNet",
+    "translation": [
+      "借助可泛化且可操作的部件，实现跨类别、可跨域泛化的物体感知与操作。",
+      "CVPR 2023 Highlight；2023 年 6 月 18–22 日，加拿大温哥华。",
+      "Haoran Geng*、Helin Xu*、Chengyang Zhao*、Chao Xu、Li Yi、Siyuan Huang、He Wang⁺。",
+      "北京大学；四川大学；加利福尼亚大学洛杉矶分校；清华大学。"
+    ],
+    "translated_title": "GAPartNet",
+    "translation_html": "<p>借助可泛化且可操作的部件，实现跨类别、可跨域泛化的物体感知与操作。</p><p>CVPR 2023 Highlight；2023 年 6 月 18–22 日，加拿大温哥华。</p><p>Haoran Geng*、Helin Xu*、Chengyang Zhao*、Chao Xu、Li Yi、Siyuan Huang、He Wang⁺。</p><p>北京大学；四川大学；加利福尼亚大学洛杉矶分校；清华大学。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 51,
+    "title": "GAPartNet",
+    "translation": [
+      "PartNet-Mobility：以物体为中心；GAPartNet：以部件为中心。",
+      "9 类部件；8,489 个部件，来自 1,166 个物体、27 个物体类别。",
+      "滑动盖",
+      "圆形固定把手",
+      "铰链门",
+      "铰链盖",
+      "直线固定把手",
+      "滑动抽屉",
+      "铰链旋钮",
+      "滑动按钮",
+      "铰链把手"
+    ],
+    "translated_title": "GAPartNet",
+    "translation_html": "<p>PartNet-Mobility：以物体为中心；GAPartNet：以部件为中心。</p><p>9 类部件；8,489 个部件，来自 1,166 个物体、27 个物体类别。</p><table><tbody><tr><td>滑动盖</td><td>圆形固定把手</td><td>铰链门</td></tr><tr><td>铰链盖</td><td>直线固定把手</td><td>滑动抽屉</td></tr><tr><td>铰链旋钮</td><td>滑动按钮</td><td>铰链把手</td></tr></tbody></table>"
+  },
+  {
+    "lecture": 6,
+    "page": 52,
+    "title": "真实世界实验",
+    "translation": [
+      "输入",
+      "点云；RBG 图像。",
+      "预测",
+      "分割；NPCS 预测；包围盒。",
+      "交互视频"
+    ],
+    "translated_title": "真实世界实验",
+    "translation_html": "<h3>输入</h3><p>点云；RBG 图像。</p><h3>预测</h3><p>分割；NPCS 预测；包围盒。</p><h3>交互视频</h3>"
+  },
+  {
+    "lecture": 6,
+    "page": 53,
+    "title": "",
+    "translation": [],
+    "translated_title": "",
+    "translation_html": ""
+  },
+  {
+    "lecture": 6,
+    "page": 54,
+    "title": "",
+    "translation": [],
+    "translated_title": "",
+    "translation_html": ""
+  },
+  {
+    "lecture": 6,
+    "page": 55,
+    "title": "6D 物体位姿估计的基础模型",
+    "translation": [],
+    "translated_title": "6D 物体位姿估计的基础模型",
+    "translation_html": ""
+  },
+  {
+    "lecture": 6,
+    "page": 56,
+    "title": "6D 位姿估计的基础模型",
+    "translation": [
+      "语言辅助的大规模合成数据生成（§3.1）",
+      "Objaverse；标签〈保温瓶〉；原模型；噪声纹理；形状；扩散模型；大型语言模型（LLM）；重复；增强后的模型；物理引擎；路径追踪。",
+      "“这里有一个〈保温瓶〉。请描述它可能的外观，包括颜色和样式。”",
+      "“这个保温瓶是现代的哑光灰色，带有橙色和白色的几何图案。”",
+      "神经物体建模（§3.2，无模型设置）",
+      "参考图像 → 神经物体场：几何网络 fᵍ、外观网络 fᶜ → 神经 RGB-D 渲染。",
+      "位姿假设生成（§3.3）",
+      "全局位姿采样；粗位姿下的渲染；以位姿为条件的输入裁剪；编码器（共享权重）；H×W×C；卷积残差块；图像块；位置嵌入；Transformer 编码器；线性层；旋转更新；平移更新；精化位姿。",
+      "位姿选择（§3.4）",
+      "K 个假设；假设 0；以位姿为条件的渲染；以位姿为条件的输入裁剪；位姿排序编码器；编码器（共享权重）；H×W×128；卷积残差块；图像块；位置嵌入；多头自注意力；P×512；平均池化；F ∈ ℝ⁵¹²；多头自注意力；K×512；线性层；排序；排名 0、排名 1、排名 K−1。",
+      "FoundationPose 是统一的 6D 物体位姿估计与跟踪基础模型，同时支持基于模型和无模型设置。",
+      "Bowen Wen 等，《FoundationPose：新物体的统一 6D 位姿估计与跟踪》，IEEE 计算机视觉与模式识别会议论文集，2024。"
+    ],
+    "translated_title": "6D 位姿估计的基础模型",
+    "translation_html": "<h3>语言辅助的大规模合成数据生成（§3.1）</h3><p>Objaverse；标签〈保温瓶〉；原模型；噪声纹理；形状；扩散模型；大型语言模型（LLM）；重复；增强后的模型；物理引擎；路径追踪。</p><p>“这里有一个〈保温瓶〉。请描述它可能的外观，包括颜色和样式。”</p><p>“这个保温瓶是现代的哑光灰色，带有橙色和白色的几何图案。”</p><h3>神经物体建模（§3.2，无模型设置）</h3><p>参考图像 → 神经物体场：几何网络 \\(f^g\\)、外观网络 \\(f^c\\) → 神经 RGB-D 渲染。</p><h3>位姿假设生成（§3.3）</h3><p>全局位姿采样；粗位姿下的渲染；以位姿为条件的输入裁剪；编码器（共享权重）；\\(H\\times W\\times C\\)；卷积残差块；图像块；位置嵌入；Transformer 编码器；线性层；旋转更新；平移更新；精化位姿。</p><h3>位姿选择（§3.4）</h3><p>K 个假设；假设 0；以位姿为条件的渲染；以位姿为条件的输入裁剪；位姿排序编码器；编码器（共享权重）；\\(H\\times W\\times128\\)；卷积残差块；图像块；位置嵌入；多头自注意力；\\(P\\times512\\)；平均池化；\\(F\\in\\mathbb R^{512}\\)；多头自注意力；\\(K\\times512\\)；线性层；排序；排名 0、排名 1、排名 \\(K-1\\)。</p><p>FoundationPose 是统一的 6D 物体位姿估计与跟踪基础模型，同时支持基于模型和无模型设置。</p><p>Bowen Wen 等，《FoundationPose：新物体的统一 6D 位姿估计与跟踪》，IEEE 计算机视觉与模式识别会议论文集，2024。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 57,
+    "title": "6D 位姿估计的基础模型",
+    "translation": [
+      "语言辅助的大规模合成数据生成（§3.1）",
+      "Objaverse；标签〈保温瓶〉；原模型；噪声纹理；形状；扩散模型；大型语言模型（LLM）；重复；增强后的模型；物理引擎；路径追踪。",
+      "“这里有一个〈保温瓶〉。请描述它可能的外观，包括颜色和样式。”",
+      "“这个保温瓶是现代的哑光灰色，带有橙色和白色的几何图案。”",
+      "获取真实世界数据需要难以承受的时间和成本。",
+      "合成数据中的 3D 资产往往缺乏足够的规模和多样性。",
+      "一种利用大型语言模型和扩散模型的新型合成数据生成流程。",
+      "Bowen Wen 等，《FoundationPose：新物体的统一 6D 位姿估计与跟踪》，IEEE 计算机视觉与模式识别会议论文集，2024。"
+    ],
+    "translated_title": "6D 位姿估计的基础模型",
+    "translation_html": "<h3>语言辅助的大规模合成数据生成（§3.1）</h3><p>Objaverse；标签〈保温瓶〉；原模型；噪声纹理；形状；扩散模型；大型语言模型（LLM）；重复；增强后的模型；物理引擎；路径追踪。</p><p>“这里有一个〈保温瓶〉。请描述它可能的外观，包括颜色和样式。”</p><p>“这个保温瓶是现代的哑光灰色，带有橙色和白色的几何图案。”</p><ul><li>获取真实世界数据需要难以承受的时间和成本。</li><li>合成数据中的 3D 资产往往缺乏足够的规模和多样性。</li><li>一种利用大型语言模型和扩散模型的新型合成数据生成流程。</li></ul><p>Bowen Wen 等，《FoundationPose：新物体的统一 6D 位姿估计与跟踪》，IEEE 计算机视觉与模式识别会议论文集，2024。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 58,
+    "title": "6D 位姿估计的基础模型",
+    "translation": [
+      "位姿假设生成（§3.3）",
+      "全局位姿采样；粗位姿下的渲染；以位姿为条件的输入裁剪；编码器（共享权重）；H×W×C；卷积残差块；图像块；位置嵌入；Transformer 编码器；线性层；旋转更新；平移更新；精化位姿。",
+      "位姿初始化",
+      "1. 给定 RGB-D 图像，利用 Mask R-CNN 或 CNOS 模型检测物体。",
+      "2. 使用检测到的二维包围盒中心位置对应的三维点和深度中位数，初始化平移。",
+      "3. 从以物体为中心的二十面体细分球面上采样 N 个视点，使相机面向中心，以此初始化旋转。",
+      "Bowen Wen 等，《FoundationPose：新物体的统一 6D 位姿估计与跟踪》，IEEE 计算机视觉与模式识别会议论文集，2024。"
+    ],
+    "translated_title": "6D 位姿估计的基础模型",
+    "translation_html": "<h3>位姿假设生成（§3.3）</h3><p>全局位姿采样；粗位姿下的渲染；以位姿为条件的输入裁剪；编码器（共享权重）；\\(H\\times W\\times C\\)；卷积残差块；图像块；位置嵌入；Transformer 编码器；线性层；旋转更新；平移更新；精化位姿。</p><h3>位姿初始化</h3><ul><li>1. 给定 RGB-D 图像，利用 Mask R-CNN 或 CNOS 模型检测物体。</li><li>2. 使用检测到的二维包围盒中心位置对应的三维点和深度中位数，初始化平移。</li><li>3. 从以物体为中心的二十面体细分球面上采样 N 个视点，使相机面向中心，以此初始化旋转。</li></ul><p>Bowen Wen 等，《FoundationPose：新物体的统一 6D 位姿估计与跟踪》，IEEE 计算机视觉与模式识别会议论文集，2024。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 59,
+    "title": "6D 位姿估计的基础模型",
+    "translation": [
+      "位姿假设生成（§3.3）",
+      "全局位姿采样；粗位姿下的渲染；以位姿为条件的输入裁剪；编码器（共享权重）；H×W×C；卷积残差块；图像块；位置嵌入；Transformer 编码器；线性层；旋转更新；平移更新；精化位姿。",
+      "以位姿为条件的输入裁剪",
+      "1. 输入粗位姿下的物体渲染和输入图像的裁剪区域，输出精化后的位姿。",
+      "2. 将物体原点投影到图像空间作为裁剪中心，以放大后的物体直径作为裁剪尺寸，使物体及附近上下文包含在内。",
+      "3. 这一裁剪策略帮助网络更新平移，以便更好地与观测对齐。",
+      "Bowen Wen 等，《FoundationPose：新物体的统一 6D 位姿估计与跟踪》，IEEE 计算机视觉与模式识别会议论文集，2024。"
+    ],
+    "translated_title": "6D 位姿估计的基础模型",
+    "translation_html": "<h3>位姿假设生成（§3.3）</h3><p>全局位姿采样；粗位姿下的渲染；以位姿为条件的输入裁剪；编码器（共享权重）；\\(H\\times W\\times C\\)；卷积残差块；图像块；位置嵌入；Transformer 编码器；线性层；旋转更新；平移更新；精化位姿。</p><h3>以位姿为条件的输入裁剪</h3><ul><li>1. 输入粗位姿下的物体渲染和输入图像的裁剪区域，输出精化后的位姿。</li><li>2. 将物体原点投影到图像空间作为裁剪中心，以放大后的物体直径作为裁剪尺寸，使物体及附近上下文包含在内。</li><li>3. 这一裁剪策略帮助网络更新平移，以便更好地与观测对齐。</li></ul><p>Bowen Wen 等，《FoundationPose：新物体的统一 6D 位姿估计与跟踪》，IEEE 计算机视觉与模式识别会议论文集，2024。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 60,
+    "title": "6D 位姿估计的基础模型",
+    "translation": [
+      "机器人应用；YCB-Video 数据集上的结果；观测；真实值；我们的方法。",
+      "Bowen Wen 等，《FoundationPose：新物体的统一 6D 位姿估计与跟踪》，IEEE 计算机视觉与模式识别会议论文集，2024。"
+    ],
+    "translated_title": "6D 位姿估计的基础模型",
+    "translation_html": "<p>机器人应用；YCB-Video 数据集上的结果；观测；真实值；我们的方法。</p><p>Bowen Wen 等，《FoundationPose：新物体的统一 6D 位姿估计与跟踪》，IEEE 计算机视觉与模式识别会议论文集，2024。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 61,
+    "title": "物体抓取",
+    "translation": [],
+    "translated_title": "物体抓取",
+    "translation_html": ""
+  },
+  {
+    "lecture": 6,
+    "page": 62,
+    "title": "什么是抓取？",
+    "translation": [
+      "抓取：在一组接触点施加力和力矩，以期望的方式约束物体运动的过程。 抓取合成：寻找抓手位姿或关节构型的高维搜索或优化问题。",
+      "抓取前 → 抓取 → 抓取后。",
+      "抓取合成 → 接近物体 → 物理交互 → 抬起 → 放下／使用（可选）。",
+      "来源：R. Newbury、M. Gu、L. Chumbley、A. Mousavian、C. Eppner、J. Leitner、J. Bohg、A. Morales、T. Asfour、D. Kragic、D. Fox、A. Cosgun，《深度学习抓取合成方法综述》，arXiv:2207.02556。"
+    ],
+    "translated_title": "什么是抓取？",
+    "translation_html": "<ul><li>抓取：在一组接触点施加力和力矩，以期望的方式约束物体运动的过程。</li><li>抓取合成：寻找抓手位姿或关节构型的高维搜索或优化问题。</li></ul><p>抓取前 → 抓取 → 抓取后。</p><p>抓取合成 → 接近物体 → 物理交互 → 抬起 → 放下／使用（可选）。</p><p>来源：R. Newbury、M. Gu、L. Chumbley、A. Mousavian、C. Eppner、J. Leitner、J. Bohg、A. Morales、T. Asfour、D. Kragic、D. Fox、A. Cosgun，《深度学习抓取合成方法综述》，arXiv:2207.02556。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 63,
+    "title": "抓取",
+    "translation": [
+      "抓取位姿：抓手的位置与朝向。",
+      "4 自由度抓取：3 个位置自由度和 1 个朝向自由度。",
+      "6 自由度抓取：3 个位置自由度和 3 个朝向自由度。",
+      "力封闭：能够抵消作用于物体的任意外部力旋量。",
+      "从上向下抓取；6 自由度抓取；灵巧手；平行夹爪。"
+    ],
+    "translated_title": "抓取",
+    "translation_html": "<ul><li>抓取位姿：抓手的位置与朝向。<ul><li>4 自由度抓取：3 个位置自由度和 1 个朝向自由度。</li><li>6 自由度抓取：3 个位置自由度和 3 个朝向自由度。</li></ul></li><li>力封闭：能够抵消作用于物体的任意外部力旋量。</li></ul><p>从上向下抓取；6 自由度抓取；灵巧手；平行夹爪。</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 64,
+    "title": "力封闭",
+    "translation": [
+      "在物理学中：",
+      "给定作用在物体上的一组有摩擦接触，如果力旋量锥的正包络覆盖整个力旋量空间，则称其为力封闭。",
+      "如果一组刚性的固定夹具使一个刚体完全不能运动，则称其为形封闭。",
+      "若所有接触均无摩擦，力封闭条件与一阶形封闭条件相同。",
+      "为机器人手规划抓取时，力封闭是一个较好的最低要求。形封闭通常过于严格，需要太多接触点。",
+      "简单地说，成功抓取 ⇒ 形封闭 ⇒ 力封闭。",
+      "https://modernrobotics.northwestern.edu/nu-gm-book-resource/12-2-3-force-closure"
+    ],
+    "translated_title": "力封闭",
+    "translation_html": "<ul><li>在物理学中：<ul><li>给定作用在物体上的一组有摩擦接触，如果力旋量锥的正包络覆盖整个力旋量空间，则称其为力封闭。</li><li>如果一组刚性的固定夹具使一个刚体完全不能运动，则称其为形封闭。</li></ul></li><li>若所有接触均无摩擦，力封闭条件与一阶形封闭条件相同。</li><li>为机器人手规划抓取时，力封闭是一个较好的最低要求。形封闭通常过于严格，需要太多接触点。</li><li>简单地说，成功抓取 ⇒ 形封闭 ⇒ 力封闭。</li></ul><p>https://modernrobotics.northwestern.edu/nu-gm-book-resource/12-2-3-force-closure</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 65,
+    "title": "力封闭",
+    "translation": [
+      "一个简化的二维问题。",
+      "具有无摩擦接触的二维抓取",
+      "f₁、f₂、f₃；fₓ、fᵧ。",
+      "√ 3 个可能的力向量，其中 2 个线性无关。",
+      "× 在每个接触点均施加非零力时，可以产生合力为零的结果。",
+      "× 原点位于可能施加的力所构成的空间内部。",
+      "由一个有摩擦接触与一个无摩擦接触组成的二维抓取",
+      "f₁、f₂,₁、f₂,₂；fₓ、fᵧ。",
+      "√ 3 个可能的力向量，其中 2 个线性无关。",
+      "√ 在每个接触点均施加非零力时，可以产生合力为零的结果。",
+      "√ 原点位于可能施加的力所构成的空间内部。",
+      "观看：https://www.youtube.com/watch?v=6RWFFMtD5k8"
+    ],
+    "translated_title": "力封闭",
+    "translation_html": "<ul><li>一个简化的二维问题。</li></ul><h3>具有无摩擦接触的二维抓取</h3><p>\\(f_1\\)、\\(f_2\\)、\\(f_3\\)；\\(f_x\\)、\\(f_y\\)。</p><ul><li>√ 3 个可能的力向量，其中 2 个线性无关。</li><li>× 在每个接触点均施加非零力时，可以产生合力为零的结果。</li><li>× 原点位于可能施加的力所构成的空间内部。</li></ul><h3>由一个有摩擦接触与一个无摩擦接触组成的二维抓取</h3><p>\\(f_1\\)、\\(f_{2,1}\\)、\\(f_{2,2}\\)；\\(f_x\\)、\\(f_y\\)。</p><ul><li>√ 3 个可能的力向量，其中 2 个线性无关。</li><li>√ 在每个接触点均施加非零力时，可以产生合力为零的结果。</li><li>√ 原点位于可能施加的力所构成的空间内部。</li></ul><p>观看：https://www.youtube.com/watch?v=6RWFFMtD5k8</p>"
+  },
+  {
+    "lecture": 6,
+    "page": 66,
+    "title": "具身智能导论",
+    "translation": [
+      "下周：第 7 讲，视觉与抓取 III。",
+      "具身感知与交互实验室；2025 年春季。"
+    ],
+    "translated_title": "具身智能导论",
+    "translation_html": "<p>下周：第 7 讲，视觉与抓取 III。</p><p>具身感知与交互实验室；2025 年春季。</p>"
+  }
+]

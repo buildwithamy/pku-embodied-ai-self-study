@@ -1,0 +1,837 @@
+[
+  {
+    "lecture": 4,
+    "page": 1,
+    "title": "具身智能导论",
+    "translation": [
+      "第4讲：机器人学（三）",
+      "王鹤教授",
+      "具身感知与交互实验室",
+      "2025年秋季"
+    ],
+    "translated_title": "具身智能导论",
+    "translation_html": "<p>第4讲：机器人学（三）</p><p>王鹤教授</p><p>具身感知与交互实验室</p><p>2025年秋季</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 2,
+    "title": "课程安排",
+    "translation": [],
+    "translated_title": "课程安排",
+    "translation_html": ""
+  },
+  {
+    "lecture": 4,
+    "page": 3,
+    "title": "课程安排",
+    "translation": [
+      "作业1：上周五晚上发布，截止时间为3月22日（星期六）23:59。",
+      "作业1讨论",
+      "旋转函数：创建一个处理旋转的简单工具箱。",
+      "简化正向运动学：给定一个人形机器人，计算其末端执行器的位置和朝向。"
+    ],
+    "translated_title": "课程安排",
+    "translation_html": "<ul><li>作业1：上周五晚上发布，截止时间为3月22日（星期六）23:59。</li></ul><p>作业1讨论</p><ol><li>旋转函数：创建一个处理旋转的简单工具箱。</li><li>简化正向运动学：给定一个人形机器人，计算其末端执行器的位置和朝向。</li></ol>"
+  },
+  {
+    "lecture": 4,
+    "page": 4,
+    "title": "运动规划",
+    "translation": [],
+    "translated_title": "运动规划",
+    "translation_html": ""
+  },
+  {
+    "lecture": 4,
+    "page": 5,
+    "title": "提纲",
+    "translation": [
+      "问题形式化",
+      "概率路图法（PRM）",
+      "快速扩展随机树（RRT）"
+    ],
+    "translated_title": "提纲",
+    "translation_html": "<ul><li>问题形式化</li><li>概率路图法（PRM）</li><li>快速扩展随机树（RRT）</li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 6,
+    "title": "配置空间",
+    "translation": [
+      "配置空间（C-space）是ℝⁿ的一个子集，包含系统所有可能状态（强化学习中的状态空间）。",
+      "C_free⊆C包含所有有效状态。",
+      "C_obs⊆C表示障碍。",
+      "例子：",
+      "机器人的所有有效位姿。",
+      "机器人的所有有效关节值。",
+      "……"
+    ],
+    "translated_title": "配置空间",
+    "translation_html": "<ul><li>配置空间（C-space）是\\(\\mathbb R^n\\)的一个子集，包含系统所有可能状态（强化学习中的状态空间）。</li><li>\\(C_{\\mathrm{free}}\\subseteq C\\)包含所有有效状态。</li><li>\\(C_{\\mathrm{obs}}\\subseteq C\\)表示障碍。</li><li>例子：<ul><li>机器人的所有有效位姿。</li><li>机器人的所有有效关节值。</li><li>……</li></ul></li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 7,
+    "title": "运动规划",
+    "translation": [
+      "问题：",
+      "给定配置空间C_free。",
+      "给定C_free中的起始状态q_start和目标状态q_goal。",
+      "计算从起点到终点的动作序列。",
+      "挑战：",
+      "需要避开障碍物。",
+      "规划时间范围长。",
+      "规划空间维数高。"
+    ],
+    "translated_title": "运动规划",
+    "translation_html": "<ul><li>问题：<ul><li>给定配置空间\\(C_{\\mathrm{free}}\\)。</li><li>给定\\(C_{\\mathrm{free}}\\)中的起始状态\\(q_{\\mathrm{start}}\\)和目标状态\\(q_{\\mathrm{goal}}\\)。</li><li>计算从起点到终点的动作序列。</li></ul></li><li>挑战：<ul><li>需要避开障碍物。</li><li>规划时间范围长。</li><li>规划空间维数高。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 8,
+    "title": "运动规划",
+    "translation": [
+      "C_free：自由配置空间；C_obs：障碍配置空间；q_I：起点；q_G：目标。",
+      "图4.11：采用配置空间的概念，基本运动规划问题在概念上很简单。任务是在C_free中找到从q_I到q_G的路径。整个区域表示C=C_free∪C_obs。"
+    ],
+    "translated_title": "运动规划",
+    "translation_html": "<p>\\(C_{\\mathrm{free}}\\)：自由配置空间；\\(C_{\\mathrm{obs}}\\)：障碍配置空间；\\(q_I\\)：起点；\\(q_G\\)：目标。</p><p>图4.11：采用配置空间的概念，基本运动规划问题在概念上很简单。任务是在\\(C_{\\mathrm{free}}\\)中找到从\\(q_I\\)到\\(q_G\\)的路径。整个区域表示\\(C=C_{\\mathrm{free}}\\cup C_{\\mathrm{obs}}\\)。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 9,
+    "title": "实例",
+    "translation": [
+      "Ratliff N, Zucker M, Bagnell J A, et al. 《CHOMP：高效运动规划的梯度优化技术》，ICRA 2009。",
+      "Schulman, John, et al. 《通过序列凸优化寻找局部最优的无碰撞轨迹》，RSS 2013。"
+    ],
+    "translated_title": "实例",
+    "translation_html": "<ul><li>Ratliff N, Zucker M, Bagnell J A, et al. 《CHOMP：高效运动规划的梯度优化技术》，ICRA 2009。</li><li>Schulman, John, et al. 《通过序列凸优化寻找局部最优的无碰撞轨迹》，RSS 2013。</li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 10,
+    "title": "机器人的碰撞建模",
+    "translation": [
+      "每个连杆的碰撞网格在URDF中定义。",
+      "使用正向运动学，根据q得到机器人的碰撞网格。",
+      "执行碰撞检查，判断q是否在C_free中。",
+      "显示网格；碰撞网格（碰撞体）。"
+    ],
+    "translated_title": "机器人的碰撞建模",
+    "translation_html": "<ul><li>每个连杆的碰撞网格在URDF中定义。</li><li>使用正向运动学，根据q得到机器人的碰撞网格。</li><li>执行碰撞检查，判断q是否在\\(C_{\\mathrm{free}}\\)中。</li></ul><p>显示网格；碰撞网格（碰撞体）。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 11,
+    "title": "替代方案：凸分解",
+    "translation": [
+      "凸分解：",
+      "将任意复杂的凹三角网格近似为一组凸物体。",
+      "凸网格的碰撞检查远比非凸网格高效。"
+    ],
+    "translated_title": "替代方案：凸分解",
+    "translation_html": "<ul><li>凸分解：<ul><li>将任意复杂的凹三角网格近似为一组凸物体。</li><li>凸网格的碰撞检查远比非凸网格高效。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 12,
+    "title": "替代方案：凸分解",
+    "translation": [
+      "凸包：得到单个凸网格，效率最高，但不精确。",
+      "精确凸分解：NP难；由于生成大量簇，实用性不足。",
+      "近似凸分解（ACD）：将网格三角形分成尽量少的簇，同时确保每个簇的凹度低于用户定义的阈值。",
+      "原始网格；凸包；近似凸分解。",
+      "原始网格；精确凸分解（7611部分）；近似凸分解（20部分）。"
+    ],
+    "translated_title": "替代方案：凸分解",
+    "translation_html": "<ul><li>凸包：得到单个凸网格，效率最高，但不精确。</li><li>精确凸分解：NP难；由于生成大量簇，实用性不足。</li><li>近似凸分解（ACD）：将网格三角形分成尽量少的簇，同时确保每个簇的凹度低于用户定义的阈值。</li></ul><p>原始网格；凸包；近似凸分解。</p><p>原始网格；精确凸分解（7611部分）；近似凸分解（20部分）。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 13,
+    "title": "基于采样的算法",
+    "translation": [
+      "核心思想：随机探索可能情况中的较小子集，而不是穷尽所有可能情况。",
+      "优点：",
+      "概率完备。",
+      "只了解部分C_free即可求解问题。",
+      "容易应用于高维配置空间。",
+      "缺点：",
+      "需要找到两个相近点之间的路径。",
+      "C_free连通性较差时效果不好。",
+      "永不最优。"
+    ],
+    "translated_title": "基于采样的算法",
+    "translation_html": "<ul><li>核心思想：随机探索可能情况中的较小子集，而不是穷尽所有可能情况。</li><li>优点：<ul><li>概率完备。</li><li>只了解部分\\(C_{\\mathrm{free}}\\)即可求解问题。</li><li>容易应用于高维配置空间。</li></ul></li><li>缺点：<ul><li>需要找到两个相近点之间的路径。</li><li>\\(C_{\\mathrm{free}}\\)连通性较差时效果不好。</li><li>永不最优。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 14,
+    "title": "概率路图法（PRM）",
+    "translation": [],
+    "translated_title": "概率路图法（PRM）",
+    "translation_html": ""
+  },
+  {
+    "lecture": 4,
+    "page": 15,
+    "title": "概率路图（PRM）",
+    "translation": [
+      "算法包含两个阶段：",
+      "建图阶段：",
+      "在C_free中随机采样状态。",
+      "将每个采样状态与其邻居连接。",
+      "将起始状态和目标状态连接到图。",
+      "查询阶段：运行Dijkstra等寻路算法。"
+    ],
+    "translated_title": "概率路图（PRM）",
+    "translation_html": "<ul><li>算法包含两个阶段：<ul><li>建图阶段：<ul><li>在\\(C_{\\mathrm{free}}\\)中随机采样状态。</li><li>将每个采样状态与其邻居连接。</li><li>将起始状态和目标状态连接到图。</li></ul></li><li>查询阶段：运行Dijkstra等寻路算法。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 16,
+    "title": "拒绝采样",
+    "translation": [
+      "目标是在C_free中均匀采样。",
+      "方法：",
+      "在C上均匀采样。",
+      "拒绝不在可行区域中的样本。"
+    ],
+    "translated_title": "拒绝采样",
+    "translation_html": "<ul><li>目标是在\\(C_{\\mathrm{free}}\\)中均匀采样。</li><li>方法：<ul><li>在C上均匀采样。</li><li>拒绝不在可行区域中的样本。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 17,
+    "title": "流程",
+    "translation": [
+      "输入：n为路图中的采样节点数，k为每个配置需检查的最近邻数，q_start、q_goal。",
+      "V←{q_start,q_goal}；E←∅。",
+      "当|V|<n时：重复令q←C中的随机配置，直到q∈C_free。",
+      "对每个q∈V：",
+      "N_q←根据距离函数，从V中选取q的k个最近邻。",
+      "对每个q′∈N_q：若(q,q′)∉E且(q,q′)∈C_free，则E←E∪{(q,q′)}。",
+      "使用Dijkstra算法寻找从q_start到q_goal的路径。"
+    ],
+    "translated_title": "流程",
+    "translation_html": "<p>输入：n为路图中的采样节点数，k为每个配置需检查的最近邻数，\\(q_{\\mathrm{start}}\\)、\\(q_{\\mathrm{goal}}\\)。</p><p>\\(V\\leftarrow\\{q_{\\mathrm{start}},q_{\\mathrm{goal}}\\};\\quad E\\leftarrow\\varnothing\\)。</p><ul><li>当\\(|V|<n\\)时：重复令q←C中的随机配置，直到\\(q\\in C_{\\mathrm{free}}\\)。</li><li>对每个\\(q\\in V\\)：<ul><li>\\(N_q\\)←根据距离函数，从V中选取q的k个最近邻。</li><li>对每个\\(q^{\\prime}\\in N_q\\)：若\\((q,q^{\\prime})\\notin E\\)且\\((q,q^{\\prime})\\in C_{\\mathrm{free}}\\)，则\\(E\\leftarrow E\\cup\\{(q,q^{\\prime})\\}\\)。</li></ul></li></ul><p>使用Dijkstra算法寻找从\\(q_{\\mathrm{start}}\\)到\\(q_{\\mathrm{goal}}\\)的路径。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 18,
+    "title": "挑战",
+    "translation": [
+      "连接相邻点：通常需要求解动力学。",
+      "碰撞检查：检查边是否位于配置空间中需要很长时间。"
+    ],
+    "translated_title": "挑战",
+    "translation_html": "<ul><li>连接相邻点：通常需要求解动力学。</li><li>碰撞检查：检查边是否位于配置空间中需要很长时间。</li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 19,
+    "title": "实例",
+    "translation": [
+      "PRM生成图G=(V,E)，使每条边都位于配置空间中，且不与障碍碰撞。"
+    ],
+    "translated_title": "实例",
+    "translation_html": "<p>PRM生成图\\(G=(V,E)\\)，使每条边都位于配置空间中，且不与障碍碰撞。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 20,
+    "title": "实例",
+    "translation": [
+      "寻找从起始状态q_start到目标状态q_goal的路径。",
+      "q_start；q_goal。"
+    ],
+    "translated_title": "实例",
+    "translation_html": "<p>寻找从起始状态\\(q_{\\mathrm{start}}\\)到目标状态\\(q_{\\mathrm{goal}}\\)的路径。</p><p>\\(q_{\\mathrm{start}}\\)；\\(q_{\\mathrm{goal}}\\)。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 21,
+    "title": "局限：窄通道",
+    "translation": [
+      "不容易在狭窄桥接区域采到点。",
+      "q_start；q_goal。"
+    ],
+    "translated_title": "局限：窄通道",
+    "translation_html": "<p>不容易在狭窄桥接区域采到点。</p><p>\\(q_{\\mathrm{start}}\\)；\\(q_{\\mathrm{goal}}\\)。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 22,
+    "title": "高斯采样",
+    "translation": [
+      "在配置空间中均匀生成样本q₁。",
+      "从高斯分布N(q₁,σ²)生成另一个样本q₂。",
+      "若q₁∈C_free且q₂∉C_free，则加入q₁。",
+      "均匀采样；高斯采样。"
+    ],
+    "translated_title": "高斯采样",
+    "translation_html": "<ul><li>在配置空间中均匀生成样本\\(q_1\\)。</li><li>从高斯分布\\(N(q_1,\\sigma^2)\\)生成另一个样本\\(q_2\\)。</li><li>若\\(q_1\\in C_{\\mathrm{free}}\\)且\\(q_2\\notin C_{\\mathrm{free}}\\)，则加入\\(q_1\\)。</li></ul><p>均匀采样；高斯采样。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 23,
+    "title": "桥采样",
+    "translation": [
+      "在配置空间中均匀生成样本q₁。",
+      "从高斯分布N(q₁,σ²)生成另一个样本q₂。",
+      "q₃=(q₁+q₂)/2。",
+      "若q₁、q₂均不在C_free中，则加入q₃。",
+      "均匀采样；桥采样。",
+      "图2：在窄通道（左）中建立短桥，比在宽开放自由空间（右）中容易得多。"
+    ],
+    "translated_title": "桥采样",
+    "translation_html": "<ul><li>在配置空间中均匀生成样本\\(q_1\\)。</li><li>从高斯分布\\(N(q_1,\\sigma^2)\\)生成另一个样本\\(q_2\\)。</li><li>\\(q_3=\\frac{q_1+q_2}{2}\\)。</li><li>若\\(q_1\\)、\\(q_2\\)均不在\\(C_{\\mathrm{free}}\\)中，则加入\\(q_3\\)。</li></ul><p>均匀采样；桥采样。</p><p>图2：在窄通道（左）中建立短桥，比在宽开放自由空间（右）中容易得多。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 24,
+    "title": "快速扩展随机树（RRT）",
+    "translation": [],
+    "translated_title": "快速扩展随机树（RRT）",
+    "translation_html": ""
+  },
+  {
+    "lecture": 4,
+    "page": 25,
+    "title": "快速扩展随机树（RRT）",
+    "translation": [
+      "RRT利用配置空间中的随机样本，生长一棵以起始状态为根的树。",
+      "每采到一个样本，尝试连接它与树中最近的状态。若该连接位于配置空间中，便在树中产生一个新状态。"
+    ],
+    "translated_title": "快速扩展随机树（RRT）",
+    "translation_html": "<ul><li>RRT利用配置空间中的随机样本，生长一棵以起始状态为根的树。</li><li>每采到一个样本，尝试连接它与树中最近的状态。若该连接位于配置空间中，便在树中产生一个新状态。</li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 26,
+    "title": "扩展操作",
+    "translation": [
+      "q_init；q_near；q_new；q；ε。",
+      "图3：EXTEND扩展操作。"
+    ],
+    "translated_title": "扩展操作",
+    "translation_html": "<p>\\(q_{\\mathrm{init}}\\)；\\(q_{\\mathrm{near}}\\)；\\(q_{\\mathrm{new}}\\)；q；\\(\\varepsilon\\)。</p><p>图3：EXTEND扩展操作。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 27,
+    "title": "流程",
+    "translation": [
+      "输入：n为树中的采样节点数，ε为步长，β为采样q_goal的概率，q_start、q_goal。",
+      "V←{q_start}；E←∅。",
+      "对i=1至n：",
+      "若rand(0,1)<β，则q_target←q_goal；否则q_target←从C_free均匀随机采样。",
+      "q_near←V中q_target的最近邻。",
+      "q_new←q_near+ε(q_target−q_near)/|q_near−q_target|。",
+      "若q_new∉V、q_new∈C_free且(q_near,q_new)∈C_free，则V←V∪{q_new}，E←E∪{(q_near,q_new)}。",
+      "使用Dijkstra算法寻找从q_start到q_goal的路径。"
+    ],
+    "translated_title": "流程",
+    "translation_html": "<p>输入：n为树中的采样节点数，\\(\\varepsilon\\)为步长，\\(\\beta\\)为采样\\(q_{\\mathrm{goal}}\\)的概率，\\(q_{\\mathrm{start}}\\)、\\(q_{\\mathrm{goal}}\\)。</p><p>\\(V\\leftarrow\\{q_{\\mathrm{start}}\\};\\quad E\\leftarrow\\varnothing\\)。</p><ul><li>对i=1至n：<ul><li>若\\(\\operatorname{rand}(0,1)<\\beta\\)，则\\(q_{\\mathrm{target}}\\leftarrow q_{\\mathrm{goal}}\\)；否则\\(q_{\\mathrm{target}}\\)←从\\(C_{\\mathrm{free}}\\)均匀随机采样。</li><li>\\(q_{\\mathrm{near}}\\)←V中\\(q_{\\mathrm{target}}\\)的最近邻。</li><li>\\(q_{\\mathrm{new}}\\leftarrow q_{\\mathrm{near}}+\\varepsilon\\frac{q_{\\mathrm{target}}-q_{\\mathrm{near}}}{|q_{\\mathrm{near}}-q_{\\mathrm{target}}|}\\)。</li><li>若\\(q_{\\mathrm{new}}\\notin V\\)、\\(q_{\\mathrm{new}}\\in C_{\\mathrm{free}}\\)且\\((q_{\\mathrm{near}},q_{\\mathrm{new}})\\in C_{\\mathrm{free}}\\)，则\\(V\\leftarrow V\\cup\\{q_{\\mathrm{new}}\\}\\)，\\(E\\leftarrow E\\cup\\{(q_{\\mathrm{near}},q_{\\mathrm{new}})\\}\\)。</li></ul></li></ul><p>使用Dijkstra算法寻找从\\(q_{\\mathrm{start}}\\)到\\(q_{\\mathrm{goal}}\\)的路径。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 28,
+    "title": "挑战",
+    "translation": [
+      "在树中寻找最近邻：",
+      "需要支持快速在线查询。",
+      "例子：KD树。",
+      "需要选择合适的ε，以高效扩展树：",
+      "ε大：难以生成新样本。",
+      "ε小：树中样本太多。"
+    ],
+    "translated_title": "挑战",
+    "translation_html": "<ul><li>在树中寻找最近邻：<ul><li>需要支持快速在线查询。</li><li>例子：KD树。</li></ul></li><li>需要选择合适的\\(\\varepsilon\\)，以高效扩展树：<ul><li>\\(\\varepsilon\\)大：难以生成新样本。</li><li>\\(\\varepsilon\\)小：树中样本太多。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 29,
+    "title": "RRT-Connect",
+    "translation": [
+      "分别从q_start和q_start开始生长两棵树，而不是只生长一棵。",
+      "让两棵树朝彼此生长，而不是朝随机配置生长。",
+      "以多个ε步长生长，代替单步生长，从而加强贪婪性。",
+      "Kuffner, James J., and Steven M. LaValle. 《RRT-connect：一种高效的单次查询路径规划方法》。ICRA 2000，IEEE国际机器人与自动化会议，卷2，IEEE，2000。"
+    ],
+    "translated_title": "RRT-Connect",
+    "translation_html": "<ul><li>分别从\\(q_{\\mathrm{start}}\\)和\\(q_{\\mathrm{start}}\\)开始生长两棵树，而不是只生长一棵。</li><li>让两棵树朝彼此生长，而不是朝随机配置生长。</li><li>以多个\\(\\varepsilon\\)步长生长，代替单步生长，从而加强贪婪性。</li></ul><p>Kuffner, James J., and Steven M. LaValle. 《RRT-connect：一种高效的单次查询路径规划方法》。ICRA 2000，IEEE国际机器人与自动化会议，卷2，IEEE，2000。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 30,
+    "title": "伪代码",
+    "translation": [
+      "RANDOM_CONFIG(q_goal)：随机配置",
+      "若rand(0,1)<β，返回q_goal；否则返回C_free中的随机样本。",
+      "EXTEND(T,q)：扩展",
+      "q_near←NEAREST_NEIGHBOR(T,q)。",
+      "若|q_near−q|<ε，q_new←q；否则q_new←q_near+ε(q−q_near)/|q−q_near|。",
+      "若q_new∈C_free且(q_near,q_new)∈C_free：T.add_vertex(q_new)，T.add_edge((q_near,q_new))；若q_new=q，返回Reached（到达），否则返回Advanced（前进）。",
+      "否则返回Trapped（受阻）。",
+      "CONNECT(T,q)：连接",
+      "重复S←EXTEND(T,q)，直到S≠Advanced；返回S。",
+      "RRT_CONNECT(q_start,q_goal)",
+      "T_a.init(q_start)，T_b.init(q_goal)。",
+      "对k=1至K：q_rand←RANDOM_CONFIG(q_goal)；若EXTEND(T_a,q_rand)≠Trapped且CONNECT(T_b,q_new)=Reached，返回PATH(T_a,T_b)；交换q_start与q_goal，交换T_a与T_b。",
+      "返回Failure（失败）。"
+    ],
+    "translated_title": "伪代码",
+    "translation_html": "<h3>RANDOM_CONFIG(\\(q_{\\mathrm{goal}}\\))：随机配置</h3><p>若\\(\\operatorname{rand}(0,1)<\\beta\\)，返回\\(q_{\\mathrm{goal}}\\)；否则返回\\(C_{\\mathrm{free}}\\)中的随机样本。</p><h3>EXTEND(T,q)：扩展</h3><ul><li>\\(q_{\\mathrm{near}}\\)←NEAREST_NEIGHBOR(T,q)。</li><li>若\\(|q_{\\mathrm{near}}-q|<\\varepsilon\\)，\\(q_{\\mathrm{new}}\\leftarrow q\\)；否则\\(q_{\\mathrm{new}}\\leftarrow q_{\\mathrm{near}}+\\varepsilon\\frac{q-q_{\\mathrm{near}}}{|q-q_{\\mathrm{near}}|}\\)。</li><li>若\\(q_{\\mathrm{new}}\\in C_{\\mathrm{free}}\\)且\\((q_{\\mathrm{near}},q_{\\mathrm{new}})\\in C_{\\mathrm{free}}\\)：T.add_vertex(\\(q_{\\mathrm{new}}\\))，T.add_edge((\\(q_{\\mathrm{near}}\\),\\(q_{\\mathrm{new}}\\)))；若\\(q_{\\mathrm{new}}=q\\)，返回Reached（到达），否则返回Advanced（前进）。</li><li>否则返回Trapped（受阻）。</li></ul><h3>CONNECT(T,q)：连接</h3><p>重复S←EXTEND(T,q)，直到S≠Advanced；返回S。</p><h3>RRT_CONNECT(\\(q_{\\mathrm{start}}\\),\\(q_{\\mathrm{goal}}\\))</h3><ul><li>T_a.init(\\(q_{\\mathrm{start}}\\))，T_b.init(\\(q_{\\mathrm{goal}}\\))。</li><li>对k=1至K：q_rand←RANDOM_CONFIG(\\(q_{\\mathrm{goal}}\\))；若EXTEND(T_a,q_rand)≠Trapped且CONNECT(T_b,\\(q_{\\mathrm{new}}\\))=Reached，返回PATH(T_a,T_b)；交换\\(q_{\\mathrm{start}}\\)与\\(q_{\\mathrm{goal}}\\)，交换T_a与T_b。</li><li>返回Failure（失败）。</li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 31,
+    "title": "捷径化",
+    "translation": [
+      "RRT与RRT-Connect等算法不是渐近最优的。",
+      "PRM是渐近最优的，但需要大量采样。",
+      "PRM与RRT经常生成曲折、不自然的路径。",
+      "捷径化是一种非常有用的后处理启发式方法，可以解决这些问题。"
+    ],
+    "translated_title": "捷径化",
+    "translation_html": "<ul><li>RRT与RRT-Connect等算法不是渐近最优的。</li><li>PRM是渐近最优的，但需要大量采样。</li><li>PRM与RRT经常生成曲折、不自然的路径。</li><li>捷径化是一种非常有用的后处理启发式方法，可以解决这些问题。</li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 32,
+    "title": "捷径化",
+    "translation": [
+      "图11：捷径化启发式可以快速平滑由采样规划器生成的路径中最曲折的部分。",
+      "为此，沿路径随机采样两个点。令路径为在单位区间上参数化的曲线y(s):[0,1]→C，采样u,v∈[0,1]。若Visible(y(u),y(v))为真，就用直线路径替换u与v之间的路径部分；否则重新开始采样。重复此过程若干次。"
+    ],
+    "translated_title": "捷径化",
+    "translation_html": "<p>图11：捷径化启发式可以快速平滑由采样规划器生成的路径中最曲折的部分。</p><p>为此，沿路径随机采样两个点。令路径为在单位区间上参数化的曲线\\(y(s):[0,1]\\to C\\)，采样\\(u,v\\in[0,1]\\)。若Visible(y(u),y(v))为真，就用直线路径替换u与v之间的路径部分；否则重新开始采样。重复此过程若干次。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 33,
+    "title": "捷径化",
+    "translation": [
+      "捷径化只是局部优化技术，但速度很快。时间限制较短时，它实际上可能给出比PRM和RRT好得多的路径！",
+      "然而，捷径化很快会停止改进，渐近最优技术最终会胜出。",
+      "将捷径化与随机重启结合，可以克服“停滞”问题。"
+    ],
+    "translated_title": "捷径化",
+    "translation_html": "<ul><li>捷径化只是局部优化技术，但速度很快。时间限制较短时，它实际上可能给出比PRM和RRT好得多的路径！</li><li>然而，捷径化很快会停止改进，渐近最优技术最终会胜出。</li><li>将捷径化与随机重启结合，可以克服“停滞”问题。</li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 34,
+    "title": "捷径化",
+    "translation": [
+      "算法：Shortcutting(y,N)",
+      "执行n次迭代。",
+      "令a←y(u)，其中u∼Uniform([0,1])。",
+      "令b←y(v)，其中v∼Uniform([0,1])。",
+      "若u>v，交换u、v，同时交换a、b。",
+      "若Visible(a,b)，则用线段ab替换y中u至v的部分。",
+      "重新参数化y，使定义域为单位区间。",
+      "返回y。",
+      "算法：带随机重启的捷径化(T_plan,N_shortcut,N_refine,T_total)",
+      "P←RRT-Init()。",
+      "y_best←RRT-Plan(P,T)。",
+      "若没有找到路径，返回“失败”。",
+      "P←RRT-Init()（重置规划器）。",
+      "当规划耗时小于T_total：y_best←Shortcut(y_best,N_refine)（继续改进最佳路径）；y←RRT-Plan(P,T_plan)。",
+      "若找到路径y：P←RRT-Init()（重置规划器）；y←Shortcut(y,N_shortcut)；若Cost(y)<Cost(y_best)，则y_best←y（找到更好的路径）。",
+      "返回y_best。"
+    ],
+    "translated_title": "捷径化",
+    "translation_html": "<h3>算法：Shortcutting(y,N)</h3><ol><li>执行n次迭代。</li><li>令\\(a\\leftarrow y(u)\\)，其中\\(u\\sim\\operatorname{Uniform}([0,1])\\)。</li><li>令\\(b\\leftarrow y(v)\\)，其中\\(v\\sim\\operatorname{Uniform}([0,1])\\)。</li><li>若\\(u>v\\)，交换u、v，同时交换a、b。</li><li>若Visible(a,b)，则用线段ab替换y中u至v的部分。</li><li>重新参数化y，使定义域为单位区间。</li><li>返回y。</li></ol><h3>算法：带随机重启的捷径化(T_plan,N_shortcut,N_refine,T_total)</h3><ol><li>P←RRT-Init()。</li><li>y_best←RRT-Plan(P,T)。</li><li>若没有找到路径，返回“失败”。</li><li>P←RRT-Init()（重置规划器）。</li><li>当规划耗时小于T_total：y_best←Shortcut(y_best,N_refine)（继续改进最佳路径）；y←RRT-Plan(P,T_plan)。</li><li>若找到路径y：P←RRT-Init()（重置规划器）；y←Shortcut(y,N_shortcut)；若Cost(y)&lt;Cost(y_best)，则y_best←y（找到更好的路径）。</li><li>返回y_best。</li></ol>"
+  },
+  {
+    "lecture": 4,
+    "page": 35,
+    "title": "实例：OMPL",
+    "translation": [
+      "开放运动规划库",
+      "ROS-MoveIt中的默认规划库。",
+      "强大的先进采样运动规划算法集合。",
+      "MoveIt系统架构",
+      "用户／人工智能；MoveIt命令接口；RViz插件；原始动作；占据地图；运动组；规划场景；运动规划模块；规划流水线；规划接口；轨迹执行管理器；控制器；CHOMP：协变哈密顿运动优化；OMPL：开放运动规划库；SBPL：基于搜索的规划库；碰撞检测；FCL：灵活碰撞库；PCD：近邻碰撞检测。",
+      "图例：moveit_core包；moveit_ros包；外部包依赖。"
+    ],
+    "translated_title": "实例：OMPL",
+    "translation_html": "<h3>开放运动规划库</h3><ul><li>ROS-MoveIt中的默认规划库。</li><li>强大的先进采样运动规划算法集合。</li></ul><h3>MoveIt系统架构</h3><p>用户／人工智能；MoveIt命令接口；RViz插件；原始动作；占据地图；运动组；规划场景；运动规划模块；规划流水线；规划接口；轨迹执行管理器；控制器；CHOMP：协变哈密顿运动优化；OMPL：开放运动规划库；SBPL：基于搜索的规划库；碰撞检测；FCL：灵活碰撞库；PCD：近邻碰撞检测。</p><p>图例：moveit_core包；moveit_ros包；外部包依赖。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 36,
+    "title": "实例：OMPL",
+    "translation": [
+      "开放运动规划库（OMPL）",
+      "几何规划器：",
+      "只考虑系统的几何和运动学约束，假定任何可行路径都能转换为动力学可行轨迹。",
+      "RRT（默认RRTConnect、RRT*等），PRM（LazyPRM、PRM*、LazyPRM*等）。",
+      "基于控制的规划器：",
+      "若所考虑的系统受微分约束，则使用基于控制的规划器。这些规划器通过状态传播，而非简单插值来生成运动。",
+      "RRT、Sparse Stable RRT等。"
+    ],
+    "translated_title": "实例：OMPL",
+    "translation_html": "<h3>开放运动规划库（OMPL）</h3><ul><li>几何规划器：<ul><li>只考虑系统的几何和运动学约束，假定任何可行路径都能转换为动力学可行轨迹。</li><li>RRT（默认RRTConnect、RRT*等），PRM（LazyPRM、PRM*、LazyPRM*等）。</li></ul></li><li>基于控制的规划器：<ul><li>若所考虑的系统受微分约束，则使用基于控制的规划器。这些规划器通过状态传播，而非简单插值来生成运动。</li><li>RRT、Sparse Stable RRT等。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 37,
+    "title": "实例：OMPL",
+    "translation": [
+      "开放运动规划库（OMPL）",
+      "RRTConnect演示： OMPL：RRTConnect演示：https://www.youtube.com/watch?v=5IFyw0xo1qg RRTConnect规划器：https://www.youtube.com/watch?v=buFMSEhD65I RRT Connect动画：https://www.youtube.com/watch?v=cxyRDIBAIR0 MATLAB教程：https://www.youtube.com/watch?v=5IFyw0xo1qg"
+    ],
+    "translated_title": "实例：OMPL",
+    "translation_html": "<h3>开放运动规划库（OMPL）</h3><ul><li>RRTConnect演示：<ul><li>OMPL：RRTConnect演示：https://www.youtube.com/watch?v=5IFyw0xo1qg</li><li>RRTConnect规划器：https://www.youtube.com/watch?v=buFMSEhD65I</li><li>RRT Connect动画：https://www.youtube.com/watch?v=cxyRDIBAIR0</li><li>MATLAB教程：https://www.youtube.com/watch?v=5IFyw0xo1qg</li></ul></li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 38,
+    "title": "控制系统",
+    "translation": [],
+    "translated_title": "控制系统",
+    "translation_html": ""
+  },
+  {
+    "lecture": 4,
+    "page": 39,
+    "title": "控制系统",
+    "translation": [
+      "主要组成：",
+      "传感器，例如关节角度、速度、力矩传感器。",
+      "执行器，例如关节电机。",
+      "控制器。",
+      "控制系统框图。",
+      "期望行为→控制器→低功率控制信号→放大器→高功率控制信号→执行器与传动机构→力与力矩→机械臂与环境动力学。",
+      "局部反馈；力扰动；运动与力；传感器；传感器误差。"
+    ],
+    "translated_title": "控制系统",
+    "translation_html": "<ul><li>主要组成：<ul><li>传感器，例如关节角度、速度、力矩传感器。</li><li>执行器，例如关节电机。</li><li>控制器。</li></ul></li><li>控制系统框图。</li></ul><p>期望行为→控制器→低功率控制信号→放大器→高功率控制信号→执行器与传动机构→力与力矩→机械臂与环境动力学。</p><p>局部反馈；力扰动；运动与力；传感器；传感器误差。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 40,
+    "title": "控制器",
+    "translation": [
+      "框图。",
+      "简化框图。",
+      "期望行为；控制器；低功率控制信号；放大器；高功率控制信号；执行器与传动机构；局部反馈；力与力矩；力扰动；机械臂与环境动力学；运动与力；传感器；传感器误差。",
+      "简化框图：期望行为→控制器→力与力矩→机械臂与环境动力学；反馈为运动与力。"
+    ],
+    "translated_title": "控制器",
+    "translation_html": "<ul><li>框图。</li><li>简化框图。</li></ul><p>期望行为；控制器；低功率控制信号；放大器；高功率控制信号；执行器与传动机构；局部反馈；力与力矩；力扰动；机械臂与环境动力学；运动与力；传感器；传感器误差。</p><p>简化框图：期望行为→控制器→力与力矩→机械臂与环境动力学；反馈为运动与力。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 41,
+    "title": "控制系统",
+    "translation": [
+      "开环（前馈，FF）控制：",
+      "没有状态估计器。",
+      "没有反馈：存在噪声和扰动问题。",
+      "使用启发式方法达到期望状态。",
+      "闭环（反馈，FB）控制：",
+      "达到期望状态。",
+      "抵消扰动。",
+      "稳定不稳定系统。",
+      "前馈与反馈控制。",
+      "输入；误差；控制器；输出；前馈控制器；反馈控制器。"
+    ],
+    "translated_title": "控制系统",
+    "translation_html": "<ul><li>开环（前馈，FF）控制：<ul><li>没有状态估计器。</li><li>没有反馈：存在噪声和扰动问题。</li><li>使用启发式方法达到期望状态。</li></ul></li><li>闭环（反馈，FB）控制：<ul><li>达到期望状态。</li><li>抵消扰动。</li><li>稳定不稳定系统。</li></ul></li><li>前馈与反馈控制。</li></ul><p>输入；误差；控制器；输出；前馈控制器；反馈控制器。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 42,
+    "title": "控制系统的有效性",
+    "translation": [
+      "尽快达到期望状态，并保持该状态。",
+      "希望系统：",
+      "达到稳态——最小化稳态误差。",
+      "最小化瞬态响应——快速达到稳态。",
+      "在稳态保持稳定——最小化稳态附近的振荡。"
+    ],
+    "translated_title": "控制系统的有效性",
+    "translation_html": "<ul><li>尽快达到期望状态，并保持该状态。</li><li>希望系统：<ul><li>达到稳态——最小化稳态误差。</li><li>最小化瞬态响应——快速达到稳态。</li><li>在稳态保持稳定——最小化稳态附近的振荡。</li></ul></li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 43,
+    "title": "误差响应",
+    "translation": [
+      "误差函数：",
+      "期望状态：θ_d。",
+      "当前状态：θ。",
+      "误差：θ_e=θ_d−θ。",
+      "稳态误差响应：e_ss=lim_{t→∞}θ_e(t)。",
+      "瞬态误差响应：超调；调节时间。",
+      "超调=|a/b|×100%；超调；2%调节时间；θ_e；e_ss；t。"
+    ],
+    "translated_title": "误差响应",
+    "translation_html": "<ul><li>误差函数：<ul><li>期望状态：\\(\\theta_d\\)。</li><li>当前状态：θ。</li><li>误差：\\(\\theta_e=\\theta_d-\\theta\\)。</li></ul></li><li>稳态误差响应：\\(e_{\\mathrm{ss}}=\\lim_{t\\to\\infty}\\theta_e(t)\\)。</li><li>瞬态误差响应：超调；调节时间。</li></ul><p>超调=\\(\\left|\\frac{a}{b}\\right|\\times100\\%\\)；超调；2%调节时间；\\(\\theta_e\\)；\\(e_{\\mathrm{ss}}\\)；t。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 44,
+    "title": "PID控制器",
+    "translation": [],
+    "translated_title": "PID控制器",
+    "translation_html": ""
+  },
+  {
+    "lecture": 4,
+    "page": 45,
+    "title": "控制器",
+    "translation": [
+      "如何将误差信号转换为指令？",
+      "输出：发送给电机的信号，例如速度指令、力／力矩指令等。",
+      "输入；误差；控制器；输出。"
+    ],
+    "translated_title": "控制器",
+    "translation_html": "<ul><li>如何将误差信号转换为指令？</li><li>输出：发送给电机的信号，例如速度指令、力／力矩指令等。</li></ul><p>输入；误差；控制器；输出。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 46,
+    "title": "比例控制",
+    "translation": [
+      "让控制信号与当前状态误差的大小成正比。",
+      "比例（P）控制：P=K_pθ_e(t)。",
+      "输入；误差；乘以K_p；输出。"
+    ],
+    "translated_title": "比例控制",
+    "translation_html": "<ul><li>让控制信号与当前状态误差的大小成正比。</li><li>比例（P）控制：\\(P=K_p\\theta_e(t)\\)。</li></ul><p>输入；误差；乘以\\(K_p\\)；输出。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 47,
+    "title": "比例控制",
+    "translation": [
+      "若控制信号改变状态的一阶导数（速度信号）：θ̇(t)=K_pθ_e(t)。",
+      "有：θ̇_d(t)−θ̇_e(t)=K_pθ_e(t)。",
+      "若期望状态以恒定速度移动：θ̇_d(t)=c。",
+      "求解常微分方程得到误差响应：θ_e(t)=c/K_p+(θ_e(0)−c/K_p)e^(−K_pt)。",
+      "c=0时状态收敛至目标，否则存在稳态误差。",
+      "θ_e(t)=e^(−t/τ)θ_e(0)；K_p增大；时间；误差曲线，c=0。"
+    ],
+    "translated_title": "比例控制",
+    "translation_html": "<ul><li>若控制信号改变状态的一阶导数（速度信号）：\\(\\dot\\theta(t)=K_p\\theta_e(t)\\)。</li><li>有：\\(\\dot\\theta_d(t)-\\dot\\theta_e(t)=K_p\\theta_e(t)\\)。</li><li>若期望状态以恒定速度移动：\\(\\dot\\theta_d(t)=c\\)。</li><li>求解常微分方程得到误差响应：\\(\\theta_e(t)=\\frac{c}{K_p}+\\left(\\theta_e(0)-\\frac{c}{K_p}\\right)e^{-K_pt}\\)。</li><li>c=0时状态收敛至目标，否则存在稳态误差。</li></ul><p>\\(\\theta_e(t)=e^{-t/\\tau}\\theta_e(0)\\)；\\(K_p\\)增大；时间；误差曲线，c=0。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 48,
+    "title": "比例控制",
+    "translation": [
+      "若控制信号改变状态的二阶导数（力或力矩信号）：θ̈(t)=K_pθ_e(t)。",
+      "状态振荡且不稳定。",
+      "可以做得更好吗？将比例控制与其他控制策略结合。"
+    ],
+    "translated_title": "比例控制",
+    "translation_html": "<ul><li>若控制信号改变状态的二阶导数（力或力矩信号）：\\(\\ddot\\theta(t)=K_p\\theta_e(t)\\)。</li><li>状态振荡且不稳定。</li><li>可以做得更好吗？将比例控制与其他控制策略结合。</li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 49,
+    "title": "积分信号",
+    "translation": [
+      "输出中与误差信号持续时间及幅度成正比的分量。",
+      "I=K_i∫₀ᵗθ_e(τ)dτ。",
+      "误差持续越久、幅度越大，积分输出就越大。",
+      "积分项持续累加误差e(t)；积分和=135；积分和=−34；积分和=7；控制器误差（SP−PV）；时间（分钟）；Copyright © 2003 by Douglas J. Cooper，保留所有权利。",
+      "输入；误差；积分并乘以K_i；I。"
+    ],
+    "translated_title": "积分信号",
+    "translation_html": "<ul><li>输出中与误差信号持续时间及幅度成正比的分量。</li><li>\\(I=K_i\\int_0^t\\theta_e(\\tau)\\,d\\tau\\)。</li><li>误差持续越久、幅度越大，积分输出就越大。</li></ul><p>积分项持续累加误差\\(e(t)\\)；积分和=135；积分和=−34；积分和=7；控制器误差（SP−PV）；时间（分钟）；Copyright © 2003 by Douglas J. Cooper，保留所有权利。</p><p>输入；误差；积分并乘以\\(K_i\\)；I。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 50,
+    "title": "比例积分控制",
+    "translation": [
+      "将P与I结合（PI控制）：PI=K_pθ_e(t)+K_i∫₀ᵗθ_e(τ)dτ。",
+      "若控制信号改变状态的一阶导数（速度信号）：θ̇_d(t)−θ̇_e(t)=K_pθ_e(t)+K_i∫₀ᵗθ_e(τ)dτ。",
+      "有：θ̈_e(t)+K_pθ̇_e(t)+K_iθ_e(t)=θ̈_d(t)。",
+      "输入；误差；积分并乘以K_i；乘以K_p；输出。"
+    ],
+    "translated_title": "比例积分控制",
+    "translation_html": "<ul><li>将P与I结合（PI控制）：\\(\\mathrm{PI}=K_p\\theta_e(t)+K_i\\int_0^t\\theta_e(\\tau)\\,d\\tau\\)。</li><li>若控制信号改变状态的一阶导数（速度信号）：\\(\\dot\\theta_d(t)-\\dot\\theta_e(t)=K_p\\theta_e(t)+K_i\\int_0^t\\theta_e(\\tau)\\,d\\tau\\)。</li><li>有：\\(\\ddot\\theta_e(t)+K_p\\dot\\theta_e(t)+K_i\\theta_e(t)=\\ddot\\theta_d(t)\\)。</li></ul><p>输入；误差；积分并乘以\\(K_i\\)；乘以\\(K_p\\)；输出。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 51,
+    "title": "比例积分控制",
+    "translation": [
+      "θ̈_e(t)+K_pθ̇_e(t)+K_iθ_e(t)=θ̈_d(t)。",
+      "若θ̈_d(t)=0，得到常微分方程：θ̈_e+K_pθ̇_e+K_iθ_e=0。",
+      "解有三种形式：I.过阻尼；II.临界阻尼；III.欠阻尼。",
+      "*二阶常系数线性齐次微分方程。"
+    ],
+    "translated_title": "比例积分控制",
+    "translation_html": "<p>\\(\\ddot\\theta_e(t)+K_p\\dot\\theta_e(t)+K_i\\theta_e(t)=\\ddot\\theta_d(t)\\)。</p><ul><li>若\\(\\ddot\\theta_d(t)=0\\)，得到常微分方程：\\(\\ddot\\theta_e+K_p\\dot\\theta_e+K_i\\theta_e=0\\)。</li><li>解有三种形式：I.过阻尼；II.临界阻尼；III.欠阻尼。</li></ul><p>*二阶常系数线性齐次微分方程。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 52,
+    "title": "P与PI比较",
+    "translation": [
+      "P控制仅在固定设定值控制中消除稳态误差。",
+      "PI控制可以消除恒速控制中的稳态误差，但对任意轨迹不能。",
+      "PI控制；P控制；θ；θ_e；时间（秒）。",
+      "真实情况中，我们主要使用固定设定值（目标速度=0）。"
+    ],
+    "translated_title": "P与PI比较",
+    "translation_html": "<ul><li>P控制仅在固定设定值控制中消除稳态误差。</li><li>PI控制可以消除恒速控制中的稳态误差，但对任意轨迹不能。</li></ul><p>PI控制；P控制；θ；\\(\\theta_e\\)；时间（秒）。</p><p>真实情况中，我们主要使用固定设定值（目标速度=0）。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 53,
+    "title": "微分信号",
+    "translation": [
+      "与误差变化率成正比：D=K_d(d/dt)θ_e(t)。",
+      "增加响应时间：",
+      "误差增大时控制更强。",
+      "误差减小时控制更温和。",
+      "考虑“未来行为”或“趋势”。",
+      "尝试减小超调。",
+      "输入；误差；求导并乘以K_d；D。"
+    ],
+    "translated_title": "微分信号",
+    "translation_html": "<ul><li>与误差变化率成正比：\\(D=K_d\\frac{d}{dt}\\theta_e(t)\\)。</li><li>增加响应时间：<ul><li>误差增大时控制更强。</li><li>误差减小时控制更温和。</li></ul></li><li>考虑“未来行为”或“趋势”。</li><li>尝试减小超调。</li></ul><p>输入；误差；求导并乘以\\(K_d\\)；D。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 54,
+    "title": "比例微分控制",
+    "translation": [
+      "将P与D结合（PD控制）：PD=K_pθ_e(t)+K_d(d/dt)θ_e(t)。",
+      "若控制信号改变状态二阶导数：θ̈_d(t)−θ̈_e(t)=K_pθ_e(t)+K_d(d/dt)θ_e(t)。",
+      "有（类似PI的速度控制）：θ̈_e(t)+K_dθ̇_e(t)+K_pθ_e(t)=θ̈_d(t)。",
+      "输入；误差；求导并乘以K_d；乘以K_p；输出。"
+    ],
+    "translated_title": "比例微分控制",
+    "translation_html": "<ul><li>将P与D结合（PD控制）：\\(\\mathrm{PD}=K_p\\theta_e(t)+K_d\\frac{d}{dt}\\theta_e(t)\\)。</li><li>若控制信号改变状态二阶导数：\\(\\ddot\\theta_d(t)-\\ddot\\theta_e(t)=K_p\\theta_e(t)+K_d\\frac{d}{dt}\\theta_e(t)\\)。</li><li>有（类似PI的速度控制）：\\(\\ddot\\theta_e(t)+K_d\\dot\\theta_e(t)+K_p\\theta_e(t)=\\ddot\\theta_d(t)\\)。</li></ul><p>输入；误差；求导并乘以\\(K_d\\)；乘以\\(K_p\\)；输出。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 55,
+    "title": "PID控制",
+    "translation": [
+      "组合全部项：PID=K_pθ_e(t)+K_i∫₀ᵗθ_e(τ)dτ+K_d(d/dt)θ_e(t)。",
+      "PID控制经常用于控制位置或速度，不常用于直接控制力。",
+      "输入；误差；积分并乘以K_i；乘以K_p；求导并乘以K_d；输出；K_p=1、K_i=1、K_d=1；时间（秒）。"
+    ],
+    "translated_title": "PID控制",
+    "translation_html": "<ul><li>组合全部项：\\(\\mathrm{PID}=K_p\\theta_e(t)+K_i\\int_0^t\\theta_e(\\tau)\\,d\\tau+K_d\\frac{d}{dt}\\theta_e(t)\\)。</li><li>PID控制经常用于控制位置或速度，不常用于直接控制力。</li></ul><p>输入；误差；积分并乘以\\(K_i\\)；乘以\\(K_p\\)；求导并乘以\\(K_d\\)；输出；\\(K_p\\)=1、\\(K_i\\)=1、\\(K_d\\)=1；时间（秒）。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 56,
+    "title": "PID调参",
+    "translation": [
+      "独立增大一个参数的影响",
+      "参数",
+      "上升时间",
+      "超调",
+      "调节时间",
+      "稳态误差",
+      "稳定性",
+      "K_p",
+      "减小",
+      "增大",
+      "小变化",
+      "减小",
+      "变差",
+      "K_i",
+      "减小",
+      "增大",
+      "增大",
+      "消除",
+      "变差",
+      "K_d",
+      "小变化",
+      "减小",
+      "减小",
+      "理论上无影响",
+      "K_d小时改善",
+      "Kiam Heong Ang; Chong, G.; Yun Li（2005）。《PID控制系统分析、设计与技术》。IEEE Transactions on Control Systems Technology，13(4):559–576。",
+      "Jinghua Zhong（2006年春）。《PID控制器调参：简短教程》（PDF）。2015-04-21存档，2011-04-04查阅。",
+      "https://en.wikipedia.org/wiki/PID_controller#cite_note-24"
+    ],
+    "translated_title": "PID调参",
+    "translation_html": "<h3>独立增大一个参数的影响</h3><table><tr><th>参数</th><th>上升时间</th><th>超调</th><th>调节时间</th><th>稳态误差</th><th>稳定性</th></tr><tr><td>\\(K_p\\)</td><td>减小</td><td>增大</td><td>小变化</td><td>减小</td><td>变差</td></tr><tr><td>\\(K_i\\)</td><td>减小</td><td>增大</td><td>增大</td><td>消除</td><td>变差</td></tr><tr><td>\\(K_d\\)</td><td>小变化</td><td>减小</td><td>减小</td><td>理论上无影响</td><td>\\(K_d\\)小时改善</td></tr></table><p>Kiam Heong Ang; Chong, G.; Yun Li（2005）。《PID控制系统分析、设计与技术》。IEEE Transactions on Control Systems Technology，13(4):559–576。</p><p>Jinghua Zhong（2006年春）。《PID控制器调参：简短教程》（PDF）。2015-04-21存档，2011-04-04查阅。</p><p>https://en.wikipedia.org/wiki/PID_controller#cite_note-24</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 57,
+    "title": "机械臂控制器：内部PD控制器",
+    "translation": [
+      "自由度控制：",
+      "使用PD控制器控制每个自由度（关节）。",
+      "关节参数：刚度、阻尼等。",
+      "控制力：force=stiffness*(targetPosition−Position)+damping*(targetVelocity−Velocity)。",
+      "刚度与阻尼可视为PID控制器中的k_p与k_d。"
+    ],
+    "translated_title": "机械臂控制器：内部PD控制器",
+    "translation_html": "<ul><li>自由度控制：<ul><li>使用PD控制器控制每个自由度（关节）。</li><li>关节参数：刚度、阻尼等。</li><li>控制力：\\(\\mathrm{force}=\\mathrm{stiffness}\\cdot(\\mathrm{targetPosition}-\\mathrm{Position})+\\mathrm{damping}\\cdot(\\mathrm{targetVelocity}-\\mathrm{Velocity})\\)。</li></ul></li><li>刚度与阻尼可视为PID控制器中的\\(k_p\\)与\\(k_d\\)。</li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 58,
+    "title": "SAPIEN中的示例",
+    "translation": [
+      "使用PhysX内部PD控制器驱动机器人",
+      "active_joints = robot.get_active_joints()",
+      "if use_internal_drive:",
+      "for joint_idx, joint in enumerate(active_joints):",
+      "joint.set_drive_property(stiffness=20, damping=5)",
+      "joint.set_drive_target(target_qpos[joint_idx])",
+      "# 或者，直接为整个关节结构设置关节目标",
+      "# robot.set_drive_target(target_qpos)",
+      "SAPIEN提供内置PhysX驱动（控制器），以控制关节的位置或速度。对每个活动关节（自由度非零），可调用set_drive_property(...)设置驱动属性stiffness（刚度）和damping（阻尼）。驱动采用比例微分形式，施加的力如下：",
+      "force=stiffness*(targetPosition−position)+damping*(targetVelocity−velocity)",
+      "https://sapien.ucsd.edu/docs"
+    ],
+    "translated_title": "SAPIEN中的示例",
+    "translation_html": "<h3>使用PhysX内部PD控制器驱动机器人</h3><p>active_joints = robot.get_active_joints()</p><p>if use_internal_drive:</p><p>　for joint_idx, joint in enumerate(active_joints):</p><p>　　joint.set_drive_property(stiffness=20, damping=5)</p><p>　　joint.set_drive_target(target_qpos[joint_idx])</p><p>　# 或者，直接为整个关节结构设置关节目标</p><p>　# robot.set_drive_target(target_qpos)</p><p>SAPIEN提供内置PhysX驱动（控制器），以控制关节的位置或速度。对每个活动关节（自由度非零），可调用set_drive_property(...)设置驱动属性stiffness（刚度）和damping（阻尼）。驱动采用比例微分形式，施加的力如下：</p><p>\\(\\mathrm{force}=\\mathrm{stiffness}\\cdot(\\mathrm{targetPosition}-\\mathrm{position})+\\mathrm{damping}\\cdot(\\mathrm{targetVelocity}-\\mathrm{velocity})\\)</p><p>https://sapien.ucsd.edu/docs</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 59,
+    "title": "Isaac Gym中的示例",
+    "translation": [
+      "DOF_MODE_POS与DOF_MODE_VEL启用PD控制器，可使用刚度与阻尼参数调节。控制器施加的自由度力与posError*stiffness+velError*damping成正比。",
+      "DOF_MODE_POS用于位置控制，通常将刚度与阻尼都设置为非零值。"
+    ],
+    "translated_title": "Isaac Gym中的示例",
+    "translation_html": "<p>DOF_MODE_POS与DOF_MODE_VEL启用PD控制器，可使用刚度与阻尼参数调节。控制器施加的自由度力与\\(\\mathrm{posError}\\cdot\\mathrm{stiffness}+\\mathrm{velError}\\cdot\\mathrm{damping}\\)成正比。</p><p>DOF_MODE_POS用于位置控制，通常将刚度与阻尼都设置为非零值。</p>"
+  },
+  {
+    "lecture": 4,
+    "page": 60,
+    "title": "机器人学总结",
+    "translation": [
+      "运动学：笛卡尔空间与关节空间之间的转换。",
+      "动力学：略过。",
+      "运动规划：得到几何有效路径。",
+      "控制：确保运动跟随规划轨迹。"
+    ],
+    "translated_title": "机器人学总结",
+    "translation_html": "<ul><li>运动学：笛卡尔空间与关节空间之间的转换。</li><li>动力学：略过。</li><li>运动规划：得到几何有效路径。</li><li>控制：确保运动跟随规划轨迹。</li></ul>"
+  },
+  {
+    "lecture": 4,
+    "page": 61,
+    "title": "机器人视觉与学习——从具身智能的视角",
+    "translation": [
+      "下周：第4讲，三维视觉。",
+      "具身感知与交互实验室",
+      "2025年秋季"
+    ],
+    "translated_title": "机器人视觉与学习——从具身智能的视角",
+    "translation_html": "<p>下周：第4讲，三维视觉。</p><p>具身感知与交互实验室</p><p>2025年秋季</p>"
+  }
+]

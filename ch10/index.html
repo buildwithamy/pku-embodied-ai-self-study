@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第 10 章 机器人任务与前沿：从足式运动到灵巧操作</title>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script async="" src="../vendor/mathjax/tex-svg.js"></script>
+<style>
+:root {
+  --ink: #1c2430;
+  --ink-soft: #4a5568;
+  --accent: #2563eb;
+  --accent-soft: #eef4ff;
+  --bg: #faf9f6;
+  --card: #ffffff;
+  --line: #e5e2db;
+  --green-bg: #f0f9f1;
+  --green-bd: #7cc98c;
+  --yellow-bg: #fffbeb;
+  --yellow-bd: #e8c766;
+  --red-bg: #fdf1f1;
+  --red-bd: #e8a1a1;
+  --update-bg: #fffaeb;
+  --update-bd: #e8a23d;
+  --update-ink: #8a4b08;
+  --code-bg: #101826;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-size: 16.5px;
+  line-height: 1.85;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.hero {
+  background: linear-gradient(135deg, #0e2a4a 0%, #15406e 55%, #1c5a94 100%);
+  color: #fff;
+  padding: 72px 24px 56px;
+  text-align: center;
+}
+.hero .course-tag {
+  display: inline-block;
+  font-size: 13px;
+  letter-spacing: 2px;
+  border: 1px solid rgba(255,255,255,.4);
+  border-radius: 999px;
+  padding: 4px 16px;
+  margin-bottom: 22px;
+  opacity: .9;
+}
+.hero h1 {
+  margin: 0 auto 14px;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  max-width: 760px;
+  line-height: 1.5;
+}
+.hero .sub {
+  font-size: 15.5px;
+  opacity: .82;
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+.hero .meta {
+  margin-top: 26px;
+  font-size: 13px;
+  opacity: .7;
+}
+.hero .ver-note {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 12.5px;
+  border: 1px dashed rgba(255,210,120,.7);
+  color: #ffd27a;
+  border-radius: 999px;
+  padding: 3px 14px;
+}
+.badge-2026 {
+  display: inline-block;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 2px 9px;
+  letter-spacing: .5px;
+  vertical-align: 2px;
+  margin-right: 6px;
+  box-shadow: 0 1px 4px rgba(217,119,6,.35);
+}
+.update-box {
+  margin: 18px 0;
+  padding: 14px 20px 12px;
+  border: 2px solid var(--update-bd);
+  background: var(--update-bg);
+  border-radius: 10px;
+  font-size: 15.5px;
+  box-shadow: 0 2px 8px rgba(232,162,61,.12);
+}
+.update-box .bt { color: var(--update-ink); font-weight: 700; display: block; margin-bottom: 4px; }
+.update-box p { margin: 5px 0; }
+.update-box ul { margin: 4px 0 4px; }
+.update-box li { margin: 3px 0; }
+.up-text {
+  background: #fef3c7;
+  border-bottom: 2px solid #f59e0b;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+.goals {
+  max-width: 880px;
+  margin: -28px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 28px;
+  box-shadow: 0 6px 24px rgba(16, 42, 74, .08);
+  position: relative;
+}
+.goals h2 { margin: 0 0 10px; font-size: 17px; color: var(--accent); }
+.goals ul { margin: 0; padding-left: 20px; }
+.goals li { margin: 4px 0; font-size: 15px; color: var(--ink-soft); }
+.goals li b { color: var(--ink); }
+.about {
+  max-width: 880px;
+  margin: 36px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px 34px;
+  box-shadow: 0 4px 16px rgba(16, 42, 74, .06);
+}
+.about h2 {
+  margin: 0 0 14px;
+  font-size: 20px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.about h3 { margin: 20px 0 8px; font-size: 16.5px; color: var(--accent); }
+.about p, .about li { font-size: 15px; color: var(--ink-soft); }
+.about .src-badge {
+  display: inline-block;
+  background: #eef4ff;
+  border: 1px solid #b9d0f8;
+  color: #2456b8;
+  font-size: 13px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin: 2px 4px 2px 0;
+}
+.about .license-note {
+  margin: 18px 0 0;
+  padding: 14px 18px;
+  background: var(--red-bg);
+  border: 1px solid var(--red-bd);
+  border-radius: 10px;
+  font-size: 14.5px;
+  line-height: 1.8;
+}
+.about .license-note b { color: #b04848; }
+.layout {
+  display: flex;
+  max-width: 1240px;
+  margin: 40px auto 80px;
+  padding: 0 24px;
+  gap: 36px;
+  align-items: flex-start;
+}
+.toc {
+  position: sticky;
+  top: 24px;
+  width: 240px;
+  flex-shrink: 0;
+  font-size: 13.5px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+}
+.toc .toc-title { font-weight: 700; color: var(--ink-soft); margin-bottom: 8px; letter-spacing: 1px; }
+.toc a {
+  display: block;
+  color: var(--ink-soft);
+  padding: 4px 10px;
+  border-left: 2px solid var(--line);
+  margin: 1px 0;
+  line-height: 1.5;
+}
+.toc a:hover { color: var(--accent); border-left-color: var(--accent); text-decoration: none; background: var(--accent-soft); border-radius: 0 6px 6px 0; }
+main { flex: 1; min-width: 0; }
+section { margin-bottom: 56px; }
+h2.sec {
+  font-size: 25px;
+  margin: 0 0 6px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--ink);
+  letter-spacing: .5px;
+}
+h2.sec .no {
+  display: inline-block;
+  background: var(--ink);
+  color: #fff;
+  font-size: 15px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin-right: 10px;
+  vertical-align: 3px;
+}
+h3 { font-size: 19px; margin: 34px 0 10px; }
+h4 { font-size: 16.5px; margin: 26px 0 8px; }
+p { margin: 10px 0; }
+strong { color: #0f2c4c; }
+em.term {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--accent);
+  border-bottom: 1px dashed var(--accent);
+  cursor: help;
+}
+ul, ol { padding-left: 26px; }
+li { margin: 5px 0; }
+code {
+  background: #eef1f5;
+  border: 1px solid #e0e5ec;
+  border-radius: 5px;
+  padding: 1px 6px;
+  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: 14.5px;
+  color: #0d3d75;
+}
+blockquote {
+  margin: 16px 0;
+  padding: 12px 20px;
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  color: var(--ink-soft);
+  font-size: 15.5px;
+}
+blockquote p { margin: 4px 0; }
+figure { margin: 22px 0; text-align: center; }
+figure img {
+  max-width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 18px rgba(16, 42, 74, .10);
+  background: #fff;
+}
+figcaption {
+  font-size: 13.5px;
+  color: #7a8290;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+figcaption .src { opacity: .75; font-size: 12.5px; }
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+.gallery figure { margin: 0; }
+.gallery img { width: 100%; }
+.gallery figcaption { font-size: 12.5px; margin-top: 6px; }
+.box {
+  margin: 18px 0;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 15.5px;
+}
+.box .bt { font-weight: 700; display: block; margin-bottom: 4px; }
+.box.green { background: var(--green-bg); border: 1px solid var(--green-bd); }
+.box.green .bt { color: #2e7d43; }
+.box.yellow { background: var(--yellow-bg); border: 1px solid var(--yellow-bd); }
+.box.yellow .bt { color: #9a7414; }
+.box.red { background: var(--red-bg); border: 1px solid var(--red-bd); }
+.box.red .bt { color: #b04848; }
+.box.blue { background: var(--accent-soft); border: 1px solid #a9c3f5; }
+.box.blue .bt { color: #2456b8; }
+.box p { margin: 4px 0; }
+.box ul { margin: 4px 0 4px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 18px 0;
+  font-size: 15px;
+  background: var(--card);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+th {
+  background: #17335c;
+  color: #fff;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 14.5px;
+}
+td { padding: 9px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+tr:nth-child(even) td { background: #f7f6f2; }
+.page-index { font-size: 13.5px; }
+.page-index th { font-size: 13.5px; padding: 8px 10px; }
+.page-index td { padding: 6px 10px; line-height: 1.6; }
+.page-index td.pg { font-family: Consolas, monospace; font-weight: 700; white-space: nowrap; color: var(--accent); }
+pre {
+  background: var(--code-bg);
+  color: #e6edf6;
+  border-radius: 10px;
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-size: 13.8px;
+  line-height: 1.65;
+  margin: 16px 0;
+}
+pre code {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+pre .cm { color: #7d8aa0; }
+pre .kw { color: #7fb3ff; }
+pre .st { color: #a5d6a7; }
+pre .fn { color: #ffd479; }
+.term-table td:first-child { font-weight: 700; white-space: nowrap; }
+footer {
+  max-width: 880px;
+  margin: 0 auto 60px;
+  padding: 20px 28px;
+  border-top: 1px solid var(--line);
+  font-size: 12.8px;
+  color: #8a91a0;
+  line-height: 1.8;
+}
+@media (max-width: 960px) {
+  .toc { display: none; }
+  .hero h1 { font-size: 26px; }
+  .layout { padding: 0 16px; }
+  .gallery { grid-template-columns: 1fr; }
+}
+/* 2026-10-04: offline chapters and bounded content scrolling */
+.layout, main, section { min-width:0; }
+main { max-width:100%; }
+img, video { max-width:100%; height:auto; }
+p, li, td, th, a { overflow-wrap:anywhere; }
+.table-scroll { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; margin:18px 0; }
+.table-scroll table { margin:0; min-width:640px; }
+pre { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; }
+mjx-container[display="true"] { max-width:100%; overflow-x:auto; overflow-y:hidden; padding:6px 0; text-align:left !important; }
+mjx-container:not([display="true"]) { display:inline-block; max-width:100%; vertical-align:middle; overflow-x:auto; overflow-y:hidden; }
+.mobile-toc { display:none; }
+.chapter-nav { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; }
+@media(max-width:960px) {
+  .layout { flex-direction:column; gap:16px; }
+  main { width:100%; }
+  .mobile-toc { display:block; width:100%; margin:0; padding:12px 16px; background:var(--card); border:1px solid var(--line); border-radius:10px; }
+  .mobile-toc summary { cursor:pointer; font-weight:700; }
+  .mobile-toc a { display:block; padding:4px 0; }
+}
+</style>
+<link href="../shared.css" rel="stylesheet"/>
+</head>
+<body><nav class="reader-nav"><a class="brand" href="../index.html">北京大学《具身智能导论》自学教程</a><a href="../学习与运行说明.html">学习指南</a><a href="课件中文译解.html">本章课件翻译</a><a href="../术语与符号.html">术语与符号</a><a href="../来源与许可.html">来源</a></nav>
+<!-- ============ 封面 ============ -->
+<div class="hero">
+<span class="course-tag">具身智能自学教程 · 第 10 章</span>
+<h1>机器人任务与前沿：从足式运动到灵巧操作</h1>
+<p class="sub">本章把前九章的感知、规划与策略学习用于机器人任务：足式运动（Locomotion）、机械臂抓取、非抓握操作与灵巧手控制。最后通过四足与人形机器人的协同作业，串联这些知识。</p>
+<p class="meta">改编自北京大学《具身智能导论》(Introduction to Embodied AI) 2025 春季课程 · 授课：王鹤 老师（Lecture 10-13 合并编排）</p>
+<span class="ver-note">配套原文、中文翻译与自测 · 支持离线阅读</span>
+<div class="chapter-toolbar" id="chapter-resources"><a href="课件中文译解.html">英文原课件与逐页中文翻译 →</a><a href="../技术动态_20261004.html">本章相关技术进展 →</a><a href="../术语与符号.html">英文缩写与符号速查 →</a></div></div>
+<!-- ============ 学习目标 ============ -->
+<div class="goals">
+<h2>🎯 本章学习目标</h2>
+<ul>
+<li>理解<b>足式运动</b>的模型预测控制与强化学习两类方法及其组合方式，掌握运动任务的 MDP 四要素设计</li>
+<li>理解四个学习框架：<b>端到端 PPO、课程学习、层级学习、特权学习</b>（教师-学生蒸馏/非对称 AC）</li>
+<li>了解课程组工作 <b>QuadWBG</b>：四足全身控制的感知-规划-操作全栈</li>
+<li>理解<b>机械臂抓取 RL</b>的三代方法：GAIL、QT-Opt、GA-DDPG</li>
+<li>理解<b>非抓握操作</b>（推、外源性灵巧）与 <b>HACMan</b> 的混合动作空间</li>
+<li>理解<b>灵巧操作三大挑战</b>（样本效率、视觉观测、Sim2Real）与解法（DAPG、教师-学生蒸馏）</li>
+<li>通过<b>作业 4</b>：四足 + 人形协同完成「抓取-搬运-返回」全流程</li>
+</ul>
+</div>
+<!-- ============ 关于本教程 ============ -->
+<div class="about" id="about">
+<h2>📖 关于本教程</h2>
+<h3>内容来源</h3>
+<p>本教程的核心知识体系来自 <b>北京大学 2025 年春季学期《具身智能导论》</b>（Introduction to Embodied AI）课程，由 <b>王鹤</b> 老师（北京大学前沿计算研究中心助理教授，课程授课教师）主讲。</p>
+<p>
+<span class="src-badge">📝 课堂笔记 × 9 章</span>
+<span class="src-badge">🎞 授课课件 × 13 讲</span>
+<span class="src-badge">💻 课程作业 × 4 次</span>
+</p>
+<p>以上资料由课程同学整理并开源在 GitHub 仓库 <a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU" target="_blank">zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU</a>（<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/LICENSE" target="_blank">GPL-3.0 许可证</a>），课程官网为 <a href="https://pku-epic.github.io/Intro2EAI_2025/" target="_blank">pku-epic.github.io/Intro2EAI_2025</a>。</p>
+<h3>如何使用本章</h3>
+<ul>
+<li><b>三源整合：</b>把每一讲的「课堂笔记 + 授课课件 + 配套作业」融合进同一章，笔记提供知识骨架，课件图提供直观理解，作业提供动手实践；</li>
+<li><b>初学者化改写：</b>原笔记是写给北大学生的浓缩讲义，本教程把结论式表述扩写为「概念 → 直觉 → 应用」的解释型讲述，补充术语表与学习目标；</li>
+<li><b>图文并茂：</b>正文配图附中文翻译与来源页码；完整课件可按页对照阅读；</li>
+<li><b>补充说明：</b>橙色框提供适用条件与工程接口说明；具体模型、数据和评分以对应一手资料为准；</li>
+<li><b>作业适配自学：</b>保留原版作业的难度与考点，补充环境搭建、解题提示与自测标准，并提供参考答案链接（先自己做，再对照）。</li>
+</ul>
+<h3>教程目的</h3>
+<p>让没有北大课堂环境的自学者，也能按课程原有的知识体系，系统地学完具身智能入门：从机器人学基础，到视觉与抓取，再到策略学习——最终具备读懂前沿论文、跑通基础实验的能力。</p>
+<div class="license-note">
+<b>📜 版权与使用声明</b><br/>
+    原课程资料（笔记、课件、作业）均为开源免费资源，版权归原作者（王鹤老师及课程组、笔记整理者）所有；本教程的改编内容（中文讲解、学习辅助、编排结构）同样免费公开。<br/>
+    来源仓库采用 GPL-3.0，原课件中的论文图、照片与其他第三方材料仍保留相应署名和权利说明。分发或复用时应遵守所涉及材料的许可与权利条件。
+  </div>
+</div>
+<!-- ============ 正文 ============ -->
+<div class="layout">
+<nav class="toc">
+<div class="toc-title">本章目录</div>
+<a href="#about">关于本教程（来源 · 声明）</a>
+<a href="#s1">1. 机器人任务板块全景</a>
+<a href="#s2">2. 足式运动：MPC 与 RL</a>
+<a href="#s3">3. 运动任务的 MDP 设计</a>
+<a href="#s4">4. 四个学习框架</a>
+<a href="#s5">5. QuadWBG 与双足机器人</a>
+<a href="#s6">6. 机械臂抓取 RL：QT-Opt 与 GA-DDPG</a>
+<a href="#s7">7. 非抓握操作：推的学问</a>
+<a href="#s8">8. 灵巧操作：三大挑战与解法</a>
+<a href="#s9">9. 课程毕业考题：协同作业</a>
+<a href="#s10">10. 全教程总结</a>
+<a href="#s11">11. 动手实践：作业 4</a>
+<a href="#apA">附录 A：术语表</a>
+<a href="#apB">附录 B：课件页索引（Lecture 10-13）</a>
+<a href="#apC">附录 C：参考资源</a>
+</nav>
+<details class="mobile-toc"><summary>本章目录</summary><a href="#about">关于本教程（来源 · 声明）</a><a href="#s1">1. 机器人任务板块全景</a><a href="#s2">2. 足式运动：MPC 与 RL</a><a href="#s3">3. 运动任务的 MDP 设计</a><a href="#s4">4. 四个学习框架</a><a href="#s5">5. QuadWBG 与双足机器人</a><a href="#s6">6. 机械臂抓取 RL：QT-Opt 与 GA-DDPG</a><a href="#s7">7. 非抓握操作：推的学问</a><a href="#s8">8. 灵巧操作：三大挑战与解法</a><a href="#s9">9. 课程毕业考题：协同作业</a><a href="#s10">10. 全教程总结</a><a href="#s11">11. 动手实践：作业 4</a><a href="#apA">附录 A：术语表</a><a href="#apB">附录 B：课件页索引（Lecture 10-13）</a><a href="#apC">附录 C：参考资源</a></details>
+<main><div class="box blue"><span class="bt">原课件对照阅读</span><p><a href="课件中文译解.html">打开本章课件逐页中文翻译</a>：保留原页码、原文与来源，可在学完一节后对照相应页面。</p></div>
+<!-- ============ 1 ============ -->
+<section id="s1">
+<h2 class="sec"><span class="no">1</span>机器人任务板块全景</h2>
+<p>本教程第 1 章预告过课程的四大板块：机器人学（第 2-4 章）→ 3D 视觉（第 5-7 章）→ 策略学习（第 8-9 章）→ <b>机器人任务（本章）</b>。原版课程的最后四讲（Lecture 10-13）构成这个板块，本教程将其合并为一章：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>原版课件</th><th>主题</th><th>本教程位置</th></tr>
+<tr><td>Lecture 10 · Policy III</td><td>AC 回顾 + Off-Policy + PPO 细节（复习课）</td><td>§2-4（融合进第 9 章知识应用）</td></tr>
+<tr><td>Lecture 11 · Robotic Task I</td><td><b>Locomotion 足式运动</b>（MPC 与 RL、MDP 设计、学习框架、QuadWBG）</td><td>§2-5</td></tr>
+<tr><td>Lecture 12 · Robotic Task II</td><td><b>机械臂抓取 RL、非抓握操作、灵巧手</b></td><td>§6-8</td></tr>
+<tr><td>Lecture 13 · Robotic Task III</td><td>灵巧手前沿 + 期末项目</td><td>§8-9</td></tr>
+</table></div></div>
+<p>这四讲的共同底色是第 9 章的强化学习——现在把它装进真实机器人。前半章以足式运动介绍 PPO 的应用，后半章以操作任务说明如何结合 RL 与 IL。</p>
+</section>
+<!-- ============ 2 ============ -->
+<section id="s2">
+<h2 class="sec"><span class="no">2</span>足式运动：MPC 与 RL</h2><div class="box blue"><span class="bt">两个方法，三个层次</span><p>MPC（Model Predictive Control，模型预测控制）反复求解有限时域优化，只执行当前一段并重新规划；RL（Reinforcement Learning，强化学习）根据数据和回报学习策略；WBC（Whole-Body Control，全身控制）协调全身关节、接触与任务优先级。它们可组成同一系统，例如 RL 提供步态或参考目标，MPC 规划接触力，WBC/PD 实现执行。</p><p>比较时要对齐地形、速度指令、执行器限位、传感器和扰动范围。分析机器人展示的能力时，应查阅对应系统的算法与实验设置，再比较各路线在这些条件下的表现。</p></div>
+<p>2025 年课程展示了 2024-2025 年的足式机器人进展（课件 p36）：Atlas 的高动态动作、宇树 G1 的鲁棒性、B2-W 的复杂地形、Optimus 的越野——两大流派各有代表：</p>
+<figure>
+<img alt="课程课件：2025 年课程中的足式机器人进展示例——Atlas、宇树 G1、B2-W、Optimus" loading="lazy" src="assets/l11_p36.jpg"/>
+<figcaption>2025 年课程中的足式机器人进展示例：波士顿动力 Atlas、宇树 G1、宇树 B2-W、特斯拉 Optimus。<span class="src">（来源：Lecture 11 课件 p36）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">近期进展</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><p>Unitree B2-W（宇树B2-W）</p><ul><li>地形穿越</li><li>高动态运动</li></ul><p>Unitree G1（宇树G1）</p><ul><li>鲁棒性</li></ul></div><div><p>Tesla Optimus（特斯拉Optimus）</p><ul><li>地形穿越</li><li>鲁棒性</li></ul><p>Boston Dynamics Altas（波士顿动力Altas）</p><ul><li>高动态运动</li></ul></div></div></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l11-p36">对照原课件第36页与完整中文翻译 →</a></figure>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th></th><th>MPC（模型预测控制）</th><th>RL（强化学习）</th></tr>
+<tr><td><b>思想</b></td><td>每步解优化问题：动力学 + 约束 + 代价</td><td>数据驱动学习策略，部署策略推理不必在线求解精确模型，但训练仍依赖数据或仿真条件</td></tr>
+<tr><td><b>代表</b></td><td>Atlas、ASIMO（MPC + WBC）</td><td>宇树 H1、天工（课件展示的 RL 路线案例，本体感知输入；具体算法以对应工程为准）</td></tr>
+<tr><td><b>优势</b></td><td>自然处理约束、可解释</td><td>部署时策略推理快；鲁棒性取决于训练扰动与验证范围</td></tr>
+<tr><td><b>痛点</b></td><td>接触切换、模型误差与实时求解有挑战；可用鲁棒控制、状态估计与学习模块缓解</td><td>奖励设计耗时；数据与构型强耦合；Sim2Real</td></tr>
+</table></div></div>
+<div class="gallery">
+<figure>
+<img alt="课程课件：MPC 的例子——Atlas 与 ASIMO" loading="lazy" src="assets/l11_p43.jpg"/>
+<figcaption>MPC 路线：Atlas（波士顿动力）与 ASIMO（本田）<span class="src">（课件 p43）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">MPC实例</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><p>本田ASIMO</p></div><div><p>波士顿动力Atlas</p></div></div><p>直立行走和基本运动，由MPC + WBC（全身控制）控制。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l11-p43">对照原课件第43页与完整中文翻译 →</a></figure>
+<figure>
+<img alt="课程课件：RL 的例子——宇树 H1 与天工" loading="lazy" src="assets/l11_p45.jpg"/>
+<figcaption>RL 路线：宇树 H1 与「天工」——复杂地形行走、跑步、类人舞蹈<span class="src">（课件 p45）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">强化学习实例</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><p>宇树Unitree H1</p></div><div><p>天工Tien Kung</p></div></div><p>复杂地形行走、跑步与类人舞蹈，由基于本体感觉输入的端到端强化学习驱动。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l11-p45">对照原课件第45页与完整中文翻译 →</a></figure>
+</div>
+<p>课件讨论 RL 在足式运动中取得进展的两个因素（p46）：足式机器人的<b>接触与约束极难建模</b>，会增加模型控制的设计难度，而<b>并行仿真让 RL 的样本效率问题大幅缓解</b>——这也是第 9 章「为何并行足式训练常采用 PPO」的答案（课件 p57）：高动态任务中 SAC/DDPG 的 Q 函数对动作变化极其尖锐、难拟合；并行仿真则减少收集新数据的墙钟时间，算法所需的样本量仍是需要考虑的成本。</p>
+</section>
+<!-- ============ 3 ============ -->
+<section id="s3">
+<h2 class="sec"><span class="no">3</span>运动任务的 MDP 设计</h2><div class="box blue"><span class="bt">从策略动作到电机输入</span><p>常见残差关节位置接口：$q_{des}=q_{nom}+\Delta q$；低层 PD 输出 $\tau=K_p(q_{des}-q)+K_d(\dot q_{des}-\dot q)$。策略输出 Δq，电机实际接收的可能是经限幅的力矩或电流。q 为关节角，$\dot q$ 为角速度，Kp/Kd 为控制增益。50 Hz 策略意味着每 20 ms 更新；1000 Hz 控制意味着每 1 ms 更新，这是课程中的频率示例，实际配置由机器人与控制系统决定。</p><p>奖励和观测设计应与任务一致；仿真可提供身体全局位姿与接触参数；部署时需要明确哪些量由传感器测得，哪些量需要估计。观测不足时模型仍可视为 POMDP，用状态估计或历史处理。</p></div>
+<figure>
+<img alt="课程课件：智能体如何与机器人交互——状态、命令、动作、PD 控制器" loading="lazy" src="assets/l11_p48.jpg"/>
+<figcaption>智能体与机器人的交互接口：观测（RGB-D/激光雷达点云/本体感知）→ 策略 → 动作（残差目标关节位置）→ PD 控制器 → 电机。<span class="src">（来源：Lecture 11 课件 p48）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">智能体如何与机器人交互</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><p>命令</p><ul><li>线速度</li><li>角速度</li><li>……</li></ul></div><div><p>状态</p><ul><li>RGBD相机</li><li>激光雷达点云</li><li>本体感觉</li><li>……</li></ul></div></div><p>策略（Policy）：输入（Input）→ 输出（Output）。</p><p>动作：（残差）目标自由度位置 → PD控制器 → 力矩 → 电机驱动器 → 电流 → 机器人 → 状态。</p><p>以下以Unitree Go2为例。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l11-p48">对照原课件第48页与完整中文翻译 →</a></figure>
+<h3>State：本体感知 + 外感受</h3>
+<ul>
+<li><b>Proprioception</b>：IMU（惯性测量单元，通常包含加速度计与陀螺仪；部分系统另用磁力计辅助朝向估计，环境磁干扰需处理）、关节角度与速度；</li>
+<li><b>Exteroception（可选）</b>：激光雷达点云、RGBD 相机；</li>
+<li><b>身体状态的两种表征</b>：<b>关节空间</b>（12 关节的角度+角速度——低维、与动作空间对齐，但不含浮动基座的世界位姿）vs <b>连杆空间</b>（各连杆位姿、速度、角速度——高维但更全）。</li>
+</ul>
+<h3>Action：三种控制接口</h3>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>接口</th><th>说明</th><th>特点</th></tr>
+<tr><td><b>位置 PD 控制</b></td><td>输出残差目标关节位置</td><td><b>运动任务最常用</b>：策略可低频更新（50Hz），PD 高频输出力矩（1000Hz）</td></tr>
+<tr><td><b>速度 PD 控制</b></td><td>输出目标速度</td><td>同上思路</td></tr>
+<tr><td><b>力矩控制</b></td><td>直接输出力矩</td><td>最灵活，训练更难</td></tr>
+</table></div></div>
+<h3>Reward：没有通用配方</h3>
+<p>课件直言：<b>「目前没有通用规则定义奖励函数，调每个项的系数极其耗时」</b>。奖励分两类：<b>任务奖励</b>（如速度跟踪）与<b>正则化奖励</b>（压制不良运动，如关节力矩惩罚、动作平滑）。缓解调参痛苦的办法：<b>参考轨迹相关奖励</b>（motion tracking，如 loco-mujoco 代码库）——用参考运动引导奖励设计。</p>
+<p>仿真器（课件 p56）：<b>Isaac 系列</b>（Isaac Gym → Isaac Sim → Isaac Lab）与 <b>MuJoCo 系列</b>（MuJoCo-Playground）。</p>
+</section>
+<!-- ============ 4 ============ -->
+<section id="s4">
+<h2 class="sec"><span class="no">4</span>四个学习框架</h2><p><b>训练与部署的信息边界：</b>教师、评论家可使用仿真地形真值、接触力或精确速度；部署学生/演员只能依赖其实际传感器与估计结果。策略蒸馏是把教师行为作为学生监督信号；非对称 Actor-Critic 是在同一训练过程中给价值网络更多信息，这两种训练方式都为学习提供额外信息，最终策略根据部署可用的观测或历史作出决策。蒸馏本身无法补足不可辨识的状态。</p>
+<h3>4.1 课程学习（Curriculum Learning）</h3>
+<p>从易到难逐步加难度：地形穿越（先平地后起伏）→ 避障（先稀疏后密集）→ 快速移动（速度逐级提升）。课程案例用这种方式提升训练效果。安排难度时，应观察当前任务的学习进度，逐步提高难度，并检查目标分布变化对训练的影响。</p>
+<h3>4.2 层级学习（Hierarchical Learning）</h3>
+<p>技能库（Skill Library）：高层策略选择/组合底层技能（如视觉地形穿越 = 行走技能 + 视觉感知）。</p>
+<h3>4.3 特权学习（Privileged Learning）</h3>
+<figure>
+<img alt="课程课件：特权学习——教师策略基于高度图，学生策略基于自深度" loading="lazy" src="assets/l11_p62.jpg"/>
+<figcaption>特权学习：教师（基于高度图）与学生（基于 ego depth）的蒸馏与非对称 Actor-Critic。<span class="src">（来源：Lecture 11 课件 p62）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">学习框架——特权信息学习</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><p>例1：策略蒸馏</p><p>Legged Locomotion in Challenging Terrains using Egocentric Vision（使用自我视角视觉在困难地形上进行足式运动）</p><p>Ananye Agarwal、Ashish Kumar、Jitendra Malik、Deepak Pathak；卡内基梅隆大学、加州大学伯克利分校。</p><p>教师策略（基于高度图）；学生策略（基于自我视角深度）。阶段1：在仿真中强化学习训练特权信息运动策略；阶段2：仿真中通过监督学习，学习使用机载感知。RMA架构；单体架构；仿真、机器人、扫描点；自我视角深度；特权感知：扫描点、环境参数（质量、摩擦……）；机载感知：本体感觉、自我视角深度、目标动作；阶段1、阶段2；GRU（门控循环单元）、MLP（多层感知机）、Conv（卷积）；复制并冻结；回归；复制以初始化。</p></div><div><p>例2：非对称Actor-Critic</p><p>DreamWaQ: Learning Robust Quadrupedal Locomotion With Implicit Terrain Imagination via Deep Reinforcement Learning（DreamWaQ：通过深度强化学习和隐式地形想象学习鲁棒四足运动）</p><p>评论家输入；行动者输入；时序部分观测、当前观测、特权观测。</p></div></div><p>DreamWaQ作者：I Made Aswin Nahrendra、Byeongho Yu、Hyun Myung（IEEE高级会员）。仿真训练；时间部分观测$o_t^H$；当前观测$o_t$；特权观测$s_t$；上下文辅助估计器（128×64×19）；策略网络（Actor，512×256×128×12）；价值网络（Critic，512×256×128×1）；策略梯度；零样本仿真到真实。</p><p>扫描点$m_t$；环境参数$e_t$；本体感觉$x_t$；自我视角深度$d_t$；目标动作$a_t$；策略$\pi_1,\pi_2$；潜变量$z_t,\hat z_t$；GRU、MLP、Conv；阶段1、阶段2；复制并冻结、复制以初始化、回归。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l11-p62">对照原课件第62页与完整中文翻译 →</a></figure>
+<p>为什么特权信息重要？课件用跳沟作比喻：<b>「狗跳过沟壑时，仅凭本体感知其实不知道自己在哪里」</b>——线速度、基座高度这些信息对决策至关重要，却难以从本体感知精确获得。两种用法：<b>Policy Distill</b>（教师策略用特权信息训练，蒸馏到只看观测的学生）与<b>Asymmetric Actor-Critic</b>（Actor 只看观测、Critic 用特权信息），对应第 8 章「教师策略」思想在足式运动中的应用。</p>
+<h3>4.4 端到端学习</h3>
+<p>PPO + 并行仿真直接训练（第 9 章配方）。视觉输入的端到端 RL（本体感知 + 时序深度图）也已能做到室内外真机部署（课件 p74-76）。</p>
+</section>
+<!-- ============ 5 ============ -->
+<section id="s5">
+<h2 class="sec"><span class="no">5</span>QuadWBG 与双足机器人</h2>
+<p>课程组自己的工作 <b>QuadWBG</b>（四足全身控制）：把第 5-7 章的感知与本章的运动控制组合成完整系统（课件 p63-68）：</p>
+<figure>
+<img alt="课程课件：QuadWBG——四足全身控制" loading="lazy" src="assets/l11_p63.jpg"/>
+<figcaption>QuadWBG：5D 命令运动（线速度 x/y、偏航、高度、俯仰）+ 现成感知模块（Xmen 跟踪、ASGrasp 抓取检测）+ 差分 IK 在线规划。<span class="src">（来源：Lecture 11 课件 p63）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">运动与操作结合的实例：QuadWBG</div><div class="translation-body"><p>QuadWBG: Generalizable Quadrupedal Whole-Body Grasping (Intro)（QuadWBG：可泛化四足机器人全身抓取，简介）</p><p>视频时间：0:00 / 6:59。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l11-p63">对照原课件第63页与完整中文翻译 →</a></figure>
+<ul>
+<li><b>运动</b>：5D 命令（线速度 x/y、偏航速度、高度、俯仰），训练时随机化末端位姿实现「全身意识」；</li>
+<li><b>感知</b>：现成模块——Xmen 做目标跟踪、ASGrasp（第 7 章）做抓取检测；</li>
+<li><b>操作</b>：差分 IK + 在线规划——连续平滑、适应意外运动；参数化跟踪球（减少运动模糊、降低跟踪丢失）；基于可达性的运动规划；</li>
+<li><b>高层规划器</b>：观测（目标位姿、重力、关节位置、上一步动作）→ 动作（基座高度/俯仰/线速度/偏航）——RL 高层 + 低层控制器。</li>
+</ul>
+<p>从四足到双足（课件 p77-81）的关键差异：结构上重心更高、自由度更大、足部接触建模复杂；学习上可引入<b>参考运动模仿（Imitation with Reference Motion）</b>——人类的动捕数据提供「怎么动像人」的先验，这是一种利用参考运动构造训练目标的路线；具体系统是否采用它需查对应工程。</p>
+<div class="update-box">
+<span class="bt">进一步理解：运动控制路线的组合</span>
+<p>MPC、规划、参考运动模仿与 RL 可承担不同环节，是否组合取决于状态信息、控制接口和任务要求。评估足式运动方法时，先明确速度跟踪、稳定性、能耗与地形条件，并根据这些指标比较各方法的技术表现。</p>
+</div>
+</section>
+<!-- ============ 6 ============ -->
+<section id="s6">
+<h2 class="sec"><span class="no">6</span>机械臂抓取 RL：QT-Opt 与 GA-DDPG</h2><p><b>把缩写展开：</b>GAIL（Generative Adversarial Imitation Learning）是生成对抗模仿学习，用判别信号引导匹配专家状态—动作分布，学到的奖励信号可能有多种等价形式；DDPG（Deep Deterministic Policy Gradient）是深度确定性策略梯度，使用确定性演员、Q 评论家和经验回放；BC 是行为克隆，DAgger 是数据集聚合。Replay Buffer=经验回放缓存，Bellman update=贝尔曼更新。</p>
+<p>抓取也能用 RL 学（Lecture 12）。课件介绍三类代表性工作：</p>
+<h3>6.1 Reward-Consistent Demonstration + GAIL（阶段式 RL 抓取）</h3>
+<p>把 6 DoF 抓取拆成连续阶段（定向末端 → 接近目标 → 闭合夹爪），每阶段单独训一个 RL 模型；用 <b>GAIL（生成对抗模仿学习）</b>从演示学习奖励，PPO 训练——缓解「阶段式奖励难设计」的问题。</p>
+<h3>6.2 QT-Opt：大规模分布式 Q-Learning（Google）</h3>
+<figure>
+<img alt="课程课件：QT-Opt 的分布式 RL 基础设施" loading="lazy" src="assets/l12_p37.jpg"/>
+<figcaption>QT-Opt：离线数据 + 真机在线采集的分布式 Bellman 更新——用机器人农场实现「看会抓」。<span class="src">（来源：Lecture 12 课件 p37）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">QT-Opt：用于视觉机器人操作的可扩展深度强化学习</div><div class="translation-body"><ul><li>大规模分布式优化 + QT-Opt（Q 学习算法）。</li><li>阶段：<ul><li>a. 利用已收集的数据，完全离线训练一个模型。</li><li>b. 将模型部署到真实机器人上并微调，利用新收集的数据进一步训练。</li></ul></li></ul><p>7 台机器人收集抓取数据。</p><p>D. Kalashnikov、A. Irpan、P. Pastor、J. Ibarz、A. Herzog、E. Jang、D. Quillen、E. Holly、M. Kalakrishnan、V. Vanhoucke、S. Levine，《QT-Opt：用于视觉机器人操作的可扩展深度强化学习》，CoRL 2018。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l12-p37">对照原课件第37页与完整中文翻译 →</a></figure>
+<p>用 7 台真实机械臂收集 58 万次抓取尝试，视觉输入直接学 Q 函数——早期「视觉 RL 抓取」的里程碑。</p>
+<h3>6.3 GA-DDPG：目标辅助的 Actor-Critic（CoRL 2021）</h3>
+<p>GA-DDPG 的闭环 6D 抓取策略组合了：DDPG（Actor 学策略、Critic 拟 Q、Replay Buffer）+ <b>BC/DAGGER 热启动</b> + <b>Goal-Auxiliary</b>（把演示目标轨迹作为辅助监督）。这个组合展示了如何利用演示降低探索难度，再用任务回报继续优化。理解它时，可以分别看演示监督、目标辅助和回报优化承担的作用。</p>
+</section>
+<!-- ============ 7 ============ -->
+<section id="s7">
+<h2 class="sec"><span class="no">7</span>非抓握操作：推的学问</h2><p><b>直观例子：</b>桌上硬币太薄，夹爪难从平面直接夹起，可以先把它推到桌沿再抓。非抓握阶段没有持续夹紧物体，物体运动对接触点、方向、桌面摩擦和碰撞很敏感。HACMan 将“推哪里”与“怎样推”分开建模，以免对离散候选接触点直接取无效平均。OSC（Operational Space Control）是操作空间控制。</p>
+<p>第 5 章介绍过，物体操作还可以通过推、拨等接触力学调整物体状态，这类方法称为非抓握操作（Lecture 12 p47-55）：</p>
+<ul>
+<li><b>平面非抓握操作</b>（IROS 2023）：参数化 $(x,y,\theta) \to (x,y,v_x,v_y)$，RL 学推东西；</li>
+<li><b>外源性灵巧（Extrinsic Dexterity）</b>（CoRL 2022）：<b>利用环境帮助抓取</b>——把抓不起来的物体推到墙边、桌边，借助外部接触实现抓取（goal-conditioned RL + OSC 控制）；</li>
+<li><b>任务规划式非抓握</b>：参数化力-速度控制器技能 + 感知 + 任务规划（局限：已知实例的预定义技能）；</li>
+<li><b>HACMan</b>（CoRL 2023）：视觉策略、未见物体泛化、6D 任意稳定目标位姿——动作参数化为<b>接触点（离散）+ 推动方向（连续）</b>，用 Hybrid Actor-Critic 处理混合动作空间。</li>
+</ul>
+<figure>
+<img alt="课程课件：HACMan 的动作参数化与学习" loading="lazy" src="assets/l12_p52.jpg"/>
+<figcaption>HACMan：动作图学习——点云 + 目标流 + 掩膜输入，Critic 值 argmax 选动作。<span class="src">（来源：Lecture 12 课件 p52）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">HACMan</div><div class="translation-body"><ul><li>动作参数化：接触点与推动方向。</li><li>核心思想：通过强化学习学习动作映射。</li><li>挑战：动作空间既包含离散部分（接触点），也包含连续部分（推动方向）。</li></ul><p>(a) 平面——薄物体；(b) 平面——厚物体；(c) 平面——多模态解；(d) 推倒；(e) 翻起。</p><p>x、y、z；坐标刻度：−0.1、−0.05、0、0.05、0.1、0.15、0.4、0.45、0.5、0.6。</p><p>Wenxuan Zhou、Bowen Jiang、Fan Yang、Chris Paxton、David Held，《为 6D 非抓持操作学习混合 Actor–Critic 映射》，CoRL 2023。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l12-p52">对照原课件第52页与完整中文翻译 →</a></figure>
+<p>HACMan 的优势：跨未见物体泛化；局限：依赖运动原语（不连续平滑）、对桌面摩擦系数变化不鲁棒。后续工作（ICLR 2024 / arXiv 2025）走向闭环非抓握策略。</p>
+</section>
+<!-- ============ 8 ============ -->
+<section id="s8">
+<h2 class="sec"><span class="no">8</span>灵巧操作：三大挑战与解法</h2><p><b>从抓取到手内操作：</b>抓取生成预测可行初始手—物体姿态，抓取策略控制接近、接触和抬起，手内重定向在保持接触过程中连续改变物体朝向。三个阶段的输入、奖励和失败判据不同；评估时，应分别验证生成姿态的可行性与接近、接触、抬起等动态执行过程。DAPG（Demonstration-Augmented Policy Gradient）是演示增强策略梯度，在策略更新中结合演示与环境回报信号。</p>
+<p><b>灵巧手</b>有潜力完成高维手内操作及其他复杂操作（抓取、重定位、手内操作、工具使用——锤子、剪刀……）。这些任务使 RL 面临更突出的三类困难（课件 p61-65）：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>挑战</th><th>内容</th><th>解法</th></tr>
+<tr><td><b>1. 样本低效</b></td><td>20-30 DoF 高维动作空间，RL 直接训极慢</td><td>RL + 模仿学习（<b>DAPG</b>）</td></tr>
+<tr><td><b>2. 视觉观测</b></td><td>&gt;1000 维、部分可观测；小 backbone 容量不足、大 backbone 难优化</td><td><b>教师-学生蒸馏</b></td></tr>
+<tr><td><b>3. Sim2Real Gap</b></td><td>真机直训不可负担；接触密集任务仿真难精确</td><td><b>域随机化</b>、Model-based RL</td></tr>
+</table></div></div>
+<h3>DAPG：PG + 模仿的融合（Rajeswaran et al. 2017）</h3>
+<p>在本节展示的复杂灵巧任务中，直接 RL 的探索成本高，有限数据 BC 的闭环泛化困难；演示与回报优化结合是针对这些困难的一种方案。<b>DAPG（Demo-Augmented Policy Gradient）</b>把演示梯度加进策略梯度：既保留演示的「方向感」，又允许 RL 超越演示。效果：<b>更类人的动作质量 + 对环境扰动更鲁棒</b>——这与第 9 章讨论的「BC 热启动 + RL 微调」思路相联系。</p>
+<h3>教师-学生蒸馏（Chen et al., CoRL 2022）</h3>
+<figure>
+<img alt="课程课件：手内物体重定向的教师-学生蒸馏系统" loading="lazy" src="assets/l12_p74.jpg"/>
+<figcaption>手内物体重定向：状态型教师 → 视觉型学生，通用手内操作系统的经典架构。<span class="src">（来源：Lecture 12 课件 p74）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">主题 2：教师—学生蒸馏</div><div class="translation-body"><p>《通用的手内物体朝向调整系统》。</p><p>Tao Chen、Jie Xu、Pulkit Agrawal；MIT Improbable AI 实验室。</p><p>麻省理工学院；CSAIL。</p><p>Tao Chen、Jie Xu、Pulkit Agrawal，《通用的手内物体朝向调整系统》，机器人学习会议，PMLR，2022。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l12-p74">对照原课件第74页与完整中文翻译 →</a></figure>
+<p>状态型 RL 教师（真状态训练）→ 蒸馏到视觉型学生（只看 RGB-D）——手从朝上翻到朝下的物体重定向也能完成。</p>
+<h3>灵巧抓取的其他路线（Lecture 13）</h3>
+<ul>
+<li><b>抓取生成</b>：UniDexGrasp（CVPR 2023）——$p(R,t,q|X)$ 分解为「旋转扩散 + 平移/手型条件生成」，解决多样抓取生成的模式坍缩；</li>
+<li><b>仿真抓取策略</b>：UniDexGrasp++（ICCV 2023）——几何感知迭代通才-专才学习（课程），研究新物体泛化；具体成功率须结合原实验设置；</li>
+<li><b>真机路线</b>：ISAGrasp（人手抓取数据重定向 + 数据增强）、DexPoint（PPO 直接训练视觉观测，使用点云观测与噪声增强研究 sim2real，性能须按物体集合与实验条件解读）。</li>
+</ul>
+<figure>
+<img alt="课程课件：DexPoint——PPO 直接训练视觉观测" loading="lazy" src="assets/l13_p48.jpg"/>
+<figcaption>DexPoint：直接对视觉观测训练 PPO，点云噪声技巧实现 sim2real。<span class="src">（来源：Lecture 13 课件 p48）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">真实世界抓取策略：DexPoint</div><div class="translation-body"><ul><li>直接在视觉观测上训练PPO。</li><li>关键主张：想象点云 + 噪声 → 直接仿真到真实。</li></ul><p>观测点云与想象点云；各自与独热指示拼接 → PointNet → 与机器人本体感觉的MLP特征拼接 → Actor MLP → 动作；Critic MLP → 价值。图例：维0拼接、维1拼接。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l13-p48">对照原课件第48页与完整中文翻译 →</a></figure>
+<div class="update-box">
+<span class="bt">进一步理解：灵巧操作的学习目标</span>
+<p>高自由度手腕与手指控制需要处理动作维数、观测、奖励和数据覆盖。演示、教师—学生蒸馏、域随机化与 RL 可作为不同工具；学习时，可以先对应每种工具解决的问题，再根据任务的信息、数据与控制条件选择组合。</p>
+</div>
+</section>
+<!-- ============ 9 ============ -->
+<section id="s9">
+<h2 class="sec"><span class="no">9</span>课程毕业考题：协同作业</h2>
+<p>本节以公开作业 4 工程中的协同任务串联课程知识；课程期末项目的完整要求另以课件和正式题目为准：<b>四足机器人 Go-2 与轮式人形 Galbot 的协同任务</b>——</p>
+<blockquote>
+<p>Go-2 驮着箱子走到桌边 → Galbot 抓住电钻 → 放进 Go-2 背上的箱子 → Go-2 驮回原点。<br/>
+    这是综合运用课程知识的协同实践：第 2-4 章的位姿与规划、第 5-6 章的位姿估计、第 8-9 章的策略、本章的运动与操作。</p>
+</blockquote>
+<p>初始化加五个任务步骤（详见 §11 作业 4）：初始化 → Apriltag 引导四足移动 → 检测电钻位姿 → 规划抓取与举起 → 移动投放 → 四足返回。三个评分维度各 4 分：位姿估计精度（平移 &lt;0.025m、旋转 &lt;0.25rad）、投放成功、返回精度（&lt;0.1m）。</p>
+</section>
+<!-- ============ 10 ============ -->
+<section id="s10">
+<h2 class="sec"><span class="no">10</span>全教程总结</h2>
+<p>这十章可以按以下五个板块串起来，用于回顾各部分知识如何配合：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>板块</th><th>章节</th><th>核心能力</th></tr>
+<tr><td><b>全景</b></td><td>第 1 章</td><td>具身智能的愿景、VLA 与数据瓶颈、行业版图</td></tr>
+<tr><td><b>身体</b></td><td>第 2-4 章</td><td>刚体变换、四元数、运动规划、PID 控制</td></tr>
+<tr><td><b>眼睛</b></td><td>第 5-7 章</td><td>6D 位姿估计、ICP、抓取检测与生成</td></tr>
+<tr><td><b>大脑</b></td><td>第 8-9 章</td><td>模仿学习、强化学习、Actor-Critic、PPO</td></tr>
+<tr><td><b>整合</b></td><td>第 10 章</td><td>足式运动、操作、灵巧手、协同作业</td></tr>
+</table></div></div>
+<div class="box green">
+<span class="bt">💡 下一步学什么？</span>
+<ul>
+<li><b>深造方向 1 · VLA 大模型</b>：π0.5、GraspVLA、Helix——继续研究视觉—语言—动作预训练、多任务策略与部署泛化；参数、样本和动作标注须分别统计；</li>
+<li><b>深造方向 2 · 真机工程</b>：Isaac Lab 训练 + 域随机化 + 真机部署，把第 4/10 章的 Sim2Real 走通；</li>
+<li><b>深造方向 3 · 学术前沿</b>：跟随课程组工作线（NOCS → GAPartNet → GraspVLA → 世界模型）读论文——本教程的数学与算法基础可作为阅读起点；具体论文仍可能需要补充深度学习、概率建模和控制理论。</li>
+</ul>
+</div>
+</section>
+<!-- ============ 11 ============ -->
+<section id="s11">
+<h2 class="sec"><span class="no">11</span>动手实践：作业 4 · 协同作业</h2>
+<p>本章配套北大原版<b>作业 4</b>（12 分）：四足（go2）+ 人形（galbot）协同完成「抓取-搬运-返回」全流程。代码位置：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/tree/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Homeworks/04-Robot-Manipulation-and-Control" target="_blank"><code>Homeworks/04-Robot-Manipulation-and-Control/</code></a>。</p>
+<h3>11.1 环境搭建</h3>
+<pre><code>conda create -n hw4 python=3.10
+conda activate hw4
+conda install conda-forge::roboticstoolbox-python==1.0.3
+conda install pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 pytorch-cuda=12.4 -c pytorch -c nvidia  <span class="cm"># 或 cpuonly</span>
+pip install tqdm h5py wandb plotly pygments ikpy transforms3d pyyaml pillow matplotlib trimesh dm_control
+pip install numpy==1.26.4 scipy==1.11.4 sympy==1.13.1 opencv-python==4.11.0.86 onnxruntime pyapriltags</code></pre>
+<h3>11.2 任务流程（main.py 五步）</h3>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>步骤</th><th>内容</th><th>用到的课程知识</th></tr>
+<tr><td><b>初始化</b></td><td>头部关节对准四足（<code>head_init_qpos</code>）、手臂摆到观测位（<code>observing_qpos</code>）</td><td>第 2 章 FK / 第 4 章规划</td></tr>
+<tr><td><b>步骤 1</b></td><td>头部 D435 相机检测 <b>Apriltag</b>，算 tag 与箱子的相对位姿，速度指令引导四足到投放位</td><td>第 5 章位姿估计 + 相机内参</td></tr>
+<tr><td><b>步骤 2</b></td><td>检测电钻位姿（1280×720 手腕相机，<b>作业 2 同类网络先验证；环境不同可能需重训</b>）</td><td>第 5 章作业 2 全套</td></tr>
+<tr><td><b>步骤 3</b></td><td>规划抓取与举起轨迹并执行（不能直接 set qpos 到预抓取态——真机不可行）</td><td>第 2 章 IK + 第 4 章规划 + 第 5 章抓取</td></tr>
+<tr><td><b>步骤 4</b></td><td>规划移动轨迹，把电钻投进四足背上的箱子</td><td>第 4 章运动规划</td></tr>
+<tr><td><b>步骤 5</b></td><td>速度指令引导四足返回初始位置</td><td>同步骤 1</td></tr>
+</table></div></div>
+<h3>11.3 评分标准与禁区</h3>
+<ul>
+<li><b>Metric I（4 分）</b>：位姿估计——4 个测试例，平移 &lt;0.025m 且旋转 &lt;0.25rad 各 1 分；</li>
+<li><b>Metric II（4 分）</b>：投放——电钻进入箱子区域，每例 1 分；</li>
+<li><b>Metric III（4 分）</b>：返回——箱子距初始位置 &lt;0.1m，每例 1 分；</li>
+<li><b>禁区</b>：不得读取仿真中物体/四足/箱子位姿；不得直接设置物体位姿、机器人 root 位姿或 qpos（<b>仿真环境不同，作业 2 的网络可能需要自建数据集重训</b>，DATASET.md 提供了完整工具链）。</li>
+</ul>
+<div class="box green">
+<span class="bt">💡 自学路线建议</span>
+<p>这是四份作业中<b>综合性最强</b>的一份（原定 12 分 + 真机组队实验）。建议按 5 步顺序逐个击破：步骤 1（Apriltag 检测 + 速度控制）→ 步骤 5（复制步骤 1）→ 步骤 2（重训位姿网络，DATASET.md 有并行数据生成脚本，4090 上 4 进程 5000 样本约 15 分钟）→ 步骤 3-4（规划）。总计预计 <b>2-3 天</b>。做完它，你就完整走通了「感知 → 规划 → 控制 → 协同」的具身智能闭环。</p>
+</div>
+</section>
+<!-- ============ 附录 A ============ -->
+<section id="selfcheck"><h2 class="sec">理解检查</h2><p>策略输出关节位置残差是否等于直接输出电机力矩？（不是，中间有控制器。）特权学习部署时还能读取地形真值吗？（仅当实际传感器提供；通常学生只用部署观测。）把物体推到桌边再抓属于什么？（利用环境接触的非抓握/外源性灵巧。）</p><p>先遮住括号中的答案，用本章符号和一个具体例子说明理由。遇到疑问时，对照相应节的模型假设检查自己的推理。</p></section>
+<section id="apA">
+<h2 class="sec"><span class="no">附A</span>术语表</h2>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table class="term-table">
+<tr><th>术语</th><th>解释</th></tr>
+<tr><td>步态（Gait）</td><td>人或动物行走的运动模式</td></tr>
+<tr><td>MPC（模型预测控制）</td><td>每步解带约束优化问题：代价 + 动力学 + 约束</td></tr>
+<tr><td>WBC（全身控制）</td><td>Whole-Body Control：协调全身关节的控制框架</td></tr>
+<tr><td>本体感知（Proprioception）</td><td>IMU、关节角度/速度等机器人自身状态</td></tr>
+<tr><td>外感受（Exteroception）</td><td>激光雷达、相机等外部环境感知</td></tr>
+<tr><td>课程学习（Curriculum）</td><td>从易到难逐步增加任务难度的训练策略</td></tr>
+<tr><td>层级学习（Hierarchical）</td><td>高层策略组合底层技能库</td></tr>
+<tr><td>特权学习（Privileged）</td><td>教师用特权信息、学生只看观测（蒸馏/非对称 AC）</td></tr>
+<tr><td>参考运动（Reference Motion）</td><td>动捕数据提供的「像人一样动」的先验</td></tr>
+<tr><td>GAIL</td><td>生成对抗模仿学习：从演示学奖励</td></tr>
+<tr><td>QT-Opt</td><td>大规模分布式 Q-Learning 视觉抓取（Google）</td></tr>
+<tr><td>DDPG</td><td>深度确定性策略梯度：连续动作 Off-Policy AC</td></tr>
+<tr><td>非抓握操作（Non-prehensile）</td><td>推、拨等没有用抓握持续固定物体的操作；接触仍可施加运动约束</td></tr>
+<tr><td>外源性灵巧（Extrinsic Dexterity）</td><td>利用环境（墙、桌面）辅助完成抓取</td></tr>
+<tr><td>HACMan</td><td>混合动作空间（离散接触点 + 连续方向）的视觉操作 RL</td></tr>
+<tr><td>DAPG</td><td>演示增强策略梯度：RL + IL 融合（2017）</td></tr>
+<tr><td>Apriltag</td><td>视觉基准标记，用于鲁棒的位姿检测</td></tr>
+</table></div></div>
+</section>
+<!-- ============ 附录 B ============ -->
+<section id="apB">
+<h2 class="sec"><span class="no">附B</span>课件页索引（Lecture 10-13）</h2>
+<p>本章合并了原版四讲课件（Lecture 10：43 页；Lecture 11：87 页；Lecture 12：84 页；Lecture 13：67 页）。下表提供主题导航；每个页面的原文、中文翻译与原页码见配套译解页面：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table class="page-index">
+<tr><th>课件</th><th>主题</th><th>内容</th><th>在教程中的位置</th></tr>
+<tr><td class="pg">L10 p1-5</td><td>Logistics + PG 回顾</td><td>作业 2、critics as baselines、GAE</td><td>§1（呼应第 9 章）</td></tr>
+<tr><td class="pg">L10 p6-15</td><td>AC 回顾</td><td>折扣 AC、GAE、例子、推荐阅读</td><td>§1（呼应第 9 章 §8）</td></tr>
+<tr><td class="pg">L10 p16-32</td><td>Off-Policy RL 与 PPO</td><td>IS、TRPO、PPO clip/KL、实验、tricks</td><td>§1（呼应第 9 章 §9）</td></tr>
+<tr><td class="pg">L10 p33-43</td><td>PPO 细节与分类学</td><td>归一化、初始化、Spinning Up</td><td>§1（呼应第 9 章）</td></tr>
+<tr><td class="pg">L11 p1-5</td><td>Logistics</td><td>期中统计（均值 74.2）、作业 3、期末项目</td><td>§9（背景）</td></tr>
+<tr><td class="pg">L11 p6-34</td><td>RL 问题与 PPO 复习</td><td>Off-policy、TRPO 三步、PPO 超参数</td><td>§1（呼应第 9 章）</td></tr>
+<tr><td class="pg">L11 p35-45</td><td>Locomotion 总览</td><td>Recent Advances、Gait、MPC 与 RL、Atlas/ASIMO/宇树/天工</td><td>§2</td></tr>
+<tr><td class="pg">L11 p46-56</td><td>MDP 设计</td><td>State/Action（位置 PD 最常用）/Reward/仿真器</td><td>§3</td></tr>
+<tr><td class="pg">L11 p57-62</td><td>学习框架</td><td>为什么 PPO、Curriculum、Hierarchical、Privileged</td><td>§4</td></tr>
+<tr><td class="pg">L11 p63-72</td><td>QuadWBG 与范例</td><td>5D 命令、Xmen+ASGrasp、差分 IK、高层规划器</td><td>§5</td></tr>
+<tr><td class="pg">L11 p73-86</td><td>双足、Sim2Real、未来方向</td><td>参考运动、loco-manipulation、域随机化、资源</td><td>§5 + 教学说明</td></tr>
+<tr><td class="pg">L12 p1-33</td><td>Locomotion 复习</td><td>（同 Lecture 11 内容）</td><td>§2-5</td></tr>
+<tr><td class="pg">L12 p34-46</td><td>Gripper RL 抓取</td><td>Reward-Consistent Demo/GAIL、QT-Opt、GA-DDPG</td><td>§6</td></tr>
+<tr><td class="pg">L12 p47-55</td><td>非抓握操作</td><td>平面推、Extrinsic Dexterity、任务规划、HACMan</td><td>§7</td></tr>
+<tr><td class="pg">L12 p56-84</td><td>灵巧操作</td><td>三类夹爪、三大挑战、DAPG、教师-学生蒸馏</td><td>§8</td></tr>
+<tr><td class="pg">L13 p1-3</td><td>期末项目</td><td>时间线（5/21 发布 → 6/9 真机）</td><td>§9</td></tr>
+<tr><td class="pg">L13 p4-16</td><td>Gripper RL 复习</td><td>（同 Lecture 12 内容）</td><td>§6</td></tr>
+<tr><td class="pg">L13 p17-25</td><td>非抓握复习</td><td>（同 Lecture 12 内容）</td><td>§7</td></tr>
+<tr><td class="pg">L13 p26-50</td><td>灵巧手前沿</td><td>DexGraspNet、UniDexGrasp(++)、ISAGrasp、DexPoint</td><td>§8</td></tr>
+<tr><td class="pg">L13 p51-67</td><td>DAPG 与蒸馏细节</td><td>RL+IL、教师-学生实验</td><td>§8</td></tr>
+</table></div></div>
+</section>
+<!-- ============ 附录 C ============ -->
+<section id="apC">
+<h2 class="sec"><span class="no">附C</span>参考资源</h2>
+<ul>
+<li>课程官网：<a href="https://pku-epic.github.io/Intro2EAI_2025/" target="_blank">pku-epic.github.io/Intro2EAI_2025</a></li>
+<li>本教程素材来源仓库：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU" target="_blank">zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU</a></li>
+<li>本章课件：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/tree/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides" target="_blank"><code>Slides/Lecture10-13</code></a>（Lecture10_04_21 / 11_04_28 / 12_05_12 / 13_05_19）</li>
+<li>本章作业：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/tree/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Homeworks/04-Robot-Manipulation-and-Control" target="_blank"><code>Homeworks/04-Robot-Manipulation-and-Control/</code></a></li>
+</ul>
+<h3>延伸阅读</h3>
+<ul>
+<li>运动训练代码库：<a href="https://github.com/unitreerobotics/unitree_rl_gym" target="_blank">Unitree RL Gym</a>、<a href="https://github.com/leggedrobotics/legged_gym" target="_blank">Legged Gym</a>、<a href="https://github.com/google-deepmind/mujoco_playground" target="_blank">MuJoCo Playground</a></li>
+<li>Rajeswaran et al., <em>DAPG</em>, 2018；Chen et al., <em>In-hand Object Re-orientation</em>, CoRL 2022</li>
+<li>Wang et al., <em>GA-DDPG</em>, CoRL 2021；Kalashnikov et al., <em>QT-Opt</em>, 2018</li>
+<li>OpenAI Spinning Up（RL 入门，Lecture 10 推荐）</li>
+</ul>
+</section>
+</main>
+</div>
+<!-- ============ 页脚 ============ -->
+<aside class="recent" id="current-research"><h3>2026年10月技术与政策动态 · 全身操作泛化与真实场景验证</h3><p>2026年9月的Helix 2.5把未见家庭中的全身行为作为评估对象；2026年度实景实训政策也强调真实场景验证。关注持续成功、干预和实际运行条件。</p><p class="source-note">资料截至2026-10-04 · <a href="../技术动态_20261004.html#helix25">一手来源、发布日期与适用范围</a></p></aside><footer>
+<nav aria-label="章节导航" class="chapter-nav"><a href="../ch09/index.html">← 第9章</a><a href="../index.html">教程目录</a></nav>
+<p><b>关于本教程：</b>本教程基于北京大学 2025 春季《具身智能导论》课程的公开资料（王鹤 老师主讲）整理改编，面向零基础自学者，免费提供学习。来源、改编方式与使用声明的完整说明见<a href="#about">篇首「关于本教程」</a>；笔记、课件、作业版权归原作者及课程组所有。</p>
+<p><b>阅读约定：</b>核心知识依照 2025 春季课程组织；正文中的教学解释帮助理解模型假设与工程条件。原始课件、笔记和作业保留作者署名，技术动态标明来源与日期。</p>
+<p><b>全教程完成：</b>本教程共 10 章，覆盖北大《具身智能导论》全部 13 讲课件、9 章笔记与 4 次作业。后续可以选择一个任务复现实验，再沿参考文献深入学习。</p>
+</footer>
+<script defer="" src="../reader.js"></script></body>
+</html>

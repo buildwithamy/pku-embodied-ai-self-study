@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第 9 章 策略学习 II：强化学习与 Actor-Critic</title>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script async="" src="../vendor/mathjax/tex-svg.js"></script>
+<style>
+:root {
+  --ink: #1c2430;
+  --ink-soft: #4a5568;
+  --accent: #2563eb;
+  --accent-soft: #eef4ff;
+  --bg: #faf9f6;
+  --card: #ffffff;
+  --line: #e5e2db;
+  --green-bg: #f0f9f1;
+  --green-bd: #7cc98c;
+  --yellow-bg: #fffbeb;
+  --yellow-bd: #e8c766;
+  --red-bg: #fdf1f1;
+  --red-bd: #e8a1a1;
+  --update-bg: #fffaeb;
+  --update-bd: #e8a23d;
+  --update-ink: #8a4b08;
+  --code-bg: #101826;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-size: 16.5px;
+  line-height: 1.85;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.hero {
+  background: linear-gradient(135deg, #0e2a4a 0%, #15406e 55%, #1c5a94 100%);
+  color: #fff;
+  padding: 72px 24px 56px;
+  text-align: center;
+}
+.hero .course-tag {
+  display: inline-block;
+  font-size: 13px;
+  letter-spacing: 2px;
+  border: 1px solid rgba(255,255,255,.4);
+  border-radius: 999px;
+  padding: 4px 16px;
+  margin-bottom: 22px;
+  opacity: .9;
+}
+.hero h1 {
+  margin: 0 auto 14px;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  max-width: 760px;
+  line-height: 1.5;
+}
+.hero .sub {
+  font-size: 15.5px;
+  opacity: .82;
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+.hero .meta {
+  margin-top: 26px;
+  font-size: 13px;
+  opacity: .7;
+}
+.hero .ver-note {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 12.5px;
+  border: 1px dashed rgba(255,210,120,.7);
+  color: #ffd27a;
+  border-radius: 999px;
+  padding: 3px 14px;
+}
+.badge-2026 {
+  display: inline-block;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 2px 9px;
+  letter-spacing: .5px;
+  vertical-align: 2px;
+  margin-right: 6px;
+  box-shadow: 0 1px 4px rgba(217,119,6,.35);
+}
+.update-box {
+  margin: 18px 0;
+  padding: 14px 20px 12px;
+  border: 2px solid var(--update-bd);
+  background: var(--update-bg);
+  border-radius: 10px;
+  font-size: 15.5px;
+  box-shadow: 0 2px 8px rgba(232,162,61,.12);
+}
+.update-box .bt { color: var(--update-ink); font-weight: 700; display: block; margin-bottom: 4px; }
+.update-box p { margin: 5px 0; }
+.update-box ul { margin: 4px 0 4px; }
+.update-box li { margin: 3px 0; }
+.up-text {
+  background: #fef3c7;
+  border-bottom: 2px solid #f59e0b;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+.goals {
+  max-width: 880px;
+  margin: -28px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 28px;
+  box-shadow: 0 6px 24px rgba(16, 42, 74, .08);
+  position: relative;
+}
+.goals h2 { margin: 0 0 10px; font-size: 17px; color: var(--accent); }
+.goals ul { margin: 0; padding-left: 20px; }
+.goals li { margin: 4px 0; font-size: 15px; color: var(--ink-soft); }
+.goals li b { color: var(--ink); }
+.about {
+  max-width: 880px;
+  margin: 36px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px 34px;
+  box-shadow: 0 4px 16px rgba(16, 42, 74, .06);
+}
+.about h2 {
+  margin: 0 0 14px;
+  font-size: 20px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.about h3 { margin: 20px 0 8px; font-size: 16.5px; color: var(--accent); }
+.about p, .about li { font-size: 15px; color: var(--ink-soft); }
+.about .src-badge {
+  display: inline-block;
+  background: #eef4ff;
+  border: 1px solid #b9d0f8;
+  color: #2456b8;
+  font-size: 13px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin: 2px 4px 2px 0;
+}
+.about .license-note {
+  margin: 18px 0 0;
+  padding: 14px 18px;
+  background: var(--red-bg);
+  border: 1px solid var(--red-bd);
+  border-radius: 10px;
+  font-size: 14.5px;
+  line-height: 1.8;
+}
+.about .license-note b { color: #b04848; }
+.layout {
+  display: flex;
+  max-width: 1240px;
+  margin: 40px auto 80px;
+  padding: 0 24px;
+  gap: 36px;
+  align-items: flex-start;
+}
+.toc {
+  position: sticky;
+  top: 24px;
+  width: 240px;
+  flex-shrink: 0;
+  font-size: 13.5px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+}
+.toc .toc-title { font-weight: 700; color: var(--ink-soft); margin-bottom: 8px; letter-spacing: 1px; }
+.toc a {
+  display: block;
+  color: var(--ink-soft);
+  padding: 4px 10px;
+  border-left: 2px solid var(--line);
+  margin: 1px 0;
+  line-height: 1.5;
+}
+.toc a:hover { color: var(--accent); border-left-color: var(--accent); text-decoration: none; background: var(--accent-soft); border-radius: 0 6px 6px 0; }
+main { flex: 1; min-width: 0; }
+section { margin-bottom: 56px; }
+h2.sec {
+  font-size: 25px;
+  margin: 0 0 6px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--ink);
+  letter-spacing: .5px;
+}
+h2.sec .no {
+  display: inline-block;
+  background: var(--ink);
+  color: #fff;
+  font-size: 15px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin-right: 10px;
+  vertical-align: 3px;
+}
+h3 { font-size: 19px; margin: 34px 0 10px; }
+h4 { font-size: 16.5px; margin: 26px 0 8px; }
+p { margin: 10px 0; }
+strong { color: #0f2c4c; }
+em.term {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--accent);
+  border-bottom: 1px dashed var(--accent);
+  cursor: help;
+}
+ul, ol { padding-left: 26px; }
+li { margin: 5px 0; }
+code {
+  background: #eef1f5;
+  border: 1px solid #e0e5ec;
+  border-radius: 5px;
+  padding: 1px 6px;
+  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: 14.5px;
+  color: #0d3d75;
+}
+blockquote {
+  margin: 16px 0;
+  padding: 12px 20px;
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  color: var(--ink-soft);
+  font-size: 15.5px;
+}
+blockquote p { margin: 4px 0; }
+figure { margin: 22px 0; text-align: center; }
+figure img {
+  max-width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 18px rgba(16, 42, 74, .10);
+  background: #fff;
+}
+figcaption {
+  font-size: 13.5px;
+  color: #7a8290;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+figcaption .src { opacity: .75; font-size: 12.5px; }
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+.gallery figure { margin: 0; }
+.gallery img { width: 100%; }
+.gallery figcaption { font-size: 12.5px; margin-top: 6px; }
+.box {
+  margin: 18px 0;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 15.5px;
+}
+.box .bt { font-weight: 700; display: block; margin-bottom: 4px; }
+.box.green { background: var(--green-bg); border: 1px solid var(--green-bd); }
+.box.green .bt { color: #2e7d43; }
+.box.yellow { background: var(--yellow-bg); border: 1px solid var(--yellow-bd); }
+.box.yellow .bt { color: #9a7414; }
+.box.red { background: var(--red-bg); border: 1px solid var(--red-bd); }
+.box.red .bt { color: #b04848; }
+.box.blue { background: var(--accent-soft); border: 1px solid #a9c3f5; }
+.box.blue .bt { color: #2456b8; }
+.box p { margin: 4px 0; }
+.box ul { margin: 4px 0 4px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 18px 0;
+  font-size: 15px;
+  background: var(--card);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+th {
+  background: #17335c;
+  color: #fff;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 14.5px;
+}
+td { padding: 9px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+tr:nth-child(even) td { background: #f7f6f2; }
+.page-index { font-size: 13.5px; }
+.page-index th { font-size: 13.5px; padding: 8px 10px; }
+.page-index td { padding: 6px 10px; line-height: 1.6; }
+.page-index td.pg { font-family: Consolas, monospace; font-weight: 700; white-space: nowrap; color: var(--accent); }
+pre {
+  background: var(--code-bg);
+  color: #e6edf6;
+  border-radius: 10px;
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-size: 13.8px;
+  line-height: 1.65;
+  margin: 16px 0;
+}
+pre code {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+pre .cm { color: #7d8aa0; }
+pre .kw { color: #7fb3ff; }
+pre .st { color: #a5d6a7; }
+pre .fn { color: #ffd479; }
+.term-table td:first-child { font-weight: 700; white-space: nowrap; }
+footer {
+  max-width: 880px;
+  margin: 0 auto 60px;
+  padding: 20px 28px;
+  border-top: 1px solid var(--line);
+  font-size: 12.8px;
+  color: #8a91a0;
+  line-height: 1.8;
+}
+@media (max-width: 960px) {
+  .toc { display: none; }
+  .hero h1 { font-size: 26px; }
+  .layout { padding: 0 16px; }
+  .gallery { grid-template-columns: 1fr; }
+}
+/* 2026-10-04: offline chapters and bounded content scrolling */
+.layout, main, section { min-width:0; }
+main { max-width:100%; }
+img, video { max-width:100%; height:auto; }
+p, li, td, th, a { overflow-wrap:anywhere; }
+.table-scroll { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; margin:18px 0; }
+.table-scroll table { margin:0; min-width:640px; }
+pre { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; }
+mjx-container[display="true"] { max-width:100%; overflow-x:auto; overflow-y:hidden; padding:6px 0; text-align:left !important; }
+mjx-container:not([display="true"]) { display:inline-block; max-width:100%; vertical-align:middle; overflow-x:auto; overflow-y:hidden; }
+.mobile-toc { display:none; }
+.chapter-nav { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; }
+@media(max-width:960px) {
+  .layout { flex-direction:column; gap:16px; }
+  main { width:100%; }
+  .mobile-toc { display:block; width:100%; margin:0; padding:12px 16px; background:var(--card); border:1px solid var(--line); border-radius:10px; }
+  .mobile-toc summary { cursor:pointer; font-weight:700; }
+  .mobile-toc a { display:block; padding:4px 0; }
+}
+</style>
+<link href="../shared.css" rel="stylesheet"/>
+</head>
+<body><nav class="reader-nav"><a class="brand" href="../index.html">北京大学《具身智能导论》自学教程</a><a href="../学习与运行说明.html">学习指南</a><a href="课件中文译解.html">本章课件翻译</a><a href="../术语与符号.html">术语与符号</a><a href="../来源与许可.html">来源</a></nav>
+<!-- ============ 封面 ============ -->
+<div class="hero">
+<span class="course-tag">具身智能自学教程 · 第 9 章</span>
+<h1>策略学习 II：强化学习与 Actor-Critic</h1>
+<p class="sub">通过任务回报主动学习策略。这一章完整推导策略梯度：REINFORCE 的方差来源、动作无关基线的无偏条件，以及 Actor-Critic 和 GAE 的估计方法，最后学习常用算法 PPO。</p>
+<p class="meta">改编自北京大学《具身智能导论》(Introduction to Embodied AI) 2025 春季课程 · 授课：王鹤 老师（部分课件借鉴 Berkeley CS285）</p>
+<span class="ver-note">配套原文、中文翻译与自测 · 支持离线阅读</span>
+<div class="chapter-toolbar" id="chapter-resources"><a href="课件中文译解.html">英文原课件与逐页中文翻译 →</a><a href="../技术动态_20261004.html">本章相关技术进展 →</a><a href="../术语与符号.html">英文缩写与符号速查 →</a></div></div>
+<!-- ============ 学习目标 ============ -->
+<div class="goals">
+<h2>🎯 本章学习目标</h2>
+<ul>
+<li>理解 RL 的目标：最大化期望回报 $J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)}[R(\tau)]$</li>
+<li>完整推导<b>策略梯度定理</b>：对数导数技巧 + 参数独立的环境项消失，理解「奖励不需要可导」为何至关重要</li>
+<li>掌握 <b>REINFORCE</b> 算法流程，理解 On-Policy 的本质与样本效率问题</li>
+<li>理解 <b>PG vs BC</b> 的本质区别：BC 与 PG 形式类似，但目标与采样分布不同；恒定回报的 on-policy PG 期望梯度为零</li>
+<li>掌握降方差三件套：<b>Reward-to-Go</b>（因果）、<b>Baseline</b>（无偏性证明）、<b>优势函数</b>（V/Q/A）</li>
+<li>理解 <b>Actor-Critic</b>（Batch/Online）与 <b>GAE</b>（bias-variance 权衡）</li>
+<li>掌握 <b>PPO</b> 的 clipped surrogate objective 与实现 tricks</li>
+<li>通过<b>作业 3</b>：numpy 实现 PPO 组件，设计奖励函数让四足机器人站起来、走起来</li>
+</ul>
+</div>
+<!-- ============ 关于本教程 ============ -->
+<div class="about" id="about">
+<h2>📖 关于本教程</h2>
+<h3>内容来源</h3>
+<p>本教程的核心知识体系来自 <b>北京大学 2025 年春季学期《具身智能导论》</b>（Introduction to Embodied AI）课程，由 <b>王鹤</b> 老师（北京大学前沿计算研究中心助理教授，课程授课教师）主讲。</p>
+<p>
+<span class="src-badge">📝 课堂笔记 × 9 章</span>
+<span class="src-badge">🎞 授课课件 × 13 讲</span>
+<span class="src-badge">💻 课程作业 × 4 次</span>
+</p>
+<p>以上资料由课程同学整理并开源在 GitHub 仓库 <a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU" target="_blank">zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU</a>（<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/LICENSE" target="_blank">GPL-3.0 许可证</a>），课程官网为 <a href="https://pku-epic.github.io/Intro2EAI_2025/" target="_blank">pku-epic.github.io/Intro2EAI_2025</a>。</p>
+<h3>如何使用本章</h3>
+<ul>
+<li><b>三源整合：</b>把每一讲的「课堂笔记 + 授课课件 + 配套作业」融合进同一章，笔记提供知识骨架，课件图提供直观理解，作业提供动手实践；</li>
+<li><b>初学者化改写：</b>原笔记是写给北大学生的浓缩讲义，本教程把结论式表述扩写为「概念 → 直觉 → 应用」的解释型讲述，补充术语表与学习目标；</li>
+<li><b>图文并茂：</b>正文配图附中文翻译与来源页码；完整课件可按页对照阅读；</li>
+<li><b>补充说明：</b>橙色框提供适用条件与工程接口说明；具体模型、数据和评分以对应一手资料为准；</li>
+<li><b>作业适配自学：</b>保留原版作业的难度与考点，补充环境搭建、解题提示与自测标准，并提供参考答案链接（先自己做，再对照）。</li>
+</ul>
+<h3>教程目的</h3>
+<p>让没有北大课堂环境的自学者，也能按课程原有的知识体系，系统地学完具身智能入门：从机器人学基础，到视觉与抓取，再到策略学习——最终具备读懂前沿论文、跑通基础实验的能力。</p>
+<div class="license-note">
+<b>📜 版权与使用声明</b><br/>
+    原课程资料（笔记、课件、作业）均为开源免费资源，版权归原作者（王鹤老师及课程组、笔记整理者）所有；本教程的改编内容（中文讲解、学习辅助、编排结构）同样免费公开。<br/>
+    来源仓库采用 GPL-3.0，原课件中的论文图、照片与其他第三方材料仍保留相应署名和权利说明。分发或复用时应遵守所涉及材料的许可与权利条件。
+  </div>
+</div>
+<!-- ============ 正文 ============ -->
+<div class="layout">
+<nav class="toc">
+<div class="toc-title">本章目录</div>
+<a href="#about">关于本教程（来源 · 声明）</a>
+<a href="#s1">1. 从模仿学习到强化学习</a>
+<a href="#s2">2. RL 的目标函数</a>
+<a href="#s3">3. 策略梯度定理</a>
+<a href="#s4">4. REINFORCE 与 PG vs BC</a>
+<a href="#s5">5. PG 的挑战：高方差与样本效率</a>
+<a href="#s6">6. 降方差：Reward-to-Go 与 Baseline</a>
+<a href="#s7">7. 价值函数与优势函数</a>
+<a href="#s8">8. Actor-Critic</a>
+<a href="#s9">9. PPO：机器人学习中常用的 PPO</a>
+<a href="#s10">10. 本章小结</a>
+<a href="#s11">11. 动手实践：作业 3</a>
+<a href="#apA">附录 A：术语表</a>
+<a href="#apB">附录 B：课件 87 页完整索引</a>
+<a href="#apC">附录 C：参考资源</a>
+</nav>
+<details class="mobile-toc"><summary>本章目录</summary><a href="#about">关于本教程（来源 · 声明）</a><a href="#s1">1. 从模仿学习到强化学习</a><a href="#s2">2. RL 的目标函数</a><a href="#s3">3. 策略梯度定理</a><a href="#s4">4. REINFORCE 与 PG vs BC</a><a href="#s5">5. PG 的挑战：高方差与样本效率</a><a href="#s6">6. 降方差：Reward-to-Go 与 Baseline</a><a href="#s7">7. 价值函数与优势函数</a><a href="#s8">8. Actor-Critic</a><a href="#s9">9. PPO：机器人学习中常用的 PPO</a><a href="#s10">10. 本章小结</a><a href="#s11">11. 动手实践：作业 3</a><a href="#apA">附录 A：术语表</a><a href="#apB">附录 B：课件 87 页完整索引</a><a href="#apC">附录 C：参考资源</a></details>
+<main><div class="box blue"><span class="bt">原课件对照阅读</span><p><a href="课件中文译解.html">打开本章课件逐页中文翻译</a>：保留原页码、原文与来源，可在学完一节后对照相应页面。</p></div>
+<!-- ============ 1 ============ -->
+<section id="s1">
+<h2 class="sec"><span class="no">1</span>从模仿学习到强化学习</h2>
+<p>第 8 章结尾总结了 IL 的三大局限：依赖专家数据、缺少直接回报优化、纠错数据覆盖不足。<b>标准 BC 拟合固定专家数据</b>，学习范围受演示覆盖限制。补采、干预或 DAgger 可以增加训练数据，帮助策略学习分布外状态（OOD）下的动作。</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th></th><th>离线学习（Offline）</th><th>在线学习（Online）</th></tr>
+<tr><td><b>数据来源</b></td><td>预先收集的固定数据集</td><td>学习过程中主动与环境交互产生</td></tr>
+<tr><td><b>代表</b></td><td>BC（模仿学习）</td><td>RL（强化学习，多数算法）</td></tr>
+<tr><td><b>探索能力</b></td><td>训练只使用已有数据覆盖的情形</td><td><b>试错探索更广泛的状态空间</b></td></tr>
+</table></div></div>
+<div class="box green">
+<span class="bt">💡 直觉：试错 = 学骑自行车</span>
+<p>BC 像依据骑车示范学习动作；训练若没覆盖失衡后的恢复，执行时可能摔倒。RL 像自己骑——通过不断尝试和调整，逐渐学会保持平衡（获得「不摔倒」这个隐含的高奖励）。RL 的探索让智能体能学会处理专家演示中从未出现的状态。</p>
+</div>
+<p>强化学习也可以使用固定数据集，这称为离线强化学习（Offline RL）。它与 BC 的区别在于，还会利用奖励信号优化决策。</p>
+</section>
+<!-- ============ 2 ============ -->
+<section id="s2">
+<h2 class="sec"><span class="no">2</span>RL 的目标函数</h2>
+<p>RL 的目标：找到策略参数 $\theta^*$，最大化该策略下轨迹的<b>期望回报</b>：</p>
+<p style="text-align:center">$$ J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)} [R(\tau)] = \mathbb{E}_{\tau \sim p_\theta(\tau)} \left[ \sum_{t=0}^{T-1} r(s_t, a_t) \right] $$</p>
+<p>其中 $p_\theta(\tau) = p(s_0)\prod_{t=0}^{T-1}\pi_\theta(a_t|s_t)\,p(s_{t+1}|s_t,a_t)$——轨迹分布由策略和环境共同决定。策略或环境可以有随机性，单条轨迹的回报不同，所以我们优化<b>期望</b>。本课程主要关注<b>有限时间步</b>（finite horizon）。</p>
+<p>直接优化 $J(\theta)$ 很难——期望涉及对所有可能轨迹的积分/求和，连续高维空间无法处理。解法是蒙特卡洛 + 梯度，这正是下一节的内容。</p>
+</section>
+<!-- ============ 3 ============ -->
+<section id="s3">
+<h2 class="sec"><span class="no">3</span>策略梯度定理</h2><div class="box blue"><span class="bt">推导的前提</span><p>θ 是策略参数，τ 是轨迹，R 是累计奖励，$\nabla_\theta$ 表示对参数求梯度。这里初始状态分布、环境转移和奖励函数本身不显式依赖 θ；策略概率可微，且可交换微分与积分。环境项导数为零的直接原因是它与 θ 无关，马尔可夫假设只是给出本节的轨迹分解。若策略依赖历史，也可对每步条件动作概率使用同一 score 思路。</p><p>奖励可以不可微，但若奖励显式依赖 θ，梯度还会含直接奖励导数项。我们先讨论通常的固定奖励任务。</p></div>
+<p>三步推导：</p>
+<h3>3.1 蒙特卡洛近似</h3>
+<p>用当前策略采样 $N$ 条轨迹，平均回报近似期望：</p>
+<p style="text-align:center">$$ J(\theta) \approx \frac{1}{N}\sum_{i=1}^{N} R(\tau^{(i)}) $$</p>
+<p>但为了梯度上升，我们需要 $\nabla_\theta J(\theta)$——而对 MC 近似形式直接求梯度很难，因为轨迹生成过程本身依赖 $\theta$。</p>
+<h3>3.2 对数导数技巧</h3>
+<p>从期望定义出发，交换梯度与积分：$\nabla_\theta J(\theta) = \int \nabla_\theta p_\theta(\tau) R(\tau)\,\mathrm{d}\tau$。关键引理：</p>
+<p style="text-align:center">$$ \nabla_\theta p_\theta(x) = p_\theta(x)\, \nabla_\theta \log p_\theta(x) $$</p>
+<p>（证明只需链式法则：$\nabla_\theta\log p_\theta(x) = \frac{1}{p_\theta(x)}\nabla_\theta p_\theta(x)$，两边乘 $p_\theta(x)$。）代入得：</p>
+<p style="text-align:center">$$ \nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)} \left[ \nabla_\theta \log p_\theta(\tau)\, R(\tau) \right] $$</p>
+<div class="box red">
+<span class="bt">策略梯度只需要奖励值</span>
+<p>在上述固定奖励设定下，梯度表达式中<b>没有出现 $\nabla_\theta R(\tau)$</b>。计算时只需获得每个时间步的奖励值，奖励函数可以不可导。这让 RL 可以处理<b>稀疏、非连续的奖励</b>（任务成功 = 1，失败 = 0）。</p>
+</div>
+<h3>3.3 参数独立的环境项消失</h3>
+<p>展开 $\log p_\theta(\tau) = \log p(s_0) + \sum_t [\log\pi_\theta(a_t|s_t) + \log p(s_{t+1}|s_t,a_t)]$ 并对 $\theta$ 求导：<b>初始状态分布与状态转移概率都与 $\theta$ 无关</b>，两项梯度为 0。最终：</p>
+<p style="text-align:center">$$ \nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)} \left[ \left( \sum_{t=0}^{T-1} \nabla_\theta \log \pi_\theta(a_t | s_t) \right) R(\tau) \right] $$</p>
+<p>这就是<b>策略梯度定理</b>。MC 估计（$\hat{g}$）用 $N$ 条采样轨迹实现它。</p>
+<p>顺带引入两个重要概念（笔记）：</p>
+<ul>
+<li><b>Model-Free</b>：不需要知道（甚至学习）环境模型，只需与环境交互采样——本课程的主要设定（仿真采样时，同样需要定义初始分布、任务和终止条件）；</li>
+<li><b>Model-Based</b>：利用已有或学习的环境模型规划/生成模拟数据；真实世界学习可选择有模型、无模型或混合方法。</li>
+</ul>
+</section>
+<!-- ============ 4 ============ -->
+<section id="s4">
+<h2 class="sec"><span class="no">4</span>REINFORCE 与 PG vs BC</h2>
+<p><b>REINFORCE</b> 算法四步循环：① 用当前 $\pi_\theta$ 采样 $N$ 条轨迹；② 计算每条轨迹的总回报 $R(\tau^{(i)})$；③ 计算梯度估计 $\hat{g}$；④ 梯度上升更新 $\theta \leftarrow \theta + \alpha\hat{g}$。</p>
+<p>直观意义：<b>按照回报加权提高采样动作的相对概率；使用适当基线后，正优势与负优势分别鼓励和抑制动作；更新幅度由整条轨迹回报加权</b>。</p>
+<h3>PG vs BC：两种不同目标的对比</h3>
+<figure>
+<img alt="课程课件：策略梯度与最大似然（BC）的对比" loading="lazy" src="assets/s_p13.jpg"/>
+<figcaption>策略梯度 vs 最大似然（BC）：两者的 score 梯度代数形式相似，但权重与数据分布都不同。<span class="src">（来源：Lecture 9 课件 p13）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">与最大似然比较</div><div class="translation-body"><p>策略梯度：</p><p>$\nabla_\theta J(\theta)\approx\frac1N\sum_{i=1}^N(\sum_{t=1}^T\nabla_\theta\log\pi_\theta(a_{i,t}\mid s_{i,t}))(\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</p><p>最大似然：</p><p>$\nabla_\theta J_{ML}(\theta)\approx\frac1N\sum_{i=1}^N(\sum_{t=1}^T\nabla_\theta\log\pi_\theta(a_{i,t}\mid s_{i,t}))$。</p><p>sₜ、aₜ → 训练数据 → 监督学习 → πθ(aₜ|sₜ)。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l09-p13">对照原课件第13页与完整中文翻译 →</a></figure>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th></th><th>BC（最大似然）</th><th>PG（策略梯度）</th></tr>
+<tr><td><b>目标</b></td><td>最大化 $\log\pi_\theta(a|s)$（专家数据）</td><td>最大化当前策略下的期望回报 $J(\theta)$；回报加权对数概率是采样更新使用的代理表达式</td></tr>
+<tr><td><b>权重</b></td><td>标准 BC 对专家样本使用统一权重；样本来自固定演示集</td><td>用回报或优势加权；优势为负时抑制对应动作，原始正回报不直接产生负权重</td></tr>
+<tr><td><b>缺陷</b></td><td>拟合演示中的动作，可能同时学到专家的噪声、手抖与次优动作</td><td>通过回报与优势估计优化动作选择，信用分配仍然困难</td></tr>
+</table></div></div>
+<blockquote>
+<p><b>BC 与 PG 的梯度形式相似，但数据分布和目标不同</b>：BC 在固定专家数据上最大化动作似然，PG 在当前策略轨迹上用回报加权。若 on-policy 回报恒为 1，期望 score 梯度为零；BC 的梯度则由专家样本的动作似然决定。覆盖不足时，BC 难以学会所有纠错动作；RL 则通过环境交互获取回报信号。</p>
+</blockquote>
+</section>
+<!-- ============ 5 ============ -->
+<section id="s5">
+<h2 class="sec"><span class="no">5</span>PG 的挑战：高方差与样本效率</h2>
+<h3>5.1 高方差</h3>
+<p>MC 用 $N$ 条轨迹估计梯度，但环境和策略的随机性使单条轨迹回报波动巨大；长时序（大 $T$）任务轨迹空间极大，有限样本远不足以精确估计。结果：<b>梯度噪声大、训练不稳定、收敛慢、甚至发散</b>——即使超参数相同，仅因采样不同，多次训练结果差异巨大。</p>
+<figure>
+<img alt="课程课件：基线——减去基线是无偏的" loading="lazy" src="assets/s_p21.jpg"/>
+<figcaption>课件 p21 预告了降方差的关键工具：Baseline（减去基线在期望上无偏）。<span class="src">（来源：Lecture 9 课件 p21）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">基线</div><div class="translation-body"><h3>一个方便的恒等式</h3><p>$p_\theta(\tau)\nabla_\theta\log p_\theta(\tau)=\nabla_\theta p_\theta(\tau)$。</p><h3>基线</h3><p>$\nabla_\theta J(\theta)\approx\frac1N\sum_{i=1}^N\nabla_\theta\log p_\theta(\tau_i)(r(\tau_i)-b)$；$b=\frac1N\sum_i r(\tau_i)$。</p><p>但是……允许这样做吗？？</p><p>$\mathbb E[\nabla_\theta\log p_\theta(\tau)b]=\int p_\theta(\tau)\nabla_\theta\log p_\theta(\tau)b\,d\tau=\int\nabla_\theta p_\theta(\tau)b\,d\tau=b\nabla_\theta\int p_\theta(\tau)d\tau=b\nabla_\theta1=0$。</p><p>减去一个基线，在期望意义上是无偏的！</p><p>平均奖励并不是最好的基线，但已经相当不错！</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l09-p21">对照原课件第21页与完整中文翻译 →</a></figure>
+<h3>5.2 样本效率低与 On/Off-Policy</h3>
+<p>REINFORCE 是 <b>On-Policy</b>：梯度必须由<b>当前</b>策略生成的轨迹计算——参数更新后，旧数据不再严格服从当前策略；若继续使用，须控制分布变化或作相应校正。每次迭代都要重新采样，样本复杂度极高。</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th></th><th>On-Policy（同策略）</th><th>Off-Policy（异策略）</th></tr>
+<tr><td><b>数据来源</b></td><td>必须由当前策略产生</td><td>可用旧策略/专家/探索策略数据（方法可能使用重要性采样、Bellman 更新等，是否使用概率比取决于具体算法）</td></tr>
+<tr><td><b>代表</b></td><td>REINFORCE、SARSA、PPO</td><td>Q-Learning、DDPG、SAC</td></tr>
+<tr><td><b>特点</b></td><td>围绕近期策略数据优化；效果需同任务比较；<b>样本效率低（贵）</b></td><td>样本效率高（Replay Buffer 复用）；优化目标与数据分布可能不一致</td></tr>
+</table></div></div>
+<p>本节的典型训练示例持续交互，属于在线学习；但 On/Off-Policy 与在线/离线是不同分类轴，Off-Policy 也可使用固定离线数据。</p>
+<h3>5.3 高斯策略（连续动作的标准选择）</h3>
+<p>连续动作空间里，策略通常输出高斯分布的均值：$\pi_\theta(a_t|s_t) = \mathcal{N}(a_t;\mu_\theta(s_t), \Sigma)$。其对数似然梯度是：</p>
+<p style="text-align:center">$$ \nabla_\theta \log \pi_\theta(a_t|s_t) = \left(\frac{\partial \mu_\theta(s_t)}{\partial \theta}\right)^{\top} \Sigma^{-1} (a_t - \mu_\theta(s_t)) $$</p>
+<p>（此式假设协方差 Σ 固定且正定；若 $\Sigma=\sigma^2I$，均值梯度对应平方误差方向；学习方差时还须添加方差参数的导数。）一个漂亮的结构：<b>梯度 = 均值函数梯度 × 加权「误差向量」</b>，也就是在误差方向上调整均值。</p>
+</section>
+<!-- ============ 6 ============ -->
+<section id="s6">
+<h2 class="sec"><span class="no">6</span>降方差：Reward-to-Go 与 Baseline</h2>
+<h3>6.1 Reward-to-Go：未来不影响过去</h3>
+<p>$t$ 时刻的动作 $a_t$ 只能影响 $t$ 及以后的奖励。REINFORCE 用总回报 $R(\tau)$ 加权，把与当前决策无关的过去奖励也算了进去——纯噪声。改进：只用 <b>Reward-to-Go</b>：</p>
+<p style="text-align:center">$$ \hat{Q}(s_t, a_t) = \sum_{t'=t}^{T-1} r(s_{t'}, a_{t'}) $$</p>
+<p>仍然是 $\nabla_\theta J$ 的无偏估计，且方差通常更低。</p>
+<h3>6.2 Baseline：动作无关的控制变量</h3>
+<p>另一个问题：有限样本PG的方差会受奖励<b>尺度和偏移</b>影响；理想期望梯度不受动作无关常数偏移影响。若所有轨迹回报都为正（哪怕有好有坏），所有动作都会被「鼓励」。我们想要的是<b>相对比较</b>：比平均好的鼓励、比平均差的抑制。解法：减去只依赖状态、不依赖动作的基线 $b(s_t)$：</p>
+<p style="text-align:center">$$ \nabla_\theta J(\theta) = \mathbb{E}\left[ \sum_t \nabla_\theta \log \pi_\theta(a_t|s_t) (\hat{Q}(s_t,a_t) - b(s_t)) \right] $$</p>
+<div class="box blue">
+<span class="bt">🔑 无偏性证明（三步）</span>
+<p>$\mathbb{E}_{a_t\sim\pi_\theta}[\nabla_\theta\log\pi_\theta(a_t|s_t)\,b(s_t)] = b(s_t)\int \pi_\theta(a_t|s_t)\frac{\nabla_\theta\pi_\theta(a_t|s_t)}{\pi_\theta(a_t|s_t)}\mathrm{d}a_t = b(s_t)\,\nabla_\theta\int\pi_\theta(a_t|s_t)\mathrm{d}a_t = b(s_t)\,\nabla_\theta(1) = 0$。<br/>
+    即：<b>对固定或独立估计的动作无关 $b$，减基线不改变期望；合适的基线可降低方差</b>。</p>
+</div>
+<p>实践中常用<b>采样均值基线</b> $b = \frac{1}{N}\sum_i R(\tau^{(i)})$（或用平均 Reward-to-Go）。使用采样均值时，要检查其中是否包含当前样本自身的回报；若包含，i.i.d. 轨迹标量情形会将梯度缩放为 $1-1/N$。可用独立数据或留一均值避免这种有限样本偏差。最优基线（笔记推导）：$b^* = \frac{\mathbb{E}[(\nabla_\theta\log p_\theta(\tau))^2 R(\tau)]}{\mathbb{E}[(\nabla_\theta\log p_\theta(\tau))^2]}$——按梯度幅值平方加权的回报期望，通常难以计算。对于向量梯度，“平方”应理解为所选方差准则下的梯度范数平方，例如最小化总方差时使用 $\|\nabla_\theta\log p_\theta(\tau)\|^2$。</p>
+</section>
+<!-- ============ 7 ============ -->
+<section id="s7">
+<h2 class="sec"><span class="no">7</span>价值函数与优势函数</h2>
+<p>常用的基线是<b>状态价值函数</b>，它会随当前状态变化——「这个状态本身值多少」：</p>
+<p>本节推广到折扣有限时域目标 $J_\gamma(\theta)=\mathbb{E}_\tau[\sum_{t=0}^{T-1}\gamma^t r_t]$，$\gamma=1$ 时回到前文。状态约定包含剩余时间，终态 $V(s_T)=0$，因此 $V/Q$ 也反映当前时刻。</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>函数</th><th>定义</th><th>含义</th></tr>
+<tr><td><b>状态价值 $V^{\pi_\theta}(s_t)$</b></td><td>$\mathbb{E}\left[\sum_{t'=t}^{T-1} \gamma^{t'-t}r_{t'} \mid s_t\right]$</td><td>从 $s_t$ 出发遵循 $\pi_\theta$ 的期望折扣回报</td></tr>
+<tr><td><b>动作价值 $Q^{\pi_\theta}(s_t,a_t)$</b></td><td>$r(s_t,a_t) + \gamma\mathbb{E}[V^{\pi_\theta}(s_{t+1})]$</td><td>在 $s_t$ 采取 $a_t$ 后遵循 $\pi_\theta$ 的期望回报</td></tr>
+<tr><td><b>优势函数 $A = Q - V$</b></td><td>—</td><td>动作 $a_t$ 比「平均动作」好多少</td></tr>
+</table></div></div>
+<p>折扣因子 $\gamma \in [0,1)$ 的三重作用：① 在奖励有界时保证无限时域累计折扣回报有限；② 表达对即时奖励的偏好；③ <b>隐式鼓励尽早完成任务</b>（越晚的奖励折扣越多）。</p>
+<p>用 $V$ 做基线后，权重变为优势函数估计：</p>
+<p style="text-align:center">$$ \hat{A}(s_t, a_t) = r(s_t,a_t) + \gamma\hat{V}(s_{t+1}) - \hat{V}(s_t) $$</p>
+<p>$\hat{A} &gt; 0$：动作比平均好 → 增加其概率；$\hat{A} &lt; 0$：降低概率。<b>策略梯度的最终形态：</b></p>
+<p style="text-align:center">$$ \nabla_\theta J_\gamma(\theta) = \mathbb{E}_{\tau\sim p_\theta}\left[\sum_{t=0}^{T-1}\gamma^t \nabla_\theta \log \pi_\theta(a_t|s_t)\, A^{\pi_\theta}(s_t,a_t)\right] $$</p>
+<h3>如何估计 $V(s_t)$？</h3>
+<ul>
+<li><b>蒙特卡洛</b>：所有经过 $s_t$ 的样本的平均 Reward-to-Go；</li>
+<li><b>神经网络（Critic）</b>：$\hat{V}_\phi(s)$ 监督学习，数据集 $\mathcal{D} = \{(s_{i,t},\ r_{i,t} + \gamma\hat{V}_\phi(s_{i,t+1}))\}$——注意目标里用了函数自身的估计，这叫<b>自举（Bootstrap）</b>。形象的比喻（笔记）：「<b>在河里拽自己的鞋带把自己拽起来</b>」。</li>
+</ul>
+</section>
+<!-- ============ 8 ============ -->
+<section id="s8">
+<h2 class="sec"><span class="no">8</span>Actor-Critic</h2><div class="box blue"><span class="bt">自举、终止与截断</span><p>价值网络训练目标 $y_t=r_t+\gamma V_\phi(s_{t+1})$ 通常停止梯度传播；Actor 更新中的优势也通常停止梯度。真实终止状态后没有未来奖励，应令末端价值为零；为了采集固定长度片段而人为截断时，通常保留末端自举。实现时分别处理真实终止与采集截断，可以避免系统性低估回报。</p><p>有限片段的 GAE 为 $\hat A_t=\sum_{l=0}^{T-t-1}(\gamma\lambda)^l\delta_{t+l}$，等价反向递推 $\hat A_t=\delta_t+\gamma\lambda\hat A_{t+1}$（跨真实终止时切断递推）。γ 表示奖励折扣，λ 控制多步估计的混合，两者作用不同。</p></div>
+<p>把「用神经网络估计 V」与策略梯度结合，就是 <b>Actor-Critic</b>：</p>
+<figure>
+<img alt="课程课件：Actor-Critic 算法——采样、拟合回报、改进策略" loading="lazy" src="assets/s_p41.jpg"/>
+<figcaption>Actor-Critic 循环：采样 → 拟合价值函数（Critic）→ 改进策略（Actor）。<span class="src">（来源：Lecture 9 课件 p41）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">行动者—评价者算法</div><div class="translation-body"><h3>行动者—评价者算法</h3><ol><li>用当前策略$\pi_\theta(a\mid s)$采样$\{s_i,a_i\}$。</li><li>用采样得到的奖励和拟合$\hat V^\pi_\phi(s)$。</li><li>评估$\hat A^\pi(s_i,a_i)=r(s_i,a_i)+\hat V^\pi_\phi(s_i\prime)-\hat V^\pi_\phi(s_i)$。</li><li>评估$\nabla_\theta J(\theta)\approx\sum_i\nabla_\theta\log\pi_\theta(a_i\mid s_i)\hat A^\pi(s_i,a_i)$。</li><li>更新$\theta\leftarrow\theta+\alpha\nabla_\theta J(\theta)$。</li></ol><p>$y_{i,t}=\sum_{t\prime=t}^Tr(s_{i,t\prime},a_{i,t\prime})$。</p><p>$L(\phi)=\frac12\sum_i\|\hat V^\pi_\phi(s_i)-y_i\|^2$。</p><p>$V^\pi(s_t)=\sum_{t\prime=t}^T\mathbb E_\pi[r(s_{t\prime},a_{t\prime})\mid s_t]=\mathbb E_{a_t\sim\pi(a_t\mid s_t)}[Q^\pi(s_t,a_t)]$。</p><p>s → V̂πφ(s)。参数：φ。</p><p>生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l09-p41">对照原课件第41页与完整中文翻译 →</a></figure>
+<ul>
+<li><b>Actor（演员）</b>：策略网络 $\pi_\theta(a|s)$，负责决策；</li>
+<li><b>Critic（评论家）</b>：价值网络 $V_\phi(s)$（或 $Q_\phi(s,a)$），负责评估「状态/动作有多好」；</li>
+<li><b>推理时只用 Actor</b>，Critic 是训练期的「教练」。</li>
+</ul>
+<h3>Batch vs Online</h3>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th></th><th>Batch Actor-Critic</th><th>Online Actor-Critic</th></tr>
+<tr><td><b>流程</b></td><td>收集整批轨迹 → 批量更新 Critic → 算优势 → 更新 Actor</td><td>每步：采样动作 → 得 $(s,a,r,s')$ → TD 误差更新 Critic → 用 $\delta$ 当优势更新 Actor</td></tr>
+<tr><td><b>特点</b></td><td>梯度稳定（方差低），存储多、更新慢</td><td>更新频繁、数据利用率高，单步更新方差大</td></tr>
+</table></div></div>
+<p>架构选择（笔记配图）：<b>分离网络</b>（简单稳定，无特征共享）vs <b>共享网络</b>（参数效率高，训练复杂）。实践上 Online AC 也常<b>并行化</b>：多个 worker 同时采集经验，同步（Sync，受限于最慢 worker）或异步（Async，更快）——A3C 就是异步并行 AC。</p>
+<figure>
+<img alt="笔记配图：并行 Actor-Critic——同步与异步" loading="lazy" src="assets/parallel.png"/>
+<figcaption>并行 Actor-Critic：同步 vs 异步。<span class="src">（来源：笔记 09）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><h3>同步并行行动者—评价者</h3><p>获取(s,a,s′,r)；更新θ；获取(s,a,s′,r)；更新θ。t。</p></div><div><h3>异步并行行动者—评价者</h3><p>θ；t。</p></div></div></div></div></figure>
+<h3>GAE：在 MC 与 TD 之间插值</h3>
+<p>完整轨迹的 MC 回报在对应采样与终止假设下无偏，但常有高方差。TD(0) 用价值估计自举，常降低方差；价值估计误差会带来偏差。准确价值函数下，TD 残差的条件期望可等于真实优势。<b>广义优势估计（GAE, Schulman et al. '16）</b>用指数衰减 $\lambda$ 把 1-step、2-step、…、n-step 回报加权混合——「Cut everywhere all at once」：</p>
+<figure>
+<img alt="课程课件：广义优势估计 GAE" loading="lazy" src="assets/s_p59.jpg"/>
+<figcaption>GAE：加权组合所有 n-step 回报，指数衰减偏向更早截断（更小方差）。<span class="src">（来源：Lecture 9 课件 p59）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">广义优势估计</div><div class="translation-body"><p>$\hat A^{\pi,(n)}(s_t,a_t)=\sum_{t\prime=t}^{t+n}\gamma^{t\prime-t}r(s_{t\prime},a_{t\prime})+\gamma^n\hat V^\pi_\phi(s_{t+n})-\hat V^\pi_\phi(s_t)$。</p><p>一定要只选择一个n吗？</p><p>同时在每个位置截断！</p><p>$\hat A^\pi_{GAE}(s_t,a_t)=\sum_{n=1}^\infty w_n\hat A^{\pi,(n)}(s_t,a_t)$。</p><p>n步回报的加权组合。</p><p>如何加权？更偏好较早截断（方差更小）。指数衰减。</p><p>$w_n\propto\lambda^{n-1}$。</p><p>$\hat A^\pi_{GAE}(s_t,a_t)=r(s_t,a_t)+\gamma((1-\lambda)\hat V^\pi_\phi(s_{t+1})+\lambda(r(s_{t+1},a_{t+1})+\gamma((1-\lambda)\hat V^\pi_\phi(s_{t+2})+\lambda(r(s_{t+2},a_{t+2})+\cdots))))$。</p><p>$\hat A^\pi_{GAE}(s_t,a_t)=\sum_{t\prime=t}^\infty(\gamma\lambda)^{t\prime-t}\delta_{t\prime}$；$\delta_t=r(s_t,a_t)+\gamma\hat V^\pi_\phi(s_{t+1})-\hat V^\pi_\phi(s_t)$。</p><p>效果与折扣相似！还记得这个吗？</p><p>$\nabla_\theta J(\theta)\approx\frac1N\sum_i\sum_t\nabla_\theta\log\pi_\theta(a_{i,t}\mid s_{i,t})\left(\sum_{t\prime=t}^T\gamma^{t\prime-t}r(s_{i,t\prime},a_{i,t\prime})\right)$。</p><p>折扣＝降低方差！</p><p class="source">Schulman、Moritz、Levine、Jordan、Abbeel，2016。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l09-p59">对照原课件第59页与完整中文翻译 →</a></figure>
+<p>$\lambda$ 是 bias-variance 权衡旋钮：$\lambda \to 0$ 更偏 TD（低方差高偏差），$\lambda\to1$ 更接近 MC；完整真实终止且末端价值为零时 GAE 回报化为 MC 回报减基线，若人为截断并自举，则仍受末端估计误差影响。GAE 后来成了 PPO 的标配组件。</p>
+<figure>
+<img alt="笔记配图：Actor-Critic 的两种网络架构" loading="lazy" src="assets/ac_arch.png"/>
+<figcaption>Actor-Critic 架构：分离网络（上）与共享网络（下）。<span class="src">（来源：笔记 09）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><h3>两个网络的设计</h3><p>$s\to\hat V_\phi^\pi(s)$；$s\to\pi_\theta(a\mid s)$。</p><p>优点：简单、稳定。缺点：行动者与评价者不共享特征。</p></div><div><h3>共享网络的设计</h3><p>$s\to\hat V_\phi^\pi(s),\pi_\theta(a\mid s)$。</p></div></div></div></div></figure>
+</section>
+<!-- ============ 9 ============ -->
+<section id="s9">
+<h2 class="sec"><span class="no">9</span>PPO：机器人学习中常用的 PPO</h2><p><b>读公式时区分两个 r：</b>本节用 $r_t$ 表示概率比，用 $r(s_t,a_t)$ 表示环境奖励。PPO（Proximal Policy Optimization，近端策略优化）一般使用旧策略近期采集的固定批次，多轮小批量优化后重新采样；它通常仍被归为 on-policy。ε=0.2 时裁剪区间为 [0.8,1.2]，这个区间用于计算代理目标；实际概率比仍可能超出区间。</p><p>优势估计、更新轮数、学习率和策略 KL 的监测共同影响稳定性。使用归一化和初始化技巧时，仍需核对算法假设，并监测策略 KL 与真实回报。裁剪本身不保证真实回报单调提升。</p>
+<p>普通同策略PG通常每轮采集新数据，交互成本较高。Off-Policy（重要性采样）理论上可复用旧数据，但新旧策略分布偏离过大时，代理更新可能使性能退化甚至训练失稳（课件 p71：policy 采到坏动作 → 学得更差 → 恶性循环）。<b>TRPO</b> 的直觉：<b>每次更新别让策略变化太大</b>（KL 约束）；<b>PPO</b> 用一阶优化配合裁剪或KL惩罚抑制过大策略变化；这种方式与 TRPO 的硬 KL 约束有所不同（课件 p73-76）：</p>
+<p style="text-align:center">$$ L^{\text{CLIP}} = \mathbb{E}_t\left[ \min\left( r_t A_t,\ \text{clip}(r_t, 1-\epsilon, 1+\epsilon)\,A_t \right) \right], \qquad r_t = \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)} $$</p>
+<figure>
+<img alt="课程课件：PPO 的 Clipped Surrogate Objective" loading="lazy" src="assets/s_p74.jpg"/>
+<figcaption>PPO 的裁剪代理目标：在代理目标中裁剪概率比以抑制过大更新；实际概率比和 KL 仍需单独监测。<span class="src">（来源：Lecture 9 课件 p74）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">PPO——剪裁代理目标</div><div class="translation-body"><p>$r_t(\theta)=\frac{\pi_\theta(a_t\mid s_t)}{\pi_{\theta_{old}}(a_t\mid s_t)}$；$L^{CPI}(\theta)=\hat{\mathbb E}_t[r_t(\theta)\hat A_t]$；$L^{CLIP}(\theta)=\hat{\mathbb E}_t[\min(r_t(\theta)\hat A_t,\operatorname{clip}(r_t(\theta),1-\epsilon,1+\epsilon)\hat A_t)]$。</p><p>Â&gt;0；Â&lt;0。横轴：r。纵轴：L。1−ε；1；1+ε。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l09-p74">对照原课件第74页与完整中文翻译 →</a></figure>
+<p>两条约束路线：<b>Clipped Surrogate</b>（裁剪代理目标）与 <b>Adaptive KL penalty</b>（软约束）。实验结论（课件 p77）：<b>在展示的实验中，裁剪配置取得较好结果；比较应结合其参数和基准</b>。</p>
+<figure>
+<img alt="课程课件：PPO 实验对比——Clipping 优于其他约束方式" loading="lazy" src="assets/s_p77.jpg"/>
+<figcaption>PPO 实验：比较裁剪目标与 KL 惩罚。<span class="src">（来源：Lecture 9 课件 p77）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">PPO——实验</div><div class="translation-body"><ul><li>实验1：剪裁与自适应KL。<ul><li>剪裁 &gt; 自适应KL &gt; 固定KL &gt; 基准。</li></ul></li></ul><div class="table-wrap"><table><thead><tr><th>算法</th><th>平均归一化得分</th></tr></thead><tbody><tr><td>无剪裁或惩罚</td><td>−0.39</td></tr><tr><td>剪裁，ε＝0.1</td><td>0.76</td></tr><tr><td>剪裁，ε＝0.2</td><td>0.82</td></tr><tr><td>剪裁，ε＝0.3</td><td>0.70</td></tr><tr><td>自适应KL，dₜₐᵣɡ＝0.003</td><td>0.68</td></tr><tr><td>自适应KL，dₜₐᵣɡ＝0.01</td><td>0.74</td></tr><tr><td>自适应KL，dₜₐᵣɡ＝0.03</td><td>0.71</td></tr><tr><td>固定KL，β＝0.3</td><td>0.62</td></tr><tr><td>固定KL，β＝1</td><td>0.71</td></tr><tr><td>固定KL，β＝3</td><td>0.72</td></tr><tr><td>固定KL，β＝10</td><td>0.69</td></tr></tbody></table></div></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l09-p77">对照原课件第77页与完整中文翻译 →</a></figure>
+<p><b>实现 Tricks</b>（课件 p80-83，引用 ICLR 2020《Implementation Matters in Deep Policy Gradients》）：</p>
+<ul>
+<li><b>更新轮数 K 不宜过大</b>（原始论文 RoboschoolHumanoidFlagrun 用 K=15）；<b>Minibatch</b>：每轮把 buffer 分小批更新；</li>
+<li><b>优势归一化</b>：minibatch 内归一化，$V$ 估计不准时帮助中心化到 0；<b>状态归一化</b>：维护各维 running mean；</li>
+<li><b>正交初始化</b>：原课件引用的实现研究发现其有利，效果依网络与任务而定；</li>
+<li>总损失 = 策略损失 + 价值损失（MSE）+ <b>熵奖励</b>（鼓励探索）。</li>
+</ul>
+<figure>
+<img alt="课程课件：RL 算法分类学" loading="lazy" src="assets/s_p85.jpg"/>
+<figcaption>RL 算法分类学（OpenAI Spinning Up）：Model-Free / Model-Based × Policy Optimization / Q-Learning。<span class="src">（来源：Lecture 9 课件 p85）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">强化学习算法的分类</div><div class="translation-body"><ul><li>强化学习算法。<ul><li>无模型强化学习。<ul><li>策略优化：策略梯度、A2C／A3C、PPO、TRPO；DDPG、TD3、SAC。</li><li>Q学习：DDPG、TD3、SAC；DQN、C51、QR-DQN、HER。</li></ul></li><li>基于模型的强化学习。<ul><li>学习模型：世界模型（World Models）、I2A、MBMF、MBVE。</li><li>给定模型：AlphaZero。</li></ul></li></ul></li></ul><p class="source">参考：https://spinningup.openai.com/en/latest/index.html</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l09-p85">对照原课件第85页与完整中文翻译 →</a></figure>
+<div class="update-box">
+<span class="bt">工程说明：算法与作业环境</span>
+<p>本章与作业 3 以 PPO/GAE 为例学习策略优化。选择其他任务的算法时，可以据此比较数据来源、动作空间和训练条件。公开作业 3 使用 MuJoCo Playground/MJX 与 JAX，环境配置按该工程的依赖文件进行；课件中的 Isaac Gym 是另一个仿真器示例。演示热启动与 RL 微调可组合使用，效果仍取决于任务与训练设置。</p>
+</div>
+</section>
+<!-- ============ 10 ============ -->
+<section id="s10">
+<h2 class="sec"><span class="no">10</span>本章小结</h2>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>核心概念</th><th>一句话解释</th></tr>
+<tr><td><b>RL 目标</b></td><td>最大化期望回报 $J(\theta)$；梯度估计不需要奖励可导</td></tr>
+<tr><td><b>策略梯度定理</b></td><td>对数导数技巧 + 参数独立的环境项消失</td></tr>
+<tr><td><b>REINFORCE</b></td><td>MC 梯度估计 + 梯度上升；On-Policy、高方差、低样本效率</td></tr>
+<tr><td><b>PG vs BC</b></td><td>BC 拟合专家动作；PG 用策略采样回报加权，二者分布和目标不同</td></tr>
+<tr><td><b>Reward-to-Go</b></td><td>只加权未来的奖励（因果性），对应设定下无偏，通常减少无关奖励带来的方差</td></tr>
+<tr><td><b>Baseline / Advantage</b></td><td>固定或独立估计的动作无关 $b(s_t)$ 保持期望，合适基线可降方差；$V$ 是常用状态基线；同批估计须注意偏差</td></tr>
+<tr><td><b>Actor-Critic</b></td><td>Critic 拟合 V（自举），Actor 用优势更新；推理只用 Actor</td></tr>
+<tr><td><b>GAE / PPO</b></td><td>λ 混合 n-step 回报；裁剪代理目标抑制过大更新；实际比率仍可能超出裁剪区间</td></tr>
+</table></div></div>
+<div class="box green">
+<span class="bt">💡 下一章预告</span>
+<p>第 10 章收官：<b>机器人任务与前沿</b>——足式运动、机械臂抓取、非抓握操作与灵巧操作（Lecture 10-13）与作业 4。</p>
+</div>
+</section>
+<!-- ============ 11 ============ -->
+<section id="s11">
+<h2 class="sec"><span class="no">11</span>动手实践：作业 3 · PPO 与四足机器人</h2>
+<p>本章配套北大原版<b>作业 3</b>：让四足机器人「站起来、走起来」。三个部分：纯 numpy 的 PPO 组件 + 两个奖励函数设计。</p>
+<p>代码位置：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/tree/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Homeworks/03-RL-Robot-Control" target="_blank"><code>Homeworks/03-RL-Robot-Control/</code></a>（含完整代码与训练视频）。</p>
+<h3>11.1 任务总览</h3>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>任务</th><th>分值</th><th>内容</th><th>对应本章</th></tr>
+<tr><td><b>Part 1 · PPO 组件</b></td><td>40%</td><td>numpy 实现 MC / TD(0) / GAE 优势估计 + clip 损失 + 价值损失</td><td>§6-9</td></tr>
+<tr><td><b>Part 2 · Getup 奖励</b></td><td>30%</td><td>设计奖励让四足机器人从摔倒状态站起</td><td>§2（奖励工程）</td></tr>
+<tr><td><b>Part 3 · Walk 奖励</b></td><td>30%</td><td>实现速度跟踪项，PPO 训练行走</td><td>§9（PPO 实战）</td></tr>
+</table></div></div>
+<h3>11.2 环境搭建</h3>
+<pre><code>conda create -n eai-hw3 python=3.10
+conda activate eai-hw3
+pip install -r requirements.txt</code></pre>
+<div class="box yellow">
+<span class="bt">⚠️ 环境提示</span>
+<p>固定公开工程依赖 MuJoCo Playground/MJX、JAX 与相应 CUDA 运行条件（例如 <code>playground==0.0.4</code>、<code>jax[cuda12]</code>，以仓库依赖文件为准）。Part 1 只需 NumPy；Part 2/3 涉及仿真与训练。先按工程 README 配置环境，不做无依据的 Isaac 框架迁移。公开作者训练视频在 <code>Handin/experiments/solutions/</code>，视频不替代自己的运行验证。</p>
+</div>
+<h3>11.3 Part 1：PPO 优势估计与损失（40%）</h3>
+<p>完成 <code>hw_py/part1_ppo.py</code> 的 5 个 TODO 函数，每个都有对应的检查函数（<code>check_monte_carlo</code> 等；给定输入通过不等于所有边界情况或完整训练通过）：</p>
+<pre><code><span class="cm"># 1) MC 优势：A_t = G_t - V(s_t)，G_t 为折扣回报</span>
+<span class="kw">def</span> <span class="fn">monte_carlo_advantage</span>(rewards, values, gamma=0.99):
+    ...
+
+<span class="cm"># 2) TD(0) 残差：δ_t = r_t + γV(s_{t+1}) - V(s_t)</span>
+<span class="kw">def</span> <span class="fn">td_residual_advantage</span>(rewards, values, gamma=0.99):
+    ...
+
+<span class="cm"># 3) GAE：A_t = Σ (γλ)^k · δ_{t+k}，λ 在 MC 与 TD 间插值</span>
+<span class="kw">def</span> <span class="fn">generalized_advantage_estimation</span>(rewards, values, gamma=0.99, lam=0.95):
+    ...
+
+<span class="cm"># 4) 最小化损失：负 clip 代理目标 - entropy_weight * 分布熵</span>
+<span class="kw">def</span> <span class="fn">compute_policy_loss</span>(ratio, adv, dist_entropy, epsilon=0.2, entropy_weight=0.01):
+    ...
+
+<span class="cm"># 5) 价值损失：MSE(V_pred, V_target)</span>
+<span class="kw">def</span> <span class="fn">compute_value_loss</span>(values, returns):
+    ...</code></pre>
+<div class="box blue">
+<span class="bt">🔑 实现提示</span>
+<p>GAE 用反向递推：从轨迹末端向前算 $\hat{A}_t = \delta_t + \gamma\lambda\hat{A}_{t+1}$；clip 损失需取负代理目标并减分布熵奖励；完整分布熵不能由单个抽样动作的 log 概率还原。注意 $\min$ 和概率比 $r_t = \exp(\log\pi_{new} - \log\pi_{old})$（用 log 差避免数值问题）；熵奖励系数通常取 0.001~0.01。</p>
+</div>
+<h3>11.4 Part 2：Getup 奖励设计（30%）</h3>
+<p>在 <code>MyGetupEnv.step</code> 中实现奖励，鼓励机器人：① 达到并保持期望身高；② 姿态稳定（重力方向对齐）；③ 关节角接近默认姿态；④ 身体角速度最小化：</p>
+<pre><code><span class="cm"># 四个目标的加权组合，权重需自己调</span>
+reward = (w1 * reward_height       <span class="cm"># 身体高度接近目标（如 0.35m）</span>
+        + w2 * reward_orientation  <span class="cm"># 重力向量与身体 z 轴对齐</span>
+        + w3 * reward_pose         <span class="cm"># 关节角接近默认站姿</span>
+        + w4 * reward_ang_vel)     <span class="cm"># 角速度惩罚（通常为负）</span></code></pre>
+<p>交付：<code>part2_height_error.png</code>（高度误差 <b>&lt; 0.15</b>）与 <code>part2_video.mp4</code>。<b>奖励工程经验</b>：高度项用高斯形式 $\exp(-(h-h_{target})^2/\sigma^2)$ 比线性更平滑；朝向项可用重力投影；惩罚项系数从 10⁻¹ 量级试起。</p>
+<h3>11.5 Part 3：Walk 速度跟踪（30%）</h3>
+<p>只需实现两个项（其余已给好）：</p>
+<pre><code><span class="cm"># 线速度跟踪：奖励接近指令速度 v_cmd 的 x/y 分量</span>
+tracking_lin_vel = np.exp(-np.linalg.norm(vel_xy - cmd_xy)**2 / 0.25)
+<span class="cm"># 角速度跟踪：奖励接近指令 yaw rate</span>
+tracking_ang_vel = np.exp(-(yaw_rate - cmd_yaw)**2 / 0.25)</code></pre>
+<p>交付：<code>part3_LinVel_error.png</code>（误差 <b>&lt; 0.15</b>）与 <code>part3_video.mp4</code>。</p>
+<div class="box green">
+<span class="bt">💡 自学路线建议</span>
+<p>总用时估计 <b>1-2 天</b>：Part 1 半天（纯数学实现，GAE 建议手推一遍反向递推）、Part 2 半天（调奖励权重是 RL 工程师的日常手艺）、Part 3 半天到一天（取决于 GPU）。没有 GPU 也没关系：可先完成 Part 1 的数学实现与给定检查，Part 2/3 的奖励函数逻辑可以读完代码后用 Paper 级理解作答。学有余力，把 Part 2 的四个权重各调一次看行为变化——这是理解「奖励函数决定行为」最直接的方式。</p>
+</div>
+</section>
+<!-- ============ 附录 A ============ -->
+<section id="selfcheck"><h2 class="sec">理解检查</h2><p>为什么固定环境转移在求导时消失？（它不依赖策略参数。）回报恒为1时 on-policy score 的期望是多少？（0。）PPO clip 是否硬限制所有概率比？（否。）采集片段截断时是否必须置末端价值为0？（否，应区分真实终止。）</p><p>先遮住括号中的答案，用本章符号和一个具体例子说明理由。遇到疑问时，对照相应节的模型假设检查自己的推理。</p></section>
+<section id="apA">
+<h2 class="sec"><span class="no">附A</span>术语表</h2>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table class="term-table">
+<tr><th>术语</th><th>解释</th></tr>
+<tr><td>离线 / 在线学习</td><td>固定数据集学习 / 与环境交互持续产生数据学习</td></tr>
+<tr><td>期望回报 $J(\theta)$</td><td>策略下所有轨迹回报的期望，RL 的优化目标</td></tr>
+<tr><td>蒙特卡洛估计</td><td>采样 $N$ 条轨迹的平均近似期望</td></tr>
+<tr><td>对数导数技巧</td><td>$\nabla_\theta p_\theta(x) = p_\theta(x)\nabla_\theta\log p_\theta(x)$</td></tr>
+<tr><td>策略梯度定理</td><td>$\nabla_\theta J = \mathbb{E}[\sum_t\nabla_\theta\log\pi_\theta(a_t|s_t)\,R(\tau)]$</td></tr>
+<tr><td>REINFORCE</td><td>MC 策略梯度的基础算法（采样→算回报→梯度→上升）</td></tr>
+<tr><td>On-Policy / Off-Policy</td><td>数据须由当前策略产生 / 可用其他策略数据（重要性采样）</td></tr>
+<tr><td>Reward-to-Go</td><td>只用 $t$ 之后奖励加权（因果性）</td></tr>
+<tr><td>Baseline</td><td>减动作无关基线保持期望梯度，选择适当基线可降方差</td></tr>
+<tr><td>$V$ / $Q$ / $A$</td><td>状态价值 / 动作价值 / 优势函数（$A=Q-V$）</td></tr>
+<tr><td>自举（Bootstrap）</td><td>用函数自身估计更新自身（TD 目标）</td></tr>
+<tr><td>TD 误差</td><td>$\delta = r + \gamma V(s') - V(s)$，一步自举误差</td></tr>
+<tr><td>GAE</td><td>$\lambda$ 指数混合 n-step 回报的广义优势估计</td></tr>
+<tr><td>PPO</td><td>裁剪概率比的近端策略优化（$L^{CLIP}$）</td></tr>
+<tr><td>熵奖励</td><td>鼓励探索的损失项（策略熵 × 小系数）</td></tr>
+</table></div></div>
+</section>
+<!-- ============ 附录 B ============ -->
+<section id="apB">
+<h2 class="sec"><span class="no">附B</span>课件 87 页完整索引</h2>
+<p>原版 Lecture 9 课件共 87 页（<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture09_04_14.pdf" target="_blank">GitHub 原文件</a>）。下表逐页列出内容及在本教程中的位置：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table class="page-index">
+<tr><th>页码</th><th>页面内容</th><th>在教程中的位置</th></tr>
+<tr><td class="pg">p1</td><td>封面：Lecture 9 - Policy II</td><td>封面区</td></tr>
+<tr><td class="pg">p2-3</td><td>Logistics：期中考试（30%、4/21、cheat sheet）</td><td>§11（背景）</td></tr>
+<tr><td class="pg">p4</td><td>作业 2 发布（点云位姿估计抓取）</td><td>§11（呼应第 5 章）</td></tr>
+<tr><td class="pg">p5</td><td>主题页：策略梯度</td><td>§3 开头</td></tr>
+<tr><td class="pg">p6-8</td><td>RL 目标与评估目标函数</td><td>§2</td></tr>
+<tr><td class="pg">p9-12</td><td>直接策略微分与策略梯度评估</td><td>§3</td></tr>
+<tr><td class="pg">p13</td><td>与最大似然（BC）的对比</td><td>§4</td></tr>
+<tr><td class="pg">p14</td><td>高斯策略例子</td><td>§5.3</td></tr>
+<tr><td class="pg">p15</td><td>刚才做了什么（总结）</td><td>§3</td></tr>
+<tr><td class="pg">p16</td><td>部分可观测性</td><td>§7（铺垫）</td></tr>
+<tr><td class="pg">p17</td><td>策略梯度的问题（高方差）</td><td>§5.1</td></tr>
+<tr><td class="pg">p18</td><td>回顾页</td><td>§5</td></tr>
+<tr><td class="pg">p19</td><td>主题页：降方差</td><td>§6 开头</td></tr>
+<tr><td class="pg">p20</td><td>Reward-to-Go</td><td>§6.1</td></tr>
+<tr><td class="pg">p21</td><td>Baseline：无偏性（「are we allowed to do that??」）</td><td>§6.2</td></tr>
+<tr><td class="pg">p22</td><td>方差分析：最优基线（梯度幅值加权）</td><td>§6.2</td></tr>
+<tr><td class="pg">p23</td><td>回顾：采样-拟合-改进循环</td><td>§6-8（桥梁）</td></tr>
+<tr><td class="pg">p24</td><td>主题页：实现策略梯度</td><td>§5（实践）</td></tr>
+<tr><td class="pg">p25-27</td><td>自动微分伪代码（MLE vs PG 对照）</td><td>§4（对照）</td></tr>
+<tr><td class="pg">p28</td><td>实践建议：大 batch、自适应学习率</td><td>§5.1</td></tr>
+<tr><td class="pg">p29</td><td>回顾：on-policy 与重要性采样</td><td>§5.2 + §9</td></tr>
+<tr><td class="pg">p30</td><td>主题页：Actor-Critic 算法</td><td>§8 开头</td></tr>
+<tr><td class="pg">p31</td><td>改进策略梯度：Reward-to-Go（回顾）</td><td>§6.1</td></tr>
+<tr><td class="pg">p32</td><td>如何处理期望：「如果我们知道这部分？」</td><td>§7（引导）</td></tr>
+<tr><td class="pg">p33</td><td>定义：Q 函数与价值函数</td><td>§7</td></tr>
+<tr><td class="pg">p34</td><td>基线怎么办？</td><td>§7</td></tr>
+<tr><td class="pg">p35</td><td>状态与状态-动作价值函数</td><td>§7</td></tr>
+<tr><td class="pg">p36-39</td><td>价值函数拟合 / 策略评估 / MC 评估 / 能否更好</td><td>§7（V 估计）</td></tr>
+<tr><td class="pg">p40</td><td>策略评估例子：TD-Gammon（1992）、AlphaGo（2016）</td><td>§7</td></tr>
+<tr><td class="pg">p41</td><td>Actor-Critic 算法循环</td><td>§8</td></tr>
+<tr><td class="pg">p42-44</td><td>折扣因子与 PG 的折扣（Thomas ICML 2014 参考）</td><td>§7（γ）</td></tr>
+<tr><td class="pg">p45</td><td>带折扣的 Actor-Critic</td><td>§8</td></tr>
+<tr><td class="pg">p46</td><td>主题页：AC 设计决策</td><td>§8</td></tr>
+<tr><td class="pg">p47</td><td>架构设计：两网络 vs 共享网络</td><td>§8</td></tr>
+<tr><td class="pg">p48</td><td>Online AC 实践：并行 worker、同步/异步</td><td>§8</td></tr>
+<tr><td class="pg">p49-54</td><td>Off-policy AC 尝试与修复（Replay Buffer、SAC 引子）</td><td>§5.2 + §9（铺垫）</td></tr>
+<tr><td class="pg">p55</td><td>主题页：Critic 作为基线</td><td>§7</td></tr>
+<tr><td class="pg">p56</td><td>Critic 做状态相关基线的权衡</td><td>§7</td></tr>
+<tr><td class="pg">p57</td><td>控制变量：动作相关基线</td><td>§7（延伸）</td></tr>
+<tr><td class="pg">p58</td><td>Eligibility traces 与 n-step 回报</td><td>§8（GAE 铺垫）</td></tr>
+<tr><td class="pg">p59</td><td>GAE（Schulman et al. '16）</td><td>§8</td></tr>
+<tr><td class="pg">p60</td><td>主题页：回顾、例子与扩展阅读</td><td>§8 结尾</td></tr>
+<tr><td class="pg">p61</td><td>AC 算法回顾</td><td>§8</td></tr>
+<tr><td class="pg">p62</td><td>例子：GAE 高维连续控制（Schulman '16）</td><td>§8</td></tr>
+<tr><td class="pg">p63</td><td>例子：A3C 异步方法（Mnih '16）</td><td>§8</td></tr>
+<tr><td class="pg">p64</td><td>AC 推荐阅读（Sutton 1999 等经典论文）</td><td>附录 C</td></tr>
+<tr><td class="pg">p65</td><td>主题页：PPO（Schulman et al., OpenAI 2017）</td><td>§9 开头</td></tr>
+<tr><td class="pg">p66</td><td>On-policy 低效问题</td><td>§9</td></tr>
+<tr><td class="pg">p67-70</td><td>Off-policy 与重要性采样推导、一阶近似</td><td>§9</td></tr>
+<tr><td class="pg">p71</td><td>问题：分布变化导致训练崩溃</td><td>§9</td></tr>
+<tr><td class="pg">p72</td><td>TRPO：约束优化直觉</td><td>§9</td></tr>
+<tr><td class="pg">p73</td><td>PPO 两种约束方法（clip / KL）</td><td>§9</td></tr>
+<tr><td class="pg">p74</td><td>Clipped Surrogate Objective</td><td>§9</td></tr>
+<tr><td class="pg">p75</td><td>Adaptive KL penalty</td><td>§9</td></tr>
+<tr><td class="pg">p76</td><td>总损失与其他 tricks</td><td>§9</td></tr>
+<tr><td class="pg">p77</td><td>实验 1：Clipping vs KL</td><td>§9</td></tr>
+<tr><td class="pg">p78</td><td>实验 2：PPO vs 其他 on-policy 算法</td><td>§9</td></tr>
+<tr><td class="pg">p79</td><td>实现 tricks 参考（知乎、ICLR blog、Engstrom ICLR 2020）</td><td>§9</td></tr>
+<tr><td class="pg">p80-81</td><td>更新 tricks：K 值、minibatch、课程组实验数据</td><td>§9</td></tr>
+<tr><td class="pg">p82</td><td>归一化：优势归一化、状态归一化</td><td>§9</td></tr>
+<tr><td class="pg">p83</td><td>初始化：正交初始化优于 Xavier</td><td>§9</td></tr>
+<tr><td class="pg">p84</td><td>PPO 优缺点总结</td><td>§9</td></tr>
+<tr><td class="pg">p85</td><td>RL 算法分类学（Spinning Up）</td><td>§9</td></tr>
+<tr><td class="pg">p86</td><td>扩展阅读与练习（OpenAI Spinning Up）</td><td>附录 C</td></tr>
+<tr><td class="pg">p87</td><td>结尾页：下集预告 Midterm &amp; Lecture 10 - Policy III</td><td>页脚（下一章预告）</td></tr>
+</table></div></div>
+</section>
+<!-- ============ 附录 C ============ -->
+<section id="apC">
+<h2 class="sec"><span class="no">附C</span>参考资源</h2>
+<ul>
+<li>课程官网：<a href="https://pku-epic.github.io/Intro2EAI_2025/" target="_blank">pku-epic.github.io/Intro2EAI_2025</a></li>
+<li>本教程素材来源仓库：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU" target="_blank">zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU</a></li>
+<li>本章课件：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture09_04_14.pdf" target="_blank"><code>Slides/Lecture09_04_14.pdf</code></a>（87 页）</li>
+<li>本章笔记原文：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Notes/09-Policy-II.md" target="_blank"><code>Notes/09-Policy-II.md</code></a></li>
+<li>本章作业：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/tree/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Homeworks/03-RL-Robot-Control" target="_blank"><code>Homeworks/03-RL-Robot-Control/</code></a></li>
+</ul>
+<h3>延伸阅读</h3>
+<ul>
+<li>OpenAI Spinning Up（<a href="https://spinningup.openai.com/" target="_blank">spinningup.openai.com</a>）：RL 入门首选</li>
+<li>Schulman et al., <em>High-Dimensional Continuous Control Using GAE</em>, 2016</li>
+<li>Schulman et al., <em>PPO</em>, 2017；Engstrom et al., <em>Implementation Matters in Deep Policy Gradients</em>, ICLR 2020</li>
+<li>PPO 实现细节：ICLR Blog Track（iclr-blog-track.github.io/2022/03/25/ppo-implementation-details）</li>
+<li>Berkeley CS285（课件借鉴来源，含课程录像）</li>
+</ul>
+</section>
+</main>
+</div>
+<!-- ============ 页脚 ============ -->
+<aside class="recent" id="current-research"><h3>2026年10月技术与政策动态 · Actor-Critic也能改善预训练策略</h3><p>RLT研究让小型Actor与Critic利用VLA的紧凑表征改善精密操作。它是把示范学习的起点与强化学习的后续优化结合起来的例子。</p><p class="source-note">资料截至2026-10-04 · <a href="../技术动态_20261004.html#rlt">一手来源、发布日期与适用范围</a></p></aside><footer>
+<nav aria-label="章节导航" class="chapter-nav"><a href="../ch08/index.html">← 第8章</a><a href="../index.html">教程目录</a><a href="../ch10/index.html">第10章 →</a></nav>
+<p><b>关于本教程：</b>本教程基于北京大学 2025 春季《具身智能导论》课程的公开资料（王鹤 老师主讲）整理改编，面向零基础自学者，免费提供学习。来源、改编方式与使用声明的完整说明见<a href="#about">篇首「关于本教程」</a>；笔记、课件、作业版权归原作者及课程组所有。</p>
+<p><b>阅读约定：</b>核心知识依照 2025 春季课程组织；正文中的教学解释帮助理解模型假设与工程条件。原始课件、笔记和作业保留作者署名，技术动态标明来源与日期。</p>
+<p><b>下一章预告：</b>第 10 章《机器人任务与前沿》（课件 p87 预告）——足式运动、机械臂抓取、非抓握操作与灵巧操作，含作业 4，全教程收官。</p>
+</footer>
+<script defer="" src="../reader.js"></script></body>
+</html>

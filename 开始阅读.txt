@@ -1,0 +1,15 @@
+北京大学《具身智能导论》自学教程
+
+本教程基于北京大学2025春季课程和来源GitHub项目的课件、笔记与作业。
+感谢王鹤老师、授课和助教团队、原始资料作者与源项目整理者。
+来源：https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU
+
+在线阅读：https://buildwithamy.github.io/pku-embodied-ai-self-study/
+本地阅读：index.html
+学习指南：学习与运行说明.html
+完整课件翻译：课件与中文译解.html
+来源、致谢与许可：来源与许可.html
+
+Windows可双击“打开教程.cmd”，保持服务器窗口开启。
+原PDF、图片和公式保存在本地；外部论文、视频和依赖安装需要联网。
+本项目用于个人学习与交流，原始署名和许可随资料保留。

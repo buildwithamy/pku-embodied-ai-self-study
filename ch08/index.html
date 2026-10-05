@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第 8 章 策略学习 I：模仿学习与行为克隆</title>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script async="" src="../vendor/mathjax/tex-svg.js"></script>
+<style>
+:root {
+  --ink: #1c2430;
+  --ink-soft: #4a5568;
+  --accent: #2563eb;
+  --accent-soft: #eef4ff;
+  --bg: #faf9f6;
+  --card: #ffffff;
+  --line: #e5e2db;
+  --green-bg: #f0f9f1;
+  --green-bd: #7cc98c;
+  --yellow-bg: #fffbeb;
+  --yellow-bd: #e8c766;
+  --red-bg: #fdf1f1;
+  --red-bd: #e8a1a1;
+  --update-bg: #fffaeb;
+  --update-bd: #e8a23d;
+  --update-ink: #8a4b08;
+  --code-bg: #101826;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-size: 16.5px;
+  line-height: 1.85;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.hero {
+  background: linear-gradient(135deg, #0e2a4a 0%, #15406e 55%, #1c5a94 100%);
+  color: #fff;
+  padding: 72px 24px 56px;
+  text-align: center;
+}
+.hero .course-tag {
+  display: inline-block;
+  font-size: 13px;
+  letter-spacing: 2px;
+  border: 1px solid rgba(255,255,255,.4);
+  border-radius: 999px;
+  padding: 4px 16px;
+  margin-bottom: 22px;
+  opacity: .9;
+}
+.hero h1 {
+  margin: 0 auto 14px;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  max-width: 760px;
+  line-height: 1.5;
+}
+.hero .sub {
+  font-size: 15.5px;
+  opacity: .82;
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+.hero .meta {
+  margin-top: 26px;
+  font-size: 13px;
+  opacity: .7;
+}
+.hero .ver-note {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 12.5px;
+  border: 1px dashed rgba(255,210,120,.7);
+  color: #ffd27a;
+  border-radius: 999px;
+  padding: 3px 14px;
+}
+.badge-2026 {
+  display: inline-block;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 2px 9px;
+  letter-spacing: .5px;
+  vertical-align: 2px;
+  margin-right: 6px;
+  box-shadow: 0 1px 4px rgba(217,119,6,.35);
+}
+.update-box {
+  margin: 18px 0;
+  padding: 14px 20px 12px;
+  border: 2px solid var(--update-bd);
+  background: var(--update-bg);
+  border-radius: 10px;
+  font-size: 15.5px;
+  box-shadow: 0 2px 8px rgba(232,162,61,.12);
+}
+.update-box .bt { color: var(--update-ink); font-weight: 700; display: block; margin-bottom: 4px; }
+.update-box p { margin: 5px 0; }
+.update-box ul { margin: 4px 0 4px; }
+.update-box li { margin: 3px 0; }
+.up-text {
+  background: #fef3c7;
+  border-bottom: 2px solid #f59e0b;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+.goals {
+  max-width: 880px;
+  margin: -28px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 28px;
+  box-shadow: 0 6px 24px rgba(16, 42, 74, .08);
+  position: relative;
+}
+.goals h2 { margin: 0 0 10px; font-size: 17px; color: var(--accent); }
+.goals ul { margin: 0; padding-left: 20px; }
+.goals li { margin: 4px 0; font-size: 15px; color: var(--ink-soft); }
+.goals li b { color: var(--ink); }
+.about {
+  max-width: 880px;
+  margin: 36px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px 34px;
+  box-shadow: 0 4px 16px rgba(16, 42, 74, .06);
+}
+.about h2 {
+  margin: 0 0 14px;
+  font-size: 20px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.about h3 { margin: 20px 0 8px; font-size: 16.5px; color: var(--accent); }
+.about p, .about li { font-size: 15px; color: var(--ink-soft); }
+.about .src-badge {
+  display: inline-block;
+  background: #eef4ff;
+  border: 1px solid #b9d0f8;
+  color: #2456b8;
+  font-size: 13px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin: 2px 4px 2px 0;
+}
+.about .license-note {
+  margin: 18px 0 0;
+  padding: 14px 18px;
+  background: var(--red-bg);
+  border: 1px solid var(--red-bd);
+  border-radius: 10px;
+  font-size: 14.5px;
+  line-height: 1.8;
+}
+.about .license-note b { color: #b04848; }
+.layout {
+  display: flex;
+  max-width: 1240px;
+  margin: 40px auto 80px;
+  padding: 0 24px;
+  gap: 36px;
+  align-items: flex-start;
+}
+.toc {
+  position: sticky;
+  top: 24px;
+  width: 240px;
+  flex-shrink: 0;
+  font-size: 13.5px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+}
+.toc .toc-title { font-weight: 700; color: var(--ink-soft); margin-bottom: 8px; letter-spacing: 1px; }
+.toc a {
+  display: block;
+  color: var(--ink-soft);
+  padding: 4px 10px;
+  border-left: 2px solid var(--line);
+  margin: 1px 0;
+  line-height: 1.5;
+}
+.toc a:hover { color: var(--accent); border-left-color: var(--accent); text-decoration: none; background: var(--accent-soft); border-radius: 0 6px 6px 0; }
+main { flex: 1; min-width: 0; }
+section { margin-bottom: 56px; }
+h2.sec {
+  font-size: 25px;
+  margin: 0 0 6px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--ink);
+  letter-spacing: .5px;
+}
+h2.sec .no {
+  display: inline-block;
+  background: var(--ink);
+  color: #fff;
+  font-size: 15px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin-right: 10px;
+  vertical-align: 3px;
+}
+h3 { font-size: 19px; margin: 34px 0 10px; }
+h4 { font-size: 16.5px; margin: 26px 0 8px; }
+p { margin: 10px 0; }
+strong { color: #0f2c4c; }
+em.term {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--accent);
+  border-bottom: 1px dashed var(--accent);
+  cursor: help;
+}
+ul, ol { padding-left: 26px; }
+li { margin: 5px 0; }
+code {
+  background: #eef1f5;
+  border: 1px solid #e0e5ec;
+  border-radius: 5px;
+  padding: 1px 6px;
+  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: 14.5px;
+  color: #0d3d75;
+}
+blockquote {
+  margin: 16px 0;
+  padding: 12px 20px;
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  color: var(--ink-soft);
+  font-size: 15.5px;
+}
+blockquote p { margin: 4px 0; }
+figure { margin: 22px 0; text-align: center; }
+figure img {
+  max-width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 18px rgba(16, 42, 74, .10);
+  background: #fff;
+}
+figcaption {
+  font-size: 13.5px;
+  color: #7a8290;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+figcaption .src { opacity: .75; font-size: 12.5px; }
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+.gallery figure { margin: 0; }
+.gallery img { width: 100%; }
+.gallery figcaption { font-size: 12.5px; margin-top: 6px; }
+.box {
+  margin: 18px 0;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 15.5px;
+}
+.box .bt { font-weight: 700; display: block; margin-bottom: 4px; }
+.box.green { background: var(--green-bg); border: 1px solid var(--green-bd); }
+.box.green .bt { color: #2e7d43; }
+.box.yellow { background: var(--yellow-bg); border: 1px solid var(--yellow-bd); }
+.box.yellow .bt { color: #9a7414; }
+.box.red { background: var(--red-bg); border: 1px solid var(--red-bd); }
+.box.red .bt { color: #b04848; }
+.box.blue { background: var(--accent-soft); border: 1px solid #a9c3f5; }
+.box.blue .bt { color: #2456b8; }
+.box p { margin: 4px 0; }
+.box ul { margin: 4px 0 4px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 18px 0;
+  font-size: 15px;
+  background: var(--card);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+th {
+  background: #17335c;
+  color: #fff;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 14.5px;
+}
+td { padding: 9px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+tr:nth-child(even) td { background: #f7f6f2; }
+.page-index { font-size: 13.5px; }
+.page-index th { font-size: 13.5px; padding: 8px 10px; }
+.page-index td { padding: 6px 10px; line-height: 1.6; }
+.page-index td.pg { font-family: Consolas, monospace; font-weight: 700; white-space: nowrap; color: var(--accent); }
+pre {
+  background: var(--code-bg);
+  color: #e6edf6;
+  border-radius: 10px;
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-size: 13.8px;
+  line-height: 1.65;
+  margin: 16px 0;
+}
+pre code {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+pre .cm { color: #7d8aa0; }
+pre .kw { color: #7fb3ff; }
+pre .st { color: #a5d6a7; }
+pre .fn { color: #ffd479; }
+.term-table td:first-child { font-weight: 700; white-space: nowrap; }
+footer {
+  max-width: 880px;
+  margin: 0 auto 60px;
+  padding: 20px 28px;
+  border-top: 1px solid var(--line);
+  font-size: 12.8px;
+  color: #8a91a0;
+  line-height: 1.8;
+}
+@media (max-width: 960px) {
+  .toc { display: none; }
+  .hero h1 { font-size: 26px; }
+  .layout { padding: 0 16px; }
+  .gallery { grid-template-columns: 1fr; }
+}
+/* 2026-10-04: offline chapters and bounded content scrolling */
+.layout, main, section { min-width:0; }
+main { max-width:100%; }
+img, video { max-width:100%; height:auto; }
+p, li, td, th, a { overflow-wrap:anywhere; }
+.table-scroll { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; margin:18px 0; }
+.table-scroll table { margin:0; min-width:640px; }
+pre { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; }
+mjx-container[display="true"] { max-width:100%; overflow-x:auto; overflow-y:hidden; padding:6px 0; text-align:left !important; }
+mjx-container:not([display="true"]) { display:inline-block; max-width:100%; vertical-align:middle; overflow-x:auto; overflow-y:hidden; }
+.mobile-toc { display:none; }
+.chapter-nav { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; }
+@media(max-width:960px) {
+  .layout { flex-direction:column; gap:16px; }
+  main { width:100%; }
+  .mobile-toc { display:block; width:100%; margin:0; padding:12px 16px; background:var(--card); border:1px solid var(--line); border-radius:10px; }
+  .mobile-toc summary { cursor:pointer; font-weight:700; }
+  .mobile-toc a { display:block; padding:4px 0; }
+}
+</style>
+<link href="../shared.css" rel="stylesheet"/>
+</head>
+<body><nav class="reader-nav"><a class="brand" href="../index.html">北京大学《具身智能导论》自学教程</a><a href="../学习与运行说明.html">学习指南</a><a href="课件中文译解.html">本章课件翻译</a><a href="../术语与符号.html">术语与符号</a><a href="../来源与许可.html">来源</a></nav>
+<!-- ============ 封面 ============ -->
+<div class="hero">
+<span class="course-tag">具身智能自学教程 · 第 8 章</span>
+<h1>策略学习 I：模仿学习与行为克隆</h1>
+<p class="sub">从「预测一个抓取位姿」到「学习连续的动作策略」。本章从行为克隆出发，解释闭环执行中的分布偏移，以及多峰动作分布的建模方法。</p>
+<p class="meta">改编自北京大学《具身智能导论》(Introduction to Embodied AI) 2025 春季课程 · 授课：王鹤 老师（本讲由 李祎 老师主讲，部分课件借鉴 Berkeley CS285）</p>
+<span class="ver-note">配套原文、中文翻译与自测 · 支持离线阅读</span>
+<div class="chapter-toolbar" id="chapter-resources"><a href="课件中文译解.html">英文原课件与逐页中文翻译 →</a><a href="../技术动态_20261004.html">本章相关技术进展 →</a><a href="../术语与符号.html">英文缩写与符号速查 →</a></div></div>
+<!-- ============ 学习目标 ============ -->
+<div class="goals">
+<h2>🎯 本章学习目标</h2>
+<ul>
+<li>理解<b>策略学习</b>的动机：开环「感知-规划-执行」为何不够，策略为何拥有闭环潜力</li>
+<li>掌握策略学习的基础术语：状态/观测/动作/策略，以及 <b>MDP 与 POMDP</b> 的数学框架</li>
+<li>理解<b>行为克隆（BC）</b>的公式与历史，以及它的重要风险——<b>Distribution Shift</b></li>
+<li>掌握 Distribution Shift 的解法：<b>DAgger</b>、最优解标注、教师策略</li>
+<li>理解<b>非马尔可夫性</b>与因果混淆，以及<b>多峰行为</b>的四类建模方案（GMM/CVAE/扩散/自回归）</li>
+<li>了解遥操作数据采集（Tesla、ALOHA）与目标条件化多任务学习</li>
+<li>动手实践：用 numpy 复现 BC 的 Distribution Shift 崩溃现象</li>
+</ul>
+</div>
+<!-- ============ 关于本教程 ============ -->
+<div class="about" id="about">
+<h2>📖 关于本教程</h2>
+<h3>内容来源</h3>
+<p>本教程的核心知识体系来自 <b>北京大学 2025 年春季学期《具身智能导论》</b>（Introduction to Embodied AI）课程，由 <b>王鹤</b> 老师（北京大学前沿计算研究中心助理教授，课程授课教师）主讲。</p>
+<p>
+<span class="src-badge">📝 课堂笔记 × 9 章</span>
+<span class="src-badge">🎞 授课课件 × 13 讲</span>
+<span class="src-badge">💻 课程作业 × 4 次</span>
+</p>
+<p>以上资料由课程同学整理并开源在 GitHub 仓库 <a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU" target="_blank">zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU</a>（<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/LICENSE" target="_blank">GPL-3.0 许可证</a>），课程官网为 <a href="https://pku-epic.github.io/Intro2EAI_2025/" target="_blank">pku-epic.github.io/Intro2EAI_2025</a>。</p>
+<h3>如何使用本章</h3>
+<ul>
+<li><b>三源整合：</b>把每一讲的「课堂笔记 + 授课课件 + 配套作业」融合进同一章，笔记提供知识骨架，课件图提供直观理解，作业提供动手实践；</li>
+<li><b>初学者化改写：</b>原笔记是写给北大学生的浓缩讲义，本教程把结论式表述扩写为「概念 → 直觉 → 应用」的解释型讲述，补充术语表与学习目标；</li>
+<li><b>图文并茂：</b>正文配图附中文翻译与来源页码；完整课件可按页对照阅读；</li>
+<li><b>补充说明：</b>橙色框提供适用条件与工程接口说明；具体模型、数据和评分以对应一手资料为准；</li>
+<li><b>作业适配自学：</b>保留原版作业的难度与考点，补充环境搭建、解题提示与自测标准，并提供参考答案链接（先自己做，再对照）。</li>
+</ul>
+<h3>教程目的</h3>
+<p>让没有北大课堂环境的自学者，也能按课程原有的知识体系，系统地学完具身智能入门：从机器人学基础，到视觉与抓取，再到策略学习——最终具备读懂前沿论文、跑通基础实验的能力。</p>
+<div class="license-note">
+<b>📜 版权与使用声明</b><br/>
+    原课程资料（笔记、课件、作业）均为开源免费资源，版权归原作者（王鹤老师及课程组、笔记整理者）所有；本教程的改编内容（中文讲解、学习辅助、编排结构）同样免费公开。<br/>
+    来源仓库采用 GPL-3.0，原课件中的论文图、照片与其他第三方材料仍保留相应署名和权利说明。分发或复用时应遵守所涉及材料的许可与权利条件。
+  </div>
+</div>
+<!-- ============ 正文 ============ -->
+<div class="layout">
+<nav class="toc">
+<div class="toc-title">本章目录</div>
+<a href="#about">关于本教程（来源 · 声明）</a>
+<a href="#s1">1. 为什么需要策略学习？</a>
+<a href="#s2">2. 基础术语与 MDP</a>
+<a href="#s3">3. 行为克隆：最朴素的模仿</a>
+<a href="#s4">4. Distribution Shift：BC 的分布风险</a>
+<a href="#s5">5. 解药：DAgger 与教师策略</a>
+<a href="#s6">6. 遥操作：专家数据从哪来</a>
+<a href="#s7">7. 部分观测与因果混淆</a>
+<a href="#s8">8. 多峰行为：对动作分布建模</a>
+<a href="#s9">9. 多任务学习与 IL 的局限</a>
+<a href="#s10">10. 强化学习引言</a>
+<a href="#s11">11. 本章小结</a>
+<a href="#s12">12. 动手实践</a>
+<a href="#apA">附录 A：术语表</a>
+<a href="#apB">附录 B：课件 105 页完整索引</a>
+<a href="#apC">附录 C：参考资源</a>
+</nav>
+<details class="mobile-toc"><summary>本章目录</summary><a href="#about">关于本教程（来源 · 声明）</a><a href="#s1">1. 为什么需要策略学习？</a><a href="#s2">2. 基础术语与 MDP</a><a href="#s3">3. 行为克隆：最朴素的模仿</a><a href="#s4">4. Distribution Shift：BC 的分布风险</a><a href="#s5">5. 解药：DAgger 与教师策略</a><a href="#s6">6. 遥操作：专家数据从哪来</a><a href="#s7">7. 部分观测与因果混淆</a><a href="#s8">8. 多峰行为：对动作分布建模</a><a href="#s9">9. 多任务学习与 IL 的局限</a><a href="#s10">10. 强化学习引言</a><a href="#s11">11. 本章小结</a><a href="#s12">12. 动手实践</a><a href="#apA">附录 A：术语表</a><a href="#apB">附录 B：课件 105 页完整索引</a><a href="#apC">附录 C：参考资源</a></details>
+<main><div class="box blue"><span class="bt">原课件对照阅读</span><p><a href="课件中文译解.html">打开本章课件逐页中文翻译</a>：保留原页码、原文与来源，可在学完一节后对照相应页面。</p></div>
+<!-- ============ 1 ============ -->
+<section id="s1">
+<h2 class="sec"><span class="no">1</span>为什么需要策略学习？</h2>
+<p>回顾第 5-7 章的「视觉开环」范式（课件 p36）：预测位姿/抓取/可供性 → 运动规划到达 → 启发式抓取执行。它的两个局限：</p>
+<ul>
+<li><b>操作复杂度有限</b>：只能处理预定义好的简单操作（开抽屉、开柜门）；复杂操作（转笔）超出框架能力——<b>主要瓶颈在于启发式规则的设计</b>；</li>
+<li><b>开环执行</b>：规划一次、执行到底，过程中不再接收新的视觉反馈——「闭着眼睛做事」。一旦执行中出现意外（物体滑动、初始误差），任务就会失败。</li>
+</ul>
+<p>第 6 章介绍过，<b>高频重复「感知-规划-执行」循环</b>可以把开环近似成闭环。另一条路线是学习随反馈调整动作的策略：</p>
+<blockquote>
+<p><b>策略学习（Policy Learning）</b>：构建一个根据环境状态变化动态响应、采取合理动作的 <b>Policy</b>。Policy 拥有<b>闭环执行的潜力</b>——每个时刻都重新决策，根据状态变化调整动作，为鲁棒性和高动态操作提供基础。</p>
+</blockquote>
+<p>课件指出两条路（p39-40）：<b>有专家演示 → 模仿学习（监督学习）</b>；<b>没有最优策略 → 强化学习（trial and error）</b>。本章讲前者，第 9 章讲后者。</p>
+<p>在进入策略学习之前，课件快速回顾了「视觉开环」范式的两个延伸方向（p31-35）：</p>
+<div class="gallery">
+<figure>
+<img alt="笔记配图：Where2Act 可供性预测流程" loading="lazy" src="assets/where_2_act.png"/>
+<figcaption>Where2Act：预测交互点、交互方向与成功置信度<span class="src">（笔记 08）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>（a）二维U形网络（2D-UNet）：H、W、F。</p><p>或（b）三维PointNet++（3D-PN++）：N、F。</p><p>逐点特征fₚ → （c）Dₐ → aₚ；fₚ与z → （d）Dᵣ → R_z|p；fₚ与R → （e）Dₛ → s_R|p。</p></div></div></figure>
+<figure>
+<img alt="课程课件：Where2Act 流程与结果" loading="lazy" src="assets/s_p32.jpg"/>
+<figcaption>Where2Act（Mo et al., ICCV 2021）<span class="src">（课件 p32）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">另一种基于视觉的方法：可供性</div><div class="translation-body"><p>Where2Act管线。</p><p>二维U-Net，或三维PointNet++；H、W、F、N；候选点特征f_p；D_a → a_p，D_r（z）→ R_z|p，D_s（R）→ s_R|p。</p><p>Mo, Kaichun等：《Where2Act：从像素到关节式三维物体动作》，IEEE/CVF国际计算机视觉会议论文集，2021。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l08-p32">对照原课件第32页与完整中文翻译 →</a></figure>
+</div>
+<p>以及第 7 章介绍过的透明物体工作（ASGrasp）在本章的回顾版：</p>
+<div class="gallery">
+<figure>
+<img alt="笔记配图：透明与高反光物体的深度传感问题" loading="lazy" src="assets/transparent_and_shiny.png"/>
+<figcaption>透明/高反光物体：深度传感器看到的残缺几何<span class="src">（笔记 08）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><p>RGB彩色图。</p></div><div><p>深度。</p></div></div><p>点云；镜面反射；透明。</p></div></div></figure>
+<figure>
+<img alt="笔记配图：ASGrasp 深度修复效果" loading="lazy" src="assets/asgrasp.png"/>
+<figcaption>ASGrasp：基于学习的深度修复<span class="src">（笔记 08）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">ASGrasp的推理管线</div><div class="translation-body"><p>三维场景 → RGB-D主动立体相机：右红外图像、左红外图像、RGB彩色图像 → 三维点云重建：可见、不可见 → 6自由度抓取检测。</p><p>领域随机化训练数据集 → 从仿真到现实的迁移（Sim2Real） → 新真实世界场景中的测试结果。</p><p>我们提出ASGrasp，一种使用RGB-D主动立体相机的6自由度抓取检测网络，用以解决透明和镜面反射物体的抓取问题。</p></div></div></figure>
+</div>
+</section>
+<!-- ============ 2 ============ -->
+<section id="s2">
+<h2 class="sec"><span class="no">2</span>基础术语与 MDP</h2><div class="box blue"><span class="bt">状态与观测：一个具体例子</span><p>小车的完整状态可包括位置和速度；单张图像可能只显示位置。两辆小车处在同一位置但速度相反时，应采取不同动作，所以单张图像不是充分状态。MDP 的转移只依赖当前完整状态和动作；POMDP（部分可观测马尔可夫决策过程）只能获得观测，可用观测—动作历史或信念状态辅助决策。</p><p>完整问题还需初始状态分布 $\rho_0$，以及时域 T 或折扣因子 γ。$S,\mathcal A$ 分别为状态与动作集合，$\mathcal T$ 为转移概率，r 为奖励。图像策略通常写作 $\pi_\theta(a_t|o_t)$，带记忆策略写作 $\pi_\theta(a_t|h_t)$；$h_t$ 包含已有观测和动作。</p></div>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>符号</th><th>含义</th><th>备注</th></tr>
+<tr><td><b>状态 $s_t$</b></td><td>环境的真实状态</td><td>通常隐藏在观测之下</td></tr>
+<tr><td><b>观测 $o_t$</b></td><td>对环境的观测（点云、图像）</td><td>蕴含状态信息，但局部、片面。<b>观测是状态的体现，状态是观测的本质</b></td></tr>
+<tr><td><b>动作 $a_t$</b></td><td>在状态/观测下采取的动作</td><td>Policy 的输出</td></tr>
+<tr><td><b>策略 $\pi(a_t|s_t)$</b></td><td>给定状态下的动作分布</td><td>用参数 $\theta$ 参数化：$\pi_\theta$</td></tr>
+</table></div></div>
+<p>数学框架：<b>马尔可夫决策过程（MDP）</b> $\mathcal{M} = \{S, \mathcal{A}, \mathcal{T}, r\}$——动作空间、状态转移 $p(s_{t+1}|s_t,a_t)$、奖励 $r(s_t,a_t)$。现实中通常只能观测到部分状态，于是有 <b>POMDP</b>：增加观测空间 $\mathcal{O}$ 与观测概率 $\mathcal{E}: p(o_t|s_t)$——智能体对 $s_t$ 的认识来自相关的 $o_t$，并据此作出决策。</p>
+<div class="box blue">
+<span class="bt">🔑 Markov 假设</span>
+<p>任何状态下的决策只需依据当前状态，<b>当前状态已包含过去历史的充分信息</b>。实际策略可能只能获得部分观测——司机超车时依赖几秒前看到的后视镜信息，这说明需要把历史信息纳入决策，才能补足当前观测中的状态信息。完整状态的马尔可夫假设与观测是否充分，是两个不同问题；§7 将继续讨论。</p>
+</div>
+<p>模仿学习的一个经典例子（课件 p39）：<b>PointGoal Navigation</b>——用传统路径规划算法（A*）当「老师」，训练视觉策略在没有地图的新场景里导航。<b>把传统算法变成监督信号</b>，这是模仿学习最优雅的用法。</p>
+</section>
+<!-- ============ 3 ============ -->
+<section id="s3">
+<h2 class="sec"><span class="no">3</span>行为克隆：最朴素的模仿</h2><p><b>符号与损失：</b>下面平方误差式中的 $\pi_\theta(s)$ 在此表示确定性动作输出。若学习随机策略，常用 $L_{BC}=-\frac1N\sum_i\log\pi_\theta(a_i^*|o_i)$。对固定方差的单高斯，最大似然等价于加权平方误差；多峰动作可以用混合、隐变量、扩散等分布表示，让模型保留不同的可行解。</p>
+<p><b>行为克隆（Behavior Cloning, BC）</b>：把模仿学习当成监督学习。给定专家数据集 $D = \{(s_i, a_i^*)\}_{i=1}^N$，最小化预测动作与专家动作的差异：</p>
+<p style="text-align:center">$$ \theta^* = \arg\min_\theta \sum_{(s_i, a_i^*) \in D} \|\pi_\theta(s_i) - a_i^*\|^2 $$</p>
+<p>BC 的历史比想象中早：<b>1989 年</b>就有研究者用神经网络把视觉输入映射到车辆行为（方向盘、油门、刹车）——ALVINN 系统；<b>2016 年</b>深度学习版（更深网络、更多数据、更好校正）展示了不错的自动驾驶能力。</p>
+<figure>
+<img alt="课程课件：原始深度模仿学习系统 ALVINN" loading="lazy" src="assets/s_p44.jpg"/>
+<figcaption>BC 的雏形：1989 年的 ALVINN——视觉输入 → 神经网络 → 转向控制。<span class="src">（来源：Lecture 8 课件 p44）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">早期深度模仿学习系统</div><div class="translation-body"><p>ALVINN：神经网络中的自主陆地车辆，1989。</p><p>30×32视频输入图像网格；4个隐藏单元；30个输出单元。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l08-p44">对照原课件第44页与完整中文翻译 →</a></figure>
+<p>课件紧接着问了一个尖锐的问题（p45）：<b>「Does it work?」——「No, because of distribution drift!」</b>下一节用闭环轨迹解释这种分布偏移。</p>
+</section>
+<!-- ============ 4 ============ -->
+<section id="s4">
+<h2 class="sec"><span class="no">4</span>Distribution Shift：BC 的分布风险</h2>
+<p><b>分布偏移（Distribution Shift）</b>：模仿学习依赖训练与测试数据分布一致；一旦被打破，模型难以泛化，且<b>偏差随执行步数不断放大</b>——一开始可能与训练分布一致，执行步数越多偏差越大，可能导致任务失败，恢复程度取决于反馈与策略覆盖。</p>
+<figure>
+<img alt="笔记配图：分布偏移——策略执行越偏离专家轨迹" loading="lazy" src="assets/distribution_shift.png"/>
+<figcaption>Distribution Shift：一步小误差 → 进入未见过状态 → 更大误差 → 恶性循环。<span class="src">（来源：笔记 08）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>黑色：训练轨迹；红色：πθ的期望轨迹。</p><p>状态（s）；时间。状态刻度：0、20、40、60、80、100；时间刻度：0、10、20、30、40、50、60、70、80、90、100；竖轴刻度：0、0.5、1。</p></div></div></figure>
+<p>三个原因（笔记）：</p>
+<ol>
+<li>专家演示只覆盖状态空间<b>很小的一部分</b>（专家成功路径上的状态）；</li>
+<li>$\pi_\theta$ 不可能完美复制 $\pi^*$，<b>再小的误差</b>也会让智能体逐渐偏离专家状态分布；</li>
+<li>一旦进入训练数据中<b>未曾出现的状态</b>，BC 策略可能无法正确决策 → 错误累积 → 完全失败。</li>
+</ol>
+<div class="box green">
+<span class="bt">💡 直觉：带路人的比喻</span>
+<p>「在陌生的环境里有人带路，但之后开始乱走，走到一个完全陌生的环境就会迷路。除非有专家重新指导，否则无法回到正确轨迹。」——这就是 BC 的困境：它学会的是「在专家走过的路上走」，而不是「走向目标」。</p>
+</div>
+<p>尽管有此局限，<b>数据量足够大时 BC 依然表现不错</b>（笔记）——增加演示时，既要关注数量，也要检查是否覆盖了部署时可能遇到的状态。</p>
+</section>
+<!-- ============ 5 ============ -->
+<section id="s5">
+<h2 class="sec"><span class="no">5</span>解药：DAgger 与教师策略</h2>
+<p>Distribution Shift 的根源是「两个分布不对齐」：训练分布 $p_{data}(o_t)$ vs 策略执行分布 $p_\pi(o_t)$。两条思路：<b>改变 $p_{data}$（扩充数据覆盖执行分布）</b>或<b>改变 $p_\pi$（拟合专家避免偏离）</b>。</p>
+<h3>5.1 DAgger：错了就请教专家</h3>
+<p><b>Dataset Aggregation（DAgger）</b>改变 $p_{data}$——主动收集策略执行时遇到的状态，向专家请教正确动作，加入训练集：</p>
+<ol>
+<li>用初始专家数据集 $D$ 训练初始策略 $\pi_1$；</li>
+<li>迭代 $N$ 轮：① 执行策略 $\pi_i$ 收集状态序列（<b>Rollout</b>）；② 对每个状态查询专家 $\pi^*$ 得到 $a_t^*$；③ 聚合 $D \leftarrow D \cup \{(s_t, a_t^*)\}$；④ 重训得 $\pi_{i+1}$。</li>
+</ol>
+<p>每个新状态都由专家给出纠错动作。实施 DAgger 时，要确认专家能可靠标注这些状态，学生模型能表示相应的恢复策略。其理论保证还依赖可查询专家、合适的损失与学习算法等条件。</p>
+<h3>5.2 动作标签的其他来源（课件 p55）</h3>
+<ul>
+<li><b>从最优解获取</b>：用 A* 等传统算法直接算出最短路径上的动作标签——无需真人演示；</li>
+<li><b>从教师策略学习</b>：假设存在拥有<b>特权信息（Privileged Knowledge）</b>的教师策略（仿真真实状态、物体精确位姿、物理参数）。学生策略（只看到图像/点云）执行时，教师<b>在线纠正</b>——与固定专家轨迹不同，教师具有在线适应与纠错能力。</li>
+</ul>
+<div class="box blue">
+<span class="bt">教师与学生分别使用哪些信息</span>
+<p>「教师看特权信息、学生只看观测」的蒸馏思想，可用于训练时信息多、部署时观测有限的情形，第 9 章的强化学习也会用它。</p>
+</div>
+</section>
+<!-- ============ 6 ============ -->
+<section id="s6">
+<h2 class="sec"><span class="no">6</span>遥操作：专家数据从哪来</h2>
+<p>BC 需要专家数据。两大来源（笔记）：<b>合成数据</b>（量大，但外观/物理差异 → 需要域随机化）与<b>遥操作数据</b>（真/虚拟场景采集，减少差异，但代价高昂）。</p>
+<figure>
+<img alt="课程课件：遥操作系统——Tesla 与 Stanford ALOHA" loading="lazy" src="assets/s_p48.jpg"/>
+<figcaption>遥操作系统：Tesla 的数据采集系统与 Stanford ALOHA。<span class="src">（来源：Lecture 8 课件 p48）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">机器人演示采集：遥操作</div><div class="translation-body"><p>特斯拉使用的遥操作系统；斯坦福ALOHA系统。</p><p>四倍速遥操作；改进夹爪响应性。</p><p>Abramson, Norman：《ALOHA系统：计算机通信的另一种选择》，1970年11月17—19日秋季联合计算机会议论文集，1970。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l08-p48">对照原课件第48页与完整中文翻译 →</a></figure>
+<p>课件还展示了特斯拉 Optimus 的电池分拣遥操演示（p49），以及 <b>Human-in-the-Loop IL</b>（Mandlekar et al., 2020）——人在回路中远程干预，把失败状态的纠正动作也变成训练数据（正是 DAgger 思想的工程化）。</p>
+<div class="update-box">
+<span class="bt">工程说明：演示数据的口径</span>
+<p>遥操作可采集状态—动作演示。记录数据规模时需区分帧数、轨迹数、物体数与任务数；演示覆盖范围和质量与数量同样重要。比较数据规模时，先确认统计单位和来源，再结合 BC 的监督目标分析闭环分布变化。</p>
+</div>
+</section>
+<!-- ============ 7 ============ -->
+<section id="s7">
+<h2 class="sec"><span class="no">7</span>部分观测与因果混淆</h2>
+<p>现实世界通常只能获得<b>部分观测</b>，$\pi(a_t|o_t)$ 会面对「相同观测、不同正确动作」的一对多映射。经典的例子：司机超车依赖几秒前看到的后视镜信息——当前观测里那辆车已经不在视野中。</p>
+<p>自然解法：<b>引入历史信息</b> $\pi(a_t | o_{t-k}, \dots, o_t)$，用 RNN 或 Transformer 实现。但带来两个新问题（笔记）：</p>
+<ol>
+<li><b>过拟合</b>：输入维度大增，模型容易学到虚假关联（spurious correlations）；</li>
+<li><b>因果混淆（Causal Confusion）</b>：把相关性误当因果——自动驾驶数据中，每次踩刹车都伴随「前方有行人（因）+ 刹车灯亮（果）」。模型若只学到「刹车灯亮 → 踩刹车」的关联，就会在「有行人但刹车灯没亮」时撞上去。历史信息让输入维度更高、虚假关联更多，加剧这个风险。</li>
+</ol>
+</section>
+<!-- ============ 8 ============ -->
+<section id="s8">
+<h2 class="sec"><span class="no">8</span>多峰行为：对动作分布建模</h2><div class="box blue"><span class="bt">为什么平均动作可能失败？</span><p>假设障碍物在正前方，专家以相同概率选择向左或向右绕行，动作分别为 −1 和 +1。平方误差最优单值是条件均值 0，恰好指向障碍物。模型应采样一个合理模式，再检查碰撞，并让后续时刻保持一致的绕行方向。</p><p>MLP=多层感知机，GMM=高斯混合模型，CVAE=条件变分自编码器，ELBO=证据下界；bins 指离散区间。RNN=循环神经网络，Transformer 是基于注意力的序列模型，用于从历史提取信息。</p></div>
+<p>第 5-7 章讨论过的多解问题，也会出现在策略学习中：<b>同一个状态可能有多种同样合理的动作</b>（避障时左绕右绕都可以）。BC 用 MLP 直接回归会输出「平均动作」——</p>
+<blockquote>
+<p>「开车避障时，你可以左打方向盘或右打方向盘，但模型为了降低 Loss 会输出平均值——啥都不动，直直撞上去。」（笔记中的例子）</p>
+</blockquote>
+<figure>
+<img alt="笔记配图：多峰行为——直接回归输出平均动作" loading="lazy" src="assets/multi_task_learning.png"/>
+<figcaption>目标条件化多任务学习：给定不同目标，策略选择相应路径。<span class="src">（来源：笔记 08）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">多任务学习</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><p>πθ(a|s)：到达p₁的策略。</p></div><div><p>πθ(a|s,p)：到达任意p的策略；p₁、p₂、p₃。</p></div></div></div></div></figure>
+<figure>
+<img alt="笔记配图：DexGraspNet 的两阶段生成——先建模位姿分布再回归手型" loading="lazy" src="assets/dex_grasp_net.png"/>
+<figcaption>第 7 章 DexGraspNet 的解法回顾：末端位姿多峰 → 生成建模；该方法选择对条件手型回归。<span class="src">（来源：笔记 08）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><h3>推理</h3><p>种子点提议：点云P（N×3）→ ResUNet14编码器 / 解码器 → 局部特征N×C → 可抓取性多层感知机 → 可抓取性GS（N×1）与物体性O（N×2）；可抓取性前1%、最远点采样；种子特征f_s（M×C）。</p><p>抓取位姿生成：条件生成；扩散；g_E¹ → v_θ → g_E⁰；GS_E：12维，R：3×3，奇异值分解SVD；关节多层感知机 → θ：16维 → 抓取位姿g_r。</p><h3>训练</h3><p>真值可抓取性GS^gt、物体性O^gt、抓取g(T,R,θ)^gt；点云P（N×3）→ ResUNet14编码器 / 解码器 → 可抓取性多层感知机；对应点P_correspond；扩散的时间t、g_Eᵗ、g_E⁰及预测v_θ和真值v_gt；关节多层感知机。</p><p>总损失：$L=\lambda_oL_o+\lambda_gL_g+\lambda_dL_d+\lambda_\theta L_\theta$。</p></div></div></figure>
+<p>解法：<b>显式建模动作分布</b> $\pi(a|s)$，四种方案：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>方案</th><th>做法</th><th>代表</th></tr>
+<tr><td><b>高斯混合模型（GMM）</b></td><td>$p(a|s) = \sum_k w_k(s)\mathcal{N}(a|\mu_k(s), \Sigma_k(s))$</td><td>简单直观；难定 $K$</td></tr>
+<tr><td><b>隐变量模型（CVAE）</b></td><td>采样 $z \sim p(z|s)$，解码 $p(a|s,z)$；ELBO 训练</td><td>ALOHA 系列</td></tr>
+<tr><td><b>扩散模型</b></td><td>从噪声迭代去噪生成动作</td><td>Diffusion Policy</td></tr>
+<tr><td><b>自回归离散化</b></td><td>$p(a|s) = \prod_i p(a_i|s, a_{1..i-1})$，每维离散成 bins 做分类</td><td>Transformer 类策略</td></tr>
+</table></div></div>
+<div class="gallery">
+<figure>
+<img alt="课程课件：ALOHA 的 CVAE 模仿学习案例" loading="lazy" src="assets/s_p64.jpg"/>
+<figcaption>CVAE 案例：低成本双臂操作（Zhao et al., 2023）<span class="src">（课件 p64）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">案例研究：使用CVAE进行模仿</div><div class="translation-body"><p>z：风格变量；Transformer编码器；[CLS]、关节、动作序列＋位置嵌入。</p><p>相机1—4；480×640×3；CNN；Transformer编码器；相机1、相机4、关节、z；Transformer解码器；动作序列；位置嵌入（固定）。</p><p>Zhao等：《用低成本硬件学习精细双臂操作》，2023。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l08-p64">对照原课件第64页与完整中文翻译 →</a></figure>
+<figure>
+<img alt="课程课件：Diffusion Policy" loading="lazy" src="assets/s_p66.jpg"/>
+<figcaption>Diffusion Policy：扩散模型生成动作序列<span class="src">（课件 p66）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">基于扩散的策略</div><div class="translation-body"><h3>Diffusion Policy：扩散策略</h3><p>通过动作扩散学习视觉运动策略。</p><p>（a）显式策略：$F_\theta(o)$；动作表示；标量（回归）、高斯混合、分类。</p><p>（b）隐式策略：$\arg\min(E)$，$E_\theta(o,a)$；能量；o、a。</p><p>（c）扩散策略：$\nabla E(a)$，$\epsilon_\theta(o,a)$；K次迭代；梯度场；o、a。</p><p>本文介绍扩散策略：一种通过条件去噪扩散过程表示机器人视觉运动策略、从而生成机器人行为的新方法。我们在4个机器人操作基准的12项不同任务上评测扩散策略，发现其持续优于现有最先进机器人学习方法，平均提升46.9%。扩散策略学习动作分布分数函数的梯度，并在推理时通过一系列随机朗之万动力学步骤沿此梯度场迭代优化。我们发现，扩散表述用于机器人策略时具有多项优势，包括平稳处理多峰动作分布、适合高维动作空间以及表现出良好训练稳定性。为充分释放扩散模型在实体机器人视觉运动策略学习中的潜力，本文提出一组关键技术贡献，包括引入滚动时域控制、视觉条件化以及时间序列扩散Transformer。我们希望这项工作推动新一代策略学习技术，利用扩散模型强大的生成建模能力。</p><p class="source">https://diffusion-policy.cs.columbia.edu/</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l08-p66">对照原课件第66页与完整中文翻译 →</a></figure>
+</div>
+<figure>
+<img alt="笔记配图：生成式模型对比" loading="lazy" src="assets/generate_model.png"/>
+<figcaption>生成式模型家族：VAE / GAN / 扩散模型。<span class="src">（来源：笔记 08）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><div class="columns" style=";--translation-columns:2"><div><p>生成对抗网络（GAN）：对抗训练。</p></div><div><p>x′、x → 判别器D(x) → 0/1；z → 生成器G(z) → x′。</p></div></div><div class="columns" style=";--translation-columns:2"><div><p>变分自编码器（VAE）：最大化变分下界。</p></div><div><p>x → 编码器qφ(z|x) → z → 解码器pθ(x|z) → x′。</p></div></div><div class="columns" style=";--translation-columns:2"><div><p>基于流的模型：分布的可逆变换。</p></div><div><p>x → 流f(x) → z → 逆变换f⁻¹(z) → x′。</p></div></div><div class="columns" style=";--translation-columns:2"><div><p>扩散模型：逐渐加入高斯噪声，然后反向还原。</p></div><div><p>x₀ → x₁ → x₂ → …… → z；反向：z → …… → x₂ → x₁ → x₀。</p></div></div></div></div></figure>
+<figure>
+<img alt="笔记配图：扩散模型的加噪与去噪过程" loading="lazy" src="assets/diffusion.png"/>
+<figcaption>扩散模型：前向逐步加噪、反向逐步去噪，从纯噪声生成符合分布的动作。<span class="src">（来源：笔记 08）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">中文翻译</div><div class="translation-body"><p>干净样本；p₀(x₀)；x₀、x₁、……、x_T₋₁、x_T；纯噪声；p_T(x_T)～N(0,I)。</p></div></div></figure>
+<div class="update-box">
+<span class="bt">进一步理解：多峰动作与生成模型</span>
+<p>扩散与流匹配都可用于表达多峰动作分布；是否更快或更准确取决于网络、采样步数和任务。这些方法可以保留多种动作模式；演示覆盖和闭环分布偏移，则还需要通过数据采集与纠错训练处理。</p>
+</div>
+</section>
+<!-- ============ 9 ============ -->
+<section id="s9">
+<h2 class="sec"><span class="no">9</span>多任务学习与 IL 的局限</h2>
+<p>专家数据常混合多个任务（导航去不同目的地）。与其每任务训一个策略，不如训<b>目标条件化策略</b> $\pi(a|s, g)$（课件 p70-71）：</p>
+<figure>
+<img alt="课程课件：多任务学习与目标条件化行为克隆" loading="lazy" src="assets/s_p70.jpg"/>
+<figcaption>多任务学习：所有任务共享一个模型，条件化于目标 $g$。<span class="src">（来源：Lecture 8 课件 p70）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">学习很多任务会更容易吗？</div><div class="translation-body"><p>多任务学习。</p><p>πθ(a|s)：到达p₁的策略。</p><p>πθ(a|s,p)：到达任意p的策略；p₁、p₂、p₃。</p><p>Where2Act管线。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l08-p70">对照原课件第70页与完整中文翻译 →</a></figure>
+<ul>
+<li><b>数据效率</b>：所有任务数据训练共享模型；</li>
+<li><b>知识共享</b>：不同任务共享子结构（「从北大无论开车去哪，都得先开出北大东门」）；</li>
+<li><b>新风险</b>：目标空间 $g$ 也有分布偏移——测试时遇到没见过的目标，泛化面临考验。</li>
+</ul>
+<h3>模仿学习的三大局限（笔记总结）</h3>
+<ol>
+<li><b>依赖专家数据</b>：大量高质量演示，获取成本高；</li>
+<li><b>缺少主动回报优化</b>：仅复现演示通常难以主动改善任务回报；模型对噪声演示去噪后，也可能优于部分专家样本，因此其表现上限需要结合数据与模型分析；</li>
+<li><b>高动态任务需要充分纠错覆盖</b>：需要精确反馈与快速调整的任务（指尖转笔），可能对误差敏感，有限演示难覆盖扰动；结合闭环反馈、纠错采集和合适控制接口仍可使用模仿学习。</li>
+</ol>
+<p>想根据任务回报主动探索改进，就轮到强化学习登场——第 9 章。</p>
+</section>
+<!-- ============ 10 ============ -->
+<section id="s10">
+<h2 class="sec"><span class="no">10</span>强化学习引言</h2>
+<p>本节引入强化学习的目标与轨迹分布，帮助衔接第 9 章的策略梯度推导。先区分两个信号：专家动作告诉机器人“模仿哪一个动作”，奖励告诉机器人“当前行为带来多好结果”。</p>
+<figure>
+<img alt="课程课件：什么是强化学习" loading="lazy" src="assets/s_p74.jpg"/>
+<figcaption>什么是强化学习：从经验中学习决策与控制的数学框架。<span class="src">（来源：Lecture 8 课件 p74）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">强化学习导论</div><div class="translation-body"><p>什么是强化学习？</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l08-p74">对照原课件第74页与完整中文翻译 →</a></figure>
+<p><b>RL 与监督学习的本质区别</b>（课件 p76）：监督学习学「答案是什么」（数据带标签）；RL 学「怎样做更好」（只有奖励信号，且可能延迟、稀疏）。</p>
+<p><b>RL 的目标</b>：学习策略 $\pi_\theta$，最大化轨迹 $\tau = (s_1, a_1, s_2, \dots)$ 上的累积奖励期望：</p>
+<p style="text-align:center">$$ \theta^* = \arg\max_\theta \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_t r(s_t, a_t)\right], \qquad p_\theta(\tau) = p(s_1)\prod_{t=1}^T \pi_\theta(a_t|s_t)\,p(s_{t+1}|s_t, a_t) $$</p>
+<ul>
+<li><b>有限时间界</b>：最大化固定 $T$ 步内总奖励期望（$\sum_{t=1}^T \mathbb{E}[r(s_t,a_t)]$，$p_\theta(s_t,a_t)$ 是 $t$ 时刻的访问边际分布）；</li>
+<li><b>无限时域</b>：可以研究折扣总回报，也可以研究长期平均奖励。后者需要确认平稳分布的存在性、唯一性，以及相应极限是否成立；</li>
+<li><b>关键性质</b>：即使奖励函数不平滑，<b>在策略可微、可交换微分与期望等正则条件下，期望奖励可对 $\theta$ 求导</b>——这让梯度优化成为可能。这正是第 9 章策略梯度（Policy Gradient）的立足点。</li>
+</ul>
+<figure>
+<img alt="课程课件：策略梯度与最大似然的对比" loading="lazy" src="assets/s_p99.jpg"/>
+<figcaption>课件 p99 预告：策略梯度 vs 最大似然（BC）——两者梯度形式相似，采样分布与目标却不同；第 9 章将分别推导并比较。<span class="src">（来源：Lecture 8 课件 p99）</span></figcaption>
+<div class="translation slide-translation" lang="zh-CN"><div class="translation-heading">与最大似然比较</div><div class="translation-body"><p>策略梯度：</p><p>$\nabla_\theta J(\theta)\approx\frac1N\sum_{i=1}^N(\sum_{t=1}^T\nabla_\theta\log\pi_\theta(a_{i,t}\mid s_{i,t}))(\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</p><p>最大似然：</p><p>$\nabla_\theta J_{ML}(\theta)\approx\frac1N\sum_{i=1}^N(\sum_{t=1}^T\nabla_\theta\log\pi_\theta(a_{i,t}\mid s_{i,t}))$。</p><p>sₜ、aₜ → 训练数据 → 监督学习 → πθ(aₜ|sₜ)。</p></div></div><a class="full-slide-translation source-note" href="课件中文译解.html#l08-p99">对照原课件第99页与完整中文翻译 →</a></figure>
+</section>
+<!-- ============ 11 ============ -->
+<section id="s11">
+<h2 class="sec"><span class="no">11</span>本章小结</h2>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table>
+<tr><th>核心概念</th><th>一句话解释</th></tr>
+<tr><td><b>策略学习</b></td><td>学习「状态 → 动作」的闭环策略，替代开环规划执行</td></tr>
+<tr><td><b>MDP / POMDP</b></td><td>完全观测 / 部分观测的决策数学框架</td></tr>
+<tr><td><b>BC</b></td><td>把专家动作作为监督信号；连续确定性回归可用 MSE，分布策略可用负对数似然</td></tr>
+<tr><td><b>Distribution Shift</b></td><td>误差累积 → 状态偏离专家分布 → 更大误差的恶性循环</td></tr>
+<tr><td><b>DAgger / 教师策略</b></td><td>主动收集执行状态请专家标注 / 特权信息教师在线纠错</td></tr>
+<tr><td><b>非马尔可夫性</b></td><td>部分观测需要历史信息（RNN/Transformer），但带来过拟合与因果混淆</td></tr>
+<tr><td><b>多峰行为</b></td><td>直接回归输出「平均动作」；GMM/CVAE/扩散/自回归建模分布</td></tr>
+<tr><td><b>目标条件化</b></td><td>$\pi(a|s,g)$ 共享多任务数据，代价是目标空间分布偏移</td></tr>
+</table></div></div>
+<div class="box green">
+<span class="bt">💡 下一章预告</span>
+<p>第 9 章学习如何用任务回报优化策略：<b>强化学习与策略梯度</b>——REINFORCE、方差削减、Actor-Critic，以及配套的作业 3（PPO 让四足机器人学会走路）。</p>
+</div>
+</section>
+<!-- ============ 12 ============ -->
+<section id="s12">
+<h2 class="sec"><span class="no">12</span>动手实践</h2>
+<p>本章没有原版作业（作业 3 在第 9 章），但 Distribution Shift 值得亲手观察一次——这个实验用 少量 NumPy 代码展示训练覆盖不足对闭环行为的影响。</p>
+<h3>练习 1：复现 BC 的 Distribution Shift（30 分钟）</h3>
+<p>环境：一辆小车在 1D 轨道上，专家策略让它朝目标 $x=10$ 匀速前进。用 BC 学到的策略闭环执行，观察误差如何滚雪球：</p>
+<pre><code><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># 环境：x' = x + a（动作就是速度）</span>
+<span class="kw">def</span> <span class="fn">expert_policy</span>(x):
+    <span class="kw">return</span> 1.0 <span class="kw">if</span> x &lt; 10 <span class="kw">else</span> 0.0
+
+<span class="cm"># 只收集 [0,1] 内的单步专家标注；不采集完整轨迹</span>
+np.random.seed(0)
+data = []
+<span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(20):
+    x = np.random.uniform(0, 1)
+    data.append((x, <span class="fn">expert_policy</span>(x)))
+xs = np.array([d[0] <span class="kw">for</span> d <span class="kw">in</span> data])[:, None]
+ys = np.array([d[1] <span class="kw">for</span> d <span class="kw">in</span> data])
+
+<span class="cm"># BC：最小二乘拟合线性策略（专家数据只覆盖 x∈[0,1] 附近！）</span>
+W = np.linalg.lstsq(np.hstack([xs, np.ones_like(xs)]), ys, rcond=None)[0]
+bc = <span class="kw">lambda</span> x: W[0]*x + W[1]
+
+<span class="cm"># 闭环执行：从 x=0.5 出发，观察轨迹</span>
+x = 0.5; traj = [x]
+<span class="kw">for</span> t <span class="kw">in</span> <span class="fn">range</span>(15):
+    x += bc(x); traj.append(x)
+<span class="fn">print</span>(<span class="st">"BC 闭环轨迹终点:"</span>, np.round(traj[-1], 2), <span class="st">"（起点0.5、15步：专家终点为10.5）"</span>)
+<span class="fn">print</span>(<span class="st">"轨迹:"</span>, np.round(traj, 2))
+<span class="fn">print</span>(<span class="st">"训练状态范围:"</span>, xs.min(), xs.max())
+<span class="fn">print</span>(<span class="st">"训练MSE:"</span>, np.mean((xs[:,0]*W[0]+W[1]-ys)**2))
+x_expert = 0.5
+<span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(15): x_expert += expert_policy(x_expert)
+<span class="fn">print</span>(<span class="st">"专家闭环终点:"</span>, x_expert)</code></pre>
+<p><b>观察</b>：训练状态确实只在 $[0,1]$ 内，训练 MSE 接近零，BC 却在闭环中继续向前，终点约为 15.5；专家到 10.5 后停止。训练数据未包含停止区域，评估时应把闭环轨迹与训练状态覆盖范围一起检查。<b>挑战</b>：用 DAgger 收集新状态的专家标注，并检查线性策略能否表示停止阈值；必要时选择更合适的模型，再比较闭环结果。</p>
+<h3>练习 2：多峰行为的平均陷阱（15 分钟）</h3>
+<pre><code><span class="cm"># 专家在 x=0 处：一半概率 a=-1（左绕），一半概率 a=+1（右绕）</span>
+np.random.seed(1)
+N = 1000
+a_true = np.where(np.random.rand(N) &lt; 0.5, -1.0, 1.0)
+<span class="cm"># 用「最小 MSE 估计」拟合单一动作（等价于 BC 回归）</span>
+a_bc = a_true.mean()
+<span class="fn">print</span>(<span class="st">"专家的两个峰: {-1, +1}，BC 预测:"</span>, np.round(a_bc, 3), <span class="st">"→ 若两侧绕行，中间动作可能不安全"</span>)</code></pre>
+<div class="box green">
+<span class="bt">💡 自学路线建议</span>
+<p>两个练习约 45 分钟，纯 numpy。练习 1 的 DAgger 挑战强烈建议完成——比较增加纠错数据前后的闭环轨迹，同时检查策略类能否表示专家动作。学有余力可跑 Diffusion Policy 官方 demo（diffusion-policy.cs.columbia.edu）看真实机器人。</p>
+</div>
+</section>
+<!-- ============ 附录 A ============ -->
+<section id="selfcheck"><h2 class="sec">理解检查</h2><p>当前相机图像相同，机器人运动速度不同，正确动作能否不同？（能，观测可能不充分。）DAgger 新标签来自谁？（专家对学生所到状态给出纠错动作。）多峰动作的均值一定可执行吗？（不一定。）</p><p>先遮住括号中的答案，用本章符号和一个具体例子说明理由。遇到疑问时，对照相应节的模型假设检查自己的推理。</p></section>
+<section id="apA">
+<h2 class="sec"><span class="no">附A</span>术语表</h2>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table class="term-table">
+<tr><th>术语</th><th>解释</th></tr>
+<tr><td>策略（Policy）</td><td>状态/观测 → 动作分布的函数 $\pi(a|s)$，策略学习的核心对象</td></tr>
+<tr><td>MDP / POMDP</td><td>马尔可夫决策过程 / 部分可观测 MDP（增加观测空间与观测概率，并用历史或信念状态决策）</td></tr>
+<tr><td>行为克隆（BC）</td><td>以专家动作监督训练；MSE 只是连续动作的一种损失</td></tr>
+<tr><td>Distribution Shift</td><td>策略执行分布偏离专家数据分布导致的误差累积崩溃</td></tr>
+<tr><td>DAgger</td><td>数据集聚合：执行策略收集状态 → 专家标注 → 并入数据集重训</td></tr>
+<tr><td>Rollout</td><td>让策略在环境中执行一个回合，收集状态/动作序列</td></tr>
+<tr><td>特权信息（Privileged Knowledge）</td><td>教师策略可用的仿真真实状态、精确位姿等学生看不到的信息</td></tr>
+<tr><td>遥操作（Teleoperation）</td><td>人远程操控机器人采集演示数据（动捕/主从同步）</td></tr>
+<tr><td>因果混淆</td><td>把相关当因果：学到「刹车灯亮→刹车」而非「行人→刹车」</td></tr>
+<tr><td>多峰行为</td><td>同一状态的多个合理动作；直接回归输出无效的平均</td></tr>
+<tr><td>CVAE</td><td>条件变分自编码器：隐变量建模动作分布（ALOHA 使用）</td></tr>
+<tr><td>Diffusion Policy</td><td>用扩散模型从噪声迭代生成动作的策略</td></tr>
+<tr><td>自回归离散化</td><td>逐维分解动作分布，每维离散成 bins 做分类</td></tr>
+<tr><td>目标条件化</td><td>$\pi(a|s,g)$：共享多任务数据的策略</td></tr>
+</table></div></div>
+</section>
+<!-- ============ 附录 B ============ -->
+<section id="apB">
+<h2 class="sec"><span class="no">附B</span>课件 105 页完整索引</h2>
+<p>原版 Lecture 8 课件共 105 页（<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture08_04_07.pdf" target="_blank">GitHub 原文件</a>）。下表逐页列出内容及在本教程中的位置：</p>
+<div aria-label="可横向滚动的表格" class="table-scroll" role="region" tabindex="0"><div class="table-wrap"><table class="page-index">
+<tr><th>页码</th><th>页面内容</th><th>在教程中的位置</th></tr>
+<tr><td class="pg">p1</td><td>封面：Lecture 8 - Policy I（主讲：李祎老师）</td><td>封面区</td></tr>
+<tr><td class="pg">p2</td><td>Logistics：期中考试（40%，4/21，A4 cheat sheet 一页）</td><td>§12（背景）</td></tr>
+<tr><td class="pg">p3</td><td>考试题型：选择/判断/简答（可含数学推导）</td><td>§12（背景）</td></tr>
+<tr><td class="pg">p4</td><td>作业 2 发布（15%，位姿估计抓取）</td><td>§12（呼应第 5 章）</td></tr>
+<tr><td class="pg">p5</td><td>作业 2/3 真机实验组队（≤4 人）</td><td>§12（背景）</td></tr>
+<tr><td class="pg">p6</td><td>主题页：条件抓取生成模型</td><td>§1（回顾第 7 章）</td></tr>
+<tr><td class="pg">p7</td><td>数据：DexGraspNet 2.0（回顾）</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p8</td><td>扩散式灵巧手位姿生成（回顾）</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p9</td><td>Stage 1：Where to grasp（回顾）</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p10</td><td>Stage 2：How to grasp（回顾）</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p11</td><td>灵巧抓取位姿扩散模型（回顾）</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p12-13</td><td>真机实验与 SOTA（回顾）</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p14</td><td>Scaling Law（回顾）</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p15-16</td><td>灵巧手包裹能力 + 总结（回顾）</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p17</td><td>深度传感问题：透明物体失败案例</td><td>§1（回顾第 7 章 §7）</td></tr>
+<tr><td class="pg">p18</td><td>Demo：GraspNet-baseline 对比</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p19-20</td><td>ASGrasp 作者信息（回顾）</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p21-25</td><td>DREDS 域随机化五方面（回顾）</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p26</td><td>ASGrasp 管线（回顾）</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p27-29</td><td>ASGrasp 实验（回顾）</td><td>§1（回顾）</td></tr>
+<tr><td class="pg">p30</td><td>3D 视觉抓取总结</td><td>§1</td></tr>
+<tr><td class="pg">p31</td><td>走向操作：可供性 Where2Act（ICCV 2021）</td><td>§1（承接第 7 章）</td></tr>
+<tr><td class="pg">p32</td><td>Where2Act 流程</td><td>§1（承接）</td></tr>
+<tr><td class="pg">p33</td><td>Where2Act 结果</td><td>§1（承接）</td></tr>
+<tr><td class="pg">p34</td><td>VAT-Mart（ICLR 2022）：操作轨迹提议</td><td>§1（承接）</td></tr>
+<tr><td class="pg">p35</td><td>VAT-Mart 结果</td><td>§1（承接）</td></tr>
+<tr><td class="pg">p36</td><td>视觉开环方法总结与局限</td><td>§1</td></tr>
+<tr><td class="pg">p37</td><td>主题页：策略学习（借鉴 CS285）</td><td>§1 结尾</td></tr>
+<tr><td class="pg">p38</td><td>术语与记号</td><td>§2</td></tr>
+<tr><td class="pg">p39</td><td>监督式策略学习：PointGoal Navigation</td><td>§2</td></tr>
+<tr><td class="pg">p40</td><td>强化学习：trial and error</td><td>§10</td></tr>
+<tr><td class="pg">p41</td><td>主题页：模仿学习（借鉴 CS285）</td><td>§3 开头</td></tr>
+<tr><td class="pg">p42</td><td>术语与记号（IL）</td><td>§3</td></tr>
+<tr><td class="pg">p43</td><td>模仿学习图示</td><td>§3</td></tr>
+<tr><td class="pg">p44</td><td>原始深度模仿学习系统（ALVINN）</td><td>§3</td></tr>
+<tr><td class="pg">p45</td><td>Does it work? No——distribution drift！</td><td>§4</td></tr>
+<tr><td class="pg">p46</td><td>Does it work?（图示）</td><td>§4</td></tr>
+<tr><td class="pg">p47</td><td>Why did that work?（数据多样性）</td><td>§4</td></tr>
+<tr><td class="pg">p48</td><td>遥操作采集：Tesla 系统与 Stanford ALOHA</td><td>§6</td></tr>
+<tr><td class="pg">p49</td><td>Tesla Optimus 电池分拣与纠错演示采集</td><td>§6</td></tr>
+<tr><td class="pg">p50</td><td>Human-in-the-Loop IL（Mandlekar et al. 2020）</td><td>§6</td></tr>
+<tr><td class="pg">p51-54</td><td>Can we make it work more often? / What's the problem?</td><td>§4-5（引导）</td></tr>
+<tr><td class="pg">p55</td><td>动作标签其他来源：最优解 / 教师策略</td><td>§5.2</td></tr>
+<tr><td class="pg">p56</td><td>Can we make it work without more data?</td><td>§5（引导）</td></tr>
+<tr><td class="pg">p57</td><td>Why might we fail to fit the expert?</td><td>§7-8（引导）</td></tr>
+<tr><td class="pg">p58-59</td><td>How can we use the whole history?（历史信息）</td><td>§7</td></tr>
+<tr><td class="pg">p60</td><td>Aside：why might this work poorly?（因果混淆）</td><td>§7</td></tr>
+<tr><td class="pg">p61-63</td><td>Why might we fail to fit the expert?（多峰）</td><td>§8（引导）</td></tr>
+<tr><td class="pg">p64</td><td>案例：ALOHA 的 CVAE 模仿学习（Zhao et al. 2023）</td><td>§8</td></tr>
+<tr><td class="pg">p65</td><td>Why might we fail?（继续）</td><td>§8</td></tr>
+<tr><td class="pg">p66</td><td>Diffusion Policy</td><td>§8</td></tr>
+<tr><td class="pg">p67-68</td><td>Why might we fail?（继续）</td><td>§8</td></tr>
+<tr><td class="pg">p69</td><td>自回归离散化</td><td>§8</td></tr>
+<tr><td class="pg">p70</td><td>多任务学习：学很多任务是否更容易？</td><td>§9</td></tr>
+<tr><td class="pg">p71</td><td>目标条件化行为克隆</td><td>§9</td></tr>
+<tr><td class="pg">p72</td><td>IL 总结</td><td>§9（局限）</td></tr>
+<tr><td class="pg">p73</td><td>主题页：强化学习（借鉴 CS285）</td><td>§10 开头</td></tr>
+<tr><td class="pg">p74</td><td>什么是强化学习？</td><td>§10</td></tr>
+<tr><td class="pg">p75</td><td>RL：学习式决策的数学形式化 / 从经验学习</td><td>§10</td></tr>
+<tr><td class="pg">p76</td><td>与其他 ML 的区别</td><td>§10</td></tr>
+<tr><td class="pg">p77</td><td>RL 引言（图示）</td><td>§10</td></tr>
+<tr><td class="pg">p78</td><td>术语与记号（RL）</td><td>§10</td></tr>
+<tr><td class="pg">p79</td><td>奖励函数</td><td>§10</td></tr>
+<tr><td class="pg">p80-83</td><td>定义：MDP、轨迹、回报</td><td>§2 + §10</td></tr>
+<tr><td class="pg">p84-86</td><td>RL 的目标（Read by Yourself）</td><td>§10</td></tr>
+<tr><td class="pg">p87</td><td>有限时间界：状态-动作边际</td><td>§10</td></tr>
+<tr><td class="pg">p88-89</td><td>无限时间界：平稳分布</td><td>§10</td></tr>
+<tr><td class="pg">p90</td><td>期望与随机系统</td><td>§10</td></tr>
+<tr><td class="pg">p91</td><td>主题页：策略梯度</td><td>§10（预告第 9 章）</td></tr>
+<tr><td class="pg">p92-93</td><td>RL 的目标（策略梯度版）</td><td>§10（预告）</td></tr>
+<tr><td class="pg">p94</td><td>评估目标函数</td><td>§10（预告）</td></tr>
+<tr><td class="pg">p95-98</td><td>直接策略微分与策略梯度评估</td><td>§10（预告）</td></tr>
+<tr><td class="pg">p99</td><td>与最大似然（BC）的对比</td><td>§10</td></tr>
+<tr><td class="pg">p100</td><td>例子：高斯策略</td><td>§10（预告）</td></tr>
+<tr><td class="pg">p101</td><td>我们刚才做了什么？</td><td>§10（预告）</td></tr>
+<tr><td class="pg">p102</td><td>部分可观测性</td><td>§2 + §7</td></tr>
+<tr><td class="pg">p103</td><td>策略梯度的问题（方差）</td><td>§10（预告第 9 章）</td></tr>
+<tr><td class="pg">p104</td><td>回顾</td><td>§11（小结）</td></tr>
+<tr><td class="pg">p105</td><td>结尾页：下集预告 Lecture 9 - Policy II</td><td>页脚（下一章预告）</td></tr>
+</table></div></div>
+</section>
+<!-- ============ 附录 C ============ -->
+<section id="apC">
+<h2 class="sec"><span class="no">附C</span>参考资源</h2>
+<ul>
+<li>课程官网：<a href="https://pku-epic.github.io/Intro2EAI_2025/" target="_blank">pku-epic.github.io/Intro2EAI_2025</a></li>
+<li>本教程素材来源仓库：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU" target="_blank">zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU</a></li>
+<li>本章课件：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Slides/Lecture08_04_07.pdf" target="_blank"><code>Slides/Lecture08_04_07.pdf</code></a>（105 页）</li>
+<li>本章笔记原文：<a href="https://github.com/zhuozhiyongde/Embodied-Artificial-Intelligence-2025Spring-PKU/blob/0d6658dd1e87efd52cf505f5b8cb291b22a962a8/Notes/08-Policy-I.md" target="_blank"><code>Notes/08-Policy-I.md</code></a></li>
+</ul>
+<h3>延伸阅读</h3>
+<ul>
+<li>Berkeley CS285（Deep RL，本讲课件的借鉴来源）</li>
+<li>《动手学强化学习》（<a href="https://hrl.boyuai.com/" target="_blank">hrl.boyuai.com</a>，笔记作者推荐）</li>
+<li>Zhao et al., <em>Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware (ALOHA)</em>, 2023</li>
+<li>Diffusion Policy 官网：<a href="https://diffusion-policy.cs.columbia.edu/" target="_blank">diffusion-policy.cs.columbia.edu</a></li>
+<li>Mandlekar et al., <em>Human-in-the-Loop Imitation Learning</em>, arXiv 2020</li>
+</ul>
+</section>
+</main>
+</div>
+<!-- ============ 页脚 ============ -->
+<aside class="recent" id="current-research"><h3>2026年10月技术与政策动态 · 记忆与人的纠正补足模仿学习</h3><p>2026年的MEM讨论长期与短期记忆，LeRobot 0.6.0支持DAgger风格的干预记录。两者分别回应历史信息不足与部署状态分布变化。</p><p class="source-note">资料截至2026-10-04 · <a href="../技术动态_20261004.html#memory">一手来源、发布日期与适用范围</a></p></aside><footer>
+<nav aria-label="章节导航" class="chapter-nav"><a href="../ch07/index.html">← 第7章</a><a href="../index.html">教程目录</a><a href="../ch09/index.html">第9章 →</a></nav>
+<p><b>关于本教程：</b>本教程基于北京大学 2025 春季《具身智能导论》课程的公开资料（王鹤 老师主讲）整理改编，面向零基础自学者，免费提供学习。来源、改编方式与使用声明的完整说明见<a href="#about">篇首「关于本教程」</a>；笔记、课件、作业版权归原作者及课程组所有。</p>
+<p><b>阅读约定：</b>核心知识依照 2025 春季课程组织；正文中的教学解释帮助理解模型假设与工程条件。原始课件、笔记和作业保留作者署名，技术动态标明来源与日期。</p>
+<p><b>下一章预告：</b>第 9 章《策略学习 II：强化学习》（课件 p105 预告）——策略梯度、REINFORCE、Actor-Critic 与作业 3（PPO 训练机器人走路）。</p>
+</footer>
+<script defer="" src="../reader.js"></script></body>
+</html>

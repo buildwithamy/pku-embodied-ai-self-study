@@ -1,0 +1,1573 @@
+[
+  {
+    "lecture": 9,
+    "page": 1,
+    "title": "具身智能导论",
+    "translated_title": "具身智能导论",
+    "translation": [
+      "第9讲——策略 II",
+      "王鹤教授",
+      "具身感知与交互实验室｜2025年春季"
+    ],
+    "translation_html": "<p>第9讲——策略 II</p><p>王鹤教授</p><p>具身感知与交互实验室｜2025年春季</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 2,
+    "title": "课程安排：期中考试",
+    "translated_title": "课程安排：期中考试",
+    "translation": [
+      "期中考试（占总成绩的30%）。",
+      "4月21日，15:10—17:00，课堂内进行。",
+      "第二教学楼301教室。",
+      "前两节课，共110分钟。",
+      "第三节课用于授课。",
+      "可携带一张双面A4速查表（手写或打印均可）。",
+      "范围：第1讲至第9讲。"
+    ],
+    "translation_html": "<ul><li>期中考试（占总成绩的30%）。<ul><li>4月21日，15:10—17:00，课堂内进行。</li><li>第二教学楼301教室。</li><li>前两节课，共110分钟。</li><li>第三节课用于授课。</li></ul></li><li>可携带一张双面A4速查表（手写或打印均可）。</li><li>范围：第1讲至第9讲。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 3,
+    "title": "课程安排：期中考试",
+    "translated_title": "课程安排：期中考试",
+    "translation": [
+      "题型：",
+      "多项选择题。",
+      "判断题。",
+      "简答题。",
+      "简要陈述为什么和怎样。",
+      "部分题目可能需要数学推导。",
+      "简单计算题。"
+    ],
+    "translation_html": "<ul><li>题型：<ul><li>多项选择题。</li><li>判断题。</li><li>简答题。<ul><li>简要陈述为什么和怎样。</li><li>部分题目可能需要数学推导。</li></ul></li></ul></li></ul><ul><li>简单计算题。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 4,
+    "title": "课程安排：作业2",
+    "translated_title": "课程安排：作业2",
+    "translation": [
+      "根据点云观测估计物体位姿。",
+      "方法1：直接回归。",
+      "方法2：拟合。",
+      "为抓取进行运动规划。",
+      "这一部分每位学生需要独立完成，真实实验分组完成。",
+      "发布时间：4月14日今晚。",
+      "截止时间：4月30日，星期三。"
+    ],
+    "translation_html": "<ul><li>根据点云观测估计物体位姿。<ul><li>方法1：直接回归。</li><li>方法2：拟合。</li></ul></li><li>为抓取进行运动规划。</li><li>这一部分每位学生需要独立完成，真实实验分组完成。</li><li>发布时间：4月14日今晚。</li><li>截止时间：4月30日，星期三。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 5,
+    "title": "策略梯度",
+    "translated_title": "策略梯度",
+    "translation": [],
+    "translation_html": "",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 6,
+    "title": "强化学习的目标",
+    "translated_title": "强化学习的目标",
+    "translation": [
+      "θ；状态s；动作a；πθ(a|s)；p(s′|s,a)。",
+      "$p_\\theta(s_1,a_1,\\ldots,s_T,a_T)=p(s_1)\\prod_{t=1}^T\\pi_\\theta(a_t\\mid s_t)p(s_{t+1}\\mid s_t,a_t)=p_\\theta(\\tau)$。",
+      "关于(s,a)的马尔可夫链。",
+      "$p((s_{t+1},a_{t+1})\\mid(s_t,a_t))=p(s_{t+1}\\mid s_t,a_t)\\pi_\\theta(a_{t+1}\\mid s_{t+1})$。"
+    ],
+    "translation_html": "<p>θ；状态s；动作a；πθ(a|s)；p(s′|s,a)。</p><p>$p_\\theta(s_1,a_1,\\ldots,s_T,a_T)=p(s_1)\\prod_{t=1}^T\\pi_\\theta(a_t\\mid s_t)p(s_{t+1}\\mid s_t,a_t)=p_\\theta(\\tau)$。</p><p>关于(s,a)的马尔可夫链。</p><p>$p((s_{t+1},a_{t+1})\\mid(s_t,a_t))=p(s_{t+1}\\mid s_t,a_t)\\pi_\\theta(a_{t+1}\\mid s_{t+1})$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 7,
+    "title": "强化学习的目标",
+    "translated_title": "强化学习的目标",
+    "translation": [
+      "$\\theta^*=\\arg\\max_\\theta\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]$。",
+      "$\\theta^*=\\arg\\max_\\theta\\mathbb E_{(s,a)\\sim p_\\theta(s,a)}[r(s,a)]$。无限时域情形。",
+      "$\\theta^*=\\arg\\max_\\theta\\sum_{t=1}^T\\mathbb E_{(s_t,a_t)\\sim p_\\theta(s_t,a_t)}[r(s_t,a_t)]$。有限时域情形。"
+    ],
+    "translation_html": "<p>$\\theta^*=\\arg\\max_\\theta\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]$。</p><p>$\\theta^*=\\arg\\max_\\theta\\mathbb E_{(s,a)\\sim p_\\theta(s,a)}[r(s,a)]$。无限时域情形。</p><p>$\\theta^*=\\arg\\max_\\theta\\sum_{t=1}^T\\mathbb E_{(s_t,a_t)\\sim p_\\theta(s_t,a_t)}[r(s_t,a_t)]$。有限时域情形。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 8,
+    "title": "评估目标",
+    "translated_title": "评估目标",
+    "translation": [
+      "$\\theta^*=\\arg\\max_\\theta\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]$。",
+      "J(θ)",
+      "$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]\\approx\\frac1N\\sum_i\\sum_t r(s_{i,t},a_{i,t})$。",
+      "对来自πθ的样本求和。"
+    ],
+    "translation_html": "<p>$\\theta^*=\\arg\\max_\\theta\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]$。</p><p>J(θ)</p><p>$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]\\approx\\frac1N\\sum_i\\sum_t r(s_{i,t},a_{i,t})$。</p><p>对来自πθ的样本求和。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 9,
+    "title": "直接对策略求导",
+    "translated_title": "直接对策略求导",
+    "translation": [
+      "$\\theta^*=\\arg\\max_\\theta\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]$。",
+      "J(θ)",
+      "$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[r(\\tau)]=\\int p_\\theta(\\tau)r(\\tau)d\\tau$；$r(\\tau)=\\sum_{t=1}^Tr(s_t,a_t)$。",
+      "一个方便的恒等式",
+      "$p_\\theta(\\tau)\\nabla_\\theta\\log p_\\theta(\\tau)=p_\\theta(\\tau)\\frac{\\nabla_\\theta p_\\theta(\\tau)}{p_\\theta(\\tau)}=\\nabla_\\theta p_\\theta(\\tau)$。",
+      "$\\nabla_\\theta J(\\theta)=\\int\\nabla_\\theta p_\\theta(\\tau)r(\\tau)d\\tau=\\int p_\\theta(\\tau)\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)d\\tau=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)]$。"
+    ],
+    "translation_html": "<p>$\\theta^*=\\arg\\max_\\theta\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]$。</p><p>J(θ)</p><p>$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[r(\\tau)]=\\int p_\\theta(\\tau)r(\\tau)d\\tau$；$r(\\tau)=\\sum_{t=1}^Tr(s_t,a_t)$。</p><h3>一个方便的恒等式</h3><p>$p_\\theta(\\tau)\\nabla_\\theta\\log p_\\theta(\\tau)=p_\\theta(\\tau)\\frac{\\nabla_\\theta p_\\theta(\\tau)}{p_\\theta(\\tau)}=\\nabla_\\theta p_\\theta(\\tau)$。</p><p>$\\nabla_\\theta J(\\theta)=\\int\\nabla_\\theta p_\\theta(\\tau)r(\\tau)d\\tau=\\int p_\\theta(\\tau)\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)d\\tau=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)]$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 10,
+    "title": "直接对策略求导",
+    "translated_title": "直接对策略求导",
+    "translation": [
+      "$\\theta^*=\\arg\\max_\\theta J(\\theta)$；$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[r(\\tau)]$。",
+      "$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)]$。",
+      "$p_\\theta(s_1,a_1,\\ldots,s_T,a_T)=p(s_1)\\prod_{t=1}^T\\pi_\\theta(a_t\\mid s_t)p(s_{t+1}\\mid s_t,a_t)=p_\\theta(\\tau)$。",
+      "两边取对数：",
+      "$\\log p_\\theta(\\tau)=\\log p(s_1)+\\sum_{t=1}^T[\\log\\pi_\\theta(a_t\\mid s_t)+\\log p(s_{t+1}\\mid s_t,a_t)]$。",
+      "$\\nabla_\\theta[\\log p(s_1)+\\sum_{t=1}^T\\log\\pi_\\theta(a_t\\mid s_t)+\\log p(s_{t+1}\\mid s_t,a_t)]$。",
+      "$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t))(\\sum_{t=1}^T r(s_t,a_t))]$。"
+    ],
+    "translation_html": "<p>$\\theta^*=\\arg\\max_\\theta J(\\theta)$；$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[r(\\tau)]$。</p><p>$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)]$。</p><p>$p_\\theta(s_1,a_1,\\ldots,s_T,a_T)=p(s_1)\\prod_{t=1}^T\\pi_\\theta(a_t\\mid s_t)p(s_{t+1}\\mid s_t,a_t)=p_\\theta(\\tau)$。</p><p>两边取对数：</p><p>$\\log p_\\theta(\\tau)=\\log p(s_1)+\\sum_{t=1}^T[\\log\\pi_\\theta(a_t\\mid s_t)+\\log p(s_{t+1}\\mid s_t,a_t)]$。</p><p>$\\nabla_\\theta[\\log p(s_1)+\\sum_{t=1}^T\\log\\pi_\\theta(a_t\\mid s_t)+\\log p(s_{t+1}\\mid s_t,a_t)]$。</p><p>$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t))(\\sum_{t=1}^T r(s_t,a_t))]$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 11,
+    "title": "评估策略梯度",
+    "translated_title": "评估策略梯度",
+    "translation": [
+      "回顾：",
+      "$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]\\approx\\frac1N\\sum_i\\sum_t r(s_{i,t},a_{i,t})$。",
+      "$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t))(\\sum_{t=1}^T r(s_t,a_t))]$。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。",
+      "$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。",
+      "生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。",
+      "REINFORCE算法",
+      "从$\\pi_\\theta(a_t\\mid s_t)$采样$\\{\\tau^i\\}$（执行该策略）。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。",
+      "$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。"
+    ],
+    "translation_html": "<p>回顾：</p><p>$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]\\approx\\frac1N\\sum_i\\sum_t r(s_{i,t},a_{i,t})$。</p><p>$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t))(\\sum_{t=1}^T r(s_t,a_t))]$。</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</p><p>$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</p><p>生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。</p><h3>REINFORCE算法</h3><ul><li>从$\\pi_\\theta(a_t\\mid s_t)$采样$\\{\\tau^i\\}$（执行该策略）。</li><li>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</li><li>$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 12,
+    "title": "评估策略梯度",
+    "translated_title": "评估策略梯度",
+    "translation": [
+      "回顾：",
+      "$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]\\approx\\frac1N\\sum_i\\sum_t r(s_{i,t},a_{i,t})$。",
+      "$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t))(\\sum_{t=1}^T r(s_t,a_t))]$。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。",
+      "这是什么？",
+      "sₜ → πθ(aₜ|sₜ) → aₜ。"
+    ],
+    "translation_html": "<p>回顾：</p><p>$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_t r(s_t,a_t)]\\approx\\frac1N\\sum_i\\sum_t r(s_{i,t},a_{i,t})$。</p><p>$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t))(\\sum_{t=1}^T r(s_t,a_t))]$。</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</p><p>这是什么？</p><p>sₜ → πθ(aₜ|sₜ) → aₜ。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 13,
+    "title": "与最大似然比较",
+    "translated_title": "与最大似然比较",
+    "translation": [
+      "策略梯度：",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。",
+      "最大似然：",
+      "$\\nabla_\\theta J_{ML}(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))$。",
+      "sₜ、aₜ → 训练数据 → 监督学习 → πθ(aₜ|sₜ)。"
+    ],
+    "translation_html": "<p>策略梯度：</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</p><p>最大似然：</p><p>$\\nabla_\\theta J_{ML}(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))$。</p><p>sₜ、aₜ → 训练数据 → 监督学习 → πθ(aₜ|sₜ)。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 14,
+    "title": "例子：高斯策略",
+    "translated_title": "例子：高斯策略",
+    "translation": [
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。",
+      "例：$\\pi_\\theta(a_t\\mid s_t)=\\mathcal N(f_{neural\\ network}(s_t);\\Sigma)$。",
+      "$\\log\\pi_\\theta(a_t\\mid s_t)=-\\frac12\\|f(s_t)-a_t\\|_\\Sigma^2+\\text{常数}$。",
+      "$\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t)=-\\frac12\\Sigma^{-1}(f(s_t)-a_t)\\frac{df}{d\\theta}$。",
+      "第2000次迭代。",
+      "REINFORCE算法",
+      "从$\\pi_\\theta(a_t\\mid s_t)$采样$\\{\\tau^i\\}$（执行该策略）。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。",
+      "$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。"
+    ],
+    "translation_html": "<p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</p><p>例：$\\pi_\\theta(a_t\\mid s_t)=\\mathcal N(f_{neural\\ network}(s_t);\\Sigma)$。</p><p>$\\log\\pi_\\theta(a_t\\mid s_t)=-\\frac12\\|f(s_t)-a_t\\|_\\Sigma^2+\\text{常数}$。</p><p>$\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t)=-\\frac12\\Sigma^{-1}(f(s_t)-a_t)\\frac{df}{d\\theta}$。</p><p>第2000次迭代。</p><h3>REINFORCE算法</h3><ul><li>从$\\pi_\\theta(a_t\\mid s_t)$采样$\\{\\tau^i\\}$（执行该策略）。</li><li>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</li><li>$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 15,
+    "title": "我们刚刚做了什么？",
+    "translated_title": "我们刚刚做了什么？",
+    "translation": [
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)$。",
+      "$\\nabla_\\theta\\log p_\\theta(\\tau)=\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})$。",
+      "最大似然：$\\nabla_\\theta J_{ML}(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\nabla_\\theta\\log p_\\theta(\\tau)$。",
+      "让好行为更可能发生。让坏行为更不可能发生。",
+      "只是把“试错”的概念形式化！",
+      "REINFORCE算法",
+      "从$\\pi_\\theta(a_t\\mid s_t)$采样$\\{\\tau^i\\}$（执行该策略）。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。",
+      "$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。"
+    ],
+    "translation_html": "<p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)$。</p><p>$\\nabla_\\theta\\log p_\\theta(\\tau)=\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})$。</p><p>最大似然：$\\nabla_\\theta J_{ML}(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\nabla_\\theta\\log p_\\theta(\\tau)$。</p><p>让好行为更可能发生。让坏行为更不可能发生。</p><p>只是把“试错”的概念形式化！</p><h3>REINFORCE算法</h3><ul><li>从$\\pi_\\theta(a_t\\mid s_t)$采样$\\{\\tau^i\\}$（执行该策略）。</li><li>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</li><li>$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 16,
+    "title": "部分可观测性",
+    "translated_title": "部分可观测性",
+    "translation": [
+      "oₜ → πθ(aₜ|oₜ) → aₜ。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid o_{i,t}))(\\sum_{t=1}^T r(o_{i,t},a_{i,t}))$。",
+      "实际上并未使用马尔可夫性质！",
+      "无需修改，即可在部分可观测MDP中使用策略梯度。"
+    ],
+    "translation_html": "<p>oₜ → πθ(aₜ|oₜ) → aₜ。</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid o_{i,t}))(\\sum_{t=1}^T r(o_{i,t},a_{i,t}))$。</p><p>实际上并未使用马尔可夫性质！</p><p>无需修改，即可在部分可观测MDP中使用策略梯度。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 17,
+    "title": "策略梯度有什么问题？",
+    "translated_title": "策略梯度有什么问题？",
+    "translation": [
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)$。",
+      "r(τ)；τ。",
+      "更糟：如果两个“好”样本的r(τ)=0呢？",
+      "高方差。"
+    ],
+    "translation_html": "<p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)$。</p><p>r(τ)；τ。</p><p>更糟：如果两个“好”样本的r(τ)=0呢？</p><p>高方差。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 18,
+    "title": "回顾",
+    "translated_title": "回顾",
+    "translation": [
+      "评估强化学习目标。",
+      "生成样本。",
+      "评估策略梯度。",
+      "对数梯度技巧。",
+      "生成样本。",
+      "理解策略梯度。",
+      "试错的形式化。",
+      "部分可观测性。",
+      "同样有效。",
+      "策略梯度有什么问题？",
+      "生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。",
+      "$\\sum_{t=1}^Tr(x_t,u_t)$；$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。"
+    ],
+    "translation_html": "<ul><li>评估强化学习目标。<ul><li>生成样本。</li></ul></li><li>评估策略梯度。<ul><li>对数梯度技巧。</li><li>生成样本。</li></ul></li><li>理解策略梯度。<ul><li>试错的形式化。</li></ul></li><li>部分可观测性。<ul><li>同样有效。</li></ul></li><li>策略梯度有什么问题？</li></ul><p>生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。</p><p>$\\sum_{t=1}^Tr(x_t,u_t)$；$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 19,
+    "title": "降低方差",
+    "translated_title": "降低方差",
+    "translation": [],
+    "translation_html": "",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 20,
+    "title": "降低方差",
+    "translated_title": "降低方差",
+    "translation": [
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。",
+      "因果性：时刻t′的策略不能影响时刻t的奖励（t<t′）。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime})\\right)$。",
+      "“从当前时刻开始的回报”。",
+      "$\\hat Q_{i,t}=\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime})$。"
+    ],
+    "translation_html": "<p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</p><p>因果性：时刻t′的策略不能影响时刻t的奖励（t<t′）。</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime})\\right)$。</p><p>“从当前时刻开始的回报”。</p><p>$\\hat Q_{i,t}=\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime})$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 21,
+    "title": "基线",
+    "translated_title": "基线",
+    "translation": [
+      "一个方便的恒等式",
+      "$p_\\theta(\\tau)\\nabla_\\theta\\log p_\\theta(\\tau)=\\nabla_\\theta p_\\theta(\\tau)$。",
+      "基线",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\nabla_\\theta\\log p_\\theta(\\tau_i)(r(\\tau_i)-b)$；$b=\\frac1N\\sum_i r(\\tau_i)$。",
+      "但是……允许这样做吗？？",
+      "$\\mathbb E[\\nabla_\\theta\\log p_\\theta(\\tau)b]=\\int p_\\theta(\\tau)\\nabla_\\theta\\log p_\\theta(\\tau)b\\,d\\tau=\\int\\nabla_\\theta p_\\theta(\\tau)b\\,d\\tau=b\\nabla_\\theta\\int p_\\theta(\\tau)d\\tau=b\\nabla_\\theta1=0$。",
+      "减去一个基线，在期望意义上是无偏的！",
+      "平均奖励并不是最好的基线，但已经相当不错！"
+    ],
+    "translation_html": "<h3>一个方便的恒等式</h3><p>$p_\\theta(\\tau)\\nabla_\\theta\\log p_\\theta(\\tau)=\\nabla_\\theta p_\\theta(\\tau)$。</p><h3>基线</h3><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\nabla_\\theta\\log p_\\theta(\\tau_i)(r(\\tau_i)-b)$；$b=\\frac1N\\sum_i r(\\tau_i)$。</p><p>但是……允许这样做吗？？</p><p>$\\mathbb E[\\nabla_\\theta\\log p_\\theta(\\tau)b]=\\int p_\\theta(\\tau)\\nabla_\\theta\\log p_\\theta(\\tau)b\\,d\\tau=\\int\\nabla_\\theta p_\\theta(\\tau)b\\,d\\tau=b\\nabla_\\theta\\int p_\\theta(\\tau)d\\tau=b\\nabla_\\theta1=0$。</p><p>减去一个基线，在期望意义上是无偏的！</p><p>平均奖励并不是最好的基线，但已经相当不错！</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 22,
+    "title": "分析方差",
+    "translated_title": "分析方差",
+    "translation": [
+      "$\\operatorname{Var}[x]=\\mathbb E[x^2]-\\mathbb E[x]^2$。",
+      "$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta}[\\nabla_\\theta\\log p_\\theta(\\tau)(r(\\tau)-b)]$。",
+      "$\\operatorname{Var}[\\nabla_\\theta\\log p_\\theta(\\tau)(r(\\tau)-b)]=\\mathbb E[(\\nabla_\\theta\\log p_\\theta(\\tau)(r(\\tau)-b))^2]-\\mathbb E[\\nabla_\\theta\\log p_\\theta(\\tau)(r(\\tau)-b)]^2$。",
+      "后一项就是$\\mathbb E[\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)]^2$。",
+      "令$g(\\tau)=\\nabla_\\theta\\log p_\\theta(\\tau)$：$\\frac{d\\operatorname{Var}}{db}=\\frac d{db}\\mathbb E[g(\\tau)^2(r(\\tau)-b)^2]=\\frac d{db}(\\mathbb E[g^2r^2]-2\\mathbb E[g^2r]b+b^2\\mathbb E[g^2])=-2\\mathbb E[g^2r]+2b\\mathbb E[g^2]=0$。",
+      "$b=\\frac{\\mathbb E[g(\\tau)^2r(\\tau)]}{\\mathbb E[g(\\tau)^2]}$。",
+      "这就是期望奖励，但用梯度的大小加权！"
+    ],
+    "translation_html": "<p>$\\operatorname{Var}[x]=\\mathbb E[x^2]-\\mathbb E[x]^2$。</p><p>$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta}[\\nabla_\\theta\\log p_\\theta(\\tau)(r(\\tau)-b)]$。</p><p>$\\operatorname{Var}[\\nabla_\\theta\\log p_\\theta(\\tau)(r(\\tau)-b)]=\\mathbb E[(\\nabla_\\theta\\log p_\\theta(\\tau)(r(\\tau)-b))^2]-\\mathbb E[\\nabla_\\theta\\log p_\\theta(\\tau)(r(\\tau)-b)]^2$。</p><p>后一项就是$\\mathbb E[\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)]^2$。</p><p>令$g(\\tau)=\\nabla_\\theta\\log p_\\theta(\\tau)$：$\\frac{d\\operatorname{Var}}{db}=\\frac d{db}\\mathbb E[g(\\tau)^2(r(\\tau)-b)^2]=\\frac d{db}(\\mathbb E[g^2r^2]-2\\mathbb E[g^2r]b+b^2\\mathbb E[g^2])=-2\\mathbb E[g^2r]+2b\\mathbb E[g^2]=0$。</p><p>$b=\\frac{\\mathbb E[g(\\tau)^2r(\\tau)]}{\\mathbb E[g(\\tau)^2]}$。</p><p>这就是期望奖励，但用梯度的大小加权！</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 23,
+    "title": "回顾",
+    "translated_title": "回顾",
+    "translation": [
+      "策略梯度的高方差。",
+      "利用因果性。",
+      "未来不会影响过去。",
+      "基线。",
+      "无偏！",
+      "分析方差。",
+      "可以推导最优基线。",
+      "生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime})\\right)$。",
+      "$\\hat Q_{i,t}=\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime})$。"
+    ],
+    "translation_html": "<ul><li>策略梯度的高方差。</li><li>利用因果性。<ul><li>未来不会影响过去。</li></ul></li><li>基线。<ul><li>无偏！</li></ul></li><li>分析方差。<ul><li>可以推导最优基线。</li></ul></li></ul><p>生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime})\\right)$。</p><p>$\\hat Q_{i,t}=\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime})$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 24,
+    "title": "实现策略梯度",
+    "translated_title": "实现策略梯度",
+    "translation": [],
+    "translation_html": "",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 25,
+    "title": "使用自动微分实现策略梯度",
+    "translated_title": "使用自动微分实现策略梯度",
+    "translation": [
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\hat Q_{i,t}$。",
+      "显式计算这些梯度效率很低！",
+      "需要构造一个计算图，使其梯度等于策略梯度。",
+      "最大似然：",
+      "$\\nabla_\\theta J_{ML}(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))$。",
+      "$J_{ML}(\\theta)=\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})$。",
+      "“伪损失”：",
+      "$\\tilde J(\\theta)=\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\hat Q_{i,t}$。",
+      "离散动作使用交叉熵；高斯策略使用平方误差。"
+    ],
+    "translation_html": "<p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\hat Q_{i,t}$。</p><p>显式计算这些梯度效率很低！</p><p>需要构造一个计算图，使其梯度等于策略梯度。</p><p>最大似然：</p><p>$\\nabla_\\theta J_{ML}(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))$。</p><p>$J_{ML}(\\theta)=\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})$。</p><p>“伪损失”：</p><p>$\\tilde J(\\theta)=\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\hat Q_{i,t}$。</p><p>离散动作使用交叉熵；高斯策略使用平方误差。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 26,
+    "title": "使用自动微分实现策略梯度",
+    "translated_title": "使用自动微分实现策略梯度",
+    "translation": [
+      "伪代码示例（离散动作）：",
+      "最大似然",
+      "# 给定：",
+      "# actions：形状为 (N*T) × Da 的动作张量",
+      "# states：形状为 (N*T) × Ds 的状态张量",
+      "# 构建计算图：",
+      "logits = policy.predictions(states) # 应返回形状为 (N*T) × Da 的动作 logits 张量",
+      "negative_likelihoods = tf.nn.softmax_cross_entropy_with_logits(labels=actions, logits=logits)",
+      "loss = tf.reduce_mean(negative_likelihoods)",
+      "gradients = loss.gradients(loss, variables)"
+    ],
+    "translation_html": "<p>伪代码示例（离散动作）：</p><h3>最大似然</h3><pre><code># 给定：\n# actions：形状为 (N*T) × Da 的动作张量\n# states：形状为 (N*T) × Ds 的状态张量\n# 构建计算图：\nlogits = policy.predictions(states) # 应返回形状为 (N*T) × Da 的动作 logits 张量\nnegative_likelihoods = tf.nn.softmax_cross_entropy_with_logits(labels=actions, logits=logits)\nloss = tf.reduce_mean(negative_likelihoods)\ngradients = loss.gradients(loss, variables)</code></pre>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 27,
+    "title": "使用自动微分实现策略梯度",
+    "translated_title": "使用自动微分实现策略梯度",
+    "translation": [
+      "伪代码示例（离散动作）：",
+      "策略梯度",
+      "# 给定：",
+      "# actions：形状为 (N*T) × Da 的动作张量",
+      "# states：形状为 (N*T) × Ds 的状态张量",
+      "# q_values：形状为 (N*T) × 1 的估计状态—动作价值张量",
+      "# 构建计算图：",
+      "logits = policy.predictions(states) # 应返回形状为 (N*T) × Da 的动作 logits 张量",
+      "negative_likelihoods = tf.nn.softmax_cross_entropy_with_logits(labels=actions, logits=logits)",
+      "weighted_negative_likelihoods = tf.multiply(negative_likelihoods, q_values)",
+      "loss = tf.reduce_mean(weighted_negative_likelihoods)",
+      "gradients = loss.gradients(loss, variables)",
+      "$\\tilde J(\\theta)=\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\hat Q_{i,t}$。",
+      "q_values：估计的状态—动作价值。"
+    ],
+    "translation_html": "<p>伪代码示例（离散动作）：</p><h3>策略梯度</h3><pre><code># 给定：\n# actions：形状为 (N*T) × Da 的动作张量\n# states：形状为 (N*T) × Ds 的状态张量\n# q_values：形状为 (N*T) × 1 的估计状态—动作价值张量\n# 构建计算图：\nlogits = policy.predictions(states) # 应返回形状为 (N*T) × Da 的动作 logits 张量\nnegative_likelihoods = tf.nn.softmax_cross_entropy_with_logits(labels=actions, logits=logits)\nweighted_negative_likelihoods = tf.multiply(negative_likelihoods, q_values)\nloss = tf.reduce_mean(weighted_negative_likelihoods)\ngradients = loss.gradients(loss, variables)</code></pre><p>$\\tilde J(\\theta)=\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\hat Q_{i,t}$。</p><p>q_values：估计的状态—动作价值。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 28,
+    "title": "实际中的策略梯度",
+    "translated_title": "实际中的策略梯度",
+    "translation": [
+      "记住：梯度的方差很高。",
+      "这与监督学习不同！",
+      "梯度会非常嘈杂！",
+      "考虑使用大得多的批次。",
+      "调整学习率非常困难。",
+      "ADAM等自适应步长规则可以取得尚可的效果。",
+      "稍后会学习专门针对策略梯度的学习率调整方法！"
+    ],
+    "translation_html": "<ul><li>记住：梯度的方差很高。<ul><li>这与监督学习不同！</li><li>梯度会非常嘈杂！</li></ul></li><li>考虑使用大得多的批次。</li><li>调整学习率非常困难。<ul><li>ADAM等自适应步长规则可以取得尚可的效果。</li><li>稍后会学习专门针对策略梯度的学习率调整方法！</li></ul></li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 29,
+    "title": "回顾",
+    "translated_title": "回顾",
+    "translation": [
+      "策略梯度是同策略方法。",
+      "可以推导异策略版本。",
+      "使用重要性采样。",
+      "随T呈指数增长。",
+      "可以忽略状态部分（近似）。",
+      "可以用自动微分实现——需要知道应对什么做反向传播。",
+      "实践方面的考虑：批次大小、学习率、优化器。",
+      "生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。"
+    ],
+    "translation_html": "<ul><li>策略梯度是同策略方法。</li><li>可以推导异策略版本。<ul><li>使用重要性采样。</li><li>随T呈指数增长。</li><li>可以忽略状态部分（近似）。</li></ul></li><li>可以用自动微分实现——需要知道应对什么做反向传播。</li><li>实践方面的考虑：批次大小、学习率、优化器。</li></ul><p>生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 30,
+    "title": "行动者—评价者算法",
+    "translated_title": "行动者—评价者算法",
+    "translation": [],
+    "translation_html": "",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 31,
+    "title": "改进策略梯度",
+    "translated_title": "改进策略梯度",
+    "translation": [
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=1}^Tr(s_{i,t\\prime},a_{i,t\\prime})\\right)$。",
+      "“从当前时刻开始的回报”：Q̂ᵢ,ₜ。",
+      "Q̂ᵢ,ₜ：在状态sᵢ,ₜ采取动作aᵢ,ₜ时的期望奖励估计。",
+      "能得到更好的估计吗？",
+      "$Q^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t,a_t]$。",
+      "真正的期望未来回报。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})Q(s_{i,t},a_{i,t})$。",
+      "将这些奖励加在一起。",
+      "$\\hat Q_{i,t}\\approx\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime})$。"
+    ],
+    "translation_html": "<p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=1}^Tr(s_{i,t\\prime},a_{i,t\\prime})\\right)$。</p><p>“从当前时刻开始的回报”：Q̂ᵢ,ₜ。</p><p>Q̂ᵢ,ₜ：在状态sᵢ,ₜ采取动作aᵢ,ₜ时的期望奖励估计。</p><p>能得到更好的估计吗？</p><p>$Q^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t,a_t]$。</p><p>真正的期望未来回报。</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})Q(s_{i,t},a_{i,t})$。</p><p>将这些奖励加在一起。</p><p>$\\hat Q_{i,t}\\approx\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime})$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 32,
+    "title": "如何处理所有这些期望？",
+    "translated_title": "如何处理所有这些期望？",
+    "translation": [
+      "$\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_{t=1}^Tr(s_t,a_t)]=\\mathbb E_{s_1\\sim p(s_1)}[\\mathbb E_{a_1\\sim\\pi(a_1\\mid s_1)}[r(s_1,a_1)+\\mathbb E_{s_2\\sim p(s_2\\mid s_1,a_1)}[\\mathbb E_{a_2\\sim\\pi(a_2\\mid s_2)}[r(s_2,a_2)+\\cdots\\mid s_2]\\mid s_1,a_1]\\mid s_1]]$。",
+      "如果我们知道这一部分呢？",
+      "$Q(s_1,a_1)=r(s_1,a_1)+\\mathbb E_{s_2\\sim p(s_2\\mid s_1,a_1)}[\\mathbb E_{a_2\\sim\\pi(a_2\\mid s_2)}[r(s_2,a_2)+\\cdots\\mid s_2]\\mid s_1,a_1]$。",
+      "$\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_{t=1}^Tr(s_t,a_t)]=\\mathbb E_{s_1\\sim p(s_1)}[\\mathbb E_{a_1\\sim\\pi(a_1\\mid s_1)}[Q(s_1,a_1)\\mid s_1]]$。",
+      "如果已知Q，就很容易改变π！",
+      "例如：$\\pi(a_1\\mid s_1)=1$，当$a_1=\\arg\\max_{a_1}Q(s_1,a_1)$。"
+    ],
+    "translation_html": "<p>$\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_{t=1}^Tr(s_t,a_t)]=\\mathbb E_{s_1\\sim p(s_1)}[\\mathbb E_{a_1\\sim\\pi(a_1\\mid s_1)}[r(s_1,a_1)+\\mathbb E_{s_2\\sim p(s_2\\mid s_1,a_1)}[\\mathbb E_{a_2\\sim\\pi(a_2\\mid s_2)}[r(s_2,a_2)+\\cdots\\mid s_2]\\mid s_1,a_1]\\mid s_1]]$。</p><p>如果我们知道这一部分呢？</p><p>$Q(s_1,a_1)=r(s_1,a_1)+\\mathbb E_{s_2\\sim p(s_2\\mid s_1,a_1)}[\\mathbb E_{a_2\\sim\\pi(a_2\\mid s_2)}[r(s_2,a_2)+\\cdots\\mid s_2]\\mid s_1,a_1]$。</p><p>$\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[\\sum_{t=1}^Tr(s_t,a_t)]=\\mathbb E_{s_1\\sim p(s_1)}[\\mathbb E_{a_1\\sim\\pi(a_1\\mid s_1)}[Q(s_1,a_1)\\mid s_1]]$。</p><p>如果已知Q，就很容易改变π！</p><p>例如：$\\pi(a_1\\mid s_1)=1$，当$a_1=\\arg\\max_{a_1}Q(s_1,a_1)$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 33,
+    "title": "定义",
+    "translated_title": "定义",
+    "translation": [
+      "定义：Q函数",
+      "$Q^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t,a_t]$。",
+      "在sₜ采取动作aₜ之后的总奖励。",
+      "定义：价值函数",
+      "$V^\\pi(s_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t]=\\mathbb E_{a_t\\sim\\pi(a_t\\mid s_t)}[Q^\\pi(s_t,a_t)]$。",
+      "从sₜ开始的总奖励。",
+      "$\\mathbb E_{s_1\\sim p(s_1)}[V^\\pi(s_1)]$：强化学习目标。"
+    ],
+    "translation_html": "<h3>定义：Q函数</h3><p>$Q^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t,a_t]$。</p><p>在sₜ采取动作aₜ之后的总奖励。</p><h3>定义：价值函数</h3><p>$V^\\pi(s_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t]=\\mathbb E_{a_t\\sim\\pi(a_t\\mid s_t)}[Q^\\pi(s_t,a_t)]$。</p><p>从sₜ开始的总奖励。</p><p>$\\mathbb E_{s_1\\sim p(s_1)}[V^\\pi(s_1)]$：强化学习目标。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 34,
+    "title": "基线怎么办？",
+    "translated_title": "基线怎么办？",
+    "translation": [
+      "$Q^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t,a_t]$。",
+      "真正的期望未来回报。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})(Q(s_{i,t},a_{i,t})-V(s_{i,t}))$。",
+      "$b_t=\\frac1N\\sum_iQ(s_{i,t},a_{i,t})$。",
+      "对什么求平均？",
+      "$V^\\pi(s_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t]=\\mathbb E_{a_t\\sim\\pi(a_t\\mid s_t)}[Q^\\pi(s_t,a_t)]$。",
+      "期望奖励之和。"
+    ],
+    "translation_html": "<p>$Q^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t,a_t]$。</p><p>真正的期望未来回报。</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})(Q(s_{i,t},a_{i,t})-V(s_{i,t}))$。</p><p>$b_t=\\frac1N\\sum_iQ(s_{i,t},a_{i,t})$。</p><p>对什么求平均？</p><p>$V^\\pi(s_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t]=\\mathbb E_{a_t\\sim\\pi(a_t\\mid s_t)}[Q^\\pi(s_t,a_t)]$。</p><p>期望奖励之和。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 35,
+    "title": "状态价值函数与状态—动作价值函数",
+    "translated_title": "状态价值函数与状态—动作价值函数",
+    "translation": [
+      "$Q^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t,a_t]$。",
+      "真正的期望未来回报。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})(Q(s_{i,t},a_{i,t})-V(s_{i,t}))$。",
+      "$b_t=\\frac1N\\sum_iQ(s_{i,t},a_{i,t})$。",
+      "对什么求平均？",
+      "$V^\\pi(s_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t]=\\mathbb E_{a_t\\sim\\pi(a_t\\mid s_t)}[Q^\\pi(s_t,a_t)]$。",
+      "期望奖励之和。"
+    ],
+    "translation_html": "<p>$Q^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t,a_t]$。</p><p>真正的期望未来回报。</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})(Q(s_{i,t},a_{i,t})-V(s_{i,t}))$。</p><p>$b_t=\\frac1N\\sum_iQ(s_{i,t},a_{i,t})$。</p><p>对什么求平均？</p><p>$V^\\pi(s_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t]=\\mathbb E_{a_t\\sim\\pi(a_t\\mid s_t)}[Q^\\pi(s_t,a_t)]$。</p><p>期望奖励之和。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 36,
+    "title": "拟合价值函数",
+    "translated_title": "拟合价值函数",
+    "translation": [
+      "$Q^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t,a_t]$。",
+      "$V^\\pi(s_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t]=\\mathbb E_{a_t\\sim\\pi(a_t\\mid s_t)}[Q^\\pi(s_t,a_t)]$。",
+      "$A^\\pi(s_t,a_t)=Q^\\pi(s_t,a_t)-V^\\pi(s_t)$。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})A^\\pi(s_{i,t},a_{i,t})$。",
+      "拟合什么？Q、V，还是A？",
+      "$Q^\\pi(s_t,a_t)=r(s_t,a_t)+\\sum_{t\\prime=t+1}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t,a_t]$。",
+      "$A^\\pi(s_t,a_t)\\approx r(s_t,a_t)+V^\\pi(s_{t+1})-V^\\pi(s_t)$。",
+      "只拟合Vᵠ(s)就好。",
+      "s → V̂πφ(s)。参数：φ。",
+      "生成样本（即执行策略） → 拟合Q、V或A以估计回报 → 改进策略。"
+    ],
+    "translation_html": "<p>$Q^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t,a_t]$。</p><p>$V^\\pi(s_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t]=\\mathbb E_{a_t\\sim\\pi(a_t\\mid s_t)}[Q^\\pi(s_t,a_t)]$。</p><p>$A^\\pi(s_t,a_t)=Q^\\pi(s_t,a_t)-V^\\pi(s_t)$。</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})A^\\pi(s_{i,t},a_{i,t})$。</p><p>拟合什么？Q、V，还是A？</p><p>$Q^\\pi(s_t,a_t)=r(s_t,a_t)+\\sum_{t\\prime=t+1}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t,a_t]$。</p><p>$A^\\pi(s_t,a_t)\\approx r(s_t,a_t)+V^\\pi(s_{t+1})-V^\\pi(s_t)$。</p><p>只拟合Vᵠ(s)就好。</p><p>s → V̂πφ(s)。参数：φ。</p><p>生成样本（即执行策略） → 拟合Q、V或A以估计回报 → 改进策略。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 37,
+    "title": "策略评估",
+    "translated_title": "策略评估",
+    "translation": [
+      "$V^\\pi(s_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t]=\\mathbb E_{a_t\\sim\\pi(a_t\\mid s_t)}[Q^\\pi(s_t,a_t)]$。",
+      "$\\mathbb E_{s_1\\sim p(s_1)}[V^\\pi(s_1)]$。",
+      "策略评估",
+      "如何评估策略？",
+      "蒙特卡罗方法：这就是策略梯度正在做的。",
+      "$V^\\pi(s_t)\\approx\\sum_{t\\prime=t}^Tr(s_{t\\prime},a_{t\\prime})$。",
+      "$V^\\pi(s_t)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime})$。",
+      "需要能够重置模拟器。",
+      "生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。"
+    ],
+    "translation_html": "<p>$V^\\pi(s_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t]=\\mathbb E_{a_t\\sim\\pi(a_t\\mid s_t)}[Q^\\pi(s_t,a_t)]$。</p><p>$\\mathbb E_{s_1\\sim p(s_1)}[V^\\pi(s_1)]$。</p><h3>策略评估</h3><p>如何评估策略？</p><p>蒙特卡罗方法：这就是策略梯度正在做的。</p><p>$V^\\pi(s_t)\\approx\\sum_{t\\prime=t}^Tr(s_{t\\prime},a_{t\\prime})$。</p><p>$V^\\pi(s_t)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime})$。</p><p>需要能够重置模拟器。</p><p>生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 38,
+    "title": "用函数逼近进行蒙特卡罗评估",
+    "translated_title": "用函数逼近进行蒙特卡罗评估",
+    "translation": [
+      "$V^\\pi(s_t)\\approx\\sum_{t\\prime=t}^Tr(s_{t\\prime},a_{t\\prime})$。",
+      "不如这个估计：",
+      "$V^\\pi(s_t)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime})$。",
+      "但仍相当不错！",
+      "训练数据：$\\{(s_{i,t},\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime}))\\}$；目标$y_{i,t}$。",
+      "监督回归：",
+      "$L(\\phi)=\\frac12\\sum_i\\|\\hat V^\\pi_\\phi(s_i)-y_i\\|^2$。",
+      "s → V̂πφ(s)。参数：φ。",
+      "将这些奖励加在一起。",
+      "同一个函数应当拟合多个样本！"
+    ],
+    "translation_html": "<p>$V^\\pi(s_t)\\approx\\sum_{t\\prime=t}^Tr(s_{t\\prime},a_{t\\prime})$。</p><p>不如这个估计：</p><p>$V^\\pi(s_t)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime})$。</p><p>但仍相当不错！</p><p>训练数据：$\\{(s_{i,t},\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime}))\\}$；目标$y_{i,t}$。</p><p>监督回归：</p><p>$L(\\phi)=\\frac12\\sum_i\\|\\hat V^\\pi_\\phi(s_i)-y_i\\|^2$。</p><p>s → V̂πφ(s)。参数：φ。</p><p>将这些奖励加在一起。</p><p>同一个函数应当拟合多个样本！</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 39,
+    "title": "能做得更好吗？",
+    "translated_title": "能做得更好吗？",
+    "translation": [
+      "$y_{i,t}=\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime})$。",
+      "$y_{i,t}=\\sum_{t\\prime=t}^T\\mathbb E_{\\pi_\\theta}[r(s_{t\\prime},a_{t\\prime})\\mid s_{i,t}]\\approx r(s_{i,t},a_{i,t})+V^\\pi(s_{i,t+1})\\approx r(s_{i,t},a_{i,t})+\\hat V^\\pi_\\phi(s_{i,t+1})$。",
+      "理想目标；蒙特卡罗目标；直接使用先前拟合的价值函数！",
+      "训练数据：$\\{(s_{i,t},r(s_{i,t},a_{i,t})+\\hat V^\\pi_\\phi(s_{i,t+1}))\\}$；$y_{i,t}$。",
+      "$L(\\phi)=\\frac12\\sum_i\\|\\hat V^\\pi_\\phi(s_i)-y_i\\|^2$。",
+      "“自举”估计。"
+    ],
+    "translation_html": "<p>$y_{i,t}=\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime})$。</p><p>$y_{i,t}=\\sum_{t\\prime=t}^T\\mathbb E_{\\pi_\\theta}[r(s_{t\\prime},a_{t\\prime})\\mid s_{i,t}]\\approx r(s_{i,t},a_{i,t})+V^\\pi(s_{i,t+1})\\approx r(s_{i,t},a_{i,t})+\\hat V^\\pi_\\phi(s_{i,t+1})$。</p><p>理想目标；蒙特卡罗目标；直接使用先前拟合的价值函数！</p><p>训练数据：$\\{(s_{i,t},r(s_{i,t},a_{i,t})+\\hat V^\\pi_\\phi(s_{i,t+1}))\\}$；$y_{i,t}$。</p><p>$L(\\phi)=\\frac12\\sum_i\\|\\hat V^\\pi_\\phi(s_i)-y_i\\|^2$。</p><p>“自举”估计。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 40,
+    "title": "策略评估示例",
+    "translated_title": "策略评估示例",
+    "translation": [
+      "TD-Gammon，Gerald Tesauro，1992年。",
+      "AlphaGo，Silver等，2016年。"
+    ],
+    "translation_html": "<p>TD-Gammon，Gerald Tesauro，1992年。</p><p>AlphaGo，Silver等，2016年。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 41,
+    "title": "行动者—评价者算法",
+    "translated_title": "行动者—评价者算法",
+    "translation": [
+      "行动者—评价者算法",
+      "用当前策略$\\pi_\\theta(a\\mid s)$采样$\\{s_i,a_i\\}$。",
+      "用采样得到的奖励和拟合$\\hat V^\\pi_\\phi(s)$。",
+      "评估$\\hat A^\\pi(s_i,a_i)=r(s_i,a_i)+\\hat V^\\pi_\\phi(s_i\\prime)-\\hat V^\\pi_\\phi(s_i)$。",
+      "评估$\\nabla_\\theta J(\\theta)\\approx\\sum_i\\nabla_\\theta\\log\\pi_\\theta(a_i\\mid s_i)\\hat A^\\pi(s_i,a_i)$。",
+      "更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。",
+      "$y_{i,t}=\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime})$。",
+      "$L(\\phi)=\\frac12\\sum_i\\|\\hat V^\\pi_\\phi(s_i)-y_i\\|^2$。",
+      "$V^\\pi(s_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t]=\\mathbb E_{a_t\\sim\\pi(a_t\\mid s_t)}[Q^\\pi(s_t,a_t)]$。",
+      "s → V̂πφ(s)。参数：φ。",
+      "生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。"
+    ],
+    "translation_html": "<h3>行动者—评价者算法</h3><ol><li>用当前策略$\\pi_\\theta(a\\mid s)$采样$\\{s_i,a_i\\}$。</li><li>用采样得到的奖励和拟合$\\hat V^\\pi_\\phi(s)$。</li><li>评估$\\hat A^\\pi(s_i,a_i)=r(s_i,a_i)+\\hat V^\\pi_\\phi(s_i\\prime)-\\hat V^\\pi_\\phi(s_i)$。</li><li>评估$\\nabla_\\theta J(\\theta)\\approx\\sum_i\\nabla_\\theta\\log\\pi_\\theta(a_i\\mid s_i)\\hat A^\\pi(s_i,a_i)$。</li><li>更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</li></ol><p>$y_{i,t}=\\sum_{t\\prime=t}^Tr(s_{i,t\\prime},a_{i,t\\prime})$。</p><p>$L(\\phi)=\\frac12\\sum_i\\|\\hat V^\\pi_\\phi(s_i)-y_i\\|^2$。</p><p>$V^\\pi(s_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t]=\\mathbb E_{a_t\\sim\\pi(a_t\\mid s_t)}[Q^\\pi(s_t,a_t)]$。</p><p>s → V̂πφ(s)。参数：φ。</p><p>生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 42,
+    "title": "补充：折扣因子",
+    "translated_title": "补充：折扣因子",
+    "translation": [
+      "$y_{i,t}\\approx r(s_{i,t},a_{i,t})+\\hat V^\\pi_\\phi(s_{i,t+1})$。",
+      "$L(\\phi)=\\frac12\\sum_i\\|\\hat V^\\pi_\\phi(s_i)-y_i\\|^2$。",
+      "如果T（回合长度）趋于无穷大，V可能变成无穷大！",
+      "回合式任务；连续／循环任务。第2000次迭代。",
+      "简单技巧：让较早获得的奖励更好。",
+      "$y_{i,t}\\approx r(s_{i,t},a_{i,t})+\\gamma\\hat V^\\pi_\\phi(s_{i,t+1})$；$\\gamma\\in[0,1]$，0.99效果不错。",
+      "γ改变了MDP：$p\\prime(s\\prime\\mid s,a)=\\gamma p(s\\prime\\mid s,a)$；“死亡”概率为$1-\\gamma$。"
+    ],
+    "translation_html": "<p>$y_{i,t}\\approx r(s_{i,t},a_{i,t})+\\hat V^\\pi_\\phi(s_{i,t+1})$。</p><p>$L(\\phi)=\\frac12\\sum_i\\|\\hat V^\\pi_\\phi(s_i)-y_i\\|^2$。</p><p>如果T（回合长度）趋于无穷大，V可能变成无穷大！</p><p>回合式任务；连续／循环任务。第2000次迭代。</p><p>简单技巧：让较早获得的奖励更好。</p><p>$y_{i,t}\\approx r(s_{i,t},a_{i,t})+\\gamma\\hat V^\\pi_\\phi(s_{i,t+1})$；$\\gamma\\in[0,1]$，0.99效果不错。</p><p>γ改变了MDP：$p\\prime(s\\prime\\mid s,a)=\\gamma p(s\\prime\\mid s,a)$；“死亡”概率为$1-\\gamma$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 43,
+    "title": "补充：策略梯度的折扣因子",
+    "translated_title": "补充：策略梯度的折扣因子",
+    "translation": [
+      "$y_{i,t}\\approx r(s_{i,t},a_{i,t})+\\gamma\\hat V^\\pi_\\phi(s_{i,t+1})$。",
+      "$L(\\phi)=\\frac12\\sum_i\\|\\hat V^\\pi_\\phi(s_i)-y_i\\|^2$。",
+      "使用评价者：",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})(r(s_{i,t},a_{i,t})+\\gamma\\hat V^\\pi_\\phi(s_{i,t+1})-\\hat V^\\pi_\\phi(s_{i,t}))$。",
+      "Âπ(sᵢ,ₜ,aᵢ,ₜ)。",
+      "（蒙特卡罗）策略梯度呢？",
+      "选项1",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=t}^T\\gamma^{t\\prime-t}r(s_{i,t\\prime},a_{i,t\\prime})\\right)$。",
+      "并不相同！",
+      "选项2",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i(\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t\\prime=1}^T\\gamma^{t\\prime-1}r(s_{i,t\\prime},a_{i,t\\prime}))$。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=t}^T\\gamma^{t\\prime-1}r(s_{i,t\\prime},a_{i,t\\prime})\\right)$。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\gamma^{t-1}\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})(\\sum_{t\\prime=t}^T\\gamma^{t\\prime-t}r(s_{i,t\\prime},a_{i,t\\prime}))$。",
+      "后面的步骤较不重要。"
+    ],
+    "translation_html": "<p>$y_{i,t}\\approx r(s_{i,t},a_{i,t})+\\gamma\\hat V^\\pi_\\phi(s_{i,t+1})$。</p><p>$L(\\phi)=\\frac12\\sum_i\\|\\hat V^\\pi_\\phi(s_i)-y_i\\|^2$。</p><p>使用评价者：</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})(r(s_{i,t},a_{i,t})+\\gamma\\hat V^\\pi_\\phi(s_{i,t+1})-\\hat V^\\pi_\\phi(s_{i,t}))$。</p><p>Âπ(sᵢ,ₜ,aᵢ,ₜ)。</p><p>（蒙特卡罗）策略梯度呢？</p><h3>选项1</h3><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=t}^T\\gamma^{t\\prime-t}r(s_{i,t\\prime},a_{i,t\\prime})\\right)$。</p><p>并不相同！</p><h3>选项2</h3><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i(\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t\\prime=1}^T\\gamma^{t\\prime-1}r(s_{i,t\\prime},a_{i,t\\prime}))$。</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=t}^T\\gamma^{t\\prime-1}r(s_{i,t\\prime},a_{i,t\\prime})\\right)$。</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\gamma^{t-1}\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})(\\sum_{t\\prime=t}^T\\gamma^{t\\prime-t}r(s_{i,t\\prime},a_{i,t\\prime}))$。</p><p>后面的步骤较不重要。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 44,
+    "title": "哪个版本才是正确的？",
+    "translated_title": "哪个版本才是正确的？",
+    "translation": [
+      "选项1",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=t}^T\\gamma^{t\\prime-t}r(s_{i,t\\prime},a_{i,t\\prime})\\right)$。",
+      "选项2",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=t}^T\\gamma^{t\\prime-1}r(s_{i,t\\prime},a_{i,t\\prime})\\right)$。",
+      "我们将使用这个版本。为什么？",
+      "后面的步骤不重要，因为机器人可能已经“死亡”。",
+      "γ改变了MDP：$p\\prime(s\\prime\\mid s,a)=\\gamma p(s\\prime\\mid s,a)$；“死亡”概率为$1-\\gamma$。",
+      "第2000次迭代。",
+      "进一步阅读：Philip Thomas，《自然行动者—评价者算法中的偏差》（Bias in natural actor-critic algorithms），ICML 2014。"
+    ],
+    "translation_html": "<h3>选项1</h3><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=t}^T\\gamma^{t\\prime-t}r(s_{i,t\\prime},a_{i,t\\prime})\\right)$。</p><h3>选项2</h3><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=t}^T\\gamma^{t\\prime-1}r(s_{i,t\\prime},a_{i,t\\prime})\\right)$。</p><p>我们将使用这个版本。为什么？</p><p>后面的步骤不重要，因为机器人可能已经“死亡”。</p><p>γ改变了MDP：$p\\prime(s\\prime\\mid s,a)=\\gamma p(s\\prime\\mid s,a)$；“死亡”概率为$1-\\gamma$。</p><p>第2000次迭代。</p><p class=\"source\">进一步阅读：Philip Thomas，《自然行动者—评价者算法中的偏差》（Bias in natural actor-critic algorithms），ICML 2014。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 45,
+    "title": "行动者—评价者算法（带折扣）",
+    "translated_title": "行动者—评价者算法（带折扣）",
+    "translation": [
+      "批次式行动者—评价者算法（带折扣）",
+      "用当前策略$\\pi_\\theta(a\\mid s)$采样$\\{s_i,a_i\\}$。",
+      "用采样得到的奖励和拟合$\\hat V^\\pi_\\phi(s)$。",
+      "评估$\\hat A^\\pi(s_i,a_i)=r(s_i,a_i)+\\gamma\\hat V^\\pi_\\phi(s_i\\prime)-\\hat V^\\pi_\\phi(s_i)$。",
+      "评估$\\nabla_\\theta J(\\theta)\\approx\\sum_i\\nabla_\\theta\\log\\pi_\\theta(a_i\\mid s_i)\\hat A^\\pi(s_i,a_i)$。",
+      "更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。",
+      "在线行动者—评价者算法（带折扣）",
+      "采样动作$a\\sim\\pi_\\theta(a\\mid s)$，得到$(s,a,s\\prime,r)$。",
+      "更新$\\hat V^\\pi_\\phi$，使用目标$y=r+ \\gamma\\hat V^\\pi_\\phi(s\\prime)$。",
+      "评估$\\hat A^\\pi(s,a)=r+ \\gamma\\hat V^\\pi_\\phi(s\\prime)-\\hat V^\\pi_\\phi(s)$。",
+      "评估$\\nabla_\\theta J(\\theta)\\approx\\nabla_\\theta\\log\\pi_\\theta(a\\mid s)\\hat A^\\pi(s,a)$。",
+      "更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。"
+    ],
+    "translation_html": "<h3>批次式行动者—评价者算法（带折扣）</h3><ol><li>用当前策略$\\pi_\\theta(a\\mid s)$采样$\\{s_i,a_i\\}$。</li><li>用采样得到的奖励和拟合$\\hat V^\\pi_\\phi(s)$。</li><li>评估$\\hat A^\\pi(s_i,a_i)=r(s_i,a_i)+\\gamma\\hat V^\\pi_\\phi(s_i\\prime)-\\hat V^\\pi_\\phi(s_i)$。</li><li>评估$\\nabla_\\theta J(\\theta)\\approx\\sum_i\\nabla_\\theta\\log\\pi_\\theta(a_i\\mid s_i)\\hat A^\\pi(s_i,a_i)$。</li><li>更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</li></ol><h3>在线行动者—评价者算法（带折扣）</h3><ol><li>采样动作$a\\sim\\pi_\\theta(a\\mid s)$，得到$(s,a,s\\prime,r)$。</li><li>更新$\\hat V^\\pi_\\phi$，使用目标$y=r+ \\gamma\\hat V^\\pi_\\phi(s\\prime)$。</li><li>评估$\\hat A^\\pi(s,a)=r+ \\gamma\\hat V^\\pi_\\phi(s\\prime)-\\hat V^\\pi_\\phi(s)$。</li><li>评估$\\nabla_\\theta J(\\theta)\\approx\\nabla_\\theta\\log\\pi_\\theta(a\\mid s)\\hat A^\\pi(s,a)$。</li><li>更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</li></ol>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 46,
+    "title": "行动者—评价者的设计选择",
+    "translated_title": "行动者—评价者的设计选择",
+    "translation": [],
+    "translation_html": "",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 47,
+    "title": "网络结构设计",
+    "translated_title": "网络结构设计",
+    "translation": [
+      "采样动作$a\\sim\\pi_\\theta(a\\mid s)$，得到$(s,a,s\\prime,r)$。",
+      "更新$\\hat V^\\pi_\\phi$，使用目标$y=r+ \\gamma\\hat V^\\pi_\\phi(s\\prime)$。",
+      "评估$\\hat A^\\pi(s,a)=r+ \\gamma\\hat V^\\pi_\\phi(s\\prime)-\\hat V^\\pi_\\phi(s)$。",
+      "评估$\\nabla_\\theta J(\\theta)\\approx\\nabla_\\theta\\log\\pi_\\theta(a\\mid s)\\hat A^\\pi(s,a)$。",
+      "更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。",
+      "两个网络的设计",
+      "s → πθ(a|s)；s → V̂πφ(s)。",
+      "优点：简单、稳定。",
+      "缺点：行动者与评价者不共享特征。",
+      "共享网络的设计",
+      "s → 共享网络 → πθ(a|s)、V̂πφ(s)。"
+    ],
+    "translation_html": "<ol><li>采样动作$a\\sim\\pi_\\theta(a\\mid s)$，得到$(s,a,s\\prime,r)$。</li><li>更新$\\hat V^\\pi_\\phi$，使用目标$y=r+ \\gamma\\hat V^\\pi_\\phi(s\\prime)$。</li><li>评估$\\hat A^\\pi(s,a)=r+ \\gamma\\hat V^\\pi_\\phi(s\\prime)-\\hat V^\\pi_\\phi(s)$。</li><li>评估$\\nabla_\\theta J(\\theta)\\approx\\nabla_\\theta\\log\\pi_\\theta(a\\mid s)\\hat A^\\pi(s,a)$。</li><li>更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</li></ol><h3>两个网络的设计</h3><p>s → πθ(a|s)；s → V̂πφ(s)。</p><ul><li>优点：简单、稳定。</li><li>缺点：行动者与评价者不共享特征。</li></ul><h3>共享网络的设计</h3><p>s → 共享网络 → πθ(a|s)、V̂πφ(s)。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 48,
+    "title": "实际中的在线行动者—评价者",
+    "translated_title": "实际中的在线行动者—评价者",
+    "translation": [
+      "采样动作$a\\sim\\pi_\\theta(a\\mid s)$，得到$(s,a,s\\prime,r)$。",
+      "更新$\\hat V^\\pi_\\phi$，使用目标$y=r+ \\gamma\\hat V^\\pi_\\phi(s\\prime)$。",
+      "评估$\\hat A^\\pi(s,a)=r+ \\gamma\\hat V^\\pi_\\phi(s\\prime)-\\hat V^\\pi_\\phi(s)$。",
+      "评估$\\nabla_\\theta J(\\theta)\\approx\\nabla_\\theta\\log\\pi_\\theta(a\\mid s)\\hat A^\\pi(s,a)$。",
+      "更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。",
+      "使用批次效果最好（例如并行工作进程）。",
+      "同步并行行动者—评价者",
+      "工作进程1、2、3；获取θ，更新θ；时间。",
+      "异步并行行动者—评价者",
+      "工作进程1、2、3；获取θ，更新θ；时间。"
+    ],
+    "translation_html": "<ol><li>采样动作$a\\sim\\pi_\\theta(a\\mid s)$，得到$(s,a,s\\prime,r)$。</li><li>更新$\\hat V^\\pi_\\phi$，使用目标$y=r+ \\gamma\\hat V^\\pi_\\phi(s\\prime)$。</li><li>评估$\\hat A^\\pi(s,a)=r+ \\gamma\\hat V^\\pi_\\phi(s\\prime)-\\hat V^\\pi_\\phi(s)$。</li><li>评估$\\nabla_\\theta J(\\theta)\\approx\\nabla_\\theta\\log\\pi_\\theta(a\\mid s)\\hat A^\\pi(s,a)$。</li><li>更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</li></ol><p>使用批次效果最好（例如并行工作进程）。</p><h3>同步并行行动者—评价者</h3><p>工作进程1、2、3；获取θ，更新θ；时间。</p><h3>异步并行行动者—评价者</h3><p>工作进程1、2、3；获取θ，更新θ；时间。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 49,
+    "title": "能完全去掉同策略假设吗？",
+    "translated_title": "能完全去掉同策略假设吗？",
+    "translation": [
+      "采样动作$a\\sim\\pi_\\theta(a\\mid s)$，得到$(s,a,s\\prime,r)$。",
+      "更新$\\hat V^\\pi_\\phi$，使用目标$y=r+ \\gamma\\hat V^\\pi_\\phi(s\\prime)$。",
+      "评估$\\hat A^\\pi(s,a)=r+ \\gamma\\hat V^\\pi_\\phi(s\\prime)-\\hat V^\\pi_\\phi(s)$。",
+      "评估$\\nabla_\\theta J(\\theta)\\approx\\nabla_\\theta\\log\\pi_\\theta(a\\mid s)\\hat A^\\pi(s,a)$。",
+      "更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。",
+      "如果把旧的转移组成一个批次呢？",
+      "异策略",
+      "获取样本。储存到回放缓冲区。使用前面步骤产生的样本。"
+    ],
+    "translation_html": "<ol><li>采样动作$a\\sim\\pi_\\theta(a\\mid s)$，得到$(s,a,s\\prime,r)$。</li><li>更新$\\hat V^\\pi_\\phi$，使用目标$y=r+ \\gamma\\hat V^\\pi_\\phi(s\\prime)$。</li><li>评估$\\hat A^\\pi(s,a)=r+ \\gamma\\hat V^\\pi_\\phi(s\\prime)-\\hat V^\\pi_\\phi(s)$。</li><li>评估$\\nabla_\\theta J(\\theta)\\approx\\nabla_\\theta\\log\\pi_\\theta(a\\mid s)\\hat A^\\pi(s,a)$。</li><li>更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</li></ol><p>如果把旧的转移组成一个批次呢？</p><h3>异策略</h3><p>获取样本。储存到回放缓冲区。使用前面步骤产生的样本。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 50,
+    "title": "来看看这样会是什么样",
+    "translated_title": "来看看这样会是什么样",
+    "translation": [
+      "采样动作$a\\sim\\pi_\\theta(a\\mid s)$，得到$(s,a,s\\prime,r)$，储存在回放缓冲区。",
+      "从回放缓冲区采样一批$(s_i,a_i,s_i\\prime,r_i)$。",
+      "更新$\\hat V^\\pi_\\phi$，目标$y_i=r_i+\\gamma\\hat V^\\pi_\\phi(s_i\\prime)$。",
+      "评估$\\hat A^\\pi(s_i,a_i)=r_i+\\gamma\\hat V^\\pi_\\phi(s_i\\prime)-\\hat V^\\pi_\\phi(s_i)$。",
+      "评估$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\nabla_\\theta\\log\\pi_\\theta(a_i\\mid s_i)\\hat A^\\pi(s_i,a_i)$。",
+      "更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。",
+      "回放缓冲区。",
+      "$L(\\phi)=\\frac1N\\sum_i(\\hat V^\\pi_\\phi(s_i)-y_i)^2$；$y_i=r_i+\\gamma\\hat V^\\pi_\\phi(s_i\\prime)$。",
+      "错了！",
+      "策略不是产生这些动作的策略！"
+    ],
+    "translation_html": "<ol><li>采样动作$a\\sim\\pi_\\theta(a\\mid s)$，得到$(s,a,s\\prime,r)$，储存在回放缓冲区。</li><li>从回放缓冲区采样一批$(s_i,a_i,s_i\\prime,r_i)$。</li><li>更新$\\hat V^\\pi_\\phi$，目标$y_i=r_i+\\gamma\\hat V^\\pi_\\phi(s_i\\prime)$。</li><li>评估$\\hat A^\\pi(s_i,a_i)=r_i+\\gamma\\hat V^\\pi_\\phi(s_i\\prime)-\\hat V^\\pi_\\phi(s_i)$。</li><li>评估$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\nabla_\\theta\\log\\pi_\\theta(a_i\\mid s_i)\\hat A^\\pi(s_i,a_i)$。</li><li>更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</li></ol><p>回放缓冲区。</p><p>$L(\\phi)=\\frac1N\\sum_i(\\hat V^\\pi_\\phi(s_i)-y_i)^2$；$y_i=r_i+\\gamma\\hat V^\\pi_\\phi(s_i\\prime)$。</p><p>错了！</p><p>策略不是产生这些动作的策略！</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 51,
+    "title": "修正价值函数",
+    "translated_title": "修正价值函数",
+    "translation": [
+      "采样动作$a\\sim\\pi_\\theta(a\\mid s)$，得到$(s,a,s\\prime,r)$，储存在回放缓冲区。",
+      "从回放缓冲区采样一批$(s_i,a_i,s_i\\prime,r_i)$。",
+      "更新$\\hat V^\\pi_\\phi$，目标$y_i=r_i+\\gamma\\hat V^\\pi_\\phi(s_i\\prime)$。",
+      "评估$\\hat A^\\pi(s_i,a_i)=r_i+\\gamma\\hat V^\\pi_\\phi(s_i\\prime)-\\hat V^\\pi_\\phi(s_i)$。",
+      "评估$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\nabla_\\theta\\log\\pi_\\theta(a_i\\mid s_i)\\hat A^\\pi(s_i,a_i)$。",
+      "更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。",
+      "$V^\\pi(s_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t]=\\mathbb E_{a_t\\sim\\pi(a_t\\mid s_t)}[Q^\\pi(s_t,a_t)]$。",
+      "总奖励，从状态s开始。",
+      "错了！",
+      "$Q^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t,a_t]$。",
+      "采取动作a之后遵循策略π的总奖励。",
+      "$V^\\pi(s)=\\mathbb E_{a\\sim\\pi(a\\mid s)}[Q^\\pi(s,a)]$。",
+      "更新Q函数。",
+      "$y_i=r_i+\\gamma V^\\pi(s_i\\prime)=r_i+\\gamma Q^\\pi(s_i\\prime,a_i\\prime)$，$a_i\\prime\\sim\\pi_\\theta(a_i\\prime\\mid s_i\\prime)$。",
+      "从当前策略采样动作，不用缓冲区中的动作。",
+      "$L(\\phi)=\\frac1N\\sum_i(\\hat Q^\\pi_\\phi(s_i,a_i)-y_i)^2$；$y_i=r_i+\\gamma\\hat Q^\\pi_\\phi(s_i\\prime,a_i\\prime)$。",
+      "不是πθ会采取的动作！不是正确的目标值。这来自哪里？不来自回放缓冲区R！"
+    ],
+    "translation_html": "<ol><li>采样动作$a\\sim\\pi_\\theta(a\\mid s)$，得到$(s,a,s\\prime,r)$，储存在回放缓冲区。</li><li>从回放缓冲区采样一批$(s_i,a_i,s_i\\prime,r_i)$。</li><li>更新$\\hat V^\\pi_\\phi$，目标$y_i=r_i+\\gamma\\hat V^\\pi_\\phi(s_i\\prime)$。</li><li>评估$\\hat A^\\pi(s_i,a_i)=r_i+\\gamma\\hat V^\\pi_\\phi(s_i\\prime)-\\hat V^\\pi_\\phi(s_i)$。</li><li>评估$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\nabla_\\theta\\log\\pi_\\theta(a_i\\mid s_i)\\hat A^\\pi(s_i,a_i)$。</li><li>更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</li></ol><p>$V^\\pi(s_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t]=\\mathbb E_{a_t\\sim\\pi(a_t\\mid s_t)}[Q^\\pi(s_t,a_t)]$。</p><p>总奖励，从状态s开始。</p><p>错了！</p><p>$Q^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t,a_t]$。</p><p>采取动作a之后遵循策略π的总奖励。</p><p>$V^\\pi(s)=\\mathbb E_{a\\sim\\pi(a\\mid s)}[Q^\\pi(s,a)]$。</p><p>更新Q函数。</p><p>$y_i=r_i+\\gamma V^\\pi(s_i\\prime)=r_i+\\gamma Q^\\pi(s_i\\prime,a_i\\prime)$，$a_i\\prime\\sim\\pi_\\theta(a_i\\prime\\mid s_i\\prime)$。</p><p>从当前策略采样动作，不用缓冲区中的动作。</p><p>$L(\\phi)=\\frac1N\\sum_i(\\hat Q^\\pi_\\phi(s_i,a_i)-y_i)^2$；$y_i=r_i+\\gamma\\hat Q^\\pi_\\phi(s_i\\prime,a_i\\prime)$。</p><p>不是πθ会采取的动作！不是正确的目标值。这来自哪里？不来自回放缓冲区R！</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 52,
+    "title": "修正策略更新",
+    "translated_title": "修正策略更新",
+    "translation": [
+      "采样动作$a\\sim\\pi_\\theta(a\\mid s)$，得到$(s,a,s\\prime,r)$，储存在回放缓冲区。",
+      "从回放缓冲区采样一批$(s_i,a_i,s_i\\prime,r_i)$。",
+      "更新$\\hat Q^\\pi_\\phi$，目标$y_i=r_i+\\gamma\\hat Q^\\pi_\\phi(s_i\\prime,a_i\\prime)$，其中$a_i\\prime\\sim\\pi_\\theta(a_i\\prime\\mid s_i\\prime)$。",
+      "评估$\\hat A^\\pi(s_i,a_i)=\\hat Q^\\pi_\\phi(s_i,a_i)-\\hat V^\\pi_\\phi(s_i)$。",
+      "评估$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\nabla_\\theta\\log\\pi_\\theta(a_i\\mid s_i)\\hat A^\\pi(s_i,a_i)$。",
+      "更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。",
+      "不是当前策略产生的动作。",
+      "现在对aᵢ使用同样的技巧，而不是对aᵢ′！",
+      "采样$a_i\\prime\\prime\\sim\\pi_\\theta(a_i\\prime\\prime\\mid s_i)$。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\nabla_\\theta\\log\\pi_\\theta(a_i\\prime\\prime\\mid s_i)\\hat A^\\pi(s_i,a_i\\prime\\prime)$。",
+      "从当前策略采样，不使用缓冲区中的动作。",
+      "方差更高，但更方便。为什么这里较高的方差可以接受？",
+      "实践中：$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\nabla_\\theta\\log\\pi_\\theta(a_i\\prime\\prime\\mid s_i)\\hat Q^\\pi_\\phi(s_i,a_i\\prime\\prime)$。"
+    ],
+    "translation_html": "<ol><li>采样动作$a\\sim\\pi_\\theta(a\\mid s)$，得到$(s,a,s\\prime,r)$，储存在回放缓冲区。</li><li>从回放缓冲区采样一批$(s_i,a_i,s_i\\prime,r_i)$。</li><li>更新$\\hat Q^\\pi_\\phi$，目标$y_i=r_i+\\gamma\\hat Q^\\pi_\\phi(s_i\\prime,a_i\\prime)$，其中$a_i\\prime\\sim\\pi_\\theta(a_i\\prime\\mid s_i\\prime)$。</li><li>评估$\\hat A^\\pi(s_i,a_i)=\\hat Q^\\pi_\\phi(s_i,a_i)-\\hat V^\\pi_\\phi(s_i)$。</li><li>评估$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\nabla_\\theta\\log\\pi_\\theta(a_i\\mid s_i)\\hat A^\\pi(s_i,a_i)$。</li><li>更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</li></ol><p>不是当前策略产生的动作。</p><p>现在对aᵢ使用同样的技巧，而不是对aᵢ′！</p><p>采样$a_i\\prime\\prime\\sim\\pi_\\theta(a_i\\prime\\prime\\mid s_i)$。</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\nabla_\\theta\\log\\pi_\\theta(a_i\\prime\\prime\\mid s_i)\\hat A^\\pi(s_i,a_i\\prime\\prime)$。</p><p>从当前策略采样，不使用缓冲区中的动作。</p><p>方差更高，但更方便。为什么这里较高的方差可以接受？</p><p>实践中：$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\nabla_\\theta\\log\\pi_\\theta(a_i\\prime\\prime\\mid s_i)\\hat Q^\\pi_\\phi(s_i,a_i\\prime\\prime)$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 53,
+    "title": "还剩下什么？",
+    "translated_title": "还剩下什么？",
+    "translation": [
+      "采样动作$a\\sim\\pi_\\theta(a\\mid s)$，得到$(s,a,s\\prime,r)$，储存在回放缓冲区。",
+      "从回放缓冲区采样一批$(s_i,a_i,s_i\\prime,r_i)$。",
+      "更新$\\hat Q^\\pi_\\phi$，目标$y_i=r_i+\\gamma\\hat Q^\\pi_\\phi(s_i\\prime,a_i\\prime)$，其中$a_i\\prime\\sim\\pi_\\theta(a_i\\prime\\mid s_i\\prime)$。",
+      "采样$a_i\\prime\\prime\\sim\\pi_\\theta(a_i\\prime\\prime\\mid s_i)$。评估$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\nabla_\\theta\\log\\pi_\\theta(a_i\\prime\\prime\\mid s_i)\\hat Q^\\pi_\\phi(s_i,a_i\\prime\\prime)$。",
+      "更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。",
+      "还有任何问题吗？",
+      "sᵢ并不来自pθ(s)。",
+      "对此我们无能为力，接受它吧。",
+      "直觉：我们想得到pθ(s)上的最优策略，却得到了更广泛分布上的最优策略。"
+    ],
+    "translation_html": "<ol><li>采样动作$a\\sim\\pi_\\theta(a\\mid s)$，得到$(s,a,s\\prime,r)$，储存在回放缓冲区。</li><li>从回放缓冲区采样一批$(s_i,a_i,s_i\\prime,r_i)$。</li><li>更新$\\hat Q^\\pi_\\phi$，目标$y_i=r_i+\\gamma\\hat Q^\\pi_\\phi(s_i\\prime,a_i\\prime)$，其中$a_i\\prime\\sim\\pi_\\theta(a_i\\prime\\mid s_i\\prime)$。</li><li>采样$a_i\\prime\\prime\\sim\\pi_\\theta(a_i\\prime\\prime\\mid s_i)$。评估$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\nabla_\\theta\\log\\pi_\\theta(a_i\\prime\\prime\\mid s_i)\\hat Q^\\pi_\\phi(s_i,a_i\\prime\\prime)$。</li><li>更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</li></ol><p>还有任何问题吗？</p><p>sᵢ并不来自pθ(s)。</p><p>对此我们无能为力，接受它吧。</p><p>直觉：我们想得到pθ(s)上的最优策略，却得到了更广泛分布上的最优策略。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 54,
+    "title": "一些实现细节",
+    "translated_title": "一些实现细节",
+    "translation": [
+      "采样动作$a\\sim\\pi_\\theta(a\\mid s)$，得到$(s,a,s\\prime,r)$，储存在回放缓冲区。",
+      "从回放缓冲区采样一批$(s_i,a_i,s_i\\prime,r_i)$。",
+      "更新$\\hat Q^\\pi_\\phi$，目标$y_i=r_i+\\gamma\\hat Q^\\pi_\\phi(s_i\\prime,a_i\\prime)$，其中$a_i\\prime\\sim\\pi_\\theta(a_i\\prime\\mid s_i\\prime)$。",
+      "采样$a_i\\prime\\prime\\sim\\pi_\\theta(a_i\\prime\\prime\\mid s_i)$。评估$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\nabla_\\theta\\log\\pi_\\theta(a_i\\prime\\prime\\mid s_i)\\hat Q^\\pi_\\phi(s_i,a_i\\prime\\prime)$。",
+      "更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。",
+      "拟合Q函数还有很多更精巧的方式（接下来两讲会详细讨论）。",
+      "$\\hat V^\\pi_\\phi(s_i)=\\mathbb E_{a\\sim\\pi_\\theta(a\\mid s_i)}[\\hat Q^\\pi_\\phi(s_i,a)]$。",
+      "也可以使用重参数化技巧，更好地估计这个积分。",
+      "实用算法示例",
+      "Tuomas Haarnoja、Aurick Zhou、Pieter Abbeel、Sergey Levine。《软行动者—评价者：使用随机行动者的异策略最大熵深度强化学习》（Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor），2018。",
+      "稍后还会学习使用确定性策略来实现这一点的算法！"
+    ],
+    "translation_html": "<ol><li>采样动作$a\\sim\\pi_\\theta(a\\mid s)$，得到$(s,a,s\\prime,r)$，储存在回放缓冲区。</li><li>从回放缓冲区采样一批$(s_i,a_i,s_i\\prime,r_i)$。</li><li>更新$\\hat Q^\\pi_\\phi$，目标$y_i=r_i+\\gamma\\hat Q^\\pi_\\phi(s_i\\prime,a_i\\prime)$，其中$a_i\\prime\\sim\\pi_\\theta(a_i\\prime\\mid s_i\\prime)$。</li><li>采样$a_i\\prime\\prime\\sim\\pi_\\theta(a_i\\prime\\prime\\mid s_i)$。评估$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\nabla_\\theta\\log\\pi_\\theta(a_i\\prime\\prime\\mid s_i)\\hat Q^\\pi_\\phi(s_i,a_i\\prime\\prime)$。</li><li>更新$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</li></ol><p>拟合Q函数还有很多更精巧的方式（接下来两讲会详细讨论）。</p><p>$\\hat V^\\pi_\\phi(s_i)=\\mathbb E_{a\\sim\\pi_\\theta(a\\mid s_i)}[\\hat Q^\\pi_\\phi(s_i,a)]$。</p><p>也可以使用重参数化技巧，更好地估计这个积分。</p><h3>实用算法示例</h3><p class=\"source\">Tuomas Haarnoja、Aurick Zhou、Pieter Abbeel、Sergey Levine。《软行动者—评价者：使用随机行动者的异策略最大熵深度强化学习》（Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor），2018。</p><p>稍后还会学习使用确定性策略来实现这一点的算法！</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 55,
+    "title": "将评价者用作基线",
+    "translated_title": "将评价者用作基线",
+    "translation": [],
+    "translation_html": "",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 56,
+    "title": "将评价者用作依赖状态的基线",
+    "translated_title": "将评价者用作依赖状态的基线",
+    "translation": [
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})(r(s_{i,t},a_{i,t})+\\gamma\\hat V^\\pi_\\phi(s_{i,t+1})-\\hat V^\\pi_\\phi(s_{i,t}))$。",
+      "优点：方差更低（得益于评价者）。",
+      "缺点：有偏（如果评价者并不完美）。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=t}^T\\gamma^{t\\prime-t}r(s_{i,t\\prime},a_{i,t\\prime})-b\\right)$。",
+      "优点：没有偏差。",
+      "缺点：方差更高（因为是单样本估计）。",
+      "能使用V，同时仍然无偏吗？",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=t}^T\\gamma^{t\\prime-t}r(s_{i,t\\prime},a_{i,t\\prime})-\\hat V^\\pi_\\phi(s_{i,t})\\right)$。",
+      "没有偏差。",
+      "方差更低（基线更接近奖励）。",
+      "$Q^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^T\\mathbb E_{\\pi_\\theta}[r(s_{t\\prime},a_{t\\prime})\\mid s_t,a_t]$；$V^\\pi(s_t)=\\mathbb E_{a_t\\sim\\pi_\\theta(a_t\\mid s_t)}[Q^\\pi(s_t,a_t)]$；$A^\\pi(s_t,a_t)=Q^\\pi(s_t,a_t)-V^\\pi(s_t)$。"
+    ],
+    "translation_html": "<p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})(r(s_{i,t},a_{i,t})+\\gamma\\hat V^\\pi_\\phi(s_{i,t+1})-\\hat V^\\pi_\\phi(s_{i,t}))$。</p><ul><li>优点：方差更低（得益于评价者）。</li><li>缺点：有偏（如果评价者并不完美）。</li></ul><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=t}^T\\gamma^{t\\prime-t}r(s_{i,t\\prime},a_{i,t\\prime})-b\\right)$。</p><ul><li>优点：没有偏差。</li><li>缺点：方差更高（因为是单样本估计）。</li></ul><p>能使用V，同时仍然无偏吗？</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=t}^T\\gamma^{t\\prime-t}r(s_{i,t\\prime},a_{i,t\\prime})-\\hat V^\\pi_\\phi(s_{i,t})\\right)$。</p><ul><li>没有偏差。</li><li>方差更低（基线更接近奖励）。</li></ul><p>$Q^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^T\\mathbb E_{\\pi_\\theta}[r(s_{t\\prime},a_{t\\prime})\\mid s_t,a_t]$；$V^\\pi(s_t)=\\mathbb E_{a_t\\sim\\pi_\\theta(a_t\\mid s_t)}[Q^\\pi(s_t,a_t)]$；$A^\\pi(s_t,a_t)=Q^\\pi(s_t,a_t)-V^\\pi(s_t)$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 57,
+    "title": "控制变量：依赖动作的基线",
+    "translated_title": "控制变量：依赖动作的基线",
+    "translation": [
+      "$Q^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t,a_t]$。",
+      "$V^\\pi(s_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t]=\\mathbb E_{a_t\\sim\\pi(a_t\\mid s_t)}[Q^\\pi(s_t,a_t)]$。",
+      "$A^\\pi(s_t,a_t)=Q^\\pi(s_t,a_t)-V^\\pi(s_t)$。",
+      "$\\hat A^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^\\infty\\gamma^{t\\prime-t}r(s_{t\\prime},a_{t\\prime})-\\hat V^\\pi_\\phi(s_t)$。",
+      "优点：没有偏差。",
+      "缺点：方差更高（因为是单样本估计）。",
+      "$\\hat A^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^\\infty\\gamma^{t\\prime-t}r(s_{t\\prime},a_{t\\prime})-\\hat Q^\\pi_\\phi(s_t,a_t)$。",
+      "优点：如果评价者正确，期望趋于零！",
+      "缺点：并不正确。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})(\\hat Q_{i,t}-\\hat Q^\\pi_\\phi(s_{i,t},a_{i,t}))+\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\mathbb E_{a\\sim\\pi_\\theta(a\\mid s_{i,t})}[\\hat Q^\\pi_\\phi(s_{i,t},a)]$。",
+      "使用评价者而不引入偏差（仍然无偏），前提是能够计算第二项。",
+      "Gu等，2016（Q-Prop）。"
+    ],
+    "translation_html": "<p>$Q^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t,a_t]$。</p><p>$V^\\pi(s_t)=\\sum_{t\\prime=t}^T\\mathbb E_\\pi[r(s_{t\\prime},a_{t\\prime})\\mid s_t]=\\mathbb E_{a_t\\sim\\pi(a_t\\mid s_t)}[Q^\\pi(s_t,a_t)]$。</p><p>$A^\\pi(s_t,a_t)=Q^\\pi(s_t,a_t)-V^\\pi(s_t)$。</p><p>$\\hat A^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^\\infty\\gamma^{t\\prime-t}r(s_{t\\prime},a_{t\\prime})-\\hat V^\\pi_\\phi(s_t)$。</p><ul><li>优点：没有偏差。</li><li>缺点：方差更高（因为是单样本估计）。</li></ul><p>$\\hat A^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^\\infty\\gamma^{t\\prime-t}r(s_{t\\prime},a_{t\\prime})-\\hat Q^\\pi_\\phi(s_t,a_t)$。</p><ul><li>优点：如果评价者正确，期望趋于零！</li><li>缺点：并不正确。</li></ul><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})(\\hat Q_{i,t}-\\hat Q^\\pi_\\phi(s_{i,t},a_{i,t}))+\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\mathbb E_{a\\sim\\pi_\\theta(a\\mid s_{i,t})}[\\hat Q^\\pi_\\phi(s_{i,t},a)]$。</p><p>使用评价者而不引入偏差（仍然无偏），前提是能够计算第二项。</p><p class=\"source\">Gu等，2016（Q-Prop）。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 58,
+    "title": "资格迹与n步回报",
+    "translated_title": "资格迹与n步回报",
+    "translation": [
+      "$\\hat A_C^\\pi(s_t,a_t)=r(s_t,a_t)+\\gamma\\hat V^\\pi_\\phi(s_{t+1})-\\hat V^\\pi_\\phi(s_t)$。",
+      "优点：方差较低。",
+      "缺点：价值函数错误时偏差较高（它总会有误差）。",
+      "$\\hat A_{MC}^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^\\infty\\gamma^{t\\prime-t}r(s_{t\\prime},a_{t\\prime})-\\hat V^\\pi_\\phi(s_t)$。",
+      "优点：没有偏差。",
+      "缺点：方差更高（因为是单样本估计）。",
+      "能将二者结合，以控制偏差与方差的权衡吗？",
+      "rₜ；t。",
+      "$\\hat A^{\\pi,(n)}(s_t,a_t)=\\sum_{t\\prime=t}^{t+n}\\gamma^{t\\prime-t}r(s_{t\\prime},a_{t\\prime})+\\gamma^n\\hat V^\\pi_\\phi(s_{t+n})-\\hat V^\\pi_\\phi(s_t)$。",
+      "选择n>1往往效果更好！",
+      "较大的方差。方差变得太大之前在这里截断！较小的方差。"
+    ],
+    "translation_html": "<p>$\\hat A_C^\\pi(s_t,a_t)=r(s_t,a_t)+\\gamma\\hat V^\\pi_\\phi(s_{t+1})-\\hat V^\\pi_\\phi(s_t)$。</p><ul><li>优点：方差较低。</li><li>缺点：价值函数错误时偏差较高（它总会有误差）。</li></ul><p>$\\hat A_{MC}^\\pi(s_t,a_t)=\\sum_{t\\prime=t}^\\infty\\gamma^{t\\prime-t}r(s_{t\\prime},a_{t\\prime})-\\hat V^\\pi_\\phi(s_t)$。</p><ul><li>优点：没有偏差。</li><li>缺点：方差更高（因为是单样本估计）。</li></ul><p>能将二者结合，以控制偏差与方差的权衡吗？</p><p>rₜ；t。</p><p>$\\hat A^{\\pi,(n)}(s_t,a_t)=\\sum_{t\\prime=t}^{t+n}\\gamma^{t\\prime-t}r(s_{t\\prime},a_{t\\prime})+\\gamma^n\\hat V^\\pi_\\phi(s_{t+n})-\\hat V^\\pi_\\phi(s_t)$。</p><p>选择n>1往往效果更好！</p><p>较大的方差。方差变得太大之前在这里截断！较小的方差。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 59,
+    "title": "广义优势估计",
+    "translated_title": "广义优势估计",
+    "translation": [
+      "$\\hat A^{\\pi,(n)}(s_t,a_t)=\\sum_{t\\prime=t}^{t+n}\\gamma^{t\\prime-t}r(s_{t\\prime},a_{t\\prime})+\\gamma^n\\hat V^\\pi_\\phi(s_{t+n})-\\hat V^\\pi_\\phi(s_t)$。",
+      "一定要只选择一个n吗？",
+      "同时在每个位置截断！",
+      "$\\hat A^\\pi_{GAE}(s_t,a_t)=\\sum_{n=1}^\\infty w_n\\hat A^{\\pi,(n)}(s_t,a_t)$。",
+      "n步回报的加权组合。",
+      "如何加权？更偏好较早截断（方差更小）。指数衰减。",
+      "$w_n\\propto\\lambda^{n-1}$。",
+      "$\\hat A^\\pi_{GAE}(s_t,a_t)=r(s_t,a_t)+\\gamma((1-\\lambda)\\hat V^\\pi_\\phi(s_{t+1})+\\lambda(r(s_{t+1},a_{t+1})+\\gamma((1-\\lambda)\\hat V^\\pi_\\phi(s_{t+2})+\\lambda(r(s_{t+2},a_{t+2})+\\cdots))))$。",
+      "$\\hat A^\\pi_{GAE}(s_t,a_t)=\\sum_{t\\prime=t}^\\infty(\\gamma\\lambda)^{t\\prime-t}\\delta_{t\\prime}$；$\\delta_t=r(s_t,a_t)+\\gamma\\hat V^\\pi_\\phi(s_{t+1})-\\hat V^\\pi_\\phi(s_t)$。",
+      "效果与折扣相似！还记得这个吗？",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=t}^T\\gamma^{t\\prime-t}r(s_{i,t\\prime},a_{i,t\\prime})\\right)$。",
+      "折扣＝降低方差！",
+      "Schulman、Moritz、Levine、Jordan、Abbeel，2016。"
+    ],
+    "translation_html": "<p>$\\hat A^{\\pi,(n)}(s_t,a_t)=\\sum_{t\\prime=t}^{t+n}\\gamma^{t\\prime-t}r(s_{t\\prime},a_{t\\prime})+\\gamma^n\\hat V^\\pi_\\phi(s_{t+n})-\\hat V^\\pi_\\phi(s_t)$。</p><p>一定要只选择一个n吗？</p><p>同时在每个位置截断！</p><p>$\\hat A^\\pi_{GAE}(s_t,a_t)=\\sum_{n=1}^\\infty w_n\\hat A^{\\pi,(n)}(s_t,a_t)$。</p><p>n步回报的加权组合。</p><p>如何加权？更偏好较早截断（方差更小）。指数衰减。</p><p>$w_n\\propto\\lambda^{n-1}$。</p><p>$\\hat A^\\pi_{GAE}(s_t,a_t)=r(s_t,a_t)+\\gamma((1-\\lambda)\\hat V^\\pi_\\phi(s_{t+1})+\\lambda(r(s_{t+1},a_{t+1})+\\gamma((1-\\lambda)\\hat V^\\pi_\\phi(s_{t+2})+\\lambda(r(s_{t+2},a_{t+2})+\\cdots))))$。</p><p>$\\hat A^\\pi_{GAE}(s_t,a_t)=\\sum_{t\\prime=t}^\\infty(\\gamma\\lambda)^{t\\prime-t}\\delta_{t\\prime}$；$\\delta_t=r(s_t,a_t)+\\gamma\\hat V^\\pi_\\phi(s_{t+1})-\\hat V^\\pi_\\phi(s_t)$。</p><p>效果与折扣相似！还记得这个吗？</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_i\\sum_t\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\left(\\sum_{t\\prime=t}^T\\gamma^{t\\prime-t}r(s_{i,t\\prime},a_{i,t\\prime})\\right)$。</p><p>折扣＝降低方差！</p><p class=\"source\">Schulman、Moritz、Levine、Jordan、Abbeel，2016。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 60,
+    "title": "回顾、示例与补充阅读",
+    "translated_title": "回顾、示例与补充阅读",
+    "translation": [],
+    "translation_html": "",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 61,
+    "title": "回顾",
+    "translated_title": "回顾",
+    "translation": [
+      "行动者—评价者算法：",
+      "行动者：策略。",
+      "评价者：价值函数。",
+      "降低策略梯度的方差。",
+      "策略评估：",
+      "为策略拟合价值函数。",
+      "折扣因子：",
+      "机器人先生，抓住当下。",
+      "……也是一种降低方差的技巧。",
+      "行动者—评价者算法的设计：",
+      "一个网络（带两个输出头），或者两个网络。",
+      "批次模式，或者在线模式（加并行）。",
+      "依赖状态的基线：",
+      "使用评价者的另一种方式。",
+      "可以结合：n步回报或GAE。",
+      "生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。"
+    ],
+    "translation_html": "<ul><li>行动者—评价者算法：<ul><li>行动者：策略。</li><li>评价者：价值函数。</li><li>降低策略梯度的方差。</li></ul></li><li>策略评估：<ul><li>为策略拟合价值函数。</li></ul></li><li>折扣因子：<ul><li>机器人先生，抓住当下。</li><li>……也是一种降低方差的技巧。</li></ul></li><li>行动者—评价者算法的设计：<ul><li>一个网络（带两个输出头），或者两个网络。</li><li>批次模式，或者在线模式（加并行）。</li></ul></li><li>依赖状态的基线：<ul><li>使用评价者的另一种方式。</li><li>可以结合：n步回报或GAE。</li></ul></li></ul><p>生成样本（即执行策略） → 拟合模型以估计回报 → 改进策略。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 62,
+    "title": "行动者—评价者示例",
+    "translated_title": "行动者—评价者示例",
+    "translation": [
+      "使用广义优势估计进行高维连续控制（Schulman、Moritz、L.、Jordan、Abbeel，2016）。",
+      "批次式行动者—评价者。",
+      "融合蒙特卡罗估计器与函数逼近估计器（GAE）。",
+      "第0次迭代。"
+    ],
+    "translation_html": "<ul><li>使用广义优势估计进行高维连续控制（Schulman、Moritz、L.、Jordan、Abbeel，2016）。</li><li>批次式行动者—评价者。</li><li>融合蒙特卡罗估计器与函数逼近估计器（GAE）。</li></ul><p>第0次迭代。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 63,
+    "title": "行动者—评价者示例",
+    "translated_title": "行动者—评价者示例",
+    "translation": [
+      "深度强化学习的异步方法（Mnih、Badia、Mirza、Graves、Lillicrap、Harley、Silver、Kavukcuoglu，2016）。",
+      "在线行动者—评价者，并行化批次。",
+      "N步回报，N＝4。",
+      "行动者与评价者使用一个网络。"
+    ],
+    "translation_html": "<ul><li>深度强化学习的异步方法（Mnih、Badia、Mirza、Graves、Lillicrap、Harley、Silver、Kavukcuoglu，2016）。</li><li>在线行动者—评价者，并行化批次。</li><li>N步回报，N＝4。</li><li>行动者与评价者使用一个网络。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 64,
+    "title": "行动者—评价者推荐阅读",
+    "translated_title": "行动者—评价者推荐阅读",
+    "translation": [
+      "经典论文。",
+      "Sutton、McAllester、Singh、Mansour（1999）。《采用函数逼近的强化学习策略梯度方法》（Policy gradient methods for reinforcement learning with function approximation）：使用价值函数逼近的行动者—评价者算法。",
+      "深度强化学习中的行动者—评价者论文。",
+      "Mnih、Badia、Mirza、Graves、Lillicrap、Harley、Silver、Kavukcuoglu（2016）。《深度强化学习的异步方法》（Asynchronous methods for deep reinforcement learning）：A3C——并行在线行动者—评价者。",
+      "Schulman、Moritz、L.、Jordan、Abbeel（2016）。《使用广义优势估计的高维连续控制》（High-dimensional continuous control using generalized advantage estimation）：融合蒙特卡罗回报与函数逼近回报的批次式行动者—评价者。",
+      "Gu、Lillicrap、Ghahramani、Turner、L.（2017）。《Q-Prop：借助异策略评价者的高样本效率策略梯度》（Q-Prop: sample-efficient policy-gradient with an off-policy critic）：使用Q函数控制变量的策略梯度。"
+    ],
+    "translation_html": "<ul><li>经典论文。<ul><li>Sutton、McAllester、Singh、Mansour（1999）。《采用函数逼近的强化学习策略梯度方法》（Policy gradient methods for reinforcement learning with function approximation）：使用价值函数逼近的行动者—评价者算法。</li></ul></li><li>深度强化学习中的行动者—评价者论文。<ul><li>Mnih、Badia、Mirza、Graves、Lillicrap、Harley、Silver、Kavukcuoglu（2016）。《深度强化学习的异步方法》（Asynchronous methods for deep reinforcement learning）：A3C——并行在线行动者—评价者。</li><li>Schulman、Moritz、L.、Jordan、Abbeel（2016）。《使用广义优势估计的高维连续控制》（High-dimensional continuous control using generalized advantage estimation）：融合蒙特卡罗回报与函数逼近回报的批次式行动者—评价者。</li><li>Gu、Lillicrap、Ghahramani、Turner、L.（2017）。《Q-Prop：借助异策略评价者的高样本效率策略梯度》（Q-Prop: sample-efficient policy-gradient with an off-policy critic）：使用Q函数控制变量的策略梯度。</li></ul></li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 65,
+    "title": "近端策略优化",
+    "translated_title": "近端策略优化",
+    "translation": [
+      "《近端策略优化算法》（Proximal Policy Optimization Algorithms），John Schulman等，OpenAI，2017。"
+    ],
+    "translation_html": "<p class=\"source\">《近端策略优化算法》（Proximal Policy Optimization Algorithms），John Schulman等，OpenAI，2017。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 66,
+    "title": "策略梯度是同策略方法",
+    "translated_title": "策略梯度是同策略方法",
+    "translation": [
+      "$\\theta^*=\\arg\\max_\\theta J(\\theta)$；$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[r(\\tau)]$。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)$。",
+      "问题：样本依赖当前策略。",
+      "神经网络每次梯度更新只发生一点变化。",
+      "同策略学习可能极其低效！",
+      "REINFORCE算法",
+      "从$\\pi_\\theta(a_t\\mid s_t)$采样$\\{\\tau^i\\}$（执行该策略）。",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。",
+      "$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。",
+      "机器人。",
+      "不能直接跳过采样。"
+    ],
+    "translation_html": "<p>$\\theta^*=\\arg\\max_\\theta J(\\theta)$；$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[r(\\tau)]$。</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)$。</p><p>问题：样本依赖当前策略。</p><ul><li>神经网络每次梯度更新只发生一点变化。</li><li>同策略学习可能极其低效！</li></ul><h3>REINFORCE算法</h3><ul><li>从$\\pi_\\theta(a_t\\mid s_t)$采样$\\{\\tau^i\\}$（执行该策略）。</li><li>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N(\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t}))(\\sum_{t=1}^T r(s_{i,t},a_{i,t}))$。</li><li>$\\theta\\leftarrow\\theta+\\alpha\\nabla_\\theta J(\\theta)$。</li></ul><p>机器人。</p><p>不能直接跳过采样。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 67,
+    "title": "异策略学习与重要性采样",
+    "translated_title": "异策略学习与重要性采样",
+    "translation": [
+      "$\\theta^*=\\arg\\max_\\theta J(\\theta)$；$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[r(\\tau)]$。",
+      "如果样本不来自pθ(τ)呢？改用pθ′(τ)。",
+      "重要性采样",
+      "$\\mathbb E_{x\\sim p(x)}[f(x)]=\\int p(x)f(x)dx=\\int q(x)\\frac{p(x)}{q(x)}f(x)dx=\\mathbb E_{x\\sim q(x)}[\\frac{p(x)}{q(x)}f(x)]$。",
+      "$J(\\theta)=\\mathbb E_{\\tau\\sim p_{\\theta\\prime}(\\tau)}[\\frac{p_\\theta(\\tau)}{p_{\\theta\\prime}(\\tau)}r(\\tau)]$。",
+      "$\\frac{p_\\theta(\\tau)}{p_{\\theta\\prime}(\\tau)}=\\frac{p(s_1)\\prod_{t=1}^T\\pi_\\theta(a_t\\mid s_t)p(s_{t+1}\\mid s_t,a_t)}{p(s_1)\\prod_{t=1}^T\\pi_{\\theta\\prime}(a_t\\mid s_t)p(s_{t+1}\\mid s_t,a_t)}=\\prod_{t=1}^T\\frac{\\pi_\\theta(a_t\\mid s_t)}{\\pi_{\\theta\\prime}(a_t\\mid s_t)}$。"
+    ],
+    "translation_html": "<p>$\\theta^*=\\arg\\max_\\theta J(\\theta)$；$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[r(\\tau)]$。</p><p>如果样本不来自pθ(τ)呢？改用pθ′(τ)。</p><h3>重要性采样</h3><p>$\\mathbb E_{x\\sim p(x)}[f(x)]=\\int p(x)f(x)dx=\\int q(x)\\frac{p(x)}{q(x)}f(x)dx=\\mathbb E_{x\\sim q(x)}[\\frac{p(x)}{q(x)}f(x)]$。</p><p>$J(\\theta)=\\mathbb E_{\\tau\\sim p_{\\theta\\prime}(\\tau)}[\\frac{p_\\theta(\\tau)}{p_{\\theta\\prime}(\\tau)}r(\\tau)]$。</p><p>$\\frac{p_\\theta(\\tau)}{p_{\\theta\\prime}(\\tau)}=\\frac{p(s_1)\\prod_{t=1}^T\\pi_\\theta(a_t\\mid s_t)p(s_{t+1}\\mid s_t,a_t)}{p(s_1)\\prod_{t=1}^T\\pi_{\\theta\\prime}(a_t\\mid s_t)p(s_{t+1}\\mid s_t,a_t)}=\\prod_{t=1}^T\\frac{\\pi_\\theta(a_t\\mid s_t)}{\\pi_{\\theta\\prime}(a_t\\mid s_t)}$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 68,
+    "title": "用重要性采样推导策略梯度",
+    "translated_title": "用重要性采样推导策略梯度",
+    "translation": [
+      "$\\theta^*=\\arg\\max_\\theta J(\\theta)$；$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[r(\\tau)]$。",
+      "$J(\\theta)=\\mathbb E_{\\tau\\sim p_{\\theta\\prime}(\\tau)}[\\frac{p_\\theta(\\tau)}{p_{\\theta\\prime}(\\tau)}r(\\tau)]$。",
+      "$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_{\\theta\\prime}(\\tau)}[\\frac{\\nabla_\\theta p_\\theta(\\tau)}{p_{\\theta\\prime}(\\tau)}r(\\tau)]=\\mathbb E_{\\tau\\sim p_{\\theta\\prime}(\\tau)}[\\frac{p_\\theta(\\tau)}{p_{\\theta\\prime}(\\tau)}\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)]$。",
+      "一个方便的恒等式。",
+      "$p_\\theta(\\tau)\\nabla_\\theta\\log p_\\theta(\\tau)=\\nabla_\\theta p_\\theta(\\tau)$。",
+      "如果$\\theta=\\theta\\prime$：$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta}[\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)]$。",
+      "只有概率比依赖θ′。"
+    ],
+    "translation_html": "<p>$\\theta^*=\\arg\\max_\\theta J(\\theta)$；$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[r(\\tau)]$。</p><p>$J(\\theta)=\\mathbb E_{\\tau\\sim p_{\\theta\\prime}(\\tau)}[\\frac{p_\\theta(\\tau)}{p_{\\theta\\prime}(\\tau)}r(\\tau)]$。</p><p>$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_{\\theta\\prime}(\\tau)}[\\frac{\\nabla_\\theta p_\\theta(\\tau)}{p_{\\theta\\prime}(\\tau)}r(\\tau)]=\\mathbb E_{\\tau\\sim p_{\\theta\\prime}(\\tau)}[\\frac{p_\\theta(\\tau)}{p_{\\theta\\prime}(\\tau)}\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)]$。</p><p>一个方便的恒等式。</p><p>$p_\\theta(\\tau)\\nabla_\\theta\\log p_\\theta(\\tau)=\\nabla_\\theta p_\\theta(\\tau)$。</p><p>如果$\\theta=\\theta\\prime$：$\\nabla_\\theta J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta}[\\nabla_\\theta\\log p_\\theta(\\tau)r(\\tau)]$。</p><p>只有概率比依赖θ′。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 69,
+    "title": "异策略的策略梯度",
+    "translated_title": "异策略的策略梯度",
+    "translation": [
+      "$\\theta^*=\\arg\\max_\\theta J(\\theta)$；$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[r(\\tau)]$。",
+      "$\\nabla_{\\theta\\prime}J(\\theta\\prime)=\\mathbb E_{\\tau\\sim p_\\theta}[\\frac{p_{\\theta\\prime}(\\tau)}{p_\\theta(\\tau)}\\nabla_{\\theta\\prime}\\log p_{\\theta\\prime}(\\tau)r(\\tau)]$，当$\\theta\\ne\\theta\\prime$。",
+      "$=\\mathbb E_{\\tau\\sim p_\\theta}[(\\prod_{t=1}^T\\frac{\\pi_{\\theta\\prime}(a_t\\mid s_t)}{\\pi_\\theta(a_t\\mid s_t)})(\\sum_{t=1}^T\\nabla_{\\theta\\prime}\\log\\pi_{\\theta\\prime}(a_t\\mid s_t))(\\sum_{t=1}^Tr(s_t,a_t))]$。",
+      "$=\\mathbb E_{\\tau\\sim p_\\theta}[\\sum_{t=1}^T\\nabla_{\\theta\\prime}\\log\\pi_{\\theta\\prime}(a_t\\mid s_t)(\\prod_{t\\prime=1}^{t}\\frac{\\pi_{\\theta\\prime}(a_{t\\prime}\\mid s_{t\\prime})}{\\pi_\\theta(a_{t\\prime}\\mid s_{t\\prime})})(\\sum_{t\\prime=t}^Tr(s_{t\\prime},a_{t\\prime}))(\\prod_{t\\prime\\prime=t}^{t}\\frac{\\pi_{\\theta\\prime}(a_{t\\prime\\prime}\\mid s_{t\\prime\\prime})}{\\pi_\\theta(a_{t\\prime\\prime}\\mid s_{t\\prime\\prime})})]$。",
+      "未来的动作不影响当前权重。",
+      "如果忽略这一项，就得到策略迭代算法（后续课程会详细介绍）。",
+      "因果性呢？",
+      "$\\frac{p_{\\theta\\prime}(\\tau)}{p_\\theta(\\tau)}=\\frac{\\prod_{t=1}^T\\pi_{\\theta\\prime}(a_t\\mid s_t)}{\\prod_{t=1}^T\\pi_\\theta(a_t\\mid s_t)}$。"
+    ],
+    "translation_html": "<p>$\\theta^*=\\arg\\max_\\theta J(\\theta)$；$J(\\theta)=\\mathbb E_{\\tau\\sim p_\\theta(\\tau)}[r(\\tau)]$。</p><p>$\\nabla_{\\theta\\prime}J(\\theta\\prime)=\\mathbb E_{\\tau\\sim p_\\theta}[\\frac{p_{\\theta\\prime}(\\tau)}{p_\\theta(\\tau)}\\nabla_{\\theta\\prime}\\log p_{\\theta\\prime}(\\tau)r(\\tau)]$，当$\\theta\\ne\\theta\\prime$。</p><p>$=\\mathbb E_{\\tau\\sim p_\\theta}[(\\prod_{t=1}^T\\frac{\\pi_{\\theta\\prime}(a_t\\mid s_t)}{\\pi_\\theta(a_t\\mid s_t)})(\\sum_{t=1}^T\\nabla_{\\theta\\prime}\\log\\pi_{\\theta\\prime}(a_t\\mid s_t))(\\sum_{t=1}^Tr(s_t,a_t))]$。</p><p>$=\\mathbb E_{\\tau\\sim p_\\theta}[\\sum_{t=1}^T\\nabla_{\\theta\\prime}\\log\\pi_{\\theta\\prime}(a_t\\mid s_t)(\\prod_{t\\prime=1}^{t}\\frac{\\pi_{\\theta\\prime}(a_{t\\prime}\\mid s_{t\\prime})}{\\pi_\\theta(a_{t\\prime}\\mid s_{t\\prime})})(\\sum_{t\\prime=t}^Tr(s_{t\\prime},a_{t\\prime}))(\\prod_{t\\prime\\prime=t}^{t}\\frac{\\pi_{\\theta\\prime}(a_{t\\prime\\prime}\\mid s_{t\\prime\\prime})}{\\pi_\\theta(a_{t\\prime\\prime}\\mid s_{t\\prime\\prime})})]$。</p><p>未来的动作不影响当前权重。</p><p>如果忽略这一项，就得到策略迭代算法（后续课程会详细介绍）。</p><p>因果性呢？</p><p>$\\frac{p_{\\theta\\prime}(\\tau)}{p_\\theta(\\tau)}=\\frac{\\prod_{t=1}^T\\pi_{\\theta\\prime}(a_t\\mid s_t)}{\\prod_{t=1}^T\\pi_\\theta(a_t\\mid s_t)}$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 70,
+    "title": "重要性采样的一阶近似（预告）",
+    "translated_title": "重要性采样的一阶近似（预告）",
+    "translation": [
+      "$\\nabla_{\\theta\\prime}J(\\theta\\prime)=\\mathbb E_{\\tau\\sim p_\\theta}[\\sum_{t=1}^T\\nabla_{\\theta\\prime}\\log\\pi_{\\theta\\prime}(a_t\\mid s_t)(\\prod_{t\\prime=1}^{t}\\frac{\\pi_{\\theta\\prime}(a_{t\\prime}\\mid s_{t\\prime})}{\\pi_\\theta(a_{t\\prime}\\mid s_{t\\prime})})(\\sum_{t\\prime=t}^Tr(s_{t\\prime},a_{t\\prime}))]$。",
+      "随T呈指数增长……",
+      "把目标写得稍有不同……",
+      "同策略的策略梯度：",
+      "$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\hat Q_{i,t}$。",
+      "$(s_{i,t},a_{i,t})\\sim\\pi_\\theta(s_t,a_t)$。",
+      "异策略的策略梯度：",
+      "$\\nabla_{\\theta\\prime}J(\\theta\\prime)\\approx\\frac1N\\sum_i\\sum_t\\frac{\\pi_{\\theta\\prime}(s_{i,t},a_{i,t})}{\\pi_\\theta(s_{i,t},a_{i,t})}\\nabla_{\\theta\\prime}\\log\\pi_{\\theta\\prime}(a_{i,t}\\mid s_{i,t})\\hat Q_{i,t}=\\frac1N\\sum_i\\sum_t\\frac{\\pi_{\\theta\\prime}(s_{i,t})\\pi_{\\theta\\prime}(a_{i,t}\\mid s_{i,t})}{\\pi_\\theta(s_{i,t})\\pi_\\theta(a_{i,t}\\mid s_{i,t})}\\nabla_{\\theta\\prime}\\log\\pi_{\\theta\\prime}(a_{i,t}\\mid s_{i,t})\\hat Q_{i,t}$。",
+      "忽略这一部分。稍后在课程中会看到为什么这是合理的！"
+    ],
+    "translation_html": "<p>$\\nabla_{\\theta\\prime}J(\\theta\\prime)=\\mathbb E_{\\tau\\sim p_\\theta}[\\sum_{t=1}^T\\nabla_{\\theta\\prime}\\log\\pi_{\\theta\\prime}(a_t\\mid s_t)(\\prod_{t\\prime=1}^{t}\\frac{\\pi_{\\theta\\prime}(a_{t\\prime}\\mid s_{t\\prime})}{\\pi_\\theta(a_{t\\prime}\\mid s_{t\\prime})})(\\sum_{t\\prime=t}^Tr(s_{t\\prime},a_{t\\prime}))]$。</p><p>随T呈指数增长……</p><p>把目标写得稍有不同……</p><p>同策略的策略梯度：</p><p>$\\nabla_\\theta J(\\theta)\\approx\\frac1N\\sum_{i=1}^N\\sum_{t=1}^T\\nabla_\\theta\\log\\pi_\\theta(a_{i,t}\\mid s_{i,t})\\hat Q_{i,t}$。</p><p>$(s_{i,t},a_{i,t})\\sim\\pi_\\theta(s_t,a_t)$。</p><p>异策略的策略梯度：</p><p>$\\nabla_{\\theta\\prime}J(\\theta\\prime)\\approx\\frac1N\\sum_i\\sum_t\\frac{\\pi_{\\theta\\prime}(s_{i,t},a_{i,t})}{\\pi_\\theta(s_{i,t},a_{i,t})}\\nabla_{\\theta\\prime}\\log\\pi_{\\theta\\prime}(a_{i,t}\\mid s_{i,t})\\hat Q_{i,t}=\\frac1N\\sum_i\\sum_t\\frac{\\pi_{\\theta\\prime}(s_{i,t})\\pi_{\\theta\\prime}(a_{i,t}\\mid s_{i,t})}{\\pi_\\theta(s_{i,t})\\pi_\\theta(a_{i,t}\\mid s_{i,t})}\\nabla_{\\theta\\prime}\\log\\pi_{\\theta\\prime}(a_{i,t}\\mid s_{i,t})\\hat Q_{i,t}$。</p><p>忽略这一部分。稍后在课程中会看到为什么这是合理的！</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 71,
+    "title": "重要性采样的问题",
+    "translated_title": "重要性采样的问题",
+    "translation": [
+      "如果优化J，会使πθ/πold越来越大。分布会显著变化。",
+      "分布变化过大可能让策略网络表现变得糟糕得多。",
+      "策略采样到糟糕的动作，导致更差的策略。",
+      "训练崩溃！",
+      "$J(\\theta)=\\mathbb E_{(s_t,a_t)\\sim\\pi_{old}}[\\frac{\\pi_\\theta(a_t\\mid s_t)}{\\pi_{old}(a_t\\mid s_t)}A^{\\pi_{old}}(s_t,a_t)]$。"
+    ],
+    "translation_html": "<ul><li>如果优化J，会使πθ/πold越来越大。分布会显著变化。<ul><li>分布变化过大可能让策略网络表现变得糟糕得多。</li><li>策略采样到糟糕的动作，导致更差的策略。</li><li>训练崩溃！</li></ul></li></ul><p>$J(\\theta)=\\mathbb E_{(s_t,a_t)\\sim\\pi_{old}}[\\frac{\\pi_\\theta(a_t\\mid s_t)}{\\pi_{old}(a_t\\mid s_t)}A^{\\pi_{old}}(s_t,a_t)]$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 72,
+    "title": "信赖域策略优化（TRPO）",
+    "translated_title": "信赖域策略优化（TRPO）",
+    "translation": [
+      "TRPO：在约束条件下优化平均奖励（使用重要性采样）。",
+      "$\\max_\\theta\\mathbb E_t[\\frac{\\pi_\\theta(a_t\\mid s_t)}{\\pi_{\\theta_{old}}(a_t\\mid s_t)}\\hat A_t]$，约束为$\\mathbb E_t[D_{KL}(\\pi_{\\theta_{old}}(\\cdot\\mid s_t)\\|\\pi_\\theta(\\cdot\\mid s_t))]\\le\\delta$。",
+      "直觉：πθ不应在一步内变化太大。",
+      "相当于每一步改变步长，避免训练崩溃。",
+      "理论上，可以证明平均奖励函数具有单调性。",
+      "TRPO通过硬约束控制变化。",
+      "单调性 → 局部极小值。",
+      "数学复杂。",
+      "$\\hat g_k=\\frac1{|D_k|}\\sum_{\\tau\\in D_k}\\sum_{t=0}^T\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t)|_{\\theta_k}\\hat A_t$；$\\hat x_k\\approx\\hat H_k^{-1}\\hat g_k$；$\\theta_{k+1}=\\theta_k+\\alpha^j\\sqrt{\\frac{2\\delta}{\\hat x_k^T\\hat H_k\\hat x_k}}\\hat x_k$。",
+      "《信赖域策略优化》（Trust Region Policy Optimization），John Schulman等，加州大学伯克利分校，2015。"
+    ],
+    "translation_html": "<ul><li>TRPO：在约束条件下优化平均奖励（使用重要性采样）。</li></ul><p>$\\max_\\theta\\mathbb E_t[\\frac{\\pi_\\theta(a_t\\mid s_t)}{\\pi_{\\theta_{old}}(a_t\\mid s_t)}\\hat A_t]$，约束为$\\mathbb E_t[D_{KL}(\\pi_{\\theta_{old}}(\\cdot\\mid s_t)\\|\\pi_\\theta(\\cdot\\mid s_t))]\\le\\delta$。</p><ul><li>直觉：πθ不应在一步内变化太大。<ul><li>相当于每一步改变步长，避免训练崩溃。</li><li>理论上，可以证明平均奖励函数具有单调性。</li></ul></li><li>TRPO通过硬约束控制变化。<ul><li>单调性 → 局部极小值。</li><li>数学复杂。</li></ul></li></ul><p>$\\hat g_k=\\frac1{|D_k|}\\sum_{\\tau\\in D_k}\\sum_{t=0}^T\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t)|_{\\theta_k}\\hat A_t$；$\\hat x_k\\approx\\hat H_k^{-1}\\hat g_k$；$\\theta_{k+1}=\\theta_k+\\alpha^j\\sqrt{\\frac{2\\delta}{\\hat x_k^T\\hat H_k\\hat x_k}}\\hat x_k$。</p><p class=\"source\">《信赖域策略优化》（Trust Region Policy Optimization），John Schulman等，加州大学伯克利分校，2015。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 73,
+    "title": "近端策略优化（PPO）",
+    "translated_title": "近端策略优化（PPO）",
+    "translation": [
+      "沿用TRPO的直觉，PPO提供两种使用一阶算法限制策略分布变化的方法。",
+      "剪裁代理目标。",
+      "自适应KL惩罚系数。",
+      "软约束。",
+      "权衡：奖励的单调性与策略的随机性。",
+      "其他技巧，让训练更稳定、样本效率更高。",
+      "重要性采样。",
+      "GAE。"
+    ],
+    "translation_html": "<ul><li>沿用TRPO的直觉，PPO提供两种使用一阶算法限制策略分布变化的方法。<ul><li>剪裁代理目标。</li><li>自适应KL惩罚系数。</li></ul></li><li>软约束。<ul><li>权衡：奖励的单调性与策略的随机性。</li></ul></li><li>其他技巧，让训练更稳定、样本效率更高。<ul><li>重要性采样。</li><li>GAE。</li></ul></li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 74,
+    "title": "PPO——剪裁代理目标",
+    "translated_title": "PPO——剪裁代理目标",
+    "translation": [
+      "$r_t(\\theta)=\\frac{\\pi_\\theta(a_t\\mid s_t)}{\\pi_{\\theta_{old}}(a_t\\mid s_t)}$；$L^{CPI}(\\theta)=\\hat{\\mathbb E}_t[r_t(\\theta)\\hat A_t]$；$L^{CLIP}(\\theta)=\\hat{\\mathbb E}_t[\\min(r_t(\\theta)\\hat A_t,\\operatorname{clip}(r_t(\\theta),1-\\epsilon,1+\\epsilon)\\hat A_t)]$。",
+      "Â>0；Â<0。横轴：r。纵轴：L。1−ε；1；1+ε。"
+    ],
+    "translation_html": "<p>$r_t(\\theta)=\\frac{\\pi_\\theta(a_t\\mid s_t)}{\\pi_{\\theta_{old}}(a_t\\mid s_t)}$；$L^{CPI}(\\theta)=\\hat{\\mathbb E}_t[r_t(\\theta)\\hat A_t]$；$L^{CLIP}(\\theta)=\\hat{\\mathbb E}_t[\\min(r_t(\\theta)\\hat A_t,\\operatorname{clip}(r_t(\\theta),1-\\epsilon,1+\\epsilon)\\hat A_t)]$。</p><p>Â>0；Â<0。横轴：r。纵轴：L。1−ε；1；1+ε。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 75,
+    "title": "PPO——自适应KL惩罚系数",
+    "translated_title": "PPO——自适应KL惩罚系数",
+    "translation": [
+      "TRPO中的KL约束很难应用。",
+      "PPO使用自适应KL惩罚系数来达到同样的效果。",
+      "可替代剪裁代理目标，或与其结合。",
+      "可以达到某个KL散度目标值dₜₐᵣɡ。",
+      "$L^{KLPEN}(\\theta)=\\hat{\\mathbb E}_t[r_t(\\theta)\\hat A_t-\\beta D_{KL}(\\pi_{\\theta_{old}}(\\cdot\\mid s_t),\\pi_\\theta(\\cdot\\mid s_t))]$。",
+      "$d=\\hat{\\mathbb E}_t[D_{KL}(\\pi_{\\theta_{old}}(\\cdot\\mid s_t),\\pi_\\theta(\\cdot\\mid s_t))]$。",
+      "若$d<d_{targ}/1.5$，$\\beta\\leftarrow\\beta/2$。",
+      "若$d>d_{targ}\\times1.5$，$\\beta\\leftarrow\\beta\\times2$。",
+      "训练中，KL散度有时与dₜₐᵣɡ显著不同，但可以快速调整。"
+    ],
+    "translation_html": "<ul><li>TRPO中的KL约束很难应用。</li><li>PPO使用自适应KL惩罚系数来达到同样的效果。<ul><li>可替代剪裁代理目标，或与其结合。</li></ul></li><li>可以达到某个KL散度目标值dₜₐᵣɡ。</li></ul><p>$L^{KLPEN}(\\theta)=\\hat{\\mathbb E}_t[r_t(\\theta)\\hat A_t-\\beta D_{KL}(\\pi_{\\theta_{old}}(\\cdot\\mid s_t),\\pi_\\theta(\\cdot\\mid s_t))]$。</p><p>$d=\\hat{\\mathbb E}_t[D_{KL}(\\pi_{\\theta_{old}}(\\cdot\\mid s_t),\\pi_\\theta(\\cdot\\mid s_t))]$。</p><ul><li>若$d<d_{targ}/1.5$，$\\beta\\leftarrow\\beta/2$。</li><li>若$d>d_{targ}\\times1.5$，$\\beta\\leftarrow\\beta\\times2$。</li><li>训练中，KL散度有时与dₜₐᵣɡ显著不同，但可以快速调整。</li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 76,
+    "title": "PPO——总损失及其他技巧",
+    "translated_title": "PPO——总损失及其他技巧",
+    "translation": [
+      "$L_t^{CLIP+VF+S}(\\theta)=\\hat{\\mathbb E}_t[L_t^{CLIP}(\\theta)-c_1L_t^{VF}(\\theta)+c_2S[\\pi_\\theta](s_t)]$。",
+      "$\\hat A_t=\\delta_t+(\\gamma\\lambda)\\delta_{t+1}+\\cdots+(\\gamma\\lambda)^{T-t+1}\\delta_{T-1}$；其中$\\delta_t=r_t+\\gamma V(s_{t+1})-V(s_t)$。"
+    ],
+    "translation_html": "<p>$L_t^{CLIP+VF+S}(\\theta)=\\hat{\\mathbb E}_t[L_t^{CLIP}(\\theta)-c_1L_t^{VF}(\\theta)+c_2S[\\pi_\\theta](s_t)]$。</p><p>$\\hat A_t=\\delta_t+(\\gamma\\lambda)\\delta_{t+1}+\\cdots+(\\gamma\\lambda)^{T-t+1}\\delta_{T-1}$；其中$\\delta_t=r_t+\\gamma V(s_{t+1})-V(s_t)$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 77,
+    "title": "PPO——实验",
+    "translated_title": "PPO——实验",
+    "translation": [
+      "实验1：剪裁与自适应KL。",
+      "剪裁 > 自适应KL > 固定KL > 基准。",
+      "算法",
+      "平均归一化得分",
+      "无剪裁或惩罚",
+      "−0.39",
+      "剪裁，ε＝0.1",
+      "0.76",
+      "剪裁，ε＝0.2",
+      "0.82",
+      "剪裁，ε＝0.3",
+      "0.70",
+      "自适应KL，dₜₐᵣɡ＝0.003",
+      "0.68",
+      "自适应KL，dₜₐᵣɡ＝0.01",
+      "0.74",
+      "自适应KL，dₜₐᵣɡ＝0.03",
+      "0.71",
+      "固定KL，β＝0.3",
+      "0.62",
+      "固定KL，β＝1",
+      "0.71",
+      "固定KL，β＝3",
+      "0.72",
+      "固定KL，β＝10",
+      "0.69"
+    ],
+    "translation_html": "<ul><li>实验1：剪裁与自适应KL。<ul><li>剪裁 > 自适应KL > 固定KL > 基准。</li></ul></li></ul><table><thead><tr><th>算法</th><th>平均归一化得分</th></tr></thead><tbody><tr><td>无剪裁或惩罚</td><td>−0.39</td></tr><tr><td>剪裁，ε＝0.1</td><td>0.76</td></tr><tr><td>剪裁，ε＝0.2</td><td>0.82</td></tr><tr><td>剪裁，ε＝0.3</td><td>0.70</td></tr><tr><td>自适应KL，dₜₐᵣɡ＝0.003</td><td>0.68</td></tr><tr><td>自适应KL，dₜₐᵣɡ＝0.01</td><td>0.74</td></tr><tr><td>自适应KL，dₜₐᵣɡ＝0.03</td><td>0.71</td></tr><tr><td>固定KL，β＝0.3</td><td>0.62</td></tr><tr><td>固定KL，β＝1</td><td>0.71</td></tr><tr><td>固定KL，β＝3</td><td>0.72</td></tr><tr><td>固定KL，β＝10</td><td>0.69</td></tr></tbody></table>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 78,
+    "title": "PPO——实验",
+    "translated_title": "PPO——实验",
+    "translation": [
+      "实验2：PPO与其他同策略强化学习算法。",
+      "样本效率。",
+      "最终性能。",
+      "任务：HalfCheetah-v1（半猎豹）、Hopper-v1（跳跃者）、InvertedDoublePendulum-v1（双倒立摆）、InvertedPendulum-v1（倒立摆）、Reacher-v1（到达目标）、Swimmer-v1（游泳者）、Walker2d-v1（二维步行者）。",
+      "算法：A2C、A2C＋信赖域、CEM、PPO剪裁、自适应KL的PPO、TRPO。",
+      "横轴：时间步数；纵轴：回合奖励。"
+    ],
+    "translation_html": "<ul><li>实验2：PPO与其他同策略强化学习算法。<ul><li>样本效率。</li><li>最终性能。</li></ul></li></ul><p>任务：HalfCheetah-v1（半猎豹）、Hopper-v1（跳跃者）、InvertedDoublePendulum-v1（双倒立摆）、InvertedPendulum-v1（倒立摆）、Reacher-v1（到达目标）、Swimmer-v1（游泳者）、Walker2d-v1（二维步行者）。</p><p>算法：A2C、A2C＋信赖域、CEM、PPO剪裁、自适应KL的PPO、TRPO。</p><p>横轴：时间步数；纵轴：回合奖励。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 79,
+    "title": "实现技巧",
+    "translated_title": "实现技巧",
+    "translation": [
+      "https://zhuanlan.zhihu.com/p/512327050",
+      "https://iclr-blog-track.github.io/2022/03/25/ppo-implementation-details/",
+      "《深度策略梯度中的实现至关重要：PPO与TRPO案例研究》（Implementation Matters in Deep Policy Gradients: A Case Study on PPO and TRPO），Logan Engstrom等，麻省理工学院，ICLR 2020。"
+    ],
+    "translation_html": "<p>https://zhuanlan.zhihu.com/p/512327050</p><p>https://iclr-blog-track.github.io/2022/03/25/ppo-implementation-details/</p><p>《深度策略梯度中的实现至关重要：PPO与TRPO案例研究》（Implementation Matters in Deep Policy Gradients: A Case Study on PPO and TRPO），Logan Engstrom等，麻省理工学院，ICLR 2020。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 80,
+    "title": "PPO——更新技巧",
+    "translated_title": "PPO——更新技巧",
+    "translation": [
+      "从$\\pi_\\theta$采样动作—状态对$\\{s_t,a_t,s_{t+1}\\}$，存入B。",
+      "更新$V_\\phi$、$\\pi_{\\theta\\prime}$，进行K个训练轮次，每轮使用B中的全部数据。",
+      "$\\theta\\prime\\to\\theta$。",
+      "实际中K不应太大，否则数据误差会很大。",
+      "PPO原论文中，RoboschoolHumanoidFlagrun使用K＝15。",
+      "小批次：在每一轮训练中，将缓冲区B分成若干小批次。每个批次更新网络一次（类似批次梯度下降）。",
+      "小批次大小应合适。",
+      "大：困在局部极小值。",
+      "小：梯度噪声过大。"
+    ],
+    "translation_html": "<ol><li>从$\\pi_\\theta$采样动作—状态对$\\{s_t,a_t,s_{t+1}\\}$，存入B。</li><li>更新$V_\\phi$、$\\pi_{\\theta\\prime}$，进行K个训练轮次，每轮使用B中的全部数据。</li><li>$\\theta\\prime\\to\\theta$。</li></ol><ol><li>实际中K不应太大，否则数据误差会很大。<ul><li>PPO原论文中，RoboschoolHumanoidFlagrun使用K＝15。</li></ul></li><li>小批次：在每一轮训练中，将缓冲区B分成若干小批次。每个批次更新网络一次（类似批次梯度下降）。<ul><li>小批次大小应合适。<ul><li>大：困在局部极小值。</li><li>小：梯度噪声过大。</li></ul></li></ul></li></ol>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 81,
+    "title": "PPO——更新技巧",
+    "translated_title": "PPO——更新技巧",
+    "translation": [
+      "我们自己的实验：基于状态，在44个不同物体上关门。",
+      "小批次大小约5500。",
+      "RoboschoolHumanoidFlagrun：小批次大小＝4096。",
+      "超参数",
+      "值",
+      "时域长度（T）",
+      "512",
+      "Adam步长",
+      "*",
+      "训练轮次",
+      "15",
+      "小批次大小",
+      "4096",
+      "折扣（γ）",
+      "0.99",
+      "GAE参数（λ）",
+      "0.95",
+      "行动者数量",
+      "32（运动），128（旗帜奔跑）",
+      "动作分布的对数标准差",
+      "线性退火（−0.7，−1.6）",
+      "名称；平滑值；值；步数；时间；相对时间。",
+      "运行名称：FrankaCabinetManiSkill/ppo_0000021-8(default)，mini＝1、16、2、32、4、8，epoch＝8，seed＝5555。",
+      "小批次mini",
+      "平滑值",
+      "值",
+      "步数",
+      "时间",
+      "相对时间",
+      "1",
+      "0.7577",
+      "0.7577",
+      "436",
+      "6月11日星期一，14:41:21",
+      "47分55秒",
+      "16",
+      "0.7923",
+      "0.7923",
+      "436",
+      "6月11日星期一，11:43:18",
+      "52分14秒",
+      "2",
+      "0.9213",
+      "0.9213",
+      "436",
+      "6月11日星期一，14:40:29",
+      "47分38秒",
+      "32",
+      "0.5339",
+      "0.5339",
+      "436",
+      "6月11日星期一，12:19:39",
+      "1小时28分8秒",
+      "4",
+      "0.9311",
+      "0.9311",
+      "436",
+      "6月11日星期一，00:17:08",
+      "49分49秒",
+      "8",
+      "0.9795",
+      "0.9795",
+      "435",
+      "6月11日星期一，11:35:14",
+      "45分59秒",
+      "标签：episode/success_rate_train（回合／训练成功率）。横轴：0、200、400、600、800、1千、1.2千、1.4千；纵轴：0、0.1、0.2、0.3、0.4、0.5、0.6、0.7、0.8、0.9、1。"
+    ],
+    "translation_html": "<ul><li>我们自己的实验：基于状态，在44个不同物体上关门。<ul><li>小批次大小约5500。</li></ul></li><li>RoboschoolHumanoidFlagrun：小批次大小＝4096。</li></ul><table><thead><tr><th>超参数</th><th>值</th></tr></thead><tbody><tr><td>时域长度（T）</td><td>512</td></tr><tr><td>Adam步长</td><td>*</td></tr><tr><td>训练轮次</td><td>15</td></tr><tr><td>小批次大小</td><td>4096</td></tr><tr><td>折扣（γ）</td><td>0.99</td></tr><tr><td>GAE参数（λ）</td><td>0.95</td></tr><tr><td>行动者数量</td><td>32（运动），128（旗帜奔跑）</td></tr><tr><td>动作分布的对数标准差</td><td>线性退火（−0.7，−1.6）</td></tr></tbody></table><p>名称；平滑值；值；步数；时间；相对时间。</p><p>运行名称：FrankaCabinetManiSkill/ppo_0000021-8(default)，mini＝1、16、2、32、4、8，epoch＝8，seed＝5555。</p><table><thead><tr><th>小批次mini</th><th>平滑值</th><th>值</th><th>步数</th><th>时间</th><th>相对时间</th></tr></thead><tbody><tr><td>1</td><td>0.7577</td><td>0.7577</td><td>436</td><td>6月11日星期一，14:41:21</td><td>47分55秒</td></tr><tr><td>16</td><td>0.7923</td><td>0.7923</td><td>436</td><td>6月11日星期一，11:43:18</td><td>52分14秒</td></tr><tr><td>2</td><td>0.9213</td><td>0.9213</td><td>436</td><td>6月11日星期一，14:40:29</td><td>47分38秒</td></tr><tr><td>32</td><td>0.5339</td><td>0.5339</td><td>436</td><td>6月11日星期一，12:19:39</td><td>1小时28分8秒</td></tr><tr><td>4</td><td>0.9311</td><td>0.9311</td><td>436</td><td>6月11日星期一，00:17:08</td><td>49分49秒</td></tr><tr><td>8</td><td>0.9795</td><td>0.9795</td><td>435</td><td>6月11日星期一，11:35:14</td><td>45分59秒</td></tr></tbody></table><p>标签：episode/success_rate_train（回合／训练成功率）。横轴：0、200、400、600、800、1千、1.2千、1.4千；纵轴：0、0.1、0.2、0.3、0.4、0.5、0.6、0.7、0.8、0.9、1。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 82,
+    "title": "PPO——归一化与缩放",
+    "translated_title": "PPO——归一化与缩放",
+    "translation": [
+      "优势归一化：$A_t^{norm}=\\frac{A_t-\\mu_A}{\\sqrt{\\sigma_A^2+\\epsilon}}$。",
+      "仅在训练期间使用。",
+      "在一个小批次内归一化。",
+      "当Vφ(sₜ)估计不准确时，有助于使Aₜ以0为中心。",
+      "状态归一化：$s_t^{norm}=\\frac{s_t-\\mu_{run}}{\\sqrt{\\sigma_{run}^2+\\epsilon}}$。",
+      "需要保存状态每一维的运行均值，并在测试时使用。",
+      "与BatchNorm类似，有助于训练。",
+      "奖励缩放：$r_t^{scale}=\\frac{r_t}{\\sqrt{\\sigma_{run}^2+\\epsilon}}$。",
+      "缩放奖励让价值函数Vφ(sₜ)更容易训练。",
+      "$L^{CLIP}(\\theta)=\\hat{\\mathbb E}_t[\\min(r_t(\\theta)\\hat A_t,\\operatorname{clip}(r_t(\\theta),1-\\epsilon,1+\\epsilon)\\hat A_t)]$。"
+    ],
+    "translation_html": "<ul><li>优势归一化：$A_t^{norm}=\\frac{A_t-\\mu_A}{\\sqrt{\\sigma_A^2+\\epsilon}}$。<ul><li>仅在训练期间使用。</li><li>在一个小批次内归一化。</li><li>当Vφ(sₜ)估计不准确时，有助于使Aₜ以0为中心。</li></ul></li><li>状态归一化：$s_t^{norm}=\\frac{s_t-\\mu_{run}}{\\sqrt{\\sigma_{run}^2+\\epsilon}}$。<ul><li>需要保存状态每一维的运行均值，并在测试时使用。</li><li>与BatchNorm类似，有助于训练。</li></ul></li><li>奖励缩放：$r_t^{scale}=\\frac{r_t}{\\sqrt{\\sigma_{run}^2+\\epsilon}}$。<ul><li>缩放奖励让价值函数Vφ(sₜ)更容易训练。</li></ul></li></ul><p>$L^{CLIP}(\\theta)=\\hat{\\mathbb E}_t[\\min(r_t(\\theta)\\hat A_t,\\operatorname{clip}(r_t(\\theta),1-\\epsilon,1+\\epsilon)\\hat A_t)]$。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 83,
+    "title": "PPO——初始化与激活函数",
+    "translated_title": "PPO——初始化与激活函数",
+    "translation": [
+      "正交初始化。",
+      "1．用高斯分布（μ＝0，σ＝1）初始化W。",
+      "2．奇异值分解（SVD）：$W=U^TDV$，$V\\to W$。W为正交矩阵。",
+      "Engstrom、Ilyas等（2020）发现，正交初始化优于默认的Xavier初始化。",
+      "Andrychowicz等（2021）发现，让动作分布以0为中心（即用0.01初始化策略输出层权重）是有益的。",
+      "Tanh激活函数。",
+      "使用Tanh激活函数代替ReLU（PPO原论文）。",
+      "多层感知机（MLP）只有2或3个隐藏层，梯度消失可能不会造成明显损害。"
+    ],
+    "translation_html": "<ul><li>正交初始化。<ul><li>1．用高斯分布（μ＝0，σ＝1）初始化W。</li><li>2．奇异值分解（SVD）：$W=U^TDV$，$V\\to W$。W为正交矩阵。</li><li>Engstrom、Ilyas等（2020）发现，正交初始化优于默认的Xavier初始化。</li><li>Andrychowicz等（2021）发现，让动作分布以0为中心（即用0.01初始化策略输出层权重）是有益的。</li></ul></li><li>Tanh激活函数。<ul><li>使用Tanh激活函数代替ReLU（PPO原论文）。</li><li>多层感知机（MLP）只有2或3个隐藏层，梯度消失可能不会造成明显损害。</li></ul></li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 84,
+    "title": "优点与缺点",
+    "translated_title": "优点与缺点",
+    "translation": [
+      "优点：",
+      "样本效率更好。",
+      "重要性采样、小批次。",
+      "训练更稳定、性能更好。",
+      "剪裁代理目标、自适应KL及其他实现技巧。",
+      "数学比TRPO更简单。",
+      "缺点：",
+      "与异策略强化学习算法相比，样本效率仍然较低。",
+      "需要在模拟器中训练，与真实环境有领域差距。",
+      "很多针对任务的技巧。",
+      "谨慎选择超参数。"
+    ],
+    "translation_html": "<ul><li>优点：<ul><li>样本效率更好。<ul><li>重要性采样、小批次。</li></ul></li><li>训练更稳定、性能更好。<ul><li>剪裁代理目标、自适应KL及其他实现技巧。</li></ul></li><li>数学比TRPO更简单。</li></ul></li><li>缺点：<ul><li>与异策略强化学习算法相比，样本效率仍然较低。<ul><li>需要在模拟器中训练，与真实环境有领域差距。</li></ul></li><li>很多针对任务的技巧。<ul><li>谨慎选择超参数。</li></ul></li></ul></li></ul>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 85,
+    "title": "强化学习算法的分类",
+    "translated_title": "强化学习算法的分类",
+    "translation": [
+      "强化学习算法。",
+      "无模型强化学习。",
+      "策略优化：策略梯度、A2C／A3C、PPO、TRPO；DDPG、TD3、SAC。",
+      "Q学习：DDPG、TD3、SAC；DQN、C51、QR-DQN、HER。",
+      "基于模型的强化学习。",
+      "学习模型：世界模型（World Models）、I2A、MBMF、MBVE。",
+      "给定模型：AlphaZero。",
+      "参考：https://spinningup.openai.com/en/latest/index.html"
+    ],
+    "translation_html": "<ul><li>强化学习算法。<ul><li>无模型强化学习。<ul><li>策略优化：策略梯度、A2C／A3C、PPO、TRPO；DDPG、TD3、SAC。</li><li>Q学习：DDPG、TD3、SAC；DQN、C51、QR-DQN、HER。</li></ul></li><li>基于模型的强化学习。<ul><li>学习模型：世界模型（World Models）、I2A、MBMF、MBVE。</li><li>给定模型：AlphaZero。</li></ul></li></ul></li></ul><p class=\"source\">参考：https://spinningup.openai.com/en/latest/index.html</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 86,
+    "title": "进一步阅读与练习",
+    "translated_title": "进一步阅读与练习",
+    "translation": [
+      "OpenAI强化学习教程。",
+      "https://spinningup.openai.com/en/latest/user/introduction.html",
+      "算法文档：基础策略梯度（VPG）、信赖域策略优化（TRPO）、近端策略优化（PPO）、深度确定性策略梯度（DDPG）、双延迟深度确定性策略梯度（TD3）、软行动者—评价者（SAC）。"
+    ],
+    "translation_html": "<p>OpenAI强化学习教程。</p><p>https://spinningup.openai.com/en/latest/user/introduction.html</p><p>算法文档：基础策略梯度（VPG）、信赖域策略优化（TRPO）、近端策略优化（PPO）、深度确定性策略梯度（DDPG）、双延迟深度确定性策略梯度（TD3）、软行动者—评价者（SAC）。</p>",
+    "layout": "single"
+  },
+  {
+    "lecture": 9,
+    "page": 87,
+    "title": "具身智能导论",
+    "translated_title": "具身智能导论",
+    "translation": [
+      "下周：期中考试与第10讲，策略 III。",
+      "具身感知与交互实验室｜2025年春季"
+    ],
+    "translation_html": "<p>下周：期中考试与第10讲，策略 III。</p><p>具身感知与交互实验室｜2025年春季</p>",
+    "layout": "single"
+  }
+]
